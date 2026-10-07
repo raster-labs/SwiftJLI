@@ -69,7 +69,8 @@ struct JLIEncoder: Sendable {
     func encode(
         _ image: JLIImage,
         configuration: JLIEncoderConfiguration = .default,
-        borrowedSource: BorrowedSamplePlane? = nil
+        borrowedSource: BorrowedSamplePlane? = nil,
+        normalisedFloatInput: Bool = false
     ) throws -> [UInt8] {
         try validateConfiguration(configuration)
 
@@ -179,7 +180,7 @@ struct JLIEncoder: Sendable {
 
         if let borrowedSource {
             let planes = try SharedDCTStorage.read(borrowedSource, width: width, height: height,
-                components: image.colorModel.componentCount, precision: precision)
+                components: image.colorModel.componentCount, precision: precision, normalisedFloatInput: normalisedFloatInput)
             yPlane = planes.y; cbPlane = planes.cb; crPlane = planes.cr
         } else if isGrayscale {
             if image.colorModel == .grayscale {
@@ -1648,9 +1649,11 @@ struct JLIEncoder: Sendable {
 extension JLIEncoder {
     func encodeSharedDCT(
         from plane: BorrowedSamplePlane, width: Int, height: Int, precision: Int, components: Int,
+        normalisedFloatInput: Bool = false,
         icc: [UInt8]?, exif: [UInt8]?, configuration: JLIEncoderConfiguration
     ) throws -> [UInt8] {
         guard !configuration.lossless, configuration.colorSpace == .yCbCr,
+              !normalisedFloatInput || precision == 8,
               precision == 8 || precision == 12, components == 1 || components == 3,
               components == 1 || configuration.chromaSubsampling != .yuv400 else {
             throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT input")
@@ -1658,7 +1661,7 @@ extension JLIEncoder {
         let image = try JLIImage(geometryOnlyWidth: width, height: height,
             pixelFormat: precision == 8 ? .uint8 : .uint16,
             colorModel: components == 1 ? .grayscale : .rgb, iccProfile: icc, exif: exif)
-        return try encode(image, configuration: configuration, borrowedSource: plane)
+        return try encode(image, configuration: configuration, borrowedSource: plane, normalisedFloatInput: normalisedFloatInput)
     }
 
     /// Encode a lossless greyscale frame reading samples out of `plane`.

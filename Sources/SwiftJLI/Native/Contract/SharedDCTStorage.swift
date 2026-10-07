@@ -5,8 +5,8 @@ import Foundation
 /// the caller's scoped borrow; only a row of RGB conversion scratch is needed.
 enum SharedDCTStorage {
     static func read(_ source: BorrowedSamplePlane, width: Int, height: Int,
-                     components: Int, precision: Int) throws -> (y: [Float], cb: [Float], cr: [Float]) {
-        let count = width * height, bps = precision == 8 ? 1 : 2
+                     components: Int, precision: Int, normalisedFloatInput: Bool = false) throws -> (y: [Float], cb: [Float], cr: [Float]) {
+        let count = width * height, bps = normalisedFloatInput ? 4 : precision == 8 ? 1 : 2
         var y = [Float](repeating: 0, count: count)
         var cb = components == 3 ? y : [], cr = components == 3 ? y : []
         var scratch = [Float](repeating: 0, count: width * 3)
@@ -30,7 +30,16 @@ enum SharedDCTStorage {
                                 for x in 0..<width {
                                     for c in 0..<components {
                                         let p = offset + (x * components + c) * bps
-                                        let v = Float(Int(source.bytes[p]) | (Int(source.bytes[p + 1]) << 8))
+                                        let v: Float
+                                        if normalisedFloatInput {
+                                            let bits = UInt32(source.bytes[p]) | UInt32(source.bytes[p + 1]) << 8
+                                                | UInt32(source.bytes[p + 2]) << 16 | UInt32(source.bytes[p + 3]) << 24
+                                            let sample = Float(bitPattern: bits)
+                                            guard sample.isFinite else { throw CodecError(.invalidArgument, "Float input must contain only finite samples.") }
+                                            v = (min(max(sample, 0), 1) * 255).rounded(.toNearestOrAwayFromZero)
+                                        } else {
+                                            v = Float(Int(source.bytes[p]) | (Int(source.bytes[p + 1]) << 8))
+                                        }
                                         if components == 1 { yy[out + x] = v }
                                         else { s[c * width + x] = v }
                                     }

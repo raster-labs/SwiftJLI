@@ -25,15 +25,15 @@ enum JPEGCodec {
     static let capabilities = CodecCapabilities(
         formats: ["JPEG (SOF0/SOF1/SOF2/SOF3)"], compressionModes: [.lossless, .lossy] +
             (1...15).map { .nearLossless(maximumAbsoluteError: (1 << $0) - 1) },
-        sampleTypes: [.unsignedInteger], meaningfulPrecision: 2...16,
-        layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16"],
+        sampleTypes: [.unsignedInteger, .floatingPoint], meaningfulPrecision: nil,
+        layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16", "normalisedGreyscaleFloat32", "normalisedRGBFloat32"],
         availableBackends: availableBackends, canInspect: false, canEncode: true, canDecode: false)
 
     // Decoder profiles include integer 2...16 and IEEE Float32, not a single
-    // continuous precision range. Encoder capability queries remain integer-only.
+    // continuous precision range. Encoding floats requires an explicit lossy policy.
     static let decoderCapabilities = CodecCapabilities(formats: capabilities.formats,
         compressionModes: capabilities.compressionModes, sampleTypes: [.unsignedInteger, .floatingPoint],
-        meaningfulPrecision: nil, layouts: capabilities.layouts + ["greyscaleFloat32RawSamples"],
+        meaningfulPrecision: nil, layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16", "greyscaleFloat32RawSamples"],
         availableBackends: capabilities.availableBackends, canInspect: true, canEncode: false, canDecode: true)
 
     static var availableBackends: [Backend] {
@@ -88,7 +88,7 @@ enum JPEGCodec {
         let integer = descriptor.sampleType == .unsignedInteger && (2...16).contains(descriptor.meaningfulBits)
             && (descriptor.storageBits == 8 || descriptor.storageBits == 16)
         let floating = allowFloat && descriptor.sampleType == .floatingPoint
-            && descriptor.meaningfulBits == 32 && descriptor.storageBits == 32 && grey
+            && descriptor.meaningfulBits == 32 && descriptor.storageBits == 32
         guard integer || floating, descriptor.alpha == .absent, grey || rgb else {
             throw CodecError(.unsupportedFeature, "Unsupported JPEG sample type, precision, components or alpha.")
         }
@@ -119,12 +119,18 @@ enum JPEGCodec {
     static func encode(_ image: Image, configuration: EncoderConfiguration, options: EncodeOptions) throws -> EncodedImage {
         try run(limits: options.resourceLimits, policy: options.executionPolicy, dct: configuration.mode == .lossy) {
             let limits = options.resourceLimits, d = image.descriptor
-            let plane = try layout(d, limits: limits)
             let isDCT = configuration.mode == .lossy
-            guard !isDCT || (d.meaningfulBits == 8 && d.storageBits == 8) || (d.meaningfulBits == 12 && d.storageBits == 16) else {
+            let floating = d.sampleType == .floatingPoint
+            let allowsFloat = isDCT && configuration.codecOptions.dct.floatInputPolicy == .normalisedClampedToUInt8
+            guard !allowsFloat || floating else {
+                throw CodecError(.invalidArgument, "Float input policy requires Float32 source samples.")
+            }
+            let plane = try layout(d, allowFloat: allowsFloat, limits: limits)
+            let precision = floating ? 8 : d.meaningfulBits
+            guard !isDCT || floating || (d.meaningfulBits == 8 && d.storageBits == 8) || (d.meaningfulBits == 12 && d.storageBits == 16) else {
                 throw CodecError(.unsupportedFeature, "DCT encoding requires 8-bit samples or 12-bit samples in 16-bit storage.")
             }
-            if isDCT && (configuration.codecOptions.dct.adaptiveQuantisationField || configuration.codecOptions.dct.jpegliAdaptiveQuantisation), d.meaningfulBits != 8 {
+            if isDCT && (configuration.codecOptions.dct.adaptiveQuantisationField || configuration.codecOptions.dct.jpegliAdaptiveQuantisation), precision != 8 {
                 throw CodecError(.unsupportedFeature, "Adaptive DCT fields require 8-bit input.")
             }
             let metadataBytes = try image.metadata.validate(limits: limits, additionalBytes: d.iccProfile?.count ?? 0)
@@ -146,8 +152,8 @@ enum JPEGCodec {
             try admit(workspace: workspace, pixels: image.storage.byteCount, compressed: outputBound,
                       metadata: metadataBytes, limits: limits)
             var cfg = isDCT ? configuration.codecOptions.dct.native : JLIEncoderConfiguration.diagnosticLossless
-            cfg.losslessPrecision = d.meaningfulBits
-            cfg.losslessPointTransform = configuration.pointTransform(precision: d.meaningfulBits)
+            cfg.losslessPrecision = precision
+            cfg.losslessPointTransform = configuration.pointTransform(precision: precision)
             cfg.losslessPredictor = configuration.codecOptions.predictor
             cfg.restartInterval = configuration.codecOptions.restartInterval
             guard isDCT || cfg.restartInterval == 0 || cfg.restartInterval % d.width == 0 else {
@@ -158,21 +164,25 @@ enum JPEGCodec {
                 guard raw.count == image.storage.byteCount, raw.count >= d.requiredByteCount else {
                     throw CodecError(.storageUnavailable, "Source provider returned inconsistent capacity.")
                 }
-                let bps = d.storageBits / 8, maxSample = UInt32(1) << d.meaningfulBits
-                for y in 0..<d.height {
-                    try NativeOperation.check()
-                    for x in 0..<(d.width * d.components.count) {
-                        let offset = plane.offset + y * plane.rowBytes + x * bps
-                        let value = UInt32(raw[offset]) | (bps == 2 ? UInt32(raw[offset + 1]) << 8 : 0)
-                        guard value < maxSample else {
-                            throw CodecError(.invalidArgument, "Sample exceeds declared meaningful precision.")
+                let bps = d.storageBits / 8, maxSample = UInt32(1) << precision
+                // Float finiteness is checked by the fused quantising reader.
+                if !floating {
+                    for y in 0..<d.height {
+                        try NativeOperation.check()
+                        for x in 0..<(d.width * d.components.count) {
+                            let offset = plane.offset + y * plane.rowBytes + x * bps
+                            let value = UInt32(raw[offset]) | (bps == 2 ? UInt32(raw[offset + 1]) << 8 : 0)
+                            guard value < maxSample else {
+                                throw CodecError(.invalidArgument, "Sample exceeds declared meaningful precision.")
+                            }
                         }
                     }
                 }
                 if isDCT {
                     return try JLIEncoder().encodeSharedDCT(
                         from: .init(bytes: .init(rebasing: raw[plane.offset...]), rowBytes: plane.rowBytes),
-                        width: d.width, height: d.height, precision: d.meaningfulBits, components: d.components.count,
+                        width: d.width, height: d.height, precision: precision, components: d.components.count,
+                        normalisedFloatInput: floating,
                         icc: d.iccProfile.map { Array($0) }, exif: exif.map { Array($0) }, configuration: cfg)
                 }
                 return try JLIEncoder().encodeSharedLossless(
@@ -192,7 +202,8 @@ enum JPEGCodec {
             return EncodedImage(data: Data(encoded), encoding: .init(format: "JPEG", mode: mode),
                 report: .init(backend: NativeOperation.current?.backend ?? .scalarCPU, fallbackReason: fallback(options.executionPolicy),
                               fidelity: isDCT ? .lossy : errorBound == 0 ? .exactSamples : .boundedError(errorBound),
-                              pixelAllocationCount: 0, peakPixelBytes: 0))
+                              pixelAllocationCount: 0, peakPixelBytes: 0,
+                              sampleConversion: floating ? .normalisedFloat32ClampedToUInt8 : nil))
         }
     }
 

@@ -59,6 +59,22 @@ import SwiftJLI
               try previewDecoder.inspect(dct.data).descriptor.meaningfulBits == 12 else {
             throw SwiftJLI.CodecError(.internalFailure, "Explicit raw-float preview interpretation changed.")
         }
-        print("Independent SwiftJLI consumer: predictive, progressive and explicit raw-float preview checks passed.")
+        let floatPlane = try SwiftJLI.PlaneDescriptor(width: 1, height: 1,
+            sampleStride: 4, pixelStride: 4, rowBytes: 4, byteCount: 4)
+        let floatDescriptor = try SwiftJLI.ImageDescriptor(width: 1, height: 1,
+            sampleType: .floatingPoint, storageBits: 32, meaningfulBits: 32, planes: [floatPlane])
+        let floatImage = try SwiftJLI.ImageDestination.allocate(descriptor: floatDescriptor).write { raw in
+            let bits = Float(0.5).bitPattern
+            for byte in 0..<4 { raw[byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+        }
+        let floatEncoder = try SwiftJLI.Encoder(configuration: .init(mode: .lossy,
+            codecOptions: .init(dct: .init(floatInputPolicy: .normalisedClampedToUInt8))))
+        let floatEncoded = try await floatEncoder.encode(floatImage)
+        guard floatEncoded.report.sampleConversion == .normalisedFloat32ClampedToUInt8,
+              floatEncoded.report.fidelity == .lossy,
+              try decoder.inspect(floatEncoded.data).descriptor.meaningfulBits == 8 else {
+            throw SwiftJLI.CodecError(.internalFailure, "Explicit float quantisation was not reported.")
+        }
+        print("Independent SwiftJLI consumer: predictive, progressive, raw-float preview and normalised float encoding passed.")
     }
 }

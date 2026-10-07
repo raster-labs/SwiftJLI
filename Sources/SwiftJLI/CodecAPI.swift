@@ -5,6 +5,12 @@ import Foundation
 public enum ChromaSubsampling: Sendable, Equatable { case yuv444, yuv422, yuv420 }
 public enum ProgressiveMode: Sendable, Equatable { case sequential, spectralSelection, successiveApproximation }
 
+/// Float input is rejected unless the caller explicitly permits this lossy mapping.
+/// The opt-in clamps finite normalised samples to [0,1], multiplies by 255 and
+/// rounds to nearest (ties away from zero). NaN and infinity always fail.
+public enum FloatInputPolicy: Sendable, Equatable { case reject, normalisedClampedToUInt8 }
+public enum SampleConversion: Sendable, Equatable { case normalisedFloat32ClampedToUInt8 }
+
 /// Explicit lossy controls; selecting these never changes the default lossless mode.
 public struct DCTOptions: Sendable, Equatable {
     public let quality: Double
@@ -18,18 +24,21 @@ public struct DCTOptions: Sendable, Equatable {
     public let adaptiveQuantisationField: Bool
     /// jpegli masking/zero-bias path, replacing trellis. Requires 8-bit input.
     public let jpegliAdaptiveQuantisation: Bool
+    public let floatInputPolicy: FloatInputPolicy
     public init(quality: Double = 90, distance: Double? = nil,
                 chromaSubsampling: ChromaSubsampling = .yuv420,
                 progressiveMode: ProgressiveMode = .sequential,
                 optimiseHuffman: Bool = true, adaptiveQuantisation: Bool = true,
                 perceptualQuantisationTables: Bool = true,
-                adaptiveQuantisationField: Bool = false, jpegliAdaptiveQuantisation: Bool = false) {
+                adaptiveQuantisationField: Bool = false, jpegliAdaptiveQuantisation: Bool = false,
+                floatInputPolicy: FloatInputPolicy = .reject) {
         self.quality = quality; self.distance = distance
         self.chromaSubsampling = chromaSubsampling; self.progressiveMode = progressiveMode
         self.optimiseHuffman = optimiseHuffman; self.adaptiveQuantisation = adaptiveQuantisation
         self.perceptualQuantisationTables = perceptualQuantisationTables
         self.adaptiveQuantisationField = adaptiveQuantisationField
         self.jpegliAdaptiveQuantisation = jpegliAdaptiveQuantisation
+        self.floatInputPolicy = floatInputPolicy
     }
     var native: JLIEncoderConfiguration {
         .init(quality: quality, distance: distance,
@@ -140,13 +149,16 @@ public struct OperationReport: Sendable, Equatable {
     public let peakPixelBytes: Int?
     public let peakWorkspaceBytes: Int?
     public let elapsedSeconds: Double?
+    /// Explicit sample-value conversion, separate from memory-copy accounting.
+    public let sampleConversion: SampleConversion?
     public init(backend: Backend, fallbackReason: String? = nil, fidelity: Fidelity,
                 copyEvents: [CopyEvent] = [], pixelAllocationCount: Int? = nil,
-                peakPixelBytes: Int? = nil, peakWorkspaceBytes: Int? = nil, elapsedSeconds: Double? = nil) {
+                peakPixelBytes: Int? = nil, peakWorkspaceBytes: Int? = nil, elapsedSeconds: Double? = nil,
+                sampleConversion: SampleConversion? = nil) {
         self.backend = backend; self.fallbackReason = fallbackReason; self.fidelity = fidelity
         self.copyEvents = copyEvents; self.pixelAllocationCount = pixelAllocationCount
         self.peakPixelBytes = peakPixelBytes; self.peakWorkspaceBytes = peakWorkspaceBytes
-        self.elapsedSeconds = elapsedSeconds
+        self.elapsedSeconds = elapsedSeconds; self.sampleConversion = sampleConversion
     }
 }
 public struct ImageInfo: Sendable {

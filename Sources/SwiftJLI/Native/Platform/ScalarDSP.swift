@@ -24,7 +24,7 @@ func jliDSP_mmul(_ a: UnsafePointer<Float>, _ sa: Int, _ b: UnsafePointer<Float>
                _ out: UnsafeMutablePointer<Float>, _ so: Int, _ m: Int, _ n: Int, _ p: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_mmul(a, sa, b, sb, out, so, vDSP_Length(m), vDSP_Length(n), vDSP_Length(p))
+        Accelerate.vDSP_mmul(a, vDSP_Stride(sa), b, vDSP_Stride(sb), out, vDSP_Stride(so), vDSP_Length(m), vDSP_Length(n), vDSP_Length(p))
         return
     }
     #endif
@@ -38,7 +38,7 @@ func jliDSP_vadd(_ a: UnsafePointer<Float>, _ sa: Int, _ b: UnsafePointer<Float>
                _ out: UnsafeMutablePointer<Float>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vadd(a, sa, b, sb, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vadd(a, vDSP_Stride(sa), b, vDSP_Stride(sb), out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif
@@ -48,7 +48,7 @@ func jliDSP_vmul(_ a: UnsafePointer<Float>, _ sa: Int, _ b: UnsafePointer<Float>
                _ out: UnsafeMutablePointer<Float>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vmul(a, sa, b, sb, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vmul(a, vDSP_Stride(sa), b, vDSP_Stride(sb), out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif
@@ -58,7 +58,7 @@ func jliDSP_vsadd(_ a: UnsafePointer<Float>, _ sa: Int, _ b: UnsafePointer<Float
                 _ out: UnsafeMutablePointer<Float>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vsadd(a, sa, b, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vsadd(a, vDSP_Stride(sa), b, out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif
@@ -69,7 +69,7 @@ func jliDSP_vsmul(_ a: UnsafePointer<Float>, _ sa: Int, _ b: UnsafePointer<Float
                 _ out: UnsafeMutablePointer<Float>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vsmul(a, sa, b, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vsmul(a, vDSP_Stride(sa), b, out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif
@@ -80,7 +80,7 @@ func jliDSP_vsma(_ a: UnsafePointer<Float>, _ sa: Int, _ scalar: UnsafePointer<F
                _ b: UnsafePointer<Float>, _ sb: Int, _ out: UnsafeMutablePointer<Float>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vsma(a, sa, scalar, b, sb, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vsma(a, vDSP_Stride(sa), scalar, b, vDSP_Stride(sb), out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif
@@ -91,7 +91,7 @@ func jliDSP_vclip(_ a: UnsafePointer<Float>, _ sa: Int, _ lo: UnsafePointer<Floa
                 _ out: UnsafeMutablePointer<Float>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vclip(a, sa, lo, hi, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vclip(a, vDSP_Stride(sa), lo, hi, out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif
@@ -101,7 +101,7 @@ func jliDSP_vclip(_ a: UnsafePointer<Float>, _ sa: Int, _ lo: UnsafePointer<Floa
 func jliDSP_vfltu8(_ a: UnsafePointer<UInt8>, _ sa: Int, _ out: UnsafeMutablePointer<Float>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vfltu8(a, sa, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vfltu8(a, vDSP_Stride(sa), out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif
@@ -110,7 +110,7 @@ func jliDSP_vfltu8(_ a: UnsafePointer<UInt8>, _ sa: Int, _ out: UnsafeMutablePoi
 func jliDSP_vflt32(_ a: UnsafePointer<Int32>, _ sa: Int, _ out: UnsafeMutablePointer<Float>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vflt32(a, sa, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vflt32(a, vDSP_Stride(sa), out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif
@@ -119,7 +119,7 @@ func jliDSP_vflt32(_ a: UnsafePointer<Int32>, _ sa: Int, _ out: UnsafeMutablePoi
 func jliDSP_vfix32(_ a: UnsafePointer<Float>, _ sa: Int, _ out: UnsafeMutablePointer<Int32>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vfix32(a, sa, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vfix32(a, vDSP_Stride(sa), out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif
@@ -128,7 +128,7 @@ func jliDSP_vfix32(_ a: UnsafePointer<Float>, _ sa: Int, _ out: UnsafeMutablePoi
 func jliDSP_vfixru8(_ a: UnsafePointer<Float>, _ sa: Int, _ out: UnsafeMutablePointer<UInt8>, _ so: Int, _ n: Int) {
     #if canImport(Accelerate)
     if NativeDSP.usesAccelerate {
-        Accelerate.vDSP_vfixru8(a, sa, out, so, vDSP_Length(n))
+        Accelerate.vDSP_vfixru8(a, vDSP_Stride(sa), out, vDSP_Stride(so), vDSP_Length(n))
         return
     }
     #endif

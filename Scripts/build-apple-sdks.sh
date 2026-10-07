@@ -8,6 +8,7 @@ cd "$repo_root"
 swift --version
 xcodebuild -version
 while read -r sdk triple; do
+    echo "Compiling $triple with $sdk SDK $(xcrun --sdk "$sdk" --show-sdk-version)"
     sdk_path="$(xcrun --sdk "$sdk" --show-sdk-path)"
     swift build --target SwiftJLI --configuration release --jobs 4 \
         --triple "$triple" --sdk "$sdk_path" \

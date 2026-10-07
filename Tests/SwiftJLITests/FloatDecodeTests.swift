@@ -71,6 +71,6 @@ import Testing
             _ = try destination.write { $0.initializeMemory(as: UInt8.self, repeating: 0) }
         }
         #expect(SwiftJLI.Decoder.capabilities.sampleTypes.contains(.floatingPoint))
-        #expect(!SwiftJLI.Encoder.capabilities.sampleTypes.contains(.floatingPoint))
+        #expect(SwiftJLI.Encoder.capabilities.sampleTypes.contains(.floatingPoint))
     }
 }

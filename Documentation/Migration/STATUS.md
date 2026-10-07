@@ -95,7 +95,7 @@ Evidence:
 - Linux ARM64 / Swift 6.4: **303 tests in 36 suites passed**, including native/public equality, padded ownership, raw float units, rejected interpretations and preview workspace limits.
 - Local macOS ARM64 / Swift 6.4: new profile matrices passed on scalar and Accelerate in the executable harness; ASan and TSan both exited 0. All 71 pinned native identity records remain identical.
 - The independent DCT oracle now covers **48 profiles in each direction**, adding both adaptive paths for 8-bit greyscale/RGB. Maximum difference remains **2 sample units** against libjpeg-turbo 3.2.0. The 12-bit profiles retain their non-adaptive quantisation behaviour.
-- CI [37645149130](https://github.com/raster-labs/SwiftJLI/actions/runs/37645149130) passed all seven jobs at `bcd1201`, including the full macOS 26 / Swift 6.2 test, ASan and TSan suite. This closes the earlier empty-array scratch race check at that revision. The new output/adaptive changes still require their own head CI.
+- CI [37645149130](https://github.com/raster-labs/SwiftJLI/actions/runs/37645149130) passed all seven jobs at `bcd1201`, including the full macOS 26 / Apple Swift 6.3.3 test, ASan and TSan suite (the old job label incorrectly said 6.2). This closes the earlier empty-array scratch race check at that revision. The new output/adaptive changes still require their own head CI.
 - `Scripts/build-apple-sdks.sh` adds release compilation of the library for iOS/tvOS/watchOS/visionOS devices and ARM64 simulators, plus Intel macOS. Its syntax is checked locally; execution requires full Xcode and is a new CI gate, not yet passed evidence. macOS CI also gains release build/tests. These compile gates do not replace device/runtime coverage.
 
 ## Shared DCT storage mutation evidence
@@ -115,9 +115,18 @@ Swift Testing's total issue count and rendered message counts are recorded separ
 python3 Scripts/verify-storage-mutations.py --docker-image swift:6.4-noble --output-dir /tmp/swiftjli-storage-mutations
 ```
 
+## Explicit Float32 input and SDK correction
+
+The public DCT encoder now accepts normalised little-endian Float32 greyscale/RGB only with `floatInputPolicy: .normalisedClampedToUInt8` in explicit lossy mode. Finite samples clamp to [0,1], scale by 255 and round to nearest/ties-away; NaN and infinities reject. Quantisation is fused into the borrowed source reader, with no intermediate UInt8 image. `OperationReport.sampleConversion` records the value mapping independently from copy accounting. Integer input rejects the float-specific policy. The emitted JPEG remains 8-bit; raw Float32 decoder output must not be mistaken for normalised encoder input.
+
+- Linux ARM64 / Swift 6.4: **305 tests in 37 suites passed**. New tests compare encoded bytes against independently specified integer quantisation results at endpoints, half-way values and out-of-range clamps; NaN-filled padding verifies row addressing. Ordinary lossy/default lossless policies and non-finite samples reject.
+- Local macOS ARM64 / Swift 6.4: Float32 input matrices passed scalar/Accelerate, plus ASan and TSan executable harnesses (exit 0). All 71 native identity records still match the executed predecessor file byte-for-byte. The independent public consumer also passed.
+- SDK run [37649435202](https://github.com/raster-labs/SwiftJLI/actions/runs/37649435202) completed the first five SDK builds, then failed at the watchOS arm64_32 target because imported `vDSP_Stride` is Int64 while Swift Int is 32-bit. Every Accelerate wrapper now converts strides explicitly. The SDK script prints each target and SDK version; the correction requires another CI run. Later SDK targets were not reached.
+- The macOS runner logs identify **Apple Swift 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101), Xcode 26.6 (17F113)**, including the earlier successful bcd1201 run. The previous 6.2 job name was inaccurate; workflow naming and the latest evidence above now reflect the actual toolchain. Linux CI independently covers Swift 6.2 and 6.4. This is not proof of Apple Swift 6.2 runtime qualification.
+
 ## Remaining migration requirements
 
-- Qualify and expose remaining XYB/ICC interpretation and explicit floating-point input/additional output semantics. Raw greyscale Float32, adaptive fields and decoder scale controls are now public; unsupported combinations remain explicit errors.
+- Qualify and expose remaining XYB/ICC interpretation and additional output semantics. Normalised Float32 input, raw greyscale Float32 output, adaptive fields and decoder scale controls are now public; unsupported combinations remain explicit errors.
 - Qualify public DCT backend performance and resource instrumentation. Backend selection and direct storage are now implemented; full platform qualification remains open.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.

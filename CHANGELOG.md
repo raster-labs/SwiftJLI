@@ -7,11 +7,13 @@
 - Add Linux scalar DSP and ICC profile hashing; retain the Apple comparator conditionally.
 - Add public API, layout, malformed-input and precision/predictor tests plus a repeatable independent libjpeg-turbo oracle.
 - Restore the predecessor regression/contract/container corpus and benchmark identity matrix; add explicit bounded-error SOF3 point-transform support.
-- Fix concurrent decode scratch initialisation exposed by macOS TSan; its CI requalification is pending.
+- Fix concurrent decode scratch initialisation exposed by macOS TSan; CI requalification passed at bcd1201.
 - Add public sequential/progressive 8/12-bit DCT controls, direct borrowed storage, explicit scalar/Accelerate selection, bounded kernel cancellation and progressive-input validation.
 - Add public reduced-scale and raw greyscale Float32 decode, adaptive trellis/jpegli controls, profile validation and full-frame preview workspace admission.
 - Add Apple device/simulator/Intel SDK compilation and macOS release CI gates; runtime qualification remains separate.
-- Advanced colour/float input profiles, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
+- Add opt-in normalised Float32 encoding with fused clamping/quantisation, non-finite rejection and explicit conversion reporting.
+- Convert Accelerate strides explicitly for SDKs that import vDSP_Stride as Int64.
+- Advanced colour/ICC profiles, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
 
 ## 1.1.0-dev.1 — Swift 6.4 upgrade, 2026-09-19 (unreleased)
 
