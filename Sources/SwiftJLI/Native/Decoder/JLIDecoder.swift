@@ -64,6 +64,11 @@ struct JLIDecoder: Sendable {
         // Step 1: Parse JPEG markers
         var markerReader = MarkerReader(data: data)
         let parsed = try markerReader.parse()
+        return try decodeParsed(parsed, configuration: configuration)
+    }
+
+    func decodeParsed(_ parsed: ParsedJPEG, configuration: JLIDecoderConfiguration = .default,
+                      borrowedDestination: BorrowedSampleDestination? = nil) throws -> JLIImage {
         let frame = parsed.frameInfo
 
         guard !parsed.scans.isEmpty else {
@@ -173,6 +178,7 @@ struct JLIDecoder: Sendable {
             }
 
             for mcuY in 0..<mcuCountV {
+                try NativeOperation.check()
                 for mcuX in 0..<mcuCountH {
                     // Every `restartInterval` MCUs, skip the RST0–RST7 marker
                     // (cycled) and reset DC predictors.
@@ -200,7 +206,11 @@ struct JLIDecoder: Sendable {
                                 let dcDiff = try HuffmanDecoder.decodeDC(
                                     from: &bitReader, table: dcTable
                                 )
-                                prevDC[compIdx] += dcDiff
+                                let dc = Int64(prevDC[compIdx]) + Int64(dcDiff)
+                                guard abs(dc) <= (1 << (frame.precision + 2)) else {
+                                    throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
+                                }
+                                prevDC[compIdx] = Int32(dc)
 
                                 try HuffmanDecoder.decodeAC(
                                     from: &bitReader, table: acTable, into: &acBuf
@@ -267,8 +277,9 @@ struct JLIDecoder: Sendable {
                 let maxV = Float((1 << frame.precision) - 1)
                 let dcStep = Float(quantTables[comp.quantTableIndex][0])  // DC quant (natural order)
                 var small = [Float](repeating: 0, count: blocksH * blocksV)
-                componentZigzag[compIdx].withUnsafeBufferPointer { src in
+                try componentZigzag[compIdx].withUnsafeBufferPointer { src in
                     for b in 0..<blockCount {
+                        if b % 1024 == 0 { try NativeOperation.check() }
                         let dc = Float(src[b * 64]) * dcStep
                         small[b] = min(max(dc * (1.0 / 8.0) + center, 0), maxV)
                     }
@@ -295,11 +306,12 @@ struct JLIDecoder: Sendable {
             // passes (the contraction reads natural-order coefficients).
             if scale == 2 || scale == 4 {
                 let zigzag = Quantization.zigzagOrder
-                componentZigzag[compIdx].withUnsafeBufferPointer { srcBuf in
-                    natural.withUnsafeMutableBufferPointer { dstBuf in
+                try componentZigzag[compIdx].withUnsafeBufferPointer { srcBuf in
+                    try natural.withUnsafeMutableBufferPointer { dstBuf in
                         let src = srcBuf.baseAddress!
                         let dst = dstBuf.baseAddress!
                         for b in 0..<blockCount {
+                            if b % 1024 == 0 { try NativeOperation.check() }
                             let base = b * 64
                             for i in 0..<64 { dst[base + zigzag[i]] = src[base + i] }
                         }
@@ -314,11 +326,12 @@ struct JLIDecoder: Sendable {
                 var plane = [Float](repeating: 0, count: pw * ph)
                 let center = Float(1 << (frame.precision - 1))
                 let maxV = Float((1 << frame.precision) - 1)
-                dctBuf.withUnsafeBufferPointer { fb in
-                    plane.withUnsafeMutableBufferPointer { pb in
+                try dctBuf.withUnsafeBufferPointer { fb in
+                    try plane.withUnsafeMutableBufferPointer { pb in
                         let f = fb.baseAddress!
                         var tmp = [Float](repeating: 0, count: bs * 8)   // tmp[J*8+u]
                         for b in 0..<blockCount {
+                            if b % 1024 == 0 { try NativeOperation.check() }
                             let base = b * 64
                             // tmp[J,u] = Σ_v A[J,v]·F[v*8+u]
                             for j in 0..<bs {
@@ -371,20 +384,23 @@ struct JLIDecoder: Sendable {
             }
             let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
                              max(1, blockCount / JLIDecoder.reconstructMinBlocksPerChunk))
-            componentZigzag[compIdx].withUnsafeBufferPointer { zzb in
-                qtF.withUnsafeBufferPointer { qtb in
-                    pixelsBuf.withUnsafeMutableBufferPointer { pxb in
-                        idctScratch.withUnsafeMutableBufferPointer { scb in
-                            plane.withUnsafeMutableBufferPointer { plb in
+            try componentZigzag[compIdx].withUnsafeBufferPointer { zzb in
+                try qtF.withUnsafeBufferPointer { qtb in
+                    try pixelsBuf.withUnsafeMutableBufferPointer { pxb in
+                        try idctScratch.withUnsafeMutableBufferPointer { scb in
+                            try plane.withUnsafeMutableBufferPointer { plb in
                                 let ptrs = ReconstructPtrs(
                                     zz: zzb.baseAddress!, qt: qtb.baseAddress!,
                                     px: pxb.baseAddress!, scratch: scb.baseAddress!,
                                     plane: plb.baseAddress!)
                                 if chunks <= 1 {
-                                    JLIDecoder.reconstructBlocks(
-                                        0..<blockCount, ptrs: ptrs, blocksH: blocksH,
-                                        compWidth: compWidth, compHeight: compHeight,
-                                        precision: frame.precision)
+                                    for base in stride(from: 0, to: blockCount, by: 1024) {
+                                        try NativeOperation.check()
+                                        JLIDecoder.reconstructBlocks(
+                                            base..<min(base + 1024, blockCount), ptrs: ptrs, blocksH: blocksH,
+                                            compWidth: compWidth, compHeight: compHeight,
+                                            precision: frame.precision)
+                                    }
                                 } else {
                                     let span = (blockCount + chunks - 1) / chunks
                                     DispatchQueue.concurrentPerform(iterations: chunks) { c in
@@ -409,6 +425,18 @@ struct JLIDecoder: Sendable {
         // image dimensions reduced by `scale` (= full dims when scale == 1).
         let outW = (frame.width + scale - 1) / scale
         let outH = (frame.height + scale - 1) / scale
+        if let borrowedDestination {
+            guard configuration.outputPixelFormat == nil, configuration.outputColorModel == nil,
+                  parsed.iccProfile != XYBICCProfile.data else {
+                throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT output")
+            }
+            try SharedDCTStorage.write(componentPlanes, width: outW, height: outH,
+                precision: frame.precision, into: borrowedDestination)
+            return try JLIImage(geometryOnlyWidth: outW, height: outH,
+                pixelFormat: frame.precision > 8 ? .uint16 : .uint8,
+                colorModel: numComponents == 1 ? .grayscale : .rgb,
+                iccProfile: parsed.iccProfile, exif: parsed.exif)
+        }
         let outputData: [UInt8]
         let outputColorModel: JLIColorModel
         // 12-bit (grayscale or color) decodes to a uint16 buffer (little-endian
@@ -484,13 +512,13 @@ struct JLIDecoder: Sendable {
             let yPlane = componentPlanes[0]
 
             // Upsample Cb and Cr to full resolution
-            let cbUp = ChromaSampling.upsample(
+            let cbUp = try ChromaSampling.upsample(
                 componentPlanes[1].data,
                 width: componentPlanes[1].width,
                 height: componentPlanes[1].height,
                 targetWidth: outW, targetHeight: outH
             )
-            let crUp = ChromaSampling.upsample(
+            let crUp = try ChromaSampling.upsample(
                 componentPlanes[2].data,
                 width: componentPlanes[2].width,
                 height: componentPlanes[2].height,

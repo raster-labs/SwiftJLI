@@ -127,9 +127,9 @@ struct ColorSpaceTests {
     // MARK: - Chroma Sampling
 
     @Test("4:4:4 sampling returns original dimensions")
-    func sampling444() {
+    func sampling444() throws {
         let plane = [Float](repeating: 1, count: 16)
-        let result = ChromaSampling.downsample(plane, width: 4, height: 4,
+        let result = try ChromaSampling.downsample(plane, width: 4, height: 4,
                                                 horizontally: false, vertically: false)
         #expect(result.width == 4)
         #expect(result.height == 4)
@@ -137,9 +137,9 @@ struct ColorSpaceTests {
     }
 
     @Test("Horizontal downsampling halves width")
-    func horizontalDownsample() {
+    func horizontalDownsample() throws {
         let plane = [Float](repeating: 100, count: 8)
-        let result = ChromaSampling.downsample(plane, width: 4, height: 2,
+        let result = try ChromaSampling.downsample(plane, width: 4, height: 2,
                                                 horizontally: true, vertically: false)
         #expect(result.width == 2)
         #expect(result.height == 2)
@@ -147,13 +147,13 @@ struct ColorSpaceTests {
     }
 
     @Test("Downsampling and upsampling preserves dimensions")
-    func downsampleUpsampleDimensions() {
+    func downsampleUpsampleDimensions() throws {
         let width = 8
         let height = 8
         let plane = [Float](repeating: 128, count: width * height)
-        let ds = ChromaSampling.downsample(plane, width: width, height: height,
+        let ds = try ChromaSampling.downsample(plane, width: width, height: height,
                                             horizontally: true, vertically: true)
-        let us = ChromaSampling.upsample(ds.data, width: ds.width, height: ds.height,
+        let us = try ChromaSampling.upsample(ds.data, width: ds.width, height: ds.height,
                                           targetWidth: width, targetHeight: height)
         #expect(us.count == width * height)
     }

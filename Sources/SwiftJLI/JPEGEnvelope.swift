@@ -9,6 +9,8 @@ enum JPEGEnvelope {
         func malformed() -> CodecError { .init(.malformedInput, "Invalid JPEG marker envelope.") }
         guard b.count >= 4, b[0] == 255, b[1] == 216 else { throw malformed() }
         var p = 2, sawFrame = false, sawScan = false, metadata = 0, iccBytes = 0
+        var frameMarker: UInt8 = 0, scanCount = 0
+        var adobeTransform: UInt8?
         var iccCount: Int?, iccSequences = Set<Int>(), sawExif = false
         let iccID = Array("ICC_PROFILE\0".utf8), exifID: [UInt8] = [69,120,105,102,0,0]
         while p < b.count {
@@ -23,6 +25,9 @@ enum JPEGEnvelope {
             if marker == 217 {
                 guard sawFrame, sawScan, p == b.count,
                       iccCount == nil || iccSequences.count == iccCount else { throw malformed() }
+                if let adobeTransform, (frameMarker == 0xC3 ? adobeTransform != 0 : adobeTransform != 1) {
+                    throw CodecError(.unsupportedFeature, "JPEG colour transform is unsupported for this frame.")
+                }
                 return
             }
             guard marker != 0, marker != 216, !(208...215).contains(marker), p + 2 <= b.count else { throw malformed() }
@@ -31,10 +36,8 @@ enum JPEGEnvelope {
             let end = p + length, start = p + 2
             switch marker {
             case 0xC0, 0xC1, 0xC2, 0xC3:
-                guard marker == 0xC3 else {
-                    throw CodecError(.unsupportedFeature, "Common decode currently supports SOF3 JPEG.")
-                }
                 guard !sawFrame, length >= 8 else { throw malformed() }
+                guard marker != 0xC0 || b[start] == 8 else { throw malformed() }
                 let nc = Int(b[start + 5])
                 guard nc > 0, length == 8 + nc * 3 else { throw malformed() }
                 let height = Int(b[start + 1]) * 256 + Int(b[start + 2])
@@ -48,18 +51,22 @@ enum JPEGEnvelope {
                 for c in 0..<nc {
                     guard ids.insert(b[start + 6 + c * 3]).inserted else { throw malformed() }
                 }
-                sawFrame = true
+                sawFrame = true; frameMarker = marker
             case 0xDA:
-                guard !sawScan else {
-                    throw CodecError(.unsupportedFeature, "Multiple lossless scans are not yet supported.")
+                scanCount += 1
+                guard scanCount <= 128 else { throw CodecError(.resourceLimitExceeded, "JPEG scan limit exceeded.") }
+                guard !sawScan || frameMarker == 0xC2 else {
+                    throw CodecError(.unsupportedFeature, "Multiple sequential scans are unsupported.")
                 }
                 guard sawFrame, length >= 6 else { throw malformed() }
                 let nc = Int(b[start])
                 guard nc > 0, length == 6 + nc * 2 else { throw malformed() }
                 sawScan = true
             case 0xDD:
+                guard !sawScan else { throw CodecError(.unsupportedFeature, "Changing restart intervals between scans is unsupported.") }
                 guard length == 4 else { throw malformed() }
             case 0xDB:
+                guard !sawScan else { throw CodecError(.unsupportedFeature, "Changing quantisation tables between scans is unsupported.") }
                 var q = start
                 while q < end {
                     let precision = b[q] >> 4
@@ -106,7 +113,14 @@ enum JPEGEnvelope {
                     guard iccBytes <= limits.maximumICCBytes else {
                         throw CodecError(.resourceLimitExceeded, "JPEG ICC limit exceeded.")
                     }
-                } else if marker != 0xE0 && marker != 0xEE {
+                } else if marker == 0xEE {
+                    guard end - start == 12, b[start..<(start + 5)].elementsEqual(Array("Adobe".utf8)),
+                          b[end - 1] == 1 || b[end - 1] == 0 else {
+                        throw CodecError(.unsupportedFeature, "Unsupported Adobe colour transform.")
+                    }
+                    guard adobeTransform == nil else { throw malformed() }
+                    adobeTransform = b[end - 1]
+                } else if marker != 0xE0 {
                     throw CodecError(.unsupportedFeature, "JPEG contains metadata the adapter cannot preserve.")
                 }
             default:

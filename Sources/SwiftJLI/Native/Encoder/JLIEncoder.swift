@@ -68,7 +68,8 @@ struct JLIEncoder: Sendable {
     /// - Throws: ``JLIError`` if encoding fails or the input is invalid.
     func encode(
         _ image: JLIImage,
-        configuration: JLIEncoderConfiguration = .default
+        configuration: JLIEncoderConfiguration = .default,
+        borrowedSource: BorrowedSamplePlane? = nil
     ) throws -> [UInt8] {
         try validateConfiguration(configuration)
 
@@ -176,7 +177,11 @@ struct JLIEncoder: Sendable {
         var cbPlane: [Float]
         var crPlane: [Float]
 
-        if isGrayscale {
+        if let borrowedSource {
+            let planes = try SharedDCTStorage.read(borrowedSource, width: width, height: height,
+                components: image.colorModel.componentCount, precision: precision)
+            yPlane = planes.y; cbPlane = planes.cb; crPlane = planes.cr
+        } else if isGrayscale {
             if image.colorModel == .grayscale {
                 let pixelCount = width * height
                 var y = [Float](repeating: 0, count: pixelCount)
@@ -243,13 +248,13 @@ struct JLIEncoder: Sendable {
         var crWidth = width, crHeight = height
 
         if !isGrayscale && (hFactor > 1 || vFactor > 1) {
-            let cbDS = ChromaSampling.downsample(
+            let cbDS = try ChromaSampling.downsample(
                 cbPlane, width: width, height: height,
                 horizontally: hFactor > 1, vertically: vFactor > 1
             )
             cbPlane = cbDS.data; cbWidth = cbDS.width; cbHeight = cbDS.height
 
-            let crDS = ChromaSampling.downsample(
+            let crDS = try ChromaSampling.downsample(
                 crPlane, width: width, height: height,
                 horizontally: hFactor > 1, vertically: vFactor > 1
             )
@@ -333,7 +338,7 @@ struct JLIEncoder: Sendable {
                                 lumaBlocksH: yBlocksPerRow, lumaBlocksV: yBlocksPerCol) : nil
         }
 
-        let yQuant = quantizePlane(
+        let yQuant = try quantizePlane(
             yPlane, planeWidth: width, planeHeight: height,
             blocksH: yBlocksPerRow, blocksV: yBlocksPerCol,
             invQuant: lumInv, levelShift: levelShift, scratch: &dctScratch,
@@ -346,14 +351,14 @@ struct JLIEncoder: Sendable {
         if isGrayscale {
             cbQuant = []; crQuant = []
         } else {
-            cbQuant = quantizePlane(
+            cbQuant = try quantizePlane(
                 cbPlane, planeWidth: cbWidth, planeHeight: cbHeight,
                 blocksH: mcuCountH, blocksV: mcuCountV,
                 invQuant: chromInv, levelShift: levelShift, scratch: &dctScratch,
                 rdo: jpegliAQ ? nil : chrRDO,
                 jpegli: aqParams(1)
             )
-            crQuant = quantizePlane(
+            crQuant = try quantizePlane(
                 crPlane, planeWidth: crWidth, planeHeight: crHeight,
                 blocksH: mcuCountH, blocksV: mcuCountV,
                 invQuant: chromInv, levelShift: levelShift, scratch: &dctScratch,
@@ -407,7 +412,7 @@ struct JLIEncoder: Sendable {
             if configuration.restartInterval > 0 {
                 mw.writeDRI(interval: configuration.restartInterval)
             }
-            for scan in prog.build(mode: configuration.progressiveMode) {
+            for scan in try prog.build(mode: configuration.progressiveMode) {
                 if !scan.dht.isEmpty { mw.writeDHT(tables: scan.dht) }
                 mw.writeSOS(components: scan.sosComponents,
                             spectralStart: scan.ss, spectralEnd: scan.se,
@@ -439,6 +444,7 @@ struct JLIEncoder: Sendable {
             // parallelized separately below.
             var countMCU = 0
             for mcuY in 0..<mcuCountV {
+                try NativeOperation.check()
                 for mcuX in 0..<mcuCountH {
                     if configuration.restartInterval > 0 && countMCU > 0
                         && countMCU % configuration.restartInterval == 0 {
@@ -467,11 +473,11 @@ struct JLIEncoder: Sendable {
 
             // AC counting: order-independent, so count over flat block ranges in
             // parallel and sum — the same multiset of blocks the emit walk visits.
-            let acLumFreq = JLIEncoder.parallelACFreqs(yQuant, blockCount: yBlockCount)
+            let acLumFreq = try JLIEncoder.parallelACFreqs(yQuant, blockCount: yBlockCount)
             var acChrFreq = [Int](repeating: 0, count: 256)
             if !isGrayscale {
-                let cbF = JLIEncoder.parallelACFreqs(cbQuant, blockCount: cBlockCount)
-                let crF = JLIEncoder.parallelACFreqs(crQuant, blockCount: cBlockCount)
+                let cbF = try JLIEncoder.parallelACFreqs(cbQuant, blockCount: cBlockCount)
+                let crF = try JLIEncoder.parallelACFreqs(crQuant, blockCount: cBlockCount)
                 for i in 0..<256 { acChrFreq[i] = cbF[i] + crF[i] }
             }
 
@@ -502,6 +508,7 @@ struct JLIEncoder: Sendable {
         var restartIndex = 0
 
         for mcuY in 0..<mcuCountV {
+            try NativeOperation.check()
             for mcuX in 0..<mcuCountH {
                 // Emit RSTn every `restartInterval` MCUs and reset DC predictors —
                 // the exact inverse of the decoder's restart handling.
@@ -947,14 +954,14 @@ struct JLIEncoder: Sendable {
         func rdo(_ table: [Int], _ ac: HuffmanTable) -> RDOContext? {
             useRDO ? RDOContext(quantTable: table, acTable: ac, lambda: JLIEncoder.rdoLambdaK * meanACSq(table)) : nil
         }
-        let qx = quantizePlane(xP, planeWidth: w, planeHeight: h, blocksH: blocksH, blocksV: blocksV,
+        let qx = try quantizePlane(xP, planeWidth: w, planeHeight: h, blocksH: blocksH, blocksV: blocksV,
                                invQuant: qt[0].map { 1.0 / Float($0) }, levelShift: levelShift,
                                scratch: &scratch, rdo: rdo(qt[0], StandardHuffmanTables.acChrominance))
-        let qy = quantizePlane(yP, planeWidth: w, planeHeight: h, blocksH: blocksH, blocksV: blocksV,
+        let qy = try quantizePlane(yP, planeWidth: w, planeHeight: h, blocksH: blocksH, blocksV: blocksV,
                                invQuant: qt[1].map { 1.0 / Float($0) }, levelShift: levelShift,
                                scratch: &scratch, rdo: rdo(qt[1], StandardHuffmanTables.acLuminance),
                                adaptiveField: configuration.adaptiveQuantField)
-        let qb = quantizePlane(bP, planeWidth: w, planeHeight: h, blocksH: blocksH, blocksV: blocksV,
+        let qb = try quantizePlane(bP, planeWidth: w, planeHeight: h, blocksH: blocksH, blocksV: blocksV,
                                invQuant: qt[2].map { 1.0 / Float($0) }, levelShift: levelShift,
                                scratch: &scratch, rdo: rdo(qt[2], StandardHuffmanTables.acChrominance))
         let planes = [qx, qy, qb]
@@ -975,7 +982,7 @@ struct JLIEncoder: Sendable {
             }
             var acF = [[Int]](repeating: [Int](repeating: 0, count: 256), count: 2)
             for c in 0..<3 {
-                let f = JLIEncoder.parallelACFreqs(planes[c], blockCount: blockCount)
+                let f = try JLIEncoder.parallelACFreqs(planes[c], blockCount: blockCount)
                 for k in 0..<256 { acF[huffSet[c]][k] += f[k] }
             }
             dcTable = [HuffmanTableBuilder.build(frequencies: dcF[0], fallback: StandardHuffmanTables.dcLuminance),
@@ -1075,7 +1082,7 @@ struct JLIEncoder: Sendable {
         invQuant: [Float], levelShift: Float, scratch: inout [Float],
         rdo: RDOContext? = nil, adaptiveField: Bool = false,
         jpegli: JpegliAQ? = nil
-    ) -> [Int32] {
+    ) throws -> [Int32] {
         let n = blocksH * blocksV
         // These three n·64 buffers are each fully overwritten downstream
         // (extract writes every block element edge-clamped; the DCT and quantize
@@ -1083,15 +1090,24 @@ struct JLIEncoder: Sendable {
         // the zero-fill was the dominant `bzero` cost in the encode profile. The
         // round-trip + cross-codec suite verifies nothing is left unwritten.
         var blockBuf = [Float](unsafeUninitializedCapacity: n * 64) { _, c in c = n * 64 }
-        extractAllBlocksLevelShifted(
+        try extractAllBlocksLevelShifted(
             plane, planeWidth: planeWidth, planeHeight: planeHeight,
             blocksH: blocksH, blocksV: blocksV, levelShift: levelShift, into: &blockBuf
         )
 
         var dctBuf = [Float](unsafeUninitializedCapacity: n * 64) { _, c in c = n * 64 }
-        AccelerateDSP.forwardDCTBatch(
-            blockBuf, into: &dctBuf, scratch: &scratch, blockCount: n
-        )
+        if NativeOperation.current != nil {
+            for base in stride(from: 0, to: n, by: 512) {
+                try NativeOperation.check()
+                let end = min(base + 512, n), range = (base * 64)..<(end * 64)
+                var output = [Float](repeating: 0, count: range.count)
+                var work = output
+                AccelerateDSP.forwardDCTBatch(Array(blockBuf[range]), into: &output, scratch: &work, blockCount: end - base)
+                dctBuf.replaceSubrange(range, with: output)
+            }
+        } else {
+            AccelerateDSP.forwardDCTBatch(blockBuf, into: &dctBuf, scratch: &scratch, blockCount: n)
+        }
 
         // jpegli adaptive path: per-block masking field + per-coefficient
         // zero-bias (dead-zone) instead of trellis. Opt-in (WS-A / 0.3.0).
@@ -1103,16 +1119,24 @@ struct JLIEncoder: Sendable {
         }
 
         var quant = [Int32](unsafeUninitializedCapacity: n * 64) { _, c in c = n * 64 }
-        AccelerateDSP.quantizeBatch(
-            dctBuf, invTable: invQuant, into: &quant, blockCount: n
-        )
+        if NativeOperation.current != nil {
+            for base in stride(from: 0, to: n, by: 512) {
+                try NativeOperation.check()
+                let end = min(base + 512, n), range = (base * 64)..<(end * 64)
+                var output = [Int32](repeating: 0, count: range.count)
+                AccelerateDSP.quantizeBatch(Array(dctBuf[range]), invTable: invQuant, into: &output, blockCount: end - base)
+                quant.replaceSubrange(range, with: output)
+            }
+        } else {
+            AccelerateDSP.quantizeBatch(dctBuf, invTable: invQuant, into: &quant, blockCount: n)
+        }
         if var rdo = rdo {
             // Adaptive quant is luma-only (like jpegli) — modulating chroma λ
             // hurts subsampled (4:2:0) output. The caller gates `adaptiveField`.
             if adaptiveField {
                 rdo.lambdaField = adaptiveLambdaField(dctBuf: dctBuf, blockCount: n)
             }
-            applyTrellisQuantization(dctBuf: dctBuf, quant: &quant, blockCount: n, rdo: rdo)
+            try applyTrellisQuantization(dctBuf: dctBuf, quant: &quant, blockCount: n, rdo: rdo)
         }
         return quant
     }
@@ -1235,18 +1259,21 @@ struct JLIEncoder: Sendable {
     /// AC count m; high-entropy blocks (m large) skip the DP.
     private func applyTrellisQuantization(
         dctBuf: [Float], quant: inout [Int32], blockCount: Int, rdo: RDOContext
-    ) {
+    ) throws {
         // Partition blocks across cores when there's enough work; each worker owns
         // its scratch and writes only its disjoint quant[base...] slice, so the
         // result is byte-identical to a serial run.
         let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
                          max(1, blockCount / JLIEncoder.trellisMinBlocksPerChunk))
-        dctBuf.withUnsafeBufferPointer { dbuf in
-            quant.withUnsafeMutableBufferPointer { qbuf in
+        try dctBuf.withUnsafeBufferPointer { dbuf in
+            try quant.withUnsafeMutableBufferPointer { qbuf in
                 let dct = dbuf.baseAddress!
                 let qnt = qbuf.baseAddress!
                 if chunks <= 1 {
-                    JLIEncoder.trellisBlocks(0..<blockCount, dct: dct, quant: qnt, rdo: rdo)
+                    for base in stride(from: 0, to: blockCount, by: 256) {
+                        try NativeOperation.check()
+                        JLIEncoder.trellisBlocks(base..<min(base + 256, blockCount), dct: dct, quant: qnt, rdo: rdo)
+                    }
                     return
                 }
                 let span = (blockCount + chunks - 1) / chunks
@@ -1369,11 +1396,19 @@ struct JLIEncoder: Sendable {
     /// per-worker partials — bit-identical to a serial `countACFreqs(quant,
     /// 0..<blockCount)` since AC frequencies are order-independent. Runs serially
     /// for small inputs (see ``acCountMinBlocksPerChunk``).
-    private static func parallelACFreqs(_ quant: [Int32], blockCount: Int) -> [Int] {
+    private static func parallelACFreqs(_ quant: [Int32], blockCount: Int) throws -> [Int] {
         guard blockCount > 0 else { return [Int](repeating: 0, count: 256) }
         let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
                          max(1, blockCount / acCountMinBlocksPerChunk))
-        if chunks <= 1 { return countACFreqs(quant, blocks: 0..<blockCount) }
+        if chunks <= 1 {
+            var total = [Int](repeating: 0, count: 256)
+            for base in stride(from: 0, to: blockCount, by: 1024) {
+                try NativeOperation.check()
+                let part = countACFreqs(quant, blocks: base..<min(base + 1024, blockCount))
+                for i in 0..<256 { total[i] += part[i] }
+            }
+            return total
+        }
         let span = (blockCount + chunks - 1) / chunks
         var partials = [[Int]](repeating: [], count: chunks)
         partials.withUnsafeMutableBufferPointer { buf in
@@ -1526,9 +1561,9 @@ struct JLIEncoder: Sendable {
     private func extractAllBlocksLevelShifted(
         _ plane: [Float], planeWidth: Int, planeHeight: Int,
         blocksH: Int, blocksV: Int, levelShift: Float, into out: inout [Float]
-    ) {
-        plane.withUnsafeBufferPointer { srcBuf in
-            out.withUnsafeMutableBufferPointer { dstBuf in
+    ) throws {
+        try plane.withUnsafeBufferPointer { srcBuf in
+            try out.withUnsafeMutableBufferPointer { dstBuf in
                 let src = srcBuf.baseAddress!
                 let dst = dstBuf.baseAddress!
                 // Interior blocks (fully inside the plane — all but the last
@@ -1538,6 +1573,7 @@ struct JLIEncoder: Sendable {
                 // min() was the identity for these pixels.
                 let fullBX = planeWidth / 8, fullBY = planeHeight / 8
                 for by in 0..<fullBY {
+                    try NativeOperation.check()
                     let startY = by * 8
                     for bx in 0..<fullBX {
                         let startX = bx * 8
@@ -1554,6 +1590,7 @@ struct JLIEncoder: Sendable {
                 // Edge blocks: replicate the last row/column past plane bounds.
                 guard fullBX < blocksH || fullBY < blocksV else { return }
                 for by in 0..<blocksV {
+                    try NativeOperation.check()
                     let startY = by * 8
                     for bx in 0..<blocksH where by >= fullBY || bx >= fullBX {
                         let startX = bx * 8
@@ -1605,6 +1642,21 @@ struct JLIEncoder: Sendable {
 // MARK: - Shared-storage entry for the contract surface
 
 extension JLIEncoder {
+    func encodeSharedDCT(
+        from plane: BorrowedSamplePlane, width: Int, height: Int, precision: Int, components: Int,
+        icc: [UInt8]?, exif: [UInt8]?, configuration: JLIEncoderConfiguration
+    ) throws -> [UInt8] {
+        guard !configuration.lossless, configuration.colorSpace == .yCbCr,
+              precision == 8 || precision == 12, components == 1 || components == 3,
+              components == 1 || configuration.chromaSubsampling != .yuv400 else {
+            throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT input")
+        }
+        let image = try JLIImage(geometryOnlyWidth: width, height: height,
+            pixelFormat: precision == 8 ? .uint8 : .uint16,
+            colorModel: components == 1 ? .grayscale : .rgb, iccProfile: icc, exif: exif)
+        return try encode(image, configuration: configuration, borrowedSource: plane)
+    }
+
     /// Encode a lossless greyscale frame reading samples out of `plane`.
     /// Synchronous throughout, so the borrow cannot outlive the caller's
     /// storage lease.

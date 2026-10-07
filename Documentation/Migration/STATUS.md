@@ -47,14 +47,47 @@ python3 Scripts/verify-provenance.py --predecessor /path/to/JLISwift
 
 ## DSP backend preparation
 
-Scalar vector/matrix primitives now remain available on Apple as well as Linux. Operation context selects the scalar reference; legacy native calls retain their Accelerate default on Apple. Operation-owned native work stays on its invoking task, so Dispatch workers cannot lose the selected backend. Public lossy backend selection remains part of the unfinished adapter.
+Scalar vector/matrix primitives now remain available on Apple as well as Linux. Operation context selects the scalar reference; legacy native calls retain their Accelerate default on Apple. Operation-owned native work stays on its invoking task, so Dispatch workers cannot lose the selected backend. The subsequent DCT integration below connects this selection to the public API.
 
 A direct Accelerate comparison found half-way byte conversions use nearest-even rounding: `[0.5, 1.5, 2.5, 3.5]` becomes `[0, 2, 2, 4]`. The scalar conversion now agrees. Tests cover rounding, matrix dimensions/strides and DCT accuracy. Linux Swift 6.4 passes 291 tests in 31 suites. The local macOS build passes; scalar/Accelerate reconstruction passed the 0.001 sample-unit tolerance and the tested block's maximum coefficient difference was 0.000015258789. Re-running the native identity harness still matches all 71 predecessor records exactly.
 
+## Public DCT integration
+
+The common API now encodes/inspects/decodes SOF0/SOF1/SOF2 at unsigned 8/12-bit precision. `DCTOptions` exposes quality/distance, 4:4:4/4:2:2/4:2:0, sequential/spectral-selection/successive-approximation scripts, optimal Huffman tables, trellis quantisation and perceptual tables. Lossy mode remains explicit. DCT source reads and final writes use scoped caller storage, including padded rows. Float component/coefficient planes are workspace, with a row of colour scratch; there is no additional packed final image.
+
+Apple DCT uses selectable Accelerate; scalar remains selectable everywhere. SOF3 required-accelerated requests still fail. Parser validation covers scan/table topology, approximation order and supported colour/sampling. Chroma rows, MCU rows, DCT/reconstruction chunks and trellis chunks check cancellation. DCT admission reserves 192 bytes/source sample on encode and 128 bytes/sample plus 64×compressed bytes on decode, with the existing 1 MiB and metadata allowances. These deliberately conservative reservations are not measured peaks and can reject large images under default limits.
+
+Executed at this checkpoint:
+
+- Linux ARM64 Swift 6.4: **297 tests in 33 suites passed**, including public DCT mode/storage/backend checks, byte mutations/truncations and deadline/cancellation errors.
+- Native borrowed/packed comparison: 8/12-bit × greyscale/RGB × all three chroma settings × all three scan modes × both backends; encode bytes match, decode samples match at scales 1/2/4/8, padding remains untouched. The matrix passed on Linux and in a local macOS executable harness.
+- Independent libjpeg-turbo 3.2.0: **24 DCT profiles in both directions**, greyscale and 4:4:4 RGB, 8/12-bit, all three encoder scripts and scalar/automatic selection. Maximum Float/integer IDCT difference was **2 sample units**. `Scripts/verify-dct-interop.py` reproduces this check; subsampled colour remains covered by native identity/matrix tests rather than this oracle tolerance.
+- All **71** pinned-predecessor native identity records still match exactly on macOS ARM64.
+- Local macOS 27.0.1 / Swift 6.4 executable harness passed **AddressSanitizer and ThreadSanitizer** (both exit 0) over the identity matrix, borrowed DCT matrix and 24 tasks × 4 iterations × 4 decode scales. This is targeted native validation; it is not the full Swift Testing suite or macOS 26/Swift 6.2 qualification.
+- Diagnostic CLI: **107 process checks passed** with the expanded capability JSON. Provenance verification still accounts for every pinned principal-source/test path.
+- CI run [37639488932](https://github.com/raster-labs/SwiftJLI/actions/runs/37639488932) passed four Linux jobs, the independent consumer and contract hashes at the previous DSP checkpoint. Its macOS job was cancelled before a runner started. The DCT commit requires a fresh CI run.
+
+Reproduce the independent DCT oracle:
+
+```sh
+python3 Scripts/verify-dct-interop.py --output-dir /tmp/swiftjli-dct-oracle --scratch-path /tmp/swiftjli-dct-build
+```
+
+## Exploratory release comparison
+
+A two-package local harness compared the actual pinned predecessor with the public successor on deterministic 512×512 RGB8 and greyscale12 images. Three warm-ups, eight timed iterations and alternating implementation order produced the following upper medians. Both JPEG outputs were byte-identical for these inputs. [Harness](Benchmarks/Comparison.swift) and [raw timing/source hashes](Benchmarks/results.json) are retained.
+
+| Profile | Predecessor encode | Successor encode | Predecessor decode | Successor decode |
+| --- | ---: | ---: | ---: | ---: |
+| RGB8 / 4:2:0 | 5.146 ms | 6.624 ms | 3.562 ms | 4.177 ms |
+| Greyscale12 | 2.938 ms | 3.344 ms | 2.589 ms | 3.387 ms |
+
+The first RGB direct writer was substantially slower; vectorised byte reads/final writes reduced its measured decode median from 7.212 to 4.177 ms. A gap remains: about 14–29% for encode and 17–31% for decode on these samples. Full-frame working memory is still unmeasured. These are provisional measurements, not acceptance: background load was not isolated, and both local release build engines produced runnable binaries but hung after linking and were interrupted (exit 130). Executing the final native-engine release binary exited 0. Clean build completion, controlled broader datasets and platform-specific performance remain required.
+
 ## Remaining migration requirements
 
-- Public baseline/extended/progressive lossy mode controls and shared-storage integration; honest per-operation capabilities, colour and float semantics.
-- Wire and qualify public lossy backend selection and performance; scalar/Accelerate kernel dispatch is now implemented internally, with the public SOF3 path still truthfully advertising scalar only.
+- Qualify and expose remaining advanced profiles: XYB/ICC interpretation, explicit float semantics, advanced adaptive fields and decoder output/scale controls. The common adapter currently rejects unsupported profiles.
+- Qualify public DCT backend performance and resource instrumentation. Backend selection and direct storage are now implemented; full platform qualification remains open.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.
 - Measure memory/copy instrumentation and release performance against the pinned predecessor; qualify the shared-storage cross-codec extension.

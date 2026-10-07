@@ -32,7 +32,7 @@ enum ChromaSampling {
     ///   - vertically: Whether to downsample vertically (halve height).
     /// - Returns: Downsampled plane data and new dimensions.
     static func downsample(_ plane: [Float], width: Int, height: Int,
-                           horizontally: Bool, vertically: Bool) -> (data: [Float], width: Int, height: Int) {
+                           horizontally: Bool, vertically: Bool) throws -> (data: [Float], width: Int, height: Int) {
         guard horizontally || vertically else {
             return (plane, width, height)
         }
@@ -48,11 +48,12 @@ enum ChromaSampling {
         // /4, /2 are exact power-of-two scalings, so output is byte-identical.
         // Odd-edge boxes (1×2 / 2×1 / 1×1) are handled in matching order.
         if horizontally && vertically {
-            plane.withUnsafeBufferPointer { sp in
-                result.withUnsafeMutableBufferPointer { rp in
+            try plane.withUnsafeBufferPointer { sp in
+                try result.withUnsafeMutableBufferPointer { rp in
                     let src = sp.baseAddress!, dst = rp.baseAddress!
                     let fullW = width / 2, fullH = height / 2
                     for dy in 0..<fullH {
+                        try NativeOperation.check()
                         let rA = (dy * 2) * width, rB = rA + width
                         let dRow = dy * newWidth
                         for dx in 0..<fullW {
@@ -86,6 +87,7 @@ enum ChromaSampling {
         let vStep = vertically ? 2 : 1
 
         for dy in 0..<newHeight {
+            try NativeOperation.check()
             for dx in 0..<newWidth {
                 var sum: Float = 0
                 var count: Float = 0
@@ -118,7 +120,7 @@ enum ChromaSampling {
     ///   - targetHeight: Target height after upsampling.
     /// - Returns: Upsampled plane data.
     static func upsample(_ plane: [Float], width: Int, height: Int,
-                          targetWidth: Int, targetHeight: Int) -> [Float] {
+                          targetWidth: Int, targetHeight: Int) throws -> [Float] {
         guard targetWidth != width || targetHeight != height else {
             return plane
         }
@@ -146,11 +148,11 @@ enum ChromaSampling {
         }
         // Hoist into Sendable scalars for the parallel closure.
         let th = targetHeight, tw = targetWidth, w = width, h = height, ys = yScale
-        plane.withUnsafeBufferPointer { srcBuf in
-            result.withUnsafeMutableBufferPointer { dstBuf in
-                sx0.withUnsafeBufferPointer { x0b in
-                    sx1.withUnsafeBufferPointer { x1b in
-                        fxs.withUnsafeBufferPointer { fxb in
+        try plane.withUnsafeBufferPointer { srcBuf in
+            try result.withUnsafeMutableBufferPointer { dstBuf in
+                try sx0.withUnsafeBufferPointer { x0b in
+                    try sx1.withUnsafeBufferPointer { x1b in
+                        try fxs.withUnsafeBufferPointer { fxb in
                             let ptrs = UpsamplePtrs(
                                 src: srcBuf.baseAddress!, dst: dstBuf.baseAddress!,
                                 sx0: x0b.baseAddress!, sx1: x1b.baseAddress!, fx: fxb.baseAddress!)
@@ -184,7 +186,10 @@ enum ChromaSampling {
                                     rows(s, min(s + chunkRows, th))
                                 }
                             } else {
-                                rows(0, th)
+                                for row in 0..<th {
+                                    try NativeOperation.check()
+                                    rows(row, row + 1)
+                                }
                             }
                         }
                     }

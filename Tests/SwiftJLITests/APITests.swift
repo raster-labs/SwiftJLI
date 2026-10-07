@@ -37,14 +37,14 @@ import SwiftJLI
 @Test func configurationsAndBackendRequestsRejectUnsupportedChoices() throws {
     #expect(throws: CodecError.self) { try EncoderConfiguration(mode: .nearLossless(maximumAbsoluteError: 0)) }
     #expect(try EncoderConfiguration(mode: .nearLossless(maximumAbsoluteError: 1)).mode == .nearLossless(maximumAbsoluteError: 1))
-    #expect(throws: CodecError.self) { try EncoderConfiguration(mode: .lossy) }
+    #expect(try EncoderConfiguration(mode: .lossy).mode == .lossy)
     #expect(throws: CodecError.self) {
         try SwiftJLI.Decoder(configuration: .init(codecOptions: .init(predictor: 2)))
     }
     do {
         _ = try SwiftJLI.Decoder().inspect(Data(), options: .init(executionPolicy: .required(.accelerated)))
-        Issue.record("Required acceleration is unavailable.")
-    } catch let error as CodecError { #expect(error.category == .backendUnavailable) }
+        Issue.record("Malformed input must be rejected before choosing a codec backend.")
+    } catch let error as CodecError { #expect(error.category == .malformedInput) }
     let limits = try ResourceLimits(maximumCompressedBytes: 1)
     do {
         _ = try SwiftJLI.Decoder().inspect(Data([0, 1]), options: .init(resourceLimits: limits))

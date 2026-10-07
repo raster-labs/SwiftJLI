@@ -27,7 +27,7 @@ def main():
     def cli(*values,expected=0):return run([binary,*values],expected)
     def document(r):
         d=json.loads(r.stdout);assert d['version']==version and d['minimumAppleOS']=='26.0'
-        assert d['canEncode'] is True and d['canDecode'] is True and d['canInspect'] is True and d['formats']==['JPEG (SOF3)']
+        assert d['canEncode'] is True and d['canDecode'] is True and d['canInspect'] is True and d['formats']==['JPEG (SOF0/SOF1/SOF2/SOF3)']
         return d
     try:
         root=cli('--help');assert 'USAGE:' in root.stdout and 'unavailable' in root.stdout and not root.stderr

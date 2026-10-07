@@ -6,11 +6,11 @@ import Foundation
 /// used here, so the task-local context and cancellation cannot be lost.
 struct NativeOperation: Sendable {
     @TaskLocal static var current: NativeOperation?
-    let started = ContinuousClock.now
+    let started: ContinuousClock.Instant
     let seconds: Double
     let backend: Backend
-    init(seconds: Double, backend: Backend = .scalarCPU) {
-        self.seconds = seconds; self.backend = backend
+    init(seconds: Double, backend: Backend = .scalarCPU, started: ContinuousClock.Instant = .now) {
+        self.seconds = seconds; self.backend = backend; self.started = started
     }
     static func check() throws {
         try Task.checkCancellation()
@@ -20,22 +20,39 @@ struct NativeOperation: Sendable {
     }
 }
 
-/// Adapter for the migrated SOF3 kernels. Additional native modes are retained
-/// internally while their common API storage/fidelity contracts are qualified.
+/// Common owning-storage adapter for predictive and DCT JPEG kernels.
 enum JPEGCodec {
     static let capabilities = CodecCapabilities(
-        formats: ["JPEG (SOF3)"], compressionModes: [.lossless] +
+        formats: ["JPEG (SOF0/SOF1/SOF2/SOF3)"], compressionModes: [.lossless, .lossy] +
             (1...15).map { .nearLossless(maximumAbsoluteError: (1 << $0) - 1) },
         sampleTypes: [.unsignedInteger], meaningfulPrecision: 2...16,
         layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16"],
-        availableBackends: [.scalarCPU], canInspect: true, canEncode: true, canDecode: true)
+        availableBackends: availableBackends, canInspect: true, canEncode: true, canDecode: true)
 
-    static func run<T>(limits: ResourceLimits, policy: ExecutionPolicy, _ body: () throws -> T) throws -> T {
-        try NativeOperation.$current.withValue(NativeOperation(seconds: limits.deadlineSeconds)) {
+    static var availableBackends: [Backend] {
+        #if canImport(Accelerate)
+        [.scalarCPU, .accelerated]
+        #else
+        [.scalarCPU]
+        #endif
+    }
+
+    static func selectBackend(_ policy: ExecutionPolicy, dct: Bool) throws -> Backend {
+        let accelerated = dct && availableBackends.contains(.accelerated)
+        switch policy {
+        case .scalarCPU, .preferred(.scalarCPU), .required(.scalarCPU): return .scalarCPU
+        case .required(.accelerated):
+            guard accelerated else { throw CodecError(.backendUnavailable, "Requested JPEG backend is unavailable for this operation.") }
+            return .accelerated
+        case .automatic, .preferred(.accelerated): return accelerated ? .accelerated : .scalarCPU
+        }
+    }
+
+    static func run<T>(limits: ResourceLimits, policy: ExecutionPolicy, dct: Bool = false,
+                       _ body: () throws -> T) throws -> T {
+        let backend = try selectBackend(policy, dct: dct)
+        return try NativeOperation.$current.withValue(NativeOperation(seconds: limits.deadlineSeconds, backend: backend)) {
             try NativeOperation.check()
-            if case .required(.accelerated) = policy {
-                throw CodecError(.backendUnavailable, "The SOF3 path has no accelerated backend.")
-            }
             do { return try body() }
             catch let error as JLIError {
                 switch error {
@@ -53,7 +70,7 @@ enum JPEGCodec {
     }
 
     static func fallback(_ policy: ExecutionPolicy) -> String? {
-        if case .preferred(.accelerated) = policy { return "SOF3 uses the scalar CPU backend." }
+        if case .preferred(.accelerated) = policy, NativeOperation.current?.backend == .scalarCPU { return "The accelerated backend is unavailable for this JPEG operation." }
         return nil
     }
 
@@ -64,7 +81,7 @@ enum JPEGCodec {
         guard descriptor.sampleType == .unsignedInteger, descriptor.alpha == .absent,
               grey || rgb, (2...16).contains(descriptor.meaningfulBits),
               descriptor.storageBits == 8 || descriptor.storageBits == 16 else {
-            throw CodecError(.unsupportedFeature, "SOF3 requires unsigned greyscale or RGB samples, without alpha.")
+            throw CodecError(.unsupportedFeature, "JPEG requires unsigned greyscale or RGB samples, without alpha.")
         }
         guard descriptor.width <= 65535, descriptor.height <= 65535 else {
             throw CodecError(.unsupportedFeature, "JPEG dimensions exceed the 16-bit frame fields.")
@@ -74,7 +91,7 @@ enum JPEGCodec {
               let plane = descriptor.planes.first,
               plane.components == Array(descriptor.components.indices),
               plane.sampleStride == bps, plane.pixelStride == bps * descriptor.components.count else {
-            throw CodecError(.incompatibleImageLayout, "SOF3 currently requires interleaved little-endian storage.")
+            throw CodecError(.incompatibleImageLayout, "JPEG currently requires interleaved little-endian storage.")
         }
         return plane
     }
@@ -91,9 +108,13 @@ enum JPEGCodec {
     }
 
     static func encode(_ image: Image, configuration: EncoderConfiguration, options: EncodeOptions) throws -> EncodedImage {
-        try run(limits: options.resourceLimits, policy: options.executionPolicy) {
+        try run(limits: options.resourceLimits, policy: options.executionPolicy, dct: configuration.mode == .lossy) {
             let limits = options.resourceLimits, d = image.descriptor
             let plane = try layout(d, limits: limits)
+            let isDCT = configuration.mode == .lossy
+            guard !isDCT || (d.meaningfulBits == 8 && d.storageBits == 8) || (d.meaningfulBits == 12 && d.storageBits == 16) else {
+                throw CodecError(.unsupportedFeature, "DCT encoding requires 8-bit samples or 12-bit samples in 16-bit storage.")
+            }
             let metadataBytes = try image.metadata.validate(limits: limits, additionalBytes: d.iccProfile?.count ?? 0)
             // ICC defines interpretation and is retained even when ancillary data is discarded.
             let keys = options.metadataPolicy == .preserve ? Set(image.metadata.entries.keys) : image.metadata.requiredKeys
@@ -101,20 +122,23 @@ enum JPEGCodec {
                 throw CodecError(.unsupportedFeature, "JPEG cannot preserve the requested metadata keys.")
             }
             let exif = keys.contains("Exif") ? image.metadata.entries["Exif"] : nil
+            guard !isDCT || d.iccProfile?.elementsEqual(XYBICCProfile.data) != true else {
+                throw CodecError(.unsupportedFeature, "XYB colour interpretation is not exposed by the common DCT adapter.")
+            }
             guard (exif?.count ?? 0) <= 65527, (d.iccProfile?.count ?? 0) <= 255 * 65519 else {
                 throw CodecError(.unsupportedFeature, "Metadata exceeds JPEG segment capacity.")
             }
             let samples = try checkedMultiply(checkedMultiply(d.width, d.height), d.components.count)
             let outputBound = try checkedAdd(checkedMultiply(samples, 8), checkedAdd(checkedMultiply(metadataBytes, 2), 4096))
-            let workspace = try checkedAdd(checkedMultiply(samples, 64), checkedAdd(checkedMultiply(metadataBytes, 4), 1_048_576))
+            let workspace = try checkedAdd(checkedMultiply(samples, isDCT ? 192 : 64), checkedAdd(checkedMultiply(metadataBytes, 4), 1_048_576))
             try admit(workspace: workspace, pixels: image.storage.byteCount, compressed: outputBound,
                       metadata: metadataBytes, limits: limits)
-            var cfg = JLIEncoderConfiguration.diagnosticLossless
+            var cfg = isDCT ? configuration.codecOptions.dct.native : JLIEncoderConfiguration.diagnosticLossless
             cfg.losslessPrecision = d.meaningfulBits
             cfg.losslessPointTransform = configuration.pointTransform(precision: d.meaningfulBits)
             cfg.losslessPredictor = configuration.codecOptions.predictor
             cfg.restartInterval = configuration.codecOptions.restartInterval
-            guard cfg.restartInterval == 0 || cfg.restartInterval % d.width == 0 else {
+            guard isDCT || cfg.restartInterval == 0 || cfg.restartInterval % d.width == 0 else {
                 throw CodecError(.invalidArgument, "Lossless restart interval must contain complete rows.")
             }
             try options.progress?(.init(phase: .processing, completedUnits: 0, totalUnits: d.height))
@@ -133,6 +157,12 @@ enum JPEGCodec {
                         }
                     }
                 }
+                if isDCT {
+                    return try JLIEncoder().encodeSharedDCT(
+                        from: .init(bytes: .init(rebasing: raw[plane.offset...]), rowBytes: plane.rowBytes),
+                        width: d.width, height: d.height, precision: d.meaningfulBits, components: d.components.count,
+                        icc: d.iccProfile.map { Array($0) }, exif: exif.map { Array($0) }, configuration: cfg)
+                }
                 return try JLIEncoder().encodeSharedLossless(
                     from: BorrowedSamplePlane(bytes: .init(rebasing: raw[plane.offset...]), rowBytes: plane.rowBytes),
                     width: d.width, height: d.height, precision: d.meaningfulBits,
@@ -146,10 +176,10 @@ enum JPEGCodec {
             try options.progress?(.init(phase: .completed, completedUnits: d.height, totalUnits: d.height))
             try NativeOperation.check()
             let errorBound = (1 << cfg.losslessPointTransform) - 1
-            let mode: CompressionMode = errorBound == 0 ? .lossless : .nearLossless(maximumAbsoluteError: errorBound)
+            let mode: CompressionMode = isDCT ? .lossy : errorBound == 0 ? .lossless : .nearLossless(maximumAbsoluteError: errorBound)
             return EncodedImage(data: Data(encoded), encoding: .init(format: "JPEG", mode: mode),
-                report: .init(backend: .scalarCPU, fallbackReason: fallback(options.executionPolicy),
-                              fidelity: errorBound == 0 ? .exactSamples : .boundedError(errorBound),
+                report: .init(backend: NativeOperation.current?.backend ?? .scalarCPU, fallbackReason: fallback(options.executionPolicy),
+                              fidelity: isDCT ? .lossy : errorBound == 0 ? .exactSamples : .boundedError(errorBound),
                               pixelAllocationCount: 0, peakPixelBytes: 0))
         }
     }
@@ -164,7 +194,7 @@ enum JPEGCodec {
         var reader = MarkerReader(data: bytes)
         let parsed = try reader.parse()
         let f = parsed.frameInfo
-        guard f.isLossless else { throw CodecError(.unsupportedFeature, "Common decode currently supports SOF3 JPEG.") }
+        if !f.isLossless { try validateDCT(parsed); return parsed }
         guard parsed.scans.count == 1, let scan = parsed.scans.first,
               scan.header.components.map(\.componentSelector) == f.components.map(\.id),
               f.components.allSatisfy({ $0.horizontalSampling == 1 && $0.verticalSampling == 1 }),
@@ -187,7 +217,7 @@ enum JPEGCodec {
             throw CodecError(.unsupportedFeature, "Unsupported JPEG precision or component count.")
         }
         // SOF3 has no colour conversion. Accept only explicit RGB identifiers for colour.
-        guard nc == 1 || f.components.map(\.id) == [0x52, 0x47, 0x42] else {
+        guard !f.isLossless || nc == 1 || f.components.map(\.id) == [0x52, 0x47, 0x42] else {
             throw CodecError(.unsupportedFeature, "Lossless colour interpretation is ambiguous.")
         }
         let bps = f.precision <= 8 ? 1 : 2
@@ -206,53 +236,62 @@ enum JPEGCodec {
     }
 
     static func inspect(_ data: Data, options: DecodeOptions) throws -> ImageInfo {
-        try run(limits: options.resourceLimits, policy: options.executionPolicy) {
-            let result = try info(parse(data, options: options), options: options)
+        try run(limits: options.resourceLimits, policy: .scalarCPU) {
+            let parsed = try parse(data, options: options)
+            _ = try selectBackend(options.executionPolicy, dct: !parsed.frameInfo.isLossless)
+            let result = try info(parsed, options: options)
             try NativeOperation.check()
             return result
         }
     }
 
     static func decode(_ data: Data, into supplied: ImageDestination?, options: DecodeOptions) throws -> DecodedImage {
-        try run(limits: options.resourceLimits, policy: options.executionPolicy) {
+        try run(limits: options.resourceLimits, policy: .scalarCPU) {
             let parsed = try parse(data, options: options)
-            let information = try info(parsed, options: options), source = information.descriptor
-            let descriptor = supplied?.descriptor ?? source
-            let plane = try layout(descriptor, limits: options.resourceLimits)
-            guard descriptor.width == source.width, descriptor.height == source.height,
-                  descriptor.components == source.components, descriptor.meaningfulBits == source.meaningfulBits,
-                  descriptor.storageBits >= source.storageBits,
-                  descriptor.iccProfile == nil || descriptor.iccProfile == source.iccProfile else {
-                throw CodecError(.incompatibleImageLayout, "Destination does not match JPEG sample interpretation.")
-            }
-            let sampleCount = try checkedMultiply(checkedMultiply(source.width, source.height), source.components.count)
-            let workspace = try checkedAdd(checkedAdd(checkedMultiply(data.count, 64), checkedMultiply(sampleCount, 8)), 1_048_576)
-            let metadataSize = try information.metadata.validate(limits: options.resourceLimits, additionalBytes: source.iccProfile?.count ?? 0)
-            try admit(workspace: workspace, pixels: supplied?.storage.byteCount ?? descriptor.requiredByteCount,
-                      compressed: data.count, metadata: metadataSize, limits: options.resourceLimits)
-            try options.progress?(.init(phase: .processing, completedUnits: 0, totalUnits: descriptor.height))
-            try NativeOperation.check()
-            let destination = try supplied ?? ImageDestination.allocate(descriptor: descriptor, limits: options.resourceLimits)
-            let filled = try destination.write { raw in
-                try JLIDecoder().decodeSharedLossless(parsed, into: BorrowedSampleDestination(
-                    bytes: .init(rebasing: raw[plane.offset...]), rowBytes: plane.rowBytes,
-                    bytesPerSample: descriptor.storageBits / 8))
+            let isDCT = !parsed.frameInfo.isLossless
+            let backend = try selectBackend(options.executionPolicy, dct: isDCT)
+            let context = NativeOperation(seconds: options.resourceLimits.deadlineSeconds, backend: backend,
+                started: NativeOperation.current?.started ?? .now)
+            return try NativeOperation.$current.withValue(context) {
+                let information = try info(parsed, options: options), source = information.descriptor
+                let descriptor = supplied?.descriptor ?? source
+                let plane = try layout(descriptor, limits: options.resourceLimits)
+                guard descriptor.width == source.width, descriptor.height == source.height,
+                      descriptor.components == source.components, descriptor.meaningfulBits == source.meaningfulBits,
+                      descriptor.storageBits >= source.storageBits,
+                      descriptor.iccProfile == nil || descriptor.iccProfile == source.iccProfile else {
+                    throw CodecError(.incompatibleImageLayout, "Destination does not match JPEG sample interpretation.")
+                }
+                let sampleCount = try checkedMultiply(checkedMultiply(source.width, source.height), source.components.count)
+                let workspace = try checkedAdd(checkedAdd(checkedMultiply(data.count, 64), checkedMultiply(sampleCount, isDCT ? 128 : 8)), 1_048_576)
+                let metadataSize = try information.metadata.validate(limits: options.resourceLimits, additionalBytes: source.iccProfile?.count ?? 0)
+                try admit(workspace: workspace, pixels: supplied?.storage.byteCount ?? descriptor.requiredByteCount,
+                          compressed: data.count, metadata: metadataSize, limits: options.resourceLimits)
+                try options.progress?(.init(phase: .processing, completedUnits: 0, totalUnits: descriptor.height))
                 try NativeOperation.check()
+                let destination = try supplied ?? ImageDestination.allocate(descriptor: descriptor, limits: options.resourceLimits)
+                let filled = try destination.write { raw in
+                    let borrowed = BorrowedSampleDestination(bytes: .init(rebasing: raw[plane.offset...]),
+                        rowBytes: plane.rowBytes, bytesPerSample: descriptor.storageBits / 8)
+                    if isDCT { _ = try JLIDecoder().decodeParsed(parsed, borrowedDestination: borrowed) }
+                    else { try JLIDecoder().decodeSharedLossless(parsed, into: borrowed) }
+                    try NativeOperation.check()
+                }
+                let outputDescriptor = try ImageDescriptor(width: descriptor.width, height: descriptor.height,
+                    storageBits: descriptor.storageBits, meaningfulBits: descriptor.meaningfulBits,
+                    byteOrder: descriptor.byteOrder, components: descriptor.components, colour: descriptor.colour,
+                    planes: descriptor.planes, iccProfile: source.iccProfile, limits: options.resourceLimits)
+                let image = try Image(descriptor: outputDescriptor, storage: filled.storage,
+                                      metadata: information.metadata, limits: options.resourceLimits)
+                try options.progress?(.init(phase: .completed, completedUnits: descriptor.height, totalUnits: descriptor.height))
+                try NativeOperation.check()
+                return DecodedImage(image: image, report: .init(backend: backend,
+                    fallbackReason: fallback(options.executionPolicy),
+                    fidelity: isDCT ? .lossy : parsed.scans[0].header.successiveApproxLow == 0 ? .exactSamples
+                        : .boundedError((1 << parsed.scans[0].header.successiveApproxLow) - 1),
+                    pixelAllocationCount: supplied == nil ? 1 : 0,
+                    peakPixelBytes: supplied == nil ? descriptor.requiredByteCount : 0))
             }
-            let outputDescriptor = try ImageDescriptor(width: descriptor.width, height: descriptor.height,
-                storageBits: descriptor.storageBits, meaningfulBits: descriptor.meaningfulBits,
-                byteOrder: descriptor.byteOrder, components: descriptor.components, colour: descriptor.colour,
-                planes: descriptor.planes, iccProfile: source.iccProfile, limits: options.resourceLimits)
-            let image = try Image(descriptor: outputDescriptor, storage: filled.storage,
-                                  metadata: information.metadata, limits: options.resourceLimits)
-            try options.progress?(.init(phase: .completed, completedUnits: descriptor.height, totalUnits: descriptor.height))
-            try NativeOperation.check()
-            return DecodedImage(image: image, report: .init(backend: .scalarCPU,
-                fallbackReason: fallback(options.executionPolicy),
-                fidelity: parsed.scans[0].header.successiveApproxLow == 0 ? .exactSamples
-                    : .boundedError((1 << parsed.scans[0].header.successiveApproxLow) - 1),
-                pixelAllocationCount: supplied == nil ? 1 : 0,
-                peakPixelBytes: supplied == nil ? descriptor.requiredByteCount : 0))
         }
     }
 }

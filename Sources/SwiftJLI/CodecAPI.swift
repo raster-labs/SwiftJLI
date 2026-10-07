@@ -1,12 +1,45 @@
 // SPDX-License-Identifier: Apache-2.0
 import Foundation
 
-/// JPEG-specific controls. Lossless always uses SOF3 with point transform zero.
+/// DCT chroma resolution. Greyscale inputs always use one full-resolution plane.
+public enum ChromaSubsampling: Sendable, Equatable { case yuv444, yuv422, yuv420 }
+public enum ProgressiveMode: Sendable, Equatable { case sequential, spectralSelection, successiveApproximation }
+
+/// Explicit lossy controls; selecting these never changes the default lossless mode.
+public struct DCTOptions: Sendable, Equatable {
+    public let quality: Double
+    public let distance: Double?
+    public let chromaSubsampling: ChromaSubsampling
+    public let progressiveMode: ProgressiveMode
+    public let optimiseHuffman: Bool
+    public let adaptiveQuantisation: Bool
+    public let perceptualQuantisationTables: Bool
+    public init(quality: Double = 90, distance: Double? = nil,
+                chromaSubsampling: ChromaSubsampling = .yuv420,
+                progressiveMode: ProgressiveMode = .sequential,
+                optimiseHuffman: Bool = true, adaptiveQuantisation: Bool = true,
+                perceptualQuantisationTables: Bool = true) {
+        self.quality = quality; self.distance = distance
+        self.chromaSubsampling = chromaSubsampling; self.progressiveMode = progressiveMode
+        self.optimiseHuffman = optimiseHuffman; self.adaptiveQuantisation = adaptiveQuantisation
+        self.perceptualQuantisationTables = perceptualQuantisationTables
+    }
+    var native: JLIEncoderConfiguration {
+        .init(quality: quality, distance: distance,
+            chromaSubsampling: chromaSubsampling == .yuv444 ? .yuv444 : chromaSubsampling == .yuv422 ? .yuv422 : .yuv420,
+            progressive: progressiveMode != .sequential,
+            progressiveMode: progressiveMode == .successiveApproximation ? .successiveApproximation : .spectralSelection,
+            optimiseHuffman: optimiseHuffman, adaptiveQuantization: adaptiveQuantisation,
+            perceptualQuantTables: perceptualQuantisationTables)
+    }
+}
+
 public struct CodecOptions: Sendable, Equatable {
     public let predictor: Int
     public let restartInterval: Int
-    public init(predictor: Int = 1, restartInterval: Int = 0) {
-        self.predictor = predictor; self.restartInterval = restartInterval
+    public let dct: DCTOptions
+    public init(predictor: Int = 1, restartInterval: Int = 0, dct: DCTOptions = .init()) {
+        self.predictor = predictor; self.restartInterval = restartInterval; self.dct = dct
     }
 }
 public struct EncoderConfiguration: Sendable, Equatable {
@@ -19,8 +52,16 @@ public struct EncoderConfiguration: Sendable, Equatable {
         if case .nearLossless(let bound) = mode, bound <= 0 {
             throw CodecError(.invalidArgument, "Near-lossless error must be positive.")
         }
-        if mode == .lossy {
-            throw CodecError(.unsupportedFeature, "Lossy DCT configuration is not integrated yet.")
+        let dct = codecOptions.dct
+        guard dct.quality.isFinite, (0...100).contains(dct.quality),
+              dct.distance.map({ $0.isFinite && $0 >= 0 && $0 <= 25 }) ?? true else {
+            throw CodecError(.invalidArgument, "DCT quality must be 0...100 and distance 0...25, both finite.")
+        }
+        guard mode == .lossy || dct == DCTOptions() else {
+            throw CodecError(.invalidArgument, "DCT options require explicit lossy mode.")
+        }
+        guard mode != .lossy || codecOptions.predictor == 1 else {
+            throw CodecError(.invalidArgument, "Predictor selection applies only to predictive JPEG.")
         }
         self.mode = mode; self.codecOptions = codecOptions
     }

@@ -58,6 +58,7 @@ struct ProgressiveDecoder {
 
     mutating func decode(scans: [JPEGScanData]) throws {
         for scan in scans {
+            try NativeOperation.check()
             try decodeScan(scan)
         }
     }
@@ -112,6 +113,7 @@ struct ProgressiveDecoder {
         var mcu = 0
         var rstIndex = 0
         for mcuY in 0..<mcuCountV {
+            try NativeOperation.check()
             for mcuX in 0..<mcuCountH {
                 if restartInterval > 0 && mcu > 0 && mcu % restartInterval == 0 {
                     try reader.skipRestartMarker(expectedIndex: rstIndex)
@@ -131,7 +133,12 @@ struct ProgressiveDecoder {
                             let blockY = mcuY * comp.verticalSampling + by
                             let bidx = blockY * blocksPerRow[c] + blockX
                             let s = Int(try HuffmanDecoder.decodeSymbol(from: &reader, table: dcTable))
-                            pred[c] += try receiveExtend(&reader, s)
+                            guard s <= 15 else { throw JLIError.decodingFailed("Invalid progressive DC category") }
+                            let dc = Int64(pred[c]) + Int64(try receiveExtend(&reader, s))
+                            guard abs(dc) <= Int64(Int32.max) >> al else {
+                                throw JLIError.decodingFailed("Progressive DC coefficient overflow")
+                            }
+                            pred[c] = Int32(dc)
                             coeffs[c][bidx * 64] = pred[c] << al
                         }
                     }
@@ -147,6 +154,7 @@ struct ProgressiveDecoder {
         var mcu = 0
         var rstIndex = 0
         for mcuY in 0..<mcuCountV {
+            try NativeOperation.check()
             for mcuX in 0..<mcuCountH {
                 if restartInterval > 0 && mcu > 0 && mcu % restartInterval == 0 {
                     try reader.skipRestartMarker(expectedIndex: rstIndex)
@@ -187,6 +195,7 @@ struct ProgressiveDecoder {
         var rstIndex = 0
         let stride = blocksPerRow[c]
         for blockY in 0..<realBlocksH[c] {
+            try NativeOperation.check()
             for blockX in 0..<realBlocksW[c] {
                 if restartInterval > 0 && unit > 0 && unit % restartInterval == 0 {
                     try reader.skipRestartMarker(expectedIndex: rstIndex)
@@ -241,6 +250,7 @@ struct ProgressiveDecoder {
         let stride = blocksPerRow[c]
 
         for blockY in 0..<realBlocksH[c] {
+            try NativeOperation.check()
             for blockX in 0..<realBlocksW[c] {
                 if restartInterval > 0 && unit > 0 && unit % restartInterval == 0 {
                     try reader.skipRestartMarker(expectedIndex: rstIndex)

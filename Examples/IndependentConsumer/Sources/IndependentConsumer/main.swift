@@ -38,6 +38,19 @@ import SwiftJLI
                 throw SwiftJLI.CodecError(.internalFailure, "Lossless sample mismatch.")
             }
         } }
-        print("Independent SwiftJLI consumer: lossless JPEG, precision and shared-storage checks passed.")
+        let dctDescriptor = try SwiftJLI.ImageDescriptor.greyscale16(width: 13, height: 9, meaningfulBits: 12, rowBytes: 28)
+        let dctImage = try SwiftJLI.ImageDestination.allocate(descriptor: dctDescriptor).writeUInt16 { x, y in UInt16((x * 193 + y * 173) & 4095) }
+        let lossy = try SwiftJLI.Encoder(configuration: .init(mode: .lossy,
+            codecOptions: .init(dct: .init(progressiveMode: .successiveApproximation))))
+        let dct = try await lossy.encode(dctImage, options: .init(executionPolicy: .scalarCPU))
+        let dctDestination = try SwiftJLI.ImageDestination.allocate(descriptor: dctDescriptor)
+        let restored = try await decoder.decode(dct.data, into: dctDestination)
+        guard dct.encoding.mode == .lossy, restored.report.fidelity == .lossy,
+              restored.image.descriptor.meaningfulBits == 12,
+              restored.image.storage.allocationID == dctDestination.storage.allocationID,
+              restored.report.pixelAllocationCount == 0 else {
+            throw SwiftJLI.CodecError(.internalFailure, "Progressive DCT storage/fidelity check failed.")
+        }
+        print("Independent SwiftJLI consumer: predictive and progressive DCT storage checks passed.")
     }
 }

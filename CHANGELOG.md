@@ -8,7 +8,8 @@
 - Add public API, layout, malformed-input and precision/predictor tests plus a repeatable independent libjpeg-turbo oracle.
 - Restore the predecessor regression/contract/container corpus and benchmark identity matrix; add explicit bounded-error SOF3 point-transform support.
 - Fix concurrent decode scratch initialisation exposed by macOS TSan; its CI requalification is pending.
-- Lossy public API, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
+- Add public sequential/progressive 8/12-bit DCT controls, direct borrowed storage, explicit scalar/Accelerate selection, bounded kernel cancellation and progressive-input validation.
+- Advanced colour/float profiles, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
 
 ## 1.1.0-dev.1 — Swift 6.4 upgrade, 2026-09-19 (unreleased)
 

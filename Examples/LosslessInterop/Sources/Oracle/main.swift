@@ -4,6 +4,10 @@ import SwiftJLI
 @main struct Oracle {
     static func main() async throws {
         let root = URL(fileURLWithPath: CommandLine.arguments[2], isDirectory: true)
+        if CommandLine.arguments[1].hasSuffix("-dct") {
+            try await DCTOracle.run(CommandLine.arguments[1], root: root)
+            return
+        }
         for bits in 2...16 { for predictor in 1...7 { for point in [0, min(2, bits - 1)] {
             let width = 13, height = 7, maxValue = (1 << bits) - 1
             func value(_ x: Int, _ y: Int) -> UInt16 {
