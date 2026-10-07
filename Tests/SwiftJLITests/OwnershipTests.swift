@@ -90,31 +90,27 @@ private final class ReadAdapter: ReadOnlyImageStorage {
 @Test func sameTokenCannotAuthoriseConcurrentOverlappingBorrows() throws {
     let storage = try OwnedImageStorage(byteCount: 2)
     let lease = try storage.reserveWrite()
-    let entered = DispatchSemaphore(value: 0)
-    let release = DispatchSemaphore(value: 0)
     let done = DispatchSemaphore(value: 0)
-    let result = Mutex(false)
-    DispatchQueue.global().async {
-        defer { done.signal() }
-        do {
-            try storage.withUnsafeMutableBytes(lease: lease) { bytes in
-                entered.signal()
-                guard release.wait(timeout: .now() + 5) == .success else { return }
-                bytes[0] = 29
-                result.withLock { $0 = true }
+    let results = Mutex<[Bool]>([])
+    // Hold the first borrow synchronously, then make the competing calls on a
+    // dedicated OS thread. The global Dispatch pool can be saturated by native
+    // codec regression work; scheduling latency there is not a storage failure.
+    try storage.withUnsafeMutableBytes(lease: lease) { bytes in
+        Thread.detachNewThread {
+            defer { done.signal() }
+            func rejected(_ body: () throws -> Void) -> Bool {
+                do { try body(); return false }
+                catch let error as CodecError { return error.category == .storageUnavailable }
+                catch { return false }
             }
-        } catch { }
+            let overlappingBorrow = rejected { try storage.withUnsafeMutableBytes(lease: lease) { _ in } }
+            let prematureSeal = rejected { _ = try storage.finishAndSeal(lease: lease) }
+            results.withLock { $0 = [overlappingBorrow, prematureSeal] }
+        }
+        #expect(done.wait(timeout: .now() + 30) == .success)
+        #expect(results.withLock { $0 } == [true, true])
+        bytes[0] = 29
     }
-    guard entered.wait(timeout: .now() + 5) == .success else {
-        release.signal()
-        Issue.record("First writer did not enter its scoped borrow.")
-        return
-    }
-    storageFailure { try storage.withUnsafeMutableBytes(lease: lease) { _ in } }
-    storageFailure { _ = try storage.finishAndSeal(lease: lease) }
-    release.signal()
-    #expect(done.wait(timeout: .now() + 5) == .success)
-    #expect(result.withLock { $0 })
     let sealed = try storage.finishAndSeal(lease: lease)
     #expect(try sealed.withUnsafeBytes { $0[0] } == 29)
 }
