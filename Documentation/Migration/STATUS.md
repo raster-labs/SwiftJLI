@@ -158,13 +158,35 @@ python3 Scripts/run-decoder-fuzz.py --output-dir /tmp/swiftjli-fuzz-campaign
 
 A failed compressed candidate is retained when an unexpected Swift error is caught. For a native crash/hang, the last progress count bounds the deterministic sequence position. Run the logged binary/entry with an optional final replay-attempt integer to save that candidate before execution; preceding candidates are regenerated from the fixed seed. Do not treat an interrupted or watchdog-terminated campaign as a pass.
 
+## Independent decoder heap measurements
+
+The Linux/glibc [allocation experiment](../../Examples/AllocationProbe/README.md) interposes actual allocator calls in an independent public consumer. It builds release without sanitizers and leaves the shipping codec unchanged. [Retained results](Allocations/results.json) pin the codec at `aa2abdd` (same source as `1072de4`), the new experiment's exact file hashes, Swift 6.4, the immutable ARM64 container and the binary. The recorded worktree contains the then-uncommitted experiment; this is not a clean-checkout claim. Raw histograms and compiler/build/run logs are retained alongside the results.
+
+All **60 baseline measurements and 60 deliberate-copy controls passed**, covering 257×257 and 1024×1024 predictive UInt16, DCT UInt12, RGB8, XYB RGB8 and normalised XYB Float32. Three warmed repetitions cover each allocating/caller-destination path. Every sample and interpretation matched, caller allocation identity remained unchanged and zero-filled row padding remained intact. C calibration checks allocation/free accounting; a separate Swift owned-storage calibration verifies that Swift image allocation reaches the interposer. The measured Swift array allocation header was 32 bytes.
+
+Allocating decode showed one final-frame-size allocation; caller-destination decode showed none at either its packed logical size or padded capacity. Deliberately copying the decoded frame inside the measured scope added one corresponding allocation in all 60 controls, even while output identity remained unchanged. Supplying baseline records as the positive control made the verifier fail as expected. These checks supplement the existing sample, padding, source-path and mutation evidence rather than relying on the codec's own allocation report.
+
+Median peak **new requested heap bytes during decode**, over three repetitions at 1024×1024:
+
+| Profile | Allocating decode | Preallocated caller destination |
+| --- | ---: | ---: |
+| Predictive UInt16 | 7,457,179 | 5,359,639 |
+| DCT UInt12 | 19,703,523 | 17,605,983 |
+| RGB8 | 33,414,574 | 30,268,458 |
+| XYB RGB8 | 38,027,290 | 34,881,174 |
+| XYB normalised Float32 | 47,464,474 | 34,881,174 |
+
+Sources, compressed input, references and caller destinations were allocated before measurement. Thus the last column excludes the caller's existing image memory; it must not be presented as total application peak or as eliminating the necessary final image. Runtime, parser and algorithm allocations within the window are included. Allocator overhead, pre-existing allocations, direct mmap, stack storage and transient allocator-internal realloc copies are excluded. No timing result is taken from the instrumented build. The probe does not intercept all copy instructions; it detects the tested full-frame array-copy shape. Pure workspace attribution, encoding, failure/cancellation accounting, cross-codec paths and other platforms remain open. Public `peakWorkspaceBytes` remains nil.
+
+Reproduce with `python3 Scripts/run-allocation-probe.py --output-dir /tmp/swiftjli-allocation-probe`. The runner rejects nonzero exits, missing profiles, overflows and unexpected frame allocations, and retains failed evidence rather than accepting partial output. Production codec files still match the active fuzz campaign's source hashes.
+
 ## Remaining migration requirements
 
 - Qualify broader ICC/interoperability coverage and audit every retained public profile against the predecessor. XYB integer/normalised Float32 output, normalised Float32 input, raw greyscale Float32 output, adaptive fields and decoder scale controls are now public; unsupported combinations remain explicit errors.
 - Qualify public DCT backend performance and resource instrumentation. Backend selection and direct storage are now implemented; full platform qualification remains open.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.
-- Measure memory/copy instrumentation and release performance against the pinned predecessor; qualify the shared-storage cross-codec extension.
+- Extend the measured Linux decoder allocation evidence to encoding, failure/cancellation, workspace attribution and other platforms; qualify controlled release performance against the pinned predecessor and the shared-storage cross-codec extension.
 - Finish documentation, independent versioned consumption and the full acceptance audit. CLI payload verbs remain separately budgeted new work under IMPLEMENTATION.md I3; diagnostic capabilities already read the real library values.
 
 No predecessor release, consumer cutover, archive, stable successor tag or merge has been performed by this checkpoint.
