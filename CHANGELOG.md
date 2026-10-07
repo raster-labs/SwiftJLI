@@ -1,5 +1,13 @@
 # Change log
 
+## Unreleased — codec migration in progress, 2026-10-07
+
+- Adapt the pinned JLISwift native kernels and tests into internal SwiftJLI sources with per-file provenance.
+- Connect the public API to SOF3 lossless encoding/inspection/decoding, including padded shared storage, precision checks, ICC/Exif and bounded operation admission.
+- Add Linux scalar DSP and ICC profile hashing; retain the Apple comparator conditionally.
+- Add public API, layout, malformed-input and precision/predictor tests plus a repeatable independent libjpeg-turbo oracle.
+- Lossy public API, remaining corpus adaptation, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
+
 ## 1.1.0-dev.1 — Swift 6.4 upgrade, 2026-09-19 (unreleased)
 
 - Require Swift tools/compiler 6.4, retaining Swift 6 language mode and OS 26 deployment floors.

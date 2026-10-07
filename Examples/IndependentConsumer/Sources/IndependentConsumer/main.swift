@@ -16,30 +16,28 @@ import SwiftJLI
         }
         let encoder = try SwiftJLI.Encoder(configuration: .default)
         let decoder = try SwiftJLI.Decoder(configuration: .init())
-        guard !encoder.capabilities.canEncode, !decoder.capabilities.canDecode else {
-            throw SwiftJLI.CodecError(.internalFailure, "Unexpected codec capability in contract milestone.")
+        guard encoder.capabilities.canEncode, decoder.capabilities.canDecode else {
+            throw SwiftJLI.CodecError(.internalFailure, "Lossless JPEG capabilities are missing.")
         }
-        do {
-            _ = try decoder.inspect(Data(), options: .init())
-            throw SwiftJLI.CodecError(.internalFailure, "Unexpected successful inspection.")
+        let encoded = try await encoder.encode(image)
+        let info = try decoder.inspect(encoded.data)
+        guard info.descriptor.meaningfulBits == 16 else {
+            throw SwiftJLI.CodecError(.internalFailure, "JPEG precision changed.")
         }
-        catch let error as SwiftJLI.CodecError where error.category == .unsupportedFeature { }
-        do {
-            _ = try await encoder.encode(image, options: .init())
-            throw SwiftJLI.CodecError(.internalFailure, "Unexpected successful encode.")
-        }
-        catch let error as SwiftJLI.CodecError where error.category == .unsupportedFeature { }
-        do {
-            _ = try await decoder.decode(Data(), options: .init())
-            throw SwiftJLI.CodecError(.internalFailure, "Unexpected successful decode.")
-        }
-        catch let error as SwiftJLI.CodecError where error.category == .unsupportedFeature { }
+        let allocated = try await decoder.decode(encoded.data)
         let next = try SwiftJLI.ImageDestination.allocate(descriptor: descriptor)
-        do {
-            _ = try await decoder.decode(Data(), into: next, options: .init())
-            throw SwiftJLI.CodecError(.internalFailure, "Unexpected successful destination decode.")
+        let shared = try await decoder.decode(encoded.data, into: next)
+        guard shared.image.storage.allocationID == next.storage.allocationID,
+              shared.report.pixelAllocationCount == 0, shared.report.copyEvents.isEmpty else {
+            throw SwiftJLI.CodecError(.internalFailure, "Shared decode changed storage.")
         }
-        catch let error as SwiftJLI.CodecError where error.category == .unsupportedFeature { }
-        print("Independent SwiftJLI consumer: synthetic storage and common API calls passed; no JPEG codec is implemented.")
+        for y in 0..<2 { for x in 0..<3 {
+            let expected = try image.sampleUInt16(x: x, y: y)
+            guard try allocated.image.sampleUInt16(x: x, y: y) == expected,
+                  try shared.image.sampleUInt16(x: x, y: y) == expected else {
+                throw SwiftJLI.CodecError(.internalFailure, "Lossless sample mismatch.")
+            }
+        } }
+        print("Independent SwiftJLI consumer: lossless JPEG, precision and shared-storage checks passed.")
     }
 }
