@@ -24,7 +24,7 @@ The predecessor defaults to lossy quality 90/4:2:0; SwiftJLI defaults to true lo
 
 Meaningful precision is explicit: 2–16 integer bits, stored in 8- or 16-bit unsigned words. Declaring `.uint16` in the predecessor could default to 12-bit precision; do not infer the new meaningfulBits from storage width or observed values. Samples exceeding their declared precision are rejected.
 
-The shared path supports interleaved greyscale or RGB, little-endian words, prefix offsets and padded rows. Both caller-storage and allocating decode use the same final writer. Unsupported endian/layout conversions fail even with allowCopy at this checkpoint. Signed samples, alpha, YCbCr/CMYK and unrecognised colour interpretation are rejected. Float input requires the explicit policy below. An explicit greyscale Float32 decode profile is described below.
+The shared path supports interleaved greyscale or RGB, little-endian words, prefix offsets and padded rows. Both caller-storage and allocating decode use the same final writer. Unsupported endian/layout conversions fail even with allowCopy at this checkpoint. Signed samples, CMYK and unrecognised colour interpretation are rejected. DCT RGBA and preconverted YCbCr require the explicit policies described below. Float input requires the explicit policy below. An explicit greyscale Float32 decode profile is described below.
 
 ICC is `ImageDescriptor.iccProfile`; Exif TIFF bytes are `ImageMetadata.entries["Exif"]` (without the JPEG Exif identifier). Unknown preservation requirements fail. ICC interpretation is retained even under discardAncillary. Inspect reports decoded layout and metadata but does not certify the entropy stream.
 
@@ -96,3 +96,13 @@ Set realistic ResourceLimits for compressed bytes, samples, metadata and workspa
 4. Enable only qualified profiles behind the application's rollback mechanism. Keep the old dependency lock and adapter until persisted-file compatibility and platform acceptance are complete.
 
 The diagnostic `swiftjli-cli` reports actual library capabilities. Its encode/decode/inspect/validate payload verbs remain unavailable under the separately budgeted CLI work. This guide does not announce a completed migration, stable release or complete platform support.
+
+## Explicit DCT input conversions
+
+`DCTOptions(alphaPolicy: .discardStraightAlpha)` permits interleaved RGB plus straight alpha at UInt8, UInt12-in-UInt16 or opted-in normalised Float32 precision. The descriptor must use `[.red, .green, .blue, .alpha]`, `.rgb` and `.straight`. Alpha is discarded without compositing; premultiplied alpha is rejected. `OperationReport.alphaDiscarded` records the loss. The default still rejects RGBA. Every actual Float32 component, including discarded alpha, must be finite; padding is not interpreted as samples.
+
+`DCTOptions(sourceColourSpace: .yCbCr)` permits full-range JPEG Y/Cb/Cr input at UInt8 or opted-in normalised Float32 precision. Use `[.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")]`, `.unknown` generic colour, absent alpha and no ICC profile. UInt8 chroma is centred at 128; Float32 uses the same explicit clamped 0–1 to UInt8 mapping. Components feed the codec planes directly without a second RGB-to-YCbCr transform. Twelve-bit preconverted YCbCr, XYB conversion and greyscale conversion from this profile reject.
+
+`DCTOptions(chromaSubsampling: .greyscale)` explicitly converts RGB8 or opted-in normalised Float32 RGB to one luma component. It can combine with straight-alpha discard for RGBA. The report records `.rgbToGreyscale`; no RGB ICC profile is copied onto greyscale output. ICC-bearing colour input and UInt12 RGB-to-greyscale currently reject because their conversion semantics are unqualified. The existing greyscale input path remains available at 8/12 bits.
+
+These options require `.lossy`. All three paths borrow source storage, honour prefix offsets/padded rows and use bounded colour-row scratch plus algorithm planes. There is no packed intermediate image. [118 public comparisons](Documentation/Migration/ColourInput/results.json) against the actual pinned predecessor match codestreams and decoded samples; the retained Linux matrix also checks scalar operation, padding and explicit rejection. Allocation reports are source-path assertions, not new independent encoder allocator measurements.

@@ -181,7 +181,8 @@ struct JLIEncoder: Sendable {
 
         if let borrowedSource {
             let planes = try SharedDCTStorage.read(borrowedSource, width: width, height: height,
-                components: image.colorModel.componentCount, precision: precision, normalisedFloatInput: normalisedFloatInput)
+                components: image.colorModel.componentCount, precision: precision, normalisedFloatInput: normalisedFloatInput,
+                preconvertedYCbCr: image.colorModel == .yCbCr, greyscaleOutput: isGrayscale)
             yPlane = planes.y; cbPlane = planes.cb; crPlane = planes.cr
         } else if isGrayscale {
             if image.colorModel == .grayscale {
@@ -1661,18 +1662,21 @@ extension JLIEncoder {
     func encodeSharedDCT(
         from plane: BorrowedSamplePlane, width: Int, height: Int, precision: Int, components: Int,
         normalisedFloatInput: Bool = false,
+        preconvertedYCbCr: Bool = false,
         icc: [UInt8]?, exif: [UInt8]?, configuration: JLIEncoderConfiguration
     ) throws -> [UInt8] {
         guard !configuration.lossless,
-              configuration.colorSpace == .yCbCr || (configuration.colorSpace == .xyb && precision == 8 && components == 3),
+              configuration.colorSpace == .yCbCr || (configuration.colorSpace == .xyb && precision == 8 && components >= 3 && !preconvertedYCbCr),
               !normalisedFloatInput || precision == 8,
-              precision == 8 || precision == 12, components == 1 || components == 3,
-              components == 1 || configuration.chromaSubsampling != .yuv400 else {
+              precision == 8 || precision == 12, components == 1 || components == 3 || components == 4,
+              !preconvertedYCbCr || (precision == 8 && components == 3 && configuration.chromaSubsampling != .yuv400),
+              components == 1 || configuration.chromaSubsampling != .yuv400 || precision == 8 else {
             throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT input")
         }
         let image = try JLIImage(geometryOnlyWidth: width, height: height,
             pixelFormat: precision == 8 ? .uint8 : .uint16,
-            colorModel: components == 1 ? .grayscale : .rgb, iccProfile: icc, exif: exif)
+            colorModel: preconvertedYCbCr ? .yCbCr : components == 1 ? .grayscale : components == 4 ? .rgba : .rgb,
+            iccProfile: icc, exif: exif)
         return try encode(image, configuration: configuration, borrowedSource: plane, normalisedFloatInput: normalisedFloatInput)
     }
 

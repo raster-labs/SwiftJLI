@@ -13,10 +13,12 @@ enum SharedDCTStorage {
     }
 
     static func read(_ source: BorrowedSamplePlane, width: Int, height: Int,
-                     components: Int, precision: Int, normalisedFloatInput: Bool = false) throws -> (y: [Float], cb: [Float], cr: [Float]) {
+                     components: Int, precision: Int, normalisedFloatInput: Bool = false,
+                     preconvertedYCbCr: Bool = false, greyscaleOutput: Bool = false) throws -> (y: [Float], cb: [Float], cr: [Float]) {
         let count = width * height, bps = normalisedFloatInput ? 4 : precision == 8 ? 1 : 2
+        let colourOutput = components > 1 && !greyscaleOutput
         var y = [Float](repeating: 0, count: count)
-        var cb = components == 3 ? y : [], cr = components == 3 ? y : []
+        var cb = colourOutput ? y : [], cr = colourOutput ? y : []
         var scratch = [Float](repeating: 0, count: width * 3)
         try y.withUnsafeMutableBufferPointer { yp in
             try cb.withUnsafeMutableBufferPointer { cp in
@@ -30,13 +32,13 @@ enum SharedDCTStorage {
                             if bps == 1, let bytes = source.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) {
                                 if components == 1 { jliDSP_vfltu8(bytes + offset, 1, yy + out, 1, width) }
                                 else {
-                                    jliDSP_vfltu8(bytes + offset, 3, r, 1, width)
-                                    jliDSP_vfltu8(bytes + offset + 1, 3, g, 1, width)
-                                    jliDSP_vfltu8(bytes + offset + 2, 3, b, 1, width)
+                                    jliDSP_vfltu8(bytes + offset, components, r, 1, width)
+                                    jliDSP_vfltu8(bytes + offset + 1, components, g, 1, width)
+                                    jliDSP_vfltu8(bytes + offset + 2, components, b, 1, width)
                                 }
                             } else {
                                 for x in 0..<width {
-                                    for c in 0..<components {
+                                    for c in 0..<(components == 1 ? 1 : 3) {
                                         let p = offset + (x * components + c) * bps
                                         let v: Float
                                         if normalisedFloatInput {
@@ -49,7 +51,16 @@ enum SharedDCTStorage {
                                     }
                                 }
                             }
-                            if components == 3, let cc = cp.baseAddress, let rr = rp.baseAddress {
+                            if components > 1 {
+                                if preconvertedYCbCr {
+                                    guard let cc = cp.baseAddress, let rr = rp.baseAddress else {
+                                        throw CodecError(.internalFailure, "Preconverted YCbCr requires three output planes.")
+                                    }
+                                    (yy + out).update(from: r, count: width)
+                                    (cc + out).update(from: g, count: width)
+                                    (rr + out).update(from: b, count: width)
+                                    continue
+                                }
                                 var center = Float(1 << (precision - 1))
                                 func channel(_ dst: UnsafeMutablePointer<Float>, _ a: Float, _ bb: Float, _ c: Float, chroma: Bool) {
                                     var a = a, bb = bb, c = c
@@ -59,8 +70,10 @@ enum SharedDCTStorage {
                                     if chroma { jliDSP_vsadd(dst, 1, &center, dst, 1, width) }
                                 }
                                 channel(yy + out, 0.299, 0.587, 0.114, chroma: false)
-                                channel(cc + out, -0.168736, -0.331264, 0.5, chroma: true)
-                                channel(rr + out, 0.5, -0.418688, -0.081312, chroma: true)
+                                if colourOutput, let cc = cp.baseAddress, let rr = rp.baseAddress {
+                                    channel(cc + out, -0.168736, -0.331264, 0.5, chroma: true)
+                                    channel(rr + out, 0.5, -0.418688, -0.081312, chroma: true)
+                                }
                             }
                         }
                     }

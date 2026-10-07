@@ -26,7 +26,9 @@ enum JPEGCodec {
         formats: ["JPEG (SOF0/SOF1/SOF2/SOF3)"], compressionModes: [.lossless, .lossy] +
             (1...15).map { .nearLossless(maximumAbsoluteError: (1 << $0) - 1) },
         sampleTypes: [.unsignedInteger, .floatingPoint], meaningfulPrecision: nil,
-        layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16", "normalisedGreyscaleFloat32", "normalisedRGBFloat32"],
+        layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16", "normalisedGreyscaleFloat32", "normalisedRGBFloat32",
+                  "rgba8DiscardStraightAlpha", "rgba12DiscardStraightAlpha", "normalisedRGBAFloat32DiscardStraightAlpha",
+                  "preconvertedYCbCr8", "normalisedYCbCrFloat32"],
         availableBackends: availableBackends, canInspect: false, canEncode: true, canDecode: false)
 
     // Decoder profiles include integer 2...16 and IEEE Float32, not a single
@@ -81,15 +83,20 @@ enum JPEGCodec {
         return nil
     }
 
-    static func layout(_ descriptor: ImageDescriptor, allowFloat: Bool = false, limits: ResourceLimits) throws -> PlaneDescriptor {
+    static func layout(_ descriptor: ImageDescriptor, allowFloat: Bool = false,
+                       allowRGBA: Bool = false, allowYCbCr: Bool = false, limits: ResourceLimits) throws -> PlaneDescriptor {
         try descriptor.validate(limits: limits)
         let grey = descriptor.components == [.grey] && descriptor.colour == .greyscale
         let rgb = descriptor.components == [.red, .green, .blue] && descriptor.colour == .rgb
+        let rgba = allowRGBA && descriptor.components == [.red, .green, .blue, .alpha]
+            && descriptor.colour == .rgb && descriptor.alpha == .straight
+        let yCbCr = allowYCbCr && descriptor.components == [.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")]
+            && descriptor.colour == .unknown
         let integer = descriptor.sampleType == .unsignedInteger && (2...16).contains(descriptor.meaningfulBits)
             && (descriptor.storageBits == 8 || descriptor.storageBits == 16)
         let floating = allowFloat && descriptor.sampleType == .floatingPoint
             && descriptor.meaningfulBits == 32 && descriptor.storageBits == 32
-        guard integer || floating, descriptor.alpha == .absent, grey || rgb else {
+        guard integer || floating, descriptor.alpha == .absent || rgba, grey || rgb || rgba || yCbCr else {
             throw CodecError(.unsupportedFeature, "Unsupported JPEG sample type, precision, components or alpha.")
         }
         guard descriptor.width <= 65535, descriptor.height <= 65535 else {
@@ -125,11 +132,31 @@ enum JPEGCodec {
             guard !allowsFloat || floating else {
                 throw CodecError(.invalidArgument, "Float input policy requires Float32 source samples.")
             }
-            let plane = try layout(d, allowFloat: allowsFloat, limits: limits)
+            let discardAlpha = isDCT && configuration.codecOptions.dct.alphaPolicy == .discardStraightAlpha
+            let preconverted = isDCT && configuration.codecOptions.dct.sourceColourSpace == .yCbCr
+            if discardAlpha && d.components != [.red, .green, .blue, .alpha] {
+                throw CodecError(.invalidArgument, "Alpha-discard policy requires RGBA source components.")
+            }
+            if preconverted && (d.components != [.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")] || d.colour != .unknown) {
+                throw CodecError(.invalidArgument, "Preconverted YCbCr requires explicit Y/Cb/Cr component roles and unknown generic colour.")
+            }
+            let plane = try layout(d, allowFloat: allowsFloat, allowRGBA: discardAlpha,
+                                   allowYCbCr: preconverted, limits: limits)
             let precision = floating ? 8 : d.meaningfulBits
             let xyb = configuration.codecOptions.dct.colourSpace == .xybFromSRGB
+            let rgbToGrey = isDCT && configuration.codecOptions.dct.chromaSubsampling == .greyscale && d.components.count > 1
+            if preconverted {
+                guard precision == 8, d.iccProfile == nil else {
+                    throw CodecError(.unsupportedFeature, "Preconverted YCbCr requires 8-bit component values without an unqualified source ICC interpretation.")
+                }
+            }
+            if rgbToGrey {
+                guard precision == 8, !preconverted, d.iccProfile == nil else {
+                    throw CodecError(.unsupportedFeature, "RGB-to-greyscale requires 8-bit component values without an unconverted RGB ICC profile.")
+                }
+            }
             if xyb {
-                guard precision == 8, d.components == [.red, .green, .blue],
+                guard precision == 8, d.components == [.red, .green, .blue] || discardAlpha,
                       d.iccProfile == nil || d.iccProfile == Data(SRGBICCProfile.data) else {
                     throw CodecError(.unsupportedFeature, "XYB input requires 8-bit sRGB or explicitly quantised normalised sRGB; an unknown ICC profile cannot be reinterpreted.")
                 }
@@ -185,11 +212,21 @@ enum JPEGCodec {
                         }
                     }
                 }
+                if floating && discardAlpha {
+                    // Discarding alpha does not relax the opted-in finite-float policy.
+                    for y in 0..<d.height {
+                        try NativeOperation.check()
+                        for x in 0..<d.width {
+                            _ = try SharedDCTStorage.normalisedByte(raw, at: plane.offset + y * plane.rowBytes + (x * 4 + 3) * 4)
+                        }
+                    }
+                }
                 if isDCT {
                     return try JLIEncoder().encodeSharedDCT(
                         from: .init(bytes: .init(rebasing: raw[plane.offset...]), rowBytes: plane.rowBytes),
                         width: d.width, height: d.height, precision: precision, components: d.components.count,
                         normalisedFloatInput: floating,
+                        preconvertedYCbCr: preconverted,
                         icc: d.iccProfile.map { Array($0) }, exif: exif.map { Array($0) }, configuration: cfg)
                 }
                 return try JLIEncoder().encodeSharedLossless(
@@ -211,7 +248,8 @@ enum JPEGCodec {
                               fidelity: isDCT ? .lossy : errorBound == 0 ? .exactSamples : .boundedError(errorBound),
                               pixelAllocationCount: 0, peakPixelBytes: 0,
                               sampleConversion: floating ? .normalisedFloat32ClampedToUInt8 : nil,
-                              colourConversion: xyb ? .sRGBToXYB : nil))
+                              colourConversion: xyb ? .sRGBToXYB : rgbToGrey ? .rgbToGreyscale : nil,
+                              alphaDiscarded: discardAlpha))
         }
     }
 

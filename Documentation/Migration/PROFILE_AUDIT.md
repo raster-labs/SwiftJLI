@@ -1,6 +1,6 @@
 # Predecessor public-profile audit
 
-Source baseline: JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. Successor checkpoint: `197b20913473855d8828a82a50891ce6f2fae504`. This is a public-surface disposition audit, not a claim that every input combination has been qualified. Shipping Sources remain unchanged by this audit. The [executed five-case comparison](ProfileAudit/results.json) supplements the source inspection; it uses public APIs from both packages and records exact source hashes.
+Source baseline: JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. Initial successor checkpoint: `197b20913473855d8828a82a50891ce6f2fae504`; the tables below include subsequent implementations. This is a public-surface disposition audit, not a claim that every input combination has been qualified. The initial audit was read-only; subsequent implementations and evidence are identified below. The [executed five-case comparison](ProfileAudit/results.json) supplements the source inspection; it uses public APIs from both packages and records exact source hashes.
 
 ## Encoder configuration
 
@@ -9,8 +9,8 @@ All 16 stored fields of the predecessor's [JLIEncoderConfiguration](https://gith
 | Predecessor control | Successor disposition |
 | --- | --- |
 | `quality` | `DCTOptions.quality`; finite 0–100 |
-| `distance` | `DCTOptions.distance`; finite 0–25. The predecessor validator permits any nonnegative distance; values above 25 are an additional acceptance gap, not demonstrated equivalent support. |
-| `chromaSubsampling` | `.yuv444`, `.yuv422`, `.yuv420` mapped. Greyscale input remains one component. RGB-to-greyscale `.yuv400` has no equivalent conversion option. |
+| `distance` | `DCTOptions.distance`; every finite nonnegative value, with safe quantisation saturation. See DistanceRange evidence below. |
+| `chromaSubsampling` | `.yuv444`, `.yuv422`, `.yuv420` mapped. Greyscale input remains one component. Explicit `.greyscale` maps supported RGB-to-luma profiles; precision/ICC restrictions are documented in MIGRATION.md. |
 | `colorSpace` | `.yCbCr` and explicit `.xybFromSRGB`; XYB asserts input interpretation and rejects unqualified combinations instead of ignoring options. |
 | `progressive` | Combined into `.sequential` versus progressive scan selection. |
 | `progressiveMode` | `.spectralSelection` and `.successiveApproximation` mapped. |
@@ -37,14 +37,14 @@ The predecessor image type declares UInt8, UInt16 and Float32 storage plus six c
 | Unsigned greyscale/RGB DCT 8/12 bits | Public sequential/progressive path; borrowed-storage, native identity and independent JPEG comparisons exist. |
 | Normalised Float32 input | Explicit finite clamping/UInt8 quantisation policy; native/public codestream comparisons exist. No implicit float-lossless claim. |
 | RGB-to-XYB encoding | Explicit sRGB policy, integer/normalised Float32 input, native byte identity and independent profile tests. |
-| RGBA DCT input | **Gap.** Executed RGBA8 predecessor encoding produces exactly the RGB codestream after alpha removal. The successor rejects alpha; no explicit discard-alpha policy currently replaces this path. The retained native RGB/RGBA implementation alone does not make it public. |
-| Preconverted YCbCr8 input | **Gap.** The predecessor encodes it and decodes RGB samples; the executed successor descriptor is rejected. A qualified explicit source-colour interpretation is needed. The predecessor itself rejects 12-bit preconverted YCbCr. |
-| RGB8 → greyscale (`yuv400`) | **Gap.** Executed predecessor output has one component. The successor subsampling enum and encoder have no equivalent conversion option. Preparing a separate greyscale image is caller work, not proof this capability migrated. |
-| Signed integer bit patterns | **Gap in direct signed input.** The predecessor accepts signed-labelled UInt16 with full-precision predictive encoding and reproduces the bytes, but the executed decoded `isSigned` flag is **false**. Its image comment claiming propagated signed provenance is not borne out by code/runtime. The successor rejects signed descriptors. Do not restore the misleading provenance claim or silently reinterpret signed values as unsigned. |
+| RGBA DCT input | Explicit `.discardStraightAlpha` supports RGBA UInt8/UInt12 and opted-in Float32. Public predecessor comparisons include sequential/progressive and XYB profiles; the report records alpha removal. Premultiplied alpha rejects. |
+| Preconverted YCbCr8 input | Explicit `.yCbCr` source policy supports UInt8/opted-in Float32 with named Y/Cb/Cr roles and no ICC. Public predecessor comparisons match. Twelve-bit input remains rejected, as in the predecessor. |
+| RGB8 → greyscale (`yuv400`) | Explicit `.greyscale` supports RGB/RGBA UInt8 or opted-in Float32 without ICC. Public predecessor comparisons match and `.rgbToGreyscale` reports the conversion. UInt12 and ICC-bearing colour conversion remain unqualified and reject. |
+| Signed integer bit patterns | **Contract-required rejection.** The predecessor accepts signed-labelled UInt16 with full-precision predictive encoding and reproduces the bytes, but the executed decoded `isSigned` flag is **false**. Its image comment claiming propagated signed provenance is not borne out by code/runtime. The successor rejects signed descriptors. Do not restore the misleading provenance claim or silently reinterpret signed values as unsigned. |
 | CMYK / already-XYB colour labels | An image enum case is not a working ordinary DCT encoder path. The predecessor's default colour-path guard rejects these labels; they are not evidence that the successor must claim CMYK or arbitrary raw XYB support. Special combinations need their own audit before any support claim. |
 | ICC/Exif | Explicit descriptor ICC and Exif metadata mapping exists. XYB output replaces the encoded XYB profile with matching sRGB. Arbitrary profile/range transformations remain unqualified. |
 
-The three executed rejection cases require `unsupportedFeature`, not just any thrown error. Their source arrays and checks are retained in `ProfileAudit/Comparison.swift`.
+The initial three executed rejection cases required `unsupportedFeature`, not just any thrown error. Their source arrays and checks are retained in `ProfileAudit/Comparison.swift`.
 
 ## Decoder and inspection
 
@@ -57,8 +57,8 @@ The three executed rejection cases require `unsupportedFeature`, not just any th
 | `.float32`, YCbCr colour / SOF3 | The predecessor rejects these paths too; enum presence is not evidence of support. |
 | `outputColorModel` | The executed `.yCbCr` override relabels decoded RGB bytes without transforming them. The successor intentionally has no unqualified relabelling control. Correct colour conversion would be separate explicit behaviour. |
 | Inspect width/height/component count/precision | Available through `ImageInfo.descriptor`. Extended integer precision can be derived from meaningful bits. |
-| Inspect `isProgressive`, `chromaSubsampling` | **Gap.** The predecessor's `JLIJPEGInfo` exposes these; successor `ImageInfo` currently exposes only generic format/descriptor/frame count/metadata. The full-resolution output descriptor does not encode JPEG sampling factors or scan mode. |
-| Inspect `isXYB` | Original X/Y/B roles and ICC are visible, but there is no dedicated public JPEG feature structure replacing all native inspection fields. |
+| Inspect `isProgressive`, `chromaSubsampling` | `Decoder.inspectJPEG` exposes coding process, sampling classification and exact component factors. Common `ImageInfo` remains generic. |
+| Inspect `isXYB` | `JPEGInspection.isXYB` reports the validated profile; original roles and ICC remain visible. |
 
 See [predecessor JLIJPEGInfo](https://github.com/raster-labs/JLISwift/blob/0a4ded0b0b2e8e38127f4f302b286e74ee352474/Sources/JLISwift/Core/JLIJPEGInfo.swift), [decoder implementation](https://github.com/raster-labs/JLISwift/blob/0a4ded0b0b2e8e38127f4f302b286e74ee352474/Sources/JLISwift/Decoder/JLIDecoder.swift), and successor [CodecAPI](../../Sources/SwiftJLI/CodecAPI.swift)/[JPEGCodec](../../Sources/SwiftJLI/JPEGCodec.swift).
 
@@ -72,6 +72,10 @@ This audit makes the remaining differences concrete. It does not authorise waivi
 
 `Decoder.inspectJPEG` now supplies the specialised inspection fields through one bounded parse, with the common `ImageInfo` included. Tests cover 8/12-bit sequential/progressive sampling, encoded geometry despite output configuration, exact factors for 4:4:0, recognised XYB, predictive point transform and resource/malformed-input failures. The predecessor's `MarkerReader.readInfo` hard-codes `isXYB: false`; the successor reports the validated profile instead of preserving that stub result.
 
-The signed-input observation above is a contract-required rejection for plain standalone JPEG, not permission to add a private sign marker. COMMON_API API-06 requires an explicit external-metadata contract for unrepresentable signedness. Retaining an in-memory flag would not close that requirement. The migration guide now explains the predecessor's lost sign provenance and the successor's deliberate rejection. RGBA, preconverted YCbCr and RGB-to-greyscale remain separate open items.
+The signed-input observation above is a contract-required rejection for plain standalone JPEG, not permission to add a private sign marker. COMMON_API API-06 requires an explicit external-metadata contract for unrepresentable signedness. Retaining an in-memory flag would not close that requirement. The migration guide now explains the predecessor's lost sign provenance and the successor's deliberate rejection. RGBA, preconverted YCbCr and RGB-to-greyscale now have explicit policies; see the qualification below.
 
 The finite distance range gap is now closed: nonnegative finite distances are accepted, with quantisation saturated before integer conversion. [Executed comparisons](DistanceRange/results.json) at 26 and 1000 reproduce the pinned predecessor's codestreams and samples for 14 greyscale/colour, 8/12-bit, progressive, XYB and jpegli-AQ cases. Seven additional largest-finite-distance cases execute only the successor, avoiding the predecessor's unsafe conversion; they are robustness checks, not predecessor equality claims. Invalid negative/non-finite values still reject.
+
+## Explicit colour input qualification
+
+[ColourInput/results.json](ColourInput/results.json) records 118 public comparisons against the pinned predecessor on macOS ARM64: RGBA8/12/Float32, preconverted YCbCr8/Float32, RGB/RGBA-to-greyscale and RGBA-to-XYB, widths 1/19, applicable sampling and scan modes. Every codestream and decoded sample buffer matched. Source descriptors use padded rows and prefix offsets. Linux passes the 322-test suite, including alpha/padding independence, finite-float checks and rejected premultiplied/ICC/precision combinations. This closes the three missing public controls, not all performance, allocation or platform acceptance gates.

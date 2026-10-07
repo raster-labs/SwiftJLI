@@ -2,6 +2,8 @@
 
 ## Unreleased — codec migration in progress, 2026-10-07
 
+- Add explicit DCT straight-alpha discard, preconverted YCbCr input and RGB-to-greyscale conversion, using caller storage and reporting conversions. Reject unqualified alpha, precision and ICC combinations.
+
 - Adapt the pinned JLISwift native kernels and tests into internal SwiftJLI sources with per-file provenance.
 - Connect the public API to SOF3 lossless encoding/inspection/decoding, including padded shared storage, precision checks, ICC/Exif and bounded operation admission.
 - Add Linux scalar DSP and ICC profile hashing; retain the Apple comparator conditionally.

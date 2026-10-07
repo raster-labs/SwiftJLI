@@ -105,6 +105,33 @@ import SwiftJLI
               normalised.image.descriptor.iccProfile == srgb.image.descriptor.iccProfile else {
             throw SwiftJLI.CodecError(.internalFailure, "Normalised XYB sample interpretation changed.")
         }
-        print("Independent SwiftJLI consumer: predictive, progressive, raw-float preview, normalised float encoding and integer/Float32 XYB colour passed.")
+        let greyEncoder = try SwiftJLI.Encoder(configuration: .init(mode: .lossy,
+            codecOptions: .init(dct: .init(chromaSubsampling: .greyscale))))
+        let greyJPEG = try await greyEncoder.encode(rgbImage)
+        guard greyJPEG.report.colourConversion == .rgbToGreyscale,
+              try decoder.inspectJPEG(greyJPEG.data).componentCount == 1 else {
+            throw SwiftJLI.CodecError(.internalFailure, "Explicit greyscale conversion failed.")
+        }
+        for alpha in [false, true] {
+            let nc = alpha ? 4 : 3
+            let plane = try SwiftJLI.PlaneDescriptor(width: 1, height: 1, components: Array(0..<nc),
+                sampleStride: 1, pixelStride: nc, rowBytes: nc, byteCount: nc)
+            let descriptor = try SwiftJLI.ImageDescriptor(width: 1, height: 1, storageBits: 8, meaningfulBits: 8,
+                components: alpha ? [.red, .green, .blue, .alpha] : [.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")],
+                colour: alpha ? .rgb : .unknown, alpha: alpha ? .straight : .absent, planes: [plane])
+            let image = try SwiftJLI.ImageDestination.allocate(descriptor: descriptor).write {
+                $0.initializeMemory(as: UInt8.self, repeating: 128)
+            }
+            let encoder = try SwiftJLI.Encoder(configuration: .init(mode: .lossy, codecOptions: .init(dct:
+                .init(alphaPolicy: alpha ? .discardStraightAlpha : .reject,
+                      sourceColourSpace: alpha ? .fromDescriptor : .yCbCr))))
+            let jpeg = try await encoder.encode(image)
+            let decoded = try await decoder.decode(jpeg.data)
+            guard jpeg.report.alphaDiscarded == alpha,
+                  decoded.image.descriptor.components == [.red, .green, .blue] else {
+                throw SwiftJLI.CodecError(.internalFailure, "Explicit source colour policy failed.")
+            }
+        }
+        print("Independent SwiftJLI consumer: predictive, progressive, float, XYB, RGBA, YCbCr and greyscale conversion passed.")
     }
 }

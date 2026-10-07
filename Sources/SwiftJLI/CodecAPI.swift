@@ -2,10 +2,18 @@
 import Foundation
 
 /// DCT chroma resolution. Greyscale inputs always use one full-resolution plane.
-public enum ChromaSubsampling: Sendable, Equatable { case yuv444, yuv422, yuv420 }
+public enum ChromaSubsampling: Sendable, Equatable {
+    case yuv444, yuv422, yuv420
+    /// Explicit RGB-to-luma conversion when the source has colour components.
+    case greyscale
+}
 /// XYB input is explicitly interpreted as sRGB; arbitrary source ICC conversion is not implied.
 public enum DCTColourSpace: Sendable, Equatable { case yCbCr, xybFromSRGB }
-public enum ColourConversion: Sendable, Equatable { case sRGBToXYB, xybToSRGB }
+public enum ColourConversion: Sendable, Equatable { case sRGBToXYB, xybToSRGB, rgbToGreyscale }
+public enum DCTAlphaPolicy: Sendable, Equatable { case reject, discardStraightAlpha }
+/// Preconverted YCbCr uses full-range JPEG components (8-bit Y and centred
+/// Cb/Cr), or their explicitly normalised Float32 input representation.
+public enum DCTSourceColourSpace: Sendable, Equatable { case fromDescriptor, yCbCr }
 public enum ProgressiveMode: Sendable, Equatable { case sequential, spectralSelection, successiveApproximation }
 
 /// Float input is rejected unless the caller explicitly permits this lossy mapping.
@@ -29,13 +37,16 @@ public struct DCTOptions: Sendable, Equatable {
     public let jpegliAdaptiveQuantisation: Bool
     public let floatInputPolicy: FloatInputPolicy
     public let colourSpace: DCTColourSpace
+    public let alphaPolicy: DCTAlphaPolicy
+    public let sourceColourSpace: DCTSourceColourSpace
     public init(quality: Double = 90, distance: Double? = nil,
                 chromaSubsampling: ChromaSubsampling = .yuv420,
                 progressiveMode: ProgressiveMode = .sequential,
                 optimiseHuffman: Bool = true, adaptiveQuantisation: Bool = true,
                 perceptualQuantisationTables: Bool = true,
                 adaptiveQuantisationField: Bool = false, jpegliAdaptiveQuantisation: Bool = false,
-                floatInputPolicy: FloatInputPolicy = .reject, colourSpace: DCTColourSpace = .yCbCr) {
+                floatInputPolicy: FloatInputPolicy = .reject, colourSpace: DCTColourSpace = .yCbCr,
+                alphaPolicy: DCTAlphaPolicy = .reject, sourceColourSpace: DCTSourceColourSpace = .fromDescriptor) {
         self.quality = quality; self.distance = distance
         self.chromaSubsampling = chromaSubsampling; self.progressiveMode = progressiveMode
         self.optimiseHuffman = optimiseHuffman; self.adaptiveQuantisation = adaptiveQuantisation
@@ -43,10 +54,11 @@ public struct DCTOptions: Sendable, Equatable {
         self.adaptiveQuantisationField = adaptiveQuantisationField
         self.jpegliAdaptiveQuantisation = jpegliAdaptiveQuantisation
         self.floatInputPolicy = floatInputPolicy; self.colourSpace = colourSpace
+        self.alphaPolicy = alphaPolicy; self.sourceColourSpace = sourceColourSpace
     }
     var native: JLIEncoderConfiguration {
         .init(quality: quality, distance: distance,
-            chromaSubsampling: chromaSubsampling == .yuv444 ? .yuv444 : chromaSubsampling == .yuv422 ? .yuv422 : .yuv420,
+            chromaSubsampling: chromaSubsampling == .greyscale ? .yuv400 : chromaSubsampling == .yuv444 ? .yuv444 : chromaSubsampling == .yuv422 ? .yuv422 : .yuv420,
             colorSpace: colourSpace == .xybFromSRGB ? .xyb : .yCbCr,
             progressive: progressiveMode != .sequential,
             progressiveMode: progressiveMode == .successiveApproximation ? .successiveApproximation : .spectralSelection,
@@ -89,6 +101,9 @@ public struct EncoderConfiguration: Sendable, Equatable {
                   !dct.jpegliAdaptiveQuantisation else {
                 throw CodecError(.unsupportedFeature, "XYB requires sequential 4:4:4, perceptual tables, no restarts and no jpegli zero-bias field.")
             }
+        }
+        guard dct.sourceColourSpace != .yCbCr || (dct.colourSpace == .yCbCr && dct.chromaSubsampling != .greyscale && dct.alphaPolicy == .reject) else {
+            throw CodecError(.unsupportedFeature, "Preconverted YCbCr cannot request RGB/alpha-specific conversions.")
         }
         guard mode == .lossy || dct == DCTOptions() else {
             throw CodecError(.invalidArgument, "DCT options require explicit lossy mode.")
@@ -166,15 +181,18 @@ public struct OperationReport: Sendable, Equatable {
     /// Explicit sample-value conversion, separate from memory-copy accounting.
     public let sampleConversion: SampleConversion?
     public let colourConversion: ColourConversion?
+    public let alphaDiscarded: Bool
     public init(backend: Backend, fallbackReason: String? = nil, fidelity: Fidelity,
                 copyEvents: [CopyEvent] = [], pixelAllocationCount: Int? = nil,
                 peakPixelBytes: Int? = nil, peakWorkspaceBytes: Int? = nil, elapsedSeconds: Double? = nil,
-                sampleConversion: SampleConversion? = nil, colourConversion: ColourConversion? = nil) {
+                sampleConversion: SampleConversion? = nil, colourConversion: ColourConversion? = nil,
+                alphaDiscarded: Bool = false) {
         self.backend = backend; self.fallbackReason = fallbackReason; self.fidelity = fidelity
         self.copyEvents = copyEvents; self.pixelAllocationCount = pixelAllocationCount
         self.peakPixelBytes = peakPixelBytes; self.peakWorkspaceBytes = peakWorkspaceBytes
         self.elapsedSeconds = elapsedSeconds; self.sampleConversion = sampleConversion
         self.colourConversion = colourConversion
+        self.alphaDiscarded = alphaDiscarded
     }
 }
 public struct ImageInfo: Sendable {

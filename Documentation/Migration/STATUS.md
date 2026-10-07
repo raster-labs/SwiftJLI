@@ -224,7 +224,7 @@ No unexpected error, crash or watchdog failure was observed. This is determinist
 
 ## Remaining migration requirements
 
-- Resolve the remaining profile gaps in PROFILE_AUDIT.md and qualify broader ICC/interoperability coverage. Specialised inspection and finite distance range are now implemented; RGBA, preconverted YCbCr and RGB-to-greyscale remain open. Unsupported combinations remain explicit errors.
+- Resolve the remaining profile gaps in PROFILE_AUDIT.md and qualify broader ICC/interoperability coverage. Specialised inspection, finite distance range, straight-alpha discard, preconverted YCbCr and RGB-to-greyscale are now implemented with explicit policies. Unsupported combinations remain explicit errors.
 - Qualify public DCT backend performance and resource instrumentation. Backend selection and direct storage are now implemented; full platform qualification remains open.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.
@@ -232,3 +232,14 @@ No unexpected error, crash or watchdog failure was observed. This is determinist
 - Finish documentation, release/versioned consumption and the full acceptance audit. Fresh remote revision consumption is now executed; a stable version tag has not been created or qualified. CLI payload verbs remain separately budgeted new work under IMPLEMENTATION.md I3; diagnostic capabilities already read the real library values.
 
 No predecessor release, consumer cutover, archive, stable successor tag or merge has been performed by this checkpoint.
+
+## Explicit colour input checkpoint
+
+The three missing DCT input controls now exist: straight-alpha discard, preconverted YCbCr and RGB-to-greyscale. Their precision, alpha, Float32 and ICC restrictions are explicit in MIGRATION.md. They borrow caller storage and use row scratch rather than an intermediate packed frame; reports identify alpha removal and RGB-to-luma conversion.
+
+- Linux ARM64 Swift 6.4: **322 tests in 42 suites passed**, exit 0. The new matrix covers scalar operation, prefix offsets, padded rows, alpha/padding independence, Float32 conversion and unqualified-profile rejection.
+- macOS ARM64 Apple Swift 6.4: **118 comparisons against the actual pinned predecessor passed**, with identical codestreams and decoded samples. [Harness, log and source hashes](ColourInput/results.json) are retained. This checkpoint includes uncommitted source hashes and does not claim a clean revision measurement.
+- All 71 native identity records still match the executed predecessor file (`cmp`, exit 0). Provenance verification passes.
+- CI [37662125536](https://github.com/raster-labs/SwiftJLI/actions/runs/37662125536) passed at inspection revision `bac6ade`; distance and colour changes still require new-head CI.
+
+No independent encoder allocation or controlled performance result is inferred from the functional tests. The final current-source fuzz/platform/performance gates remain open.
