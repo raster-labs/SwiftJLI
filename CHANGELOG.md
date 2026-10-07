@@ -15,7 +15,9 @@
 - Convert Accelerate strides explicitly for SDKs that import vDSP_Stride as Int64.
 - Expose borrowed XYB encoding and direct sRGB integer decoding with explicit colour-conversion reports, accurate ICC output and strict profile/option validation.
 - Embed the unchanged ICC sRGB2014 profile with its original copyright, licence and verified byte hash.
-- Additional colour-output profiles, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
+- Add explicitly normalised fractional Float32 XYB decode with direct output storage and separate range-conversion reporting.
+- Add reproducible, supervised mutation-fuzz campaigns for inspection and both decode entry points.
+- Broader colour-profile coverage, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
 
 ## 1.1.0-dev.1 — Swift 6.4 upgrade, 2026-09-19 (unreleased)
 

@@ -138,9 +138,28 @@ Executed evidence:
 - The independent public consumer passed XYB encoding/inspection/decoding and both conversion reports.
 - At preceding commit `371d59d`, CI [37651331367](https://github.com/raster-labs/SwiftJLI/actions/runs/37651331367) passed **all eight jobs**, including macOS debug/release, ASan/TSan and all **nine Apple SDK compilation targets**, including watchOS arm64_32. Each used SDK 26.5 / Apple Swift 6.3.3 / Xcode 26.6, with deployment target 26.0. This closes the stride-type compile failure. Runtime/device acceptance and fresh XYB-head CI remain separate gates.
 
+## Normalised Float32 colour output and fuzz runner
+
+The explicit `.float32NormalisedSRGB` decoder profile exposes fractional XYB reconstruction before integer rounding, divided by 255 into [0,1], with the matching sRGB profile. `sampleConversion` reports `.rawSRGBToNormalisedFloat32`. This deliberately differs from the predecessor's raw 0–255 Float32 buffer; the migration guide makes the range change explicit. Ordinary greyscale raw floats retain their existing units, and the normalised sRGB option rejects JPEGs without the recognised XYB interpretation.
+
+- Linux ARM64 / Swift 6.4: **310 tests in 39 suites passed**. Tests match the native fractional inverse/255 bit-for-bit at all scales, prove fractional values survive, and verify allocating/padded caller storage, reports and profile restrictions.
+- Local macOS ARM64 / Swift 6.4: the same matrix passed scalar/Accelerate, plus ASan and TSan executable harnesses (exit 0). The 71 predecessor identity records remain unchanged.
+- `Examples/DecoderFuzz` generates 90 profile/scale seeds across predictive, bounded-error, sequential/progressive DCT and XYB integer/Float32 output. Deterministic mutations target truncation, entropy bytes, marker lengths, insertion/deletion and runs of bytes. Valid seeds continue to exercise final reconstruction.
+- `Scripts/run-decoder-fuzz.py` builds a release executable and supervises three independent entry campaigns, each with a one-hour default, one CPU, a 256 MiB container ceiling, explicit operation budgets and a 30-second heartbeat watchdog. It records source/binary hashes, compiler/container identity, exit codes, outcomes and process peak RSS. This is deterministic mutation fuzzing without coverage guidance; process RSS is not allocator/copy telemetry.
+- A three-second supervisor smoke run passed: inspect 638253 attempts, allocating decode 72090, caller-destination decode 67752; both accepted and rejected inputs occurred. Peak process RSS was approximately 23–25 MiB. These short runs do not meet the one-hour acceptance requirement. Long campaigns must complete successfully before that gate is claimed.
+- Injecting a container termination made the supervisor exit 1 and mark the campaign failed, cleaning up the other two workers. Replaying allocating-decode attempt 100 twice produced identical candidate bytes (SHA-256 `05ecd1b678d6d9da75a6629c2bb575d10be1944620ba6363dc31e77248343719`).
+
+Reproduce (requires Docker with the chosen Swift image already available):
+
+```sh
+python3 Scripts/run-decoder-fuzz.py --output-dir /tmp/swiftjli-fuzz-campaign
+```
+
+A failed compressed candidate is retained when an unexpected Swift error is caught. For a native crash/hang, the last progress count bounds the deterministic sequence position. Run the logged binary/entry with an optional final replay-attempt integer to save that candidate before execution; preceding candidates are regenerated from the fixed seed. Do not treat an interrupted or watchdog-terminated campaign as a pass.
+
 ## Remaining migration requirements
 
-- Qualify remaining Float32 colour-output semantics and broader ICC/interoperability coverage. XYB integer output, normalised Float32 input, raw greyscale Float32 output, adaptive fields and decoder scale controls are now public; unsupported combinations remain explicit errors.
+- Qualify broader ICC/interoperability coverage and audit every retained public profile against the predecessor. XYB integer/normalised Float32 output, normalised Float32 input, raw greyscale Float32 output, adaptive fields and decoder scale controls are now public; unsupported combinations remain explicit errors.
 - Qualify public DCT backend performance and resource instrumentation. Backend selection and direct storage are now implemented; full platform qualification remains open.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.

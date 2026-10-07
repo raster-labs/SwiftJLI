@@ -298,7 +298,8 @@
     "DCT kernels accept borrowed source/final destination storage, with row-sized colour scratch, bounded DCT/trellis batches and throwing cancellation checks. Progressive input validation rejects unsupported topology and invalid approximation history; DC predictor arithmetic is checked.",
     "Public reduced-scale and raw greyscale Float32 output use the native DCT planes directly; full-frame workspace is admitted before preview decode. Adaptive field computations now propagate bounded cancellation and are exposed through explicit validated DCT options.",
     "Finite normalised Float32 quantisation is fused into the borrowed DCT source reader under an explicit public lossy policy; non-finite values reject and conversion is reported. Accelerate stride arguments use the imported vDSP_Stride type explicitly.",
-    "Public XYB encoding reads borrowed sRGB samples and validates applicable options. Public decoding writes the XYB inverse into final storage, labels it with the unchanged ICC sRGB2014 profile and reports colour conversion; inspection retains original XYB component/profile meaning. XYB counting/emission gain bounded cancellation checks. ColourSync assertions now reject missing conversions rather than skipping them."
+    "Public XYB encoding reads borrowed sRGB samples and validates applicable options. Public decoding writes the XYB inverse into final storage, labels it with the unchanged ICC sRGB2014 profile and reports colour conversion; inspection retains original XYB component/profile meaning. XYB counting/emission gain bounded cancellation checks. ColourSync assertions now reject missing conversions rather than skipping them.",
+    "Explicit normalised Float32 XYB output divides the fractional native inverse by 255 during the final store, labels it with sRGB and reports that sample-range conversion. Packed native raw-float output remains unchanged for predecessor comparisons."
   ],
   "retired": [
     {

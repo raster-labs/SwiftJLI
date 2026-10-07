@@ -33,7 +33,7 @@ enum JPEGCodec {
     // continuous precision range. Encoding floats requires an explicit lossy policy.
     static let decoderCapabilities = CodecCapabilities(formats: capabilities.formats,
         compressionModes: capabilities.compressionModes, sampleTypes: [.unsignedInteger, .floatingPoint],
-        meaningfulPrecision: nil, layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16", "greyscaleFloat32RawSamples"],
+        meaningfulPrecision: nil, layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16", "greyscaleFloat32RawSamples", "rgbFloat32NormalisedSRGB"],
         availableBackends: capabilities.availableBackends, canInspect: true, canEncode: false, canDecode: true)
 
     static var availableBackends: [Backend] {
@@ -261,8 +261,11 @@ enum JPEGCodec {
             throw CodecError(.unsupportedFeature, "Reduced-scale decode requires DCT JPEG.")
         }
         let xyb = parsed.iccProfile == XYBICCProfile.data
-        let floating = sampleFormat == .float32RawSamples
-        guard !floating || (!f.isLossless && nc == 1 && parsed.iccProfile == nil) else {
+        let floating = sampleFormat != .nativeInteger
+        guard sampleFormat != .float32NormalisedSRGB || (xyb && !f.isLossless) else {
+            throw CodecError(.unsupportedFeature, "Normalised Float32 sRGB output requires recognised XYB JPEG.")
+        }
+        guard sampleFormat != .float32RawSamples || (!f.isLossless && nc == 1 && parsed.iccProfile == nil) else {
             throw CodecError(.unsupportedFeature, "Raw Float32 output requires greyscale DCT JPEG without ICC interpretation.")
         }
         let width = (f.width + scale - 1) / scale, height = (f.height + scale - 1) / scale
@@ -305,7 +308,7 @@ enum JPEGCodec {
                     sampleFormat: configuration.sampleFormat, decodedOutput: true, options: options)
                 let source = information.descriptor
                 let descriptor = supplied?.descriptor ?? source
-                let plane = try layout(descriptor, allowFloat: configuration.sampleFormat == .float32RawSamples, limits: options.resourceLimits)
+                let plane = try layout(descriptor, allowFloat: configuration.sampleFormat != .nativeInteger, limits: options.resourceLimits)
                 guard descriptor.sampleType == source.sampleType, descriptor.width == source.width, descriptor.height == source.height,
                       descriptor.components == source.components, descriptor.meaningfulBits == source.meaningfulBits,
                       descriptor.storageBits >= source.storageBits,
@@ -327,9 +330,10 @@ enum JPEGCodec {
                         rowBytes: plane.rowBytes, bytesPerSample: descriptor.storageBits / 8)
                     if isDCT {
                         let native = JLIDecoderConfiguration(
-                            outputPixelFormat: configuration.sampleFormat == .float32RawSamples ? .float32 : nil,
+                            outputPixelFormat: configuration.sampleFormat != .nativeInteger ? .float32 : nil,
                             scale: configuration.scale)
-                        _ = try JLIDecoder().decodeParsed(parsed, configuration: native, borrowedDestination: borrowed)
+                        _ = try JLIDecoder().decodeParsed(parsed, configuration: native, borrowedDestination: borrowed,
+                            normaliseXYBOutput: configuration.sampleFormat == .float32NormalisedSRGB)
                     } else {
                         try JLIDecoder().decodeSharedLossless(parsed, into: borrowed)
                     }
@@ -349,6 +353,7 @@ enum JPEGCodec {
                         : .boundedError((1 << parsed.scans[0].header.successiveApproxLow) - 1),
                     pixelAllocationCount: supplied == nil ? 1 : 0,
                     peakPixelBytes: supplied == nil ? descriptor.requiredByteCount : 0,
+                    sampleConversion: configuration.sampleFormat == .float32NormalisedSRGB ? .rawSRGBToNormalisedFloat32 : nil,
                     colourConversion: parsed.iccProfile == XYBICCProfile.data ? .xybToSRGB : nil))
             }
         }

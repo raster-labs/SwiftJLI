@@ -68,7 +68,7 @@ struct JLIDecoder: Sendable {
     }
 
     func decodeParsed(_ parsed: ParsedJPEG, configuration: JLIDecoderConfiguration = .default,
-                      borrowedDestination: BorrowedSampleDestination? = nil) throws -> JLIImage {
+                      borrowedDestination: BorrowedSampleDestination? = nil, normaliseXYBOutput: Bool = false) throws -> JLIImage {
         let frame = parsed.frameInfo
 
         guard !parsed.scans.isEmpty else {
@@ -435,9 +435,11 @@ struct JLIDecoder: Sendable {
         let outH = (frame.height + scale - 1) / scale
         if let borrowedDestination {
             let floating = configuration.outputPixelFormat == .float32
-            guard configuration.outputPixelFormat == nil || (floating && numComponents == 1),
+            let xyb = parsed.iccProfile == XYBICCProfile.data
+            guard !normaliseXYBOutput || (xyb && floating),
+                  configuration.outputPixelFormat == nil || (floating && (numComponents == 1 || normaliseXYBOutput)),
                   configuration.outputColorModel == nil,
-                  parsed.iccProfile != XYBICCProfile.data || !floating,
+                  !xyb || !floating || normaliseXYBOutput,
                   (!floating || borrowedDestination.bytesPerSample == 4) else {
                 throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT output")
             }

@@ -96,7 +96,7 @@ enum SharedDCTStorage {
                             try NativeOperation.check()
                             let y = yy + row * planes[0].width
                             if xyb {
-                                guard nc == 3, !floatOutput, let pp1 = cp.baseAddress, let pp2 = rp.baseAddress else {
+                                guard nc == 3, !floatOutput || bps == 4, let pp1 = cp.baseAddress, let pp2 = rp.baseAddress else {
                                     throw JLIError.unsupportedJPEGFeature("Unsupported shared XYB output")
                                 }
                                 for x in 0..<width {
@@ -105,10 +105,14 @@ enum SharedDCTStorage {
                                     for c in 0..<3 {
                                         let sample = c == 0 ? rgb.r : c == 1 ? rgb.g : rgb.b
                                         guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite XYB reconstruction") }
-                                        let value = UInt8(clamping: Int(sample.rounded()))
                                         let offset = row * destination.rowBytes + (x * 3 + c) * bps
-                                        destination.bytes[offset] = value
-                                        if bps == 2 { destination.bytes[offset + 1] = 0 }
+                                        if floatOutput {
+                                            let bits = (sample / 255).bitPattern
+                                            for byte in 0..<4 { destination.bytes[offset + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+                                        } else {
+                                            destination.bytes[offset] = UInt8(clamping: Int(sample.rounded()))
+                                            if bps == 2 { destination.bytes[offset + 1] = 0 }
+                                        }
                                     }
                                 }
                                 continue

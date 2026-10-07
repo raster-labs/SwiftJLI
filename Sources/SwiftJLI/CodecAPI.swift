@@ -12,7 +12,7 @@ public enum ProgressiveMode: Sendable, Equatable { case sequential, spectralSele
 /// The opt-in clamps finite normalised samples to [0,1], multiplies by 255 and
 /// rounds to nearest (ties away from zero). NaN and infinity always fail.
 public enum FloatInputPolicy: Sendable, Equatable { case reject, normalisedClampedToUInt8 }
-public enum SampleConversion: Sendable, Equatable { case normalisedFloat32ClampedToUInt8 }
+public enum SampleConversion: Sendable, Equatable { case normalisedFloat32ClampedToUInt8, rawSRGBToNormalisedFloat32 }
 
 /// Explicit lossy controls; selecting these never changes the default lossless mode.
 public struct DCTOptions: Sendable, Equatable {
@@ -109,9 +109,11 @@ public struct EncoderConfiguration: Sendable, Equatable {
     private init() { mode = .lossless; codecOptions = .init() }
     public static let `default` = Self()
 }
-/// Float output is explicit and uses raw JPEG sample units, without normalisation.
-/// It is currently supported for greyscale DCT JPEG without an ICC profile.
-public enum DecoderSampleFormat: Sendable, Equatable { case nativeInteger, float32RawSamples }
+/// Float output has an explicit range policy. Raw samples are greyscale DCT
+/// without ICC; normalised sRGB is the fractional XYB inverse divided by 255.
+public enum DecoderSampleFormat: Sendable, Equatable {
+    case nativeInteger, float32RawSamples, float32NormalisedSRGB
+}
 
 public struct DecoderConfiguration: Sendable, Equatable {
     public let codecOptions: CodecOptions

@@ -93,6 +93,12 @@ import SwiftJLI
               srgb.image.descriptor.components == [.red, .green, .blue] else {
             throw SwiftJLI.CodecError(.internalFailure, "XYB output colour interpretation is incorrect.")
         }
-        print("Independent SwiftJLI consumer: predictive, progressive, raw-float preview, normalised float encoding and XYB colour passed.")
+        let normalised = try await SwiftJLI.Decoder(configuration: .init(sampleFormat: .float32NormalisedSRGB)).decode(xybJPEG.data)
+        guard normalised.image.descriptor.sampleType == .floatingPoint,
+              normalised.report.sampleConversion == .rawSRGBToNormalisedFloat32,
+              normalised.image.descriptor.iccProfile == srgb.image.descriptor.iccProfile else {
+            throw SwiftJLI.CodecError(.internalFailure, "Normalised XYB sample interpretation changed.")
+        }
+        print("Independent SwiftJLI consumer: predictive, progressive, raw-float preview, normalised float encoding and integer/Float32 XYB colour passed.")
     }
 }
