@@ -101,4 +101,3 @@ struct Color16Image {
     let height: Int
     let rgb: [UInt16]   // interleaved, 0–4095
 }
-
