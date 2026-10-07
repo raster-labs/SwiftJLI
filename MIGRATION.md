@@ -43,7 +43,7 @@ DCT input is unsigned 8-bit storage/precision or 16-bit storage with exactly 12 
 
 `.scalarCPU` and `.required(.scalarCPU)` select the scalar kernels on every platform. Automatic DCT uses Accelerate on Apple and scalar elsewhere; required acceleration fails when unavailable. SOF3 remains scalar. Reports identify the selected backend and preferred-backend fallback. Availability lists are unions across profiles: DCT does not support the entire 2–16-bit predictive range.
 
-Progressive DC scans currently require all components in frame order, with single-component AC scans. Multiple sequential scans, changing quantisation/restart definitions between scans, XYB and ambiguous RGB/CMYK JPEG interpretations are rejected. These restrictions are additional acceptance work, not silent conversions.
+Progressive DC scans currently require all components in frame order, with single-component AC scans. Multiple sequential scans, changing quantisation/restart definitions between scans and ambiguous RGB/CMYK JPEG interpretations are rejected. The recognised XYB profile has an explicit colour policy described below. The remaining restrictions are additional acceptance work, not silent conversions.
 
 ## Decoder output and adaptive profiles
 
