@@ -676,7 +676,7 @@ struct JLIEncoder: Sendable {
         // above, so each segment's first row predicts like the scan's first row.
         let segRows = restartInterval > 0 ? restartInterval / w : 0
 
-        let chunks = min(ProcessInfo.processInfo.activeProcessorCount,
+        let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
                          max(1, (count * nc) / JLIEncoder.losslessParallelMinSamples))
         var dcFreq: [Int]
         if NativeOperation.current != nil {
@@ -756,7 +756,7 @@ struct JLIEncoder: Sendable {
                 pieces.append(s..<min(s + segSamples, totalSamples)); s += segSamples
             }
         } else {
-            let n = min(ProcessInfo.processInfo.activeProcessorCount,
+            let n = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
                         max(1, totalSamples / JLIEncoder.losslessParallelMinSamples))
             let span = (totalSamples + n - 1) / n
             var s = 0
@@ -1239,7 +1239,7 @@ struct JLIEncoder: Sendable {
         // Partition blocks across cores when there's enough work; each worker owns
         // its scratch and writes only its disjoint quant[base...] slice, so the
         // result is byte-identical to a serial run.
-        let chunks = min(ProcessInfo.processInfo.activeProcessorCount,
+        let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
                          max(1, blockCount / JLIEncoder.trellisMinBlocksPerChunk))
         dctBuf.withUnsafeBufferPointer { dbuf in
             quant.withUnsafeMutableBufferPointer { qbuf in
@@ -1371,7 +1371,7 @@ struct JLIEncoder: Sendable {
     /// for small inputs (see ``acCountMinBlocksPerChunk``).
     private static func parallelACFreqs(_ quant: [Int32], blockCount: Int) -> [Int] {
         guard blockCount > 0 else { return [Int](repeating: 0, count: 256) }
-        let chunks = min(ProcessInfo.processInfo.activeProcessorCount,
+        let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
                          max(1, blockCount / acCountMinBlocksPerChunk))
         if chunks <= 1 { return countACFreqs(quant, blocks: 0..<blockCount) }
         let span = (blockCount + chunks - 1) / chunks

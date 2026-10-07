@@ -45,10 +45,16 @@ Verify that every predecessor principal-source/test path has a migrated or retir
 python3 Scripts/verify-provenance.py --predecessor /path/to/JLISwift
 ```
 
+## DSP backend preparation
+
+Scalar vector/matrix primitives now remain available on Apple as well as Linux. Operation context selects the scalar reference; legacy native calls retain their Accelerate default on Apple. Operation-owned native work stays on its invoking task, so Dispatch workers cannot lose the selected backend. Public lossy backend selection remains part of the unfinished adapter.
+
+A direct Accelerate comparison found half-way byte conversions use nearest-even rounding: `[0.5, 1.5, 2.5, 3.5]` becomes `[0, 2, 2, 4]`. The scalar conversion now agrees. Tests cover rounding, matrix dimensions/strides and DCT accuracy. Linux Swift 6.4 passes 291 tests in 31 suites. The local macOS build passes; scalar/Accelerate reconstruction passed the 0.001 sample-unit tolerance and the tested block's maximum coefficient difference was 0.000015258789. Re-running the native identity harness still matches all 71 predecessor records exactly.
+
 ## Remaining migration requirements
 
 - Public baseline/extended/progressive lossy mode controls and shared-storage integration; honest per-operation capabilities, colour and float semantics.
-- Fully portable selectable scalar/accelerated backends; Apple DSP comparisons and exact rounding qualification.
+- Wire and qualify public lossy backend selection and performance; scalar/Accelerate kernel dispatch is now implemented internally, with the public SOF3 path still truthfully advertising scalar only.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.
 - Measure memory/copy instrumentation and release performance against the pinned predecessor; qualify the shared-storage cross-codec extension.

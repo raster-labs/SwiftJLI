@@ -8,6 +8,10 @@ struct NativeOperation: Sendable {
     @TaskLocal static var current: NativeOperation?
     let started = ContinuousClock.now
     let seconds: Double
+    let backend: Backend
+    init(seconds: Double, backend: Backend = .scalarCPU) {
+        self.seconds = seconds; self.backend = backend
+    }
     static func check() throws {
         try Task.checkCancellation()
         if let context = current, context.started.duration(to: .now) >= .seconds(context.seconds) {

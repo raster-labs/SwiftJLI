@@ -175,8 +175,8 @@ enum ChromaSampling {
                                     }
                                 }
                             }
-                            let cores = max(1, ProcessInfo.processInfo.activeProcessorCount)
-                            if tw * th >= 65_536 && th >= 2 * cores {
+                            let cores = max(1, (NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1))
+                            if NativeOperation.current == nil && tw * th >= 65_536 && th >= 2 * cores {
                                 let chunkRows = (th + cores - 1) / cores
                                 let chunks = (th + chunkRows - 1) / chunkRows
                                 DispatchQueue.concurrentPerform(iterations: chunks) { c in

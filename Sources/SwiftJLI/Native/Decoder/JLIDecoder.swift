@@ -369,7 +369,7 @@ struct JLIDecoder: Sendable {
             var plane = [Float](unsafeUninitializedCapacity: compWidth * compHeight) {
                 _, c in c = compWidth * compHeight
             }
-            let chunks = min(ProcessInfo.processInfo.activeProcessorCount,
+            let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
                              max(1, blockCount / JLIDecoder.reconstructMinBlocksPerChunk))
             componentZigzag[compIdx].withUnsafeBufferPointer { zzb in
                 qtF.withUnsafeBufferPointer { qtb in
@@ -840,9 +840,9 @@ struct JLIDecoder: Sendable {
         // 2048/4095 for 12-bit; per-element ops, so chunking changes nothing.
         var center = Float(1 << (precision - 1))
         var lo: Float = 0.0, hi = Float((1 << precision) - 1)
-        let n = vDSP_Length(m * 64)
-        vDSP_vsadd(px, 1, &center, px, 1, n)
-        vDSP_vclip(px, 1, &lo, &hi, px, 1, n)
+        let n = JLI_DSPCount(m * 64)
+        jliDSP_vsadd(px, 1, &center, px, 1, n)
+        jliDSP_vclip(px, 1, &lo, &hi, px, 1, n)
 
         for bi in 0..<m {
             let b = base + bi
