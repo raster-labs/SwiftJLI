@@ -47,6 +47,15 @@ Progressive DC scans currently require all components in frame order, with singl
 
 ## Decoder output and adaptive profiles
 
+`Decoder.inspectJPEG(_:options:)` is the JPEG-specific extension for predecessor `JLIJPEGInfo` users. It returns common `imageInfo` plus encoded coding process, progressive/extended-precision flags, recognised XYB, relative chroma sampling, exact component sampling factors, scan count and restart interval. Predictive streams also expose predictor and point transform; nonzero point transform is not exact lossless fidelity. This extension is necessary because the common full-resolution descriptor cannot represent compressed scan/sampling structure (COMMON_API API-13). It uses the same bounded parser and errors as `inspect`, without a pixel decode. Neither inspection call certifies entropy validity, and decoder output scale/format does not alter encoded inspection geometry.
+
+```swift
+let details = try SwiftJLI.Decoder().inspectJPEG(jpegData)
+print(details.codingProcess, details.chromaSubsampling, details.bitsPerComponent)
+```
+
+Signed-labelled predecessor input deserves separate review: its SOF3 encoder preserves the bit patterns, but its decoder does not restore `isSigned`. The successor's standalone JPEG path rejects signed descriptors as COMMON_API API-06 requires. A caller needing signed interpretation must qualify an explicit external-metadata contract; a RAM flag or a private JPEG marker would not establish that contract.
+
 `DecoderConfiguration(scale:)` accepts 1, 2, 4 or 8. DCT output dimensions are `ceil(encodedDimension / scale)`; the existing native DCT reduction is used directly. Predictive JPEG requires scale 1. `inspect` always describes encoded geometry/precision, even on a decoder configured for reduced output. Resource admission still includes the full coefficient workspace.
 
 `DecoderConfiguration(scale: 2, sampleFormat: .float32RawSamples)` explicitly returns raw reconstructed sample values as little-endian IEEE Float32, without integer rounding or normalisation. For example, a reconstructed 12-bit sample near 2048 remains near 2048, not 0.5. This profile supports greyscale DCT JPEG without ICC interpretation; colour, ICC-bearing input and SOF3 are rejected before the destination borrow. The result descriptor is `.floatingPoint` with 32 storage/meaningful bits. Supplied destinations must declare that same interpretation; default integer decode does not infer a float conversion from the destination.

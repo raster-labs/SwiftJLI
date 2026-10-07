@@ -190,9 +190,21 @@ CI [37656560684](https://github.com/raster-labs/SwiftJLI/actions/runs/3765656068
 
 The [expanded performance harness](Benchmarks/Expanded/README.md) now checks exact old/new codestreams and decoded samples over predictive UInt16, DCT UInt12, sequential/progressive RGB8 and XYB RGB8. A fresh macOS release build exited 0, followed by all five smoke cases. `-Xswiftc -gnone` avoids the observed local release link-driver stall without changing shipping package flags. Full five-warm-up/twenty-iteration runs at 512 and 1024 remain pending until competing fuzz/build work is finished. Smoke timings are not acceptance results. An unmodified-predecessor Linux comparison build failed on its unconditional CryptoKit import; no Linux baseline result is claimed.
 
+## Specialised JPEG inspection
+
+`Decoder.inspectJPEG(_:options:)` now closes the native inspection-information gap without changing the common operation's call shape. It provides encoded coding process, sampling classification and exact factors, progressive/precision/XYB flags, scan count, restart interval and predictive settings, alongside common `ImageInfo`. It reuses the same bounded parser and does not decode pixels. A nonzero predictive point transform is explicitly distinguished from exact reconstruction. Known XYB is detected from validated interpretation, correcting the predecessor inspector's hard-coded false flag.
+
+- Linux ARM64 / Swift 6.4: **315 tests in 40 suites passed**, including the new feature matrix and 4:4:0 structural-inspection case. All 18 8/12-bit sampling/scan combinations preserve encoded geometry despite reduced/Float32 output configuration.
+- Local macOS ARM64 / Swift 6.4: the independent public consumer built and passed the new extension call as well as its existing codec matrices (exit 0).
+- All four public inspection/decode entries passed a three-second deterministic mutation smoke: common inspect 680320 attempts, JPEG-specific inspect 650779, allocating decode 116852, caller-destination decode 85097. These are smoke results, not one-hour qualification.
+- The supervisor now executes a per-campaign binary copy and verifies that sources did not change during its build. A separate build cache leaves the earlier running `.build-fuzz` executable intact. The existing long campaign remains pinned to `1072de4`; it does not qualify this new entry point or later source revisions.
+- CI [37658940472](https://github.com/raster-labs/SwiftJLI/actions/runs/37658940472) passed all eight jobs at preceding `197b209`, including the committed allocation experiment/documentation checkpoint. Fresh inspection-head CI remains required.
+
+Signed standalone input remains rejected under COMMON_API API-06: the predecessor preserved bytes but lost signed provenance. No private JPEG marker or implicit signed-to-unsigned mapping is introduced. The guide records this required disposition; an external signed-metadata contract is separate work.
+
 ## Remaining migration requirements
 
-- Resolve the concrete profile/inspection/range gaps in PROFILE_AUDIT.md and qualify broader ICC/interoperability coverage. Existing XYB/Float32/adaptive/scale support does not close the newly documented RGBA, preconverted YCbCr and RGB-to-greyscale gaps; unsupported combinations remain explicit errors.
+- Resolve the remaining profile/range gaps in PROFILE_AUDIT.md and qualify broader ICC/interoperability coverage. Specialised inspection is now implemented; RGBA, preconverted YCbCr, RGB-to-greyscale and finite distance range remain open. Unsupported combinations remain explicit errors.
 - Qualify public DCT backend performance and resource instrumentation. Backend selection and direct storage are now implemented; full platform qualification remains open.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.

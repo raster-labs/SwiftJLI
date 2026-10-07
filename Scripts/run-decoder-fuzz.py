@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import time
 import uuid
@@ -31,27 +32,38 @@ def main():
         parser.error('output directory already contains a campaign; choose a fresh directory')
     image = subprocess.check_output(['docker', 'image', 'inspect', args.image, '--format', '{{.Id}}'], text=True).strip()
     docker = ['docker', 'run', '--rm', '--ulimit', 'core=0', '-v', f'{root}:/src', '-w', '/src', image]
-    build = ['swift', 'build', '--package-path', 'Examples/DecoderFuzz', '--scratch-path', '.build-fuzz', '-c', 'release', '-j', '4']
+    # The old .build-fuzz binary may still be executing a pinned campaign.
+    # New campaigns use a separate cache, then run a private executable copy so
+    # later builds cannot replace the mapped binary of an active worker.
+    scratch = '.build-fuzz-campaigns'
+    build = ['swift', 'build', '--package-path', 'Examples/DecoderFuzz', '--scratch-path', scratch, '-c', 'release', '-j', '4']
+    def source_hashes():
+        files = [root / 'Package.swift'] + sorted((root / 'Sources').rglob('*.swift')) + [root / 'Examples/DecoderFuzz/Package.swift'] + sorted((root / 'Examples/DecoderFuzz/Sources').rglob('*.swift'))
+        return {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+    sources = source_hashes()
     with (output / 'build.log').open('w') as log:
         subprocess.run(docker + build, stdout=log, stderr=subprocess.STDOUT, check=True, timeout=600)
-    files = [root / 'Package.swift'] + sorted((root / 'Sources').rglob('*.swift')) + [root / 'Examples/DecoderFuzz/Package.swift'] + sorted((root / 'Examples/DecoderFuzz/Sources').rglob('*.swift'))
-    sources = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+    if source_hashes() != sources:
+        raise RuntimeError('Sources changed during fuzz build; no campaign was started')
+    binary = output / 'DecoderFuzz'
+    shutil.copy2(root / scratch / 'release/DecoderFuzz', binary)
     record = {
         'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
         'working_tree_status': subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, text=True),
-        'source_hashes': sources, 'binary_sha256': hashlib.sha256((root / '.build-fuzz/release/DecoderFuzz').read_bytes()).hexdigest(),
+        'source_hashes': sources, 'binary_sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
+        'binary_path': str(binary), 'supervisor_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'compiler': subprocess.check_output(docker + ['swift', '--version'], text=True).strip(),
         'image_id': image, 'seconds_per_entry': args.seconds, 'build_command': build,
         'campaign_type': 'deterministic mutation, scalar, release without sanitizers', 'entries': []}
     children = []
     try:
-        for entry in ('inspect', 'allocate', 'destination'):
+        for entry in ('inspect', 'inspectJPEG', 'allocate', 'destination'):
             name = f'swiftjli-fuzz-{entry}-{uuid.uuid4().hex[:12]}'
             log_path = output / f'{entry}.jsonl'
             log = log_path.open('w')
             command = ['docker', 'run', '--rm', '--name', name, '--cpus', '1', '--memory', '256m', '--ulimit', 'core=0',
                 '-v', f'{root}:/src:ro', '-v', f'{output}:/evidence', image,
-                '/src/.build-fuzz/release/DecoderFuzz', entry, str(args.seconds), f'/evidence/{entry}-failure.bin']
+                '/evidence/DecoderFuzz', entry, str(args.seconds), f'/evidence/{entry}-failure.bin']
             child = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT)
             children.append((child, log, log_path, name))
             record['entries'].append({'entry': entry, 'command': command, 'status': 'running'})

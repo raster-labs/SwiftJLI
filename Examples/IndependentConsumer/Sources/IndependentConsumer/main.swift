@@ -24,6 +24,12 @@ import SwiftJLI
         guard info.descriptor.meaningfulBits == 16 else {
             throw SwiftJLI.CodecError(.internalFailure, "JPEG precision changed.")
         }
+        let jpegInfo = try decoder.inspectJPEG(encoded.data)
+        guard jpegInfo.codingProcess == .predictive, jpegInfo.pointTransform == 0,
+              jpegInfo.bitsPerComponent == 16, jpegInfo.chromaSubsampling == .greyscale,
+              jpegInfo.imageInfo.descriptor == info.descriptor else {
+            throw SwiftJLI.CodecError(.internalFailure, "JPEG-specific inspection changed encoded interpretation.")
+        }
         let allocated = try await decoder.decode(encoded.data)
         let next = try SwiftJLI.ImageDestination.allocate(descriptor: descriptor)
         let shared = try await decoder.decode(encoded.data, into: next)

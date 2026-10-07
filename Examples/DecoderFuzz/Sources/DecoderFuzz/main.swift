@@ -99,9 +99,9 @@ struct Generator {
     }
     static func main() async throws {
         let args = CommandLine.arguments
-        guard (args.count == 4 || args.count == 5), ["inspect", "allocate", "destination"].contains(args[1]),
+        guard (args.count == 4 || args.count == 5), ["inspect", "inspectJPEG", "allocate", "destination"].contains(args[1]),
               let seconds = Double(args[2]), seconds.isFinite, seconds > 0, seconds <= 86400 else {
-            throw CodecError(.invalidArgument, "Usage: DecoderFuzz inspect|allocate|destination seconds failure-file [replay-attempt]")
+            throw CodecError(.invalidArgument, "Usage: DecoderFuzz inspect|inspectJPEG|allocate|destination seconds failure-file [replay-attempt]")
         }
         let replay = args.count == 5 ? Int(args[4]) : nil
         guard args.count == 4 || (replay.map { $0 > 0 } ?? false) else {
@@ -125,6 +125,7 @@ struct Generator {
             do {
                 let decoder = try Decoder(configuration: seed.configuration)
                 if entry == "inspect" { _ = try decoder.inspect(data, options: options) }
+                else if entry == "inspectJPEG" { _ = try decoder.inspectJPEG(data, options: options) }
                 else if entry == "allocate" { _ = try await decoder.decode(data, options: options) }
                 else {
                     let destination = try ImageDestination.allocate(descriptor: seed.descriptor, limits: limits)
