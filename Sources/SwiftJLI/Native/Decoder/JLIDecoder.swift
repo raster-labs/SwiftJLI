@@ -240,12 +240,14 @@ struct JLIDecoder: Sendable {
         // the 1/2 & 1/4 box-average preview path; the full-resolution path
         // fuses both into the IDCT pack pass.
         let needsNatural = scale == 2 || scale == 4
-        var natural = [Int32](unsafeUninitializedCapacity: needsNatural ? scratchN : 0) {
-            _, c in c = needsNatural ? scratchN : 0
-        }
-        var dctBuf = [Float](unsafeUninitializedCapacity: needsNatural ? scratchN : 0) {
-            _, c in c = needsNatural ? scratchN : 0
-        }
+        // Do not run unsafeUninitializedCapacity with zero capacity: Swift
+        // 6.2's finaliser writes the shared empty-array singleton's count,
+        // producing a race between otherwise independent decoders under TSan.
+        // Choosing [] before entering that initialiser avoids the shared write.
+        var natural: [Int32] = needsNatural
+            ? [Int32](unsafeUninitializedCapacity: scratchN) { _, count in count = scratchN } : []
+        var dctBuf: [Float] = needsNatural
+            ? [Float](unsafeUninitializedCapacity: scratchN) { _, count in count = scratchN } : []
 
         for compIdx in 0..<numComponents {
             let comp = components[compIdx]
