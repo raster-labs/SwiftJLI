@@ -32,6 +32,7 @@ struct XYBTests {
         #expect(xyb.numberOfComponents == 3)
         let srgb = try #require(CGColorSpace(name: CGColorSpace.sRGB))
         var maxErr: Double = 0
+        var comparisons = 0
         for r in stride(from: 16, through: 240, by: 32) {
             for g in stride(from: 16, through: 240, by: 32) {
                 for b in stride(from: 16, through: 240, by: 64) {
@@ -41,13 +42,18 @@ struct XYBTests {
                                           components: [CGFloat(sx / 255), CGFloat(sy / 255),
                                                        CGFloat(sb / 255), 1]),
                           let conv = c.converted(to: srgb, intent: .perceptual, options: nil),
-                          let comps = conv.components, comps.count >= 3 else { continue }
+                          let comps = conv.components, comps.count >= 3 else {
+                        Issue.record("Independent ICC conversion unavailable")
+                        continue
+                    }
+                    comparisons += 1
                     maxErr = max(maxErr, abs(Double(comps[0]) * 255 - Double(mine.r)))
                     maxErr = max(maxErr, abs(Double(comps[1]) * 255 - Double(mine.g)))
                     maxErr = max(maxErr, abs(Double(comps[2]) * 255 - Double(mine.b)))
                 }
             }
         }
+        #expect(comparisons == 256)
         #expect(maxErr < 2.0, "XYB ICC transform disagrees with our inverse (max err \(maxErr))")
     }
 

@@ -436,12 +436,13 @@ struct JLIDecoder: Sendable {
         if let borrowedDestination {
             let floating = configuration.outputPixelFormat == .float32
             guard configuration.outputPixelFormat == nil || (floating && numComponents == 1),
-                  configuration.outputColorModel == nil, parsed.iccProfile != XYBICCProfile.data,
+                  configuration.outputColorModel == nil,
+                  parsed.iccProfile != XYBICCProfile.data || !floating,
                   (!floating || borrowedDestination.bytesPerSample == 4) else {
                 throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT output")
             }
             try SharedDCTStorage.write(componentPlanes, width: outW, height: outH,
-                precision: frame.precision, floatOutput: floating, into: borrowedDestination)
+                precision: frame.precision, floatOutput: floating, xyb: parsed.iccProfile == XYBICCProfile.data, into: borrowedDestination)
             return try JLIImage(geometryOnlyWidth: outW, height: outH,
                 pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
                 colorModel: numComponents == 1 ? .grayscale : .rgb,

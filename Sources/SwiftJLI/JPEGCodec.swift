@@ -127,13 +127,20 @@ enum JPEGCodec {
             }
             let plane = try layout(d, allowFloat: allowsFloat, limits: limits)
             let precision = floating ? 8 : d.meaningfulBits
+            let xyb = configuration.codecOptions.dct.colourSpace == .xybFromSRGB
+            if xyb {
+                guard precision == 8, d.components == [.red, .green, .blue],
+                      d.iccProfile == nil || d.iccProfile == Data(SRGBICCProfile.data) else {
+                    throw CodecError(.unsupportedFeature, "XYB input requires 8-bit sRGB or explicitly quantised normalised sRGB; an unknown ICC profile cannot be reinterpreted.")
+                }
+            }
             guard !isDCT || floating || (d.meaningfulBits == 8 && d.storageBits == 8) || (d.meaningfulBits == 12 && d.storageBits == 16) else {
                 throw CodecError(.unsupportedFeature, "DCT encoding requires 8-bit samples or 12-bit samples in 16-bit storage.")
             }
             if isDCT && (configuration.codecOptions.dct.adaptiveQuantisationField || configuration.codecOptions.dct.jpegliAdaptiveQuantisation), precision != 8 {
                 throw CodecError(.unsupportedFeature, "Adaptive DCT fields require 8-bit input.")
             }
-            let metadataBytes = try image.metadata.validate(limits: limits, additionalBytes: d.iccProfile?.count ?? 0)
+            let metadataBytes = try image.metadata.validate(limits: limits, additionalBytes: xyb ? XYBICCProfile.data.count : d.iccProfile?.count ?? 0)
             // ICC defines interpretation and is retained even when ancillary data is discarded.
             let keys = options.metadataPolicy == .preserve ? Set(image.metadata.entries.keys) : image.metadata.requiredKeys
             guard keys.isSubset(of: ["Exif"]) else {
@@ -203,7 +210,8 @@ enum JPEGCodec {
                 report: .init(backend: NativeOperation.current?.backend ?? .scalarCPU, fallbackReason: fallback(options.executionPolicy),
                               fidelity: isDCT ? .lossy : errorBound == 0 ? .exactSamples : .boundedError(errorBound),
                               pixelAllocationCount: 0, peakPixelBytes: 0,
-                              sampleConversion: floating ? .normalisedFloat32ClampedToUInt8 : nil))
+                              sampleConversion: floating ? .normalisedFloat32ClampedToUInt8 : nil,
+                              colourConversion: xyb ? .sRGBToXYB : nil))
         }
     }
 
@@ -213,11 +221,17 @@ enum JPEGCodec {
         let parserBudget = try checkedAdd(checkedMultiply(data.count, 64), 1_048_576)
         try admit(workspace: parserBudget, pixels: 0, compressed: data.count, metadata: 0, limits: limits)
         let bytes = Array(data)
-        try JPEGEnvelope.validate(bytes, limits: limits)
+        let adobeTransform = try JPEGEnvelope.validate(bytes, limits: limits)
         var reader = MarkerReader(data: bytes)
         let parsed = try reader.parse()
         let f = parsed.frameInfo
-        if !f.isLossless { try validateDCT(parsed); return parsed }
+        if !f.isLossless {
+            let xyb = parsed.iccProfile == XYBICCProfile.data
+            guard xyb ? adobeTransform == 0 : adobeTransform != 0 else {
+                throw CodecError(.unsupportedFeature, "Direct-component JPEG requires the recognised XYB profile and Adobe transform 0.")
+            }
+            try validateDCT(parsed); return parsed
+        }
         guard parsed.scans.count == 1, let scan = parsed.scans.first,
               scan.header.components.map(\.componentSelector) == f.components.map(\.id),
               f.components.allSatisfy({ $0.horizontalSampling == 1 && $0.verticalSampling == 1 }),
@@ -234,7 +248,7 @@ enum JPEGCodec {
         return parsed
     }
 
-    static func info(_ parsed: ParsedJPEG, scale: Int = 1, sampleFormat: DecoderSampleFormat = .nativeInteger, options: DecodeOptions) throws -> ImageInfo {
+    static func info(_ parsed: ParsedJPEG, scale: Int = 1, sampleFormat: DecoderSampleFormat = .nativeInteger, decodedOutput: Bool = false, options: DecodeOptions) throws -> ImageInfo {
         let f = parsed.frameInfo, nc = f.components.count
         guard (2...16).contains(f.precision), nc == 1 || nc == 3 else {
             throw CodecError(.unsupportedFeature, "Unsupported JPEG precision or component count.")
@@ -246,6 +260,7 @@ enum JPEGCodec {
         guard !f.isLossless || scale == 1 else {
             throw CodecError(.unsupportedFeature, "Reduced-scale decode requires DCT JPEG.")
         }
+        let xyb = parsed.iccProfile == XYBICCProfile.data
         let floating = sampleFormat == .float32RawSamples
         guard !floating || (!f.isLossless && nc == 1 && parsed.iccProfile == nil) else {
             throw CodecError(.unsupportedFeature, "Raw Float32 output requires greyscale DCT JPEG without ICC interpretation.")
@@ -258,9 +273,10 @@ enum JPEGCodec {
             sampleStride: bps, pixelStride: nc * bps, rowBytes: row, byteCount: capacity)
         let descriptor = try ImageDescriptor(width: width, height: height,
             sampleType: floating ? .floatingPoint : .unsignedInteger, storageBits: bps * 8,
-            meaningfulBits: floating ? 32 : f.precision, components: nc == 1 ? [.grey] : [.red, .green, .blue],
-            colour: nc == 1 ? .greyscale : .rgb, planes: [plane],
-            iccProfile: parsed.iccProfile.map { Data($0) }, limits: options.resourceLimits)
+            meaningfulBits: floating ? 32 : f.precision,
+            components: xyb && !decodedOutput ? [.uninterpreted("X"), .uninterpreted("Y"), .uninterpreted("B")] : nc == 1 ? [.grey] : [.red, .green, .blue],
+            colour: xyb && !decodedOutput ? .unknown : nc == 1 ? .greyscale : .rgb, planes: [plane],
+            iccProfile: xyb && decodedOutput ? Data(SRGBICCProfile.data) : parsed.iccProfile.map { Data($0) }, limits: options.resourceLimits)
         let metadata = ImageMetadata(entries: options.metadataPolicy == .preserve
             ? parsed.exif.map { ["Exif": Data($0)] } ?? [:] : [:])
         try metadata.validate(limits: options.resourceLimits, additionalBytes: descriptor.iccProfile?.count ?? 0)
@@ -286,7 +302,7 @@ enum JPEGCodec {
                 started: NativeOperation.current?.started ?? .now)
             return try NativeOperation.$current.withValue(context) {
                 let information = try info(parsed, scale: configuration.scale,
-                    sampleFormat: configuration.sampleFormat, options: options)
+                    sampleFormat: configuration.sampleFormat, decodedOutput: true, options: options)
                 let source = information.descriptor
                 let descriptor = supplied?.descriptor ?? source
                 let plane = try layout(descriptor, allowFloat: configuration.sampleFormat == .float32RawSamples, limits: options.resourceLimits)
@@ -332,7 +348,8 @@ enum JPEGCodec {
                     fidelity: isDCT ? .lossy : parsed.scans[0].header.successiveApproxLow == 0 ? .exactSamples
                         : .boundedError((1 << parsed.scans[0].header.successiveApproxLow) - 1),
                     pixelAllocationCount: supplied == nil ? 1 : 0,
-                    peakPixelBytes: supplied == nil ? descriptor.requiredByteCount : 0))
+                    peakPixelBytes: supplied == nil ? descriptor.requiredByteCount : 0,
+                    colourConversion: parsed.iccProfile == XYBICCProfile.data ? .xybToSRGB : nil))
             }
         }
     }

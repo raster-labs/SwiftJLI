@@ -124,9 +124,23 @@ The public DCT encoder now accepts normalised little-endian Float32 greyscale/RG
 - SDK run [37649435202](https://github.com/raster-labs/SwiftJLI/actions/runs/37649435202) completed the first five SDK builds, then failed at the watchOS arm64_32 target because imported `vDSP_Stride` is Int64 while Swift Int is 32-bit. Every Accelerate wrapper now converts strides explicitly. The SDK script prints each target and SDK version; the correction requires another CI run. Later SDK targets were not reached.
 - The macOS runner logs identify **Apple Swift 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101), Xcode 26.6 (17F113)**, including the earlier successful bcd1201 run. The previous 6.2 job name was inaccurate; workflow naming and the latest evidence above now reflect the actual toolchain. Linux CI independently covers Swift 6.2 and 6.4. This is not proof of Apple Swift 6.2 runtime qualification.
 
+## Public XYB and ICC interpretation
+
+Explicit `xybFromSRGB` encoding now reads padded RGB8 or opted-in normalised RGB Float32 directly. The public API validates the predecessor's actual sequential 4:4:4 profile, table and restart restrictions. It rejects arbitrary source ICC profiles. The XYB inverse writes into final RGB storage at scales 1/2/4/8 and attaches a matching sRGB profile; it does not carry the encoded XYB profile onto already-converted RGB samples. Inspection keeps the original component/profile interpretation. Separate sample and colour conversion fields report quantisation and colour transforms.
+
+The unchanged ICC `sRGB2014.icc` bytes (3024 bytes, SHA-256 `384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a`) are embedded under the ICC's profile licence, with copyright retained. The provenance verifier checks the original fixture, embedded array and notice. This static profile is metadata, not a runtime CMS dependency.
+
+Executed evidence:
+
+- Linux ARM64 / Swift 6.4: **308 tests in 38 suites passed**, including XYB native/public byte identity, 8/32-bit source storage, odd/one-pixel widths, both decode storage shapes, all scales, source padding, ICC replacement and malformed/unknown colour interpretation rejection.
+- Local macOS ARM64 / Swift 6.4: the same matrix passed on scalar and Accelerate. ASan and TSan executable harnesses exited 0. All 71 predecessor identity records still match byte-for-byte.
+- The embedded output profile agrees with system sRGB on 216 RGB grid points within one sample unit via CoreGraphics/ColourSync. The retained XYB ICC inverse comparison now requires all 256 conversions to occur; a missing conversion is a failure, not a silent skip. These are colour interpretation checks, not a broad independent JPEG corpus qualification.
+- The independent public consumer passed XYB encoding/inspection/decoding and both conversion reports.
+- At preceding commit `371d59d`, CI [37651331367](https://github.com/raster-labs/SwiftJLI/actions/runs/37651331367) passed **all eight jobs**, including macOS debug/release, ASan/TSan and all **nine Apple SDK compilation targets**, including watchOS arm64_32. Each used SDK 26.5 / Apple Swift 6.3.3 / Xcode 26.6, with deployment target 26.0. This closes the stride-type compile failure. Runtime/device acceptance and fresh XYB-head CI remain separate gates.
+
 ## Remaining migration requirements
 
-- Qualify and expose remaining XYB/ICC interpretation and additional output semantics. Normalised Float32 input, raw greyscale Float32 output, adaptive fields and decoder scale controls are now public; unsupported combinations remain explicit errors.
+- Qualify remaining Float32 colour-output semantics and broader ICC/interoperability coverage. XYB integer output, normalised Float32 input, raw greyscale Float32 output, adaptive fields and decoder scale controls are now public; unsupported combinations remain explicit errors.
 - Qualify public DCT backend performance and resource instrumentation. Backend selection and direct storage are now implemented; full platform qualification remains open.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.

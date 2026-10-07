@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 """Verify pinned migration origins, exhaustive source/test dispositions and fixtures."""
 import argparse
+import ast
+import re
 import hashlib
 import json
 from pathlib import Path
@@ -39,5 +41,16 @@ if inventory - accounted:
 for item in manifest.get('generatedFixtures', []):
     if hashlib.sha256((root / item['path']).read_bytes()).hexdigest() != item['sha256']:
         raise ValueError(f'Generated fixture drift: {item["path"]}')
+for item in manifest.get('thirdPartyAssets', []):
+    original = (root / item['path']).read_bytes()
+    if hashlib.sha256(original).hexdigest() != item['sha256']:
+        raise ValueError(f'Third-party fixture drift: {item["path"]}')
+    if not (root / item['license']).is_file() or item['copyright'].encode() not in original:
+        raise ValueError(f'Third-party copyright/licence missing: {item["path"]}')
+    swift = (root / item['embeddedSwift']).read_text()
+    literal = re.search(r'static let data: \[UInt8\] = (\[[\s\S]*?\])', swift)
+    if not literal or bytes(ast.literal_eval(literal.group(1))) != original:
+        raise ValueError(f'Embedded profile differs from licensed bytes: {item["embeddedSwift"]}')
 print(f'Provenance passed: {len(inventory)} principal-source/test paths accounted for; '
-      f'{len(manifest["files"])} migrated source hashes and {len(manifest.get("generatedFixtures", []))} generated fixtures verified.')
+      f'{len(manifest["files"])} migrated source hashes and {len(manifest.get("generatedFixtures", []))} generated fixtures verified; '
+      f'{len(manifest.get("thirdPartyAssets", []))} third-party profiles match their embedded bytes and notices.')

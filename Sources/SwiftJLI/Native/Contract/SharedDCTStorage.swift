@@ -4,6 +4,14 @@ import Foundation
 /// Float component planes are algorithm workspace. Source pixels are read from
 /// the caller's scoped borrow; only a row of RGB conversion scratch is needed.
 enum SharedDCTStorage {
+    static func normalisedByte(_ bytes: UnsafeRawBufferPointer, at p: Int) throws -> Float {
+        let bits = UInt32(bytes[p]) | UInt32(bytes[p + 1]) << 8
+            | UInt32(bytes[p + 2]) << 16 | UInt32(bytes[p + 3]) << 24
+        let sample = Float(bitPattern: bits)
+        guard sample.isFinite else { throw CodecError(.invalidArgument, "Float input must contain only finite samples.") }
+        return (min(max(sample, 0), 1) * 255).rounded(.toNearestOrAwayFromZero)
+    }
+
     static func read(_ source: BorrowedSamplePlane, width: Int, height: Int,
                      components: Int, precision: Int, normalisedFloatInput: Bool = false) throws -> (y: [Float], cb: [Float], cr: [Float]) {
         let count = width * height, bps = normalisedFloatInput ? 4 : precision == 8 ? 1 : 2
@@ -32,11 +40,7 @@ enum SharedDCTStorage {
                                         let p = offset + (x * components + c) * bps
                                         let v: Float
                                         if normalisedFloatInput {
-                                            let bits = UInt32(source.bytes[p]) | UInt32(source.bytes[p + 1]) << 8
-                                                | UInt32(source.bytes[p + 2]) << 16 | UInt32(source.bytes[p + 3]) << 24
-                                            let sample = Float(bitPattern: bits)
-                                            guard sample.isFinite else { throw CodecError(.invalidArgument, "Float input must contain only finite samples.") }
-                                            v = (min(max(sample, 0), 1) * 255).rounded(.toNearestOrAwayFromZero)
+                                            v = try normalisedByte(source.bytes, at: p)
                                         } else {
                                             v = Float(Int(source.bytes[p]) | (Int(source.bytes[p + 1]) << 8))
                                         }
@@ -70,13 +74,13 @@ enum SharedDCTStorage {
     /// Padding is untouched. The Float conversion sequence matches the legacy
     /// DSP path, including ties-to-even for colour and ties-away for greyscale.
     static func write(_ planes: [(data: [Float], width: Int, height: Int)],
-                      width: Int, height: Int, precision: Int, floatOutput: Bool = false,
+                      width: Int, height: Int, precision: Int, floatOutput: Bool = false, xyb: Bool = false,
                       into destination: BorrowedSampleDestination) throws {
         let nc = planes.count, bps = destination.bytesPerSample
-        let cb = nc == 3 ? try ChromaSampling.upsample(planes[1].data, width: planes[1].width,
+        let cb = xyb ? planes[1].data : nc == 3 ? try ChromaSampling.upsample(planes[1].data, width: planes[1].width,
             height: planes[1].height, targetWidth: width, targetHeight: height) : []
         try NativeOperation.check()
-        let cr = nc == 3 ? try ChromaSampling.upsample(planes[2].data, width: planes[2].width,
+        let cr = xyb ? planes[2].data : nc == 3 ? try ChromaSampling.upsample(planes[2].data, width: planes[2].width,
             height: planes[2].height, targetWidth: width, targetHeight: height) : []
         var scratch = [Float](repeating: 0, count: width * 5)
         try planes[0].data.withUnsafeBufferPointer { yp in
@@ -91,6 +95,24 @@ enum SharedDCTStorage {
                         for row in 0..<height {
                             try NativeOperation.check()
                             let y = yy + row * planes[0].width
+                            if xyb {
+                                guard nc == 3, !floatOutput, let pp1 = cp.baseAddress, let pp2 = rp.baseAddress else {
+                                    throw JLIError.unsupportedJPEGFeature("Unsupported shared XYB output")
+                                }
+                                for x in 0..<width {
+                                    let rgb = ColorConversion.xybSampleToRGB(x: y[x],
+                                        y: pp1[row * planes[1].width + x], bChannel: pp2[row * planes[2].width + x])
+                                    for c in 0..<3 {
+                                        let sample = c == 0 ? rgb.r : c == 1 ? rgb.g : rgb.b
+                                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite XYB reconstruction") }
+                                        let value = UInt8(clamping: Int(sample.rounded()))
+                                        let offset = row * destination.rowBytes + (x * 3 + c) * bps
+                                        destination.bytes[offset] = value
+                                        if bps == 2 { destination.bytes[offset + 1] = 0 }
+                                    }
+                                }
+                                continue
+                            }
                             if floatOutput {
                                 guard nc == 1 && bps == 4 else { throw JLIError.unsupportedJPEGFeature("Invalid raw Float32 destination") }
                                 for x in 0..<width {

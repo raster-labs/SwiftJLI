@@ -151,7 +151,8 @@ struct JLIEncoder: Sendable {
             }
             let distance = configuration.distance
                 ?? Quantization.distanceForQuality(configuration.quality)
-            return try encodeXYB(image, configuration: configuration, distance: distance)
+            return try encodeXYB(image, configuration: configuration, distance: distance,
+                borrowedSource: borrowedSource, normalisedFloatInput: normalisedFloatInput)
         }
 
         // 12-bit color is supported for RGB/RGBA input. Pre-converted 12-bit
@@ -919,7 +920,8 @@ struct JLIEncoder: Sendable {
     /// profile's input channels. Baseline allows only two Huffman tables, so the
     /// luma-like Y channel uses table set 0 and X/B share set 1.
     private func encodeXYB(
-        _ image: JLIImage, configuration: JLIEncoderConfiguration, distance: Double
+        _ image: JLIImage, configuration: JLIEncoderConfiguration, distance: Double,
+        borrowedSource: BorrowedSamplePlane? = nil, normalisedFloatInput: Bool = false
     ) throws -> [UInt8] {
         let w = image.width, h = image.height
         let srcCC = image.colorModel.componentCount
@@ -927,11 +929,18 @@ struct JLIEncoder: Sendable {
         var xP = [Float](repeating: 0, count: count)
         var yP = [Float](repeating: 0, count: count)
         var bP = [Float](repeating: 0, count: count)
-        for i in 0..<count {
-            let s = i * srcCC
-            let xyb = ColorConversion.rgbToXYBSample(
-                r: Float(image.data[s]), g: Float(image.data[s + 1]), b: Float(image.data[s + 2]))
-            xP[i] = xyb.x; yP[i] = xyb.y; bP[i] = xyb.bOut
+        for row in 0..<h {
+            try NativeOperation.check()
+            for x in 0..<w {
+                let i = row * w + x
+                func sample(_ channel: Int) throws -> Float {
+                    guard let source = borrowedSource else { return Float(image.data[i * srcCC + channel]) }
+                    let p = row * source.rowBytes + (x * srcCC + channel) * (normalisedFloatInput ? 4 : 1)
+                    return normalisedFloatInput ? try SharedDCTStorage.normalisedByte(source.bytes, at: p) : Float(source.bytes[p])
+                }
+                let xyb = try ColorConversion.rgbToXYBSample(r: sample(0), g: sample(1), b: sample(2))
+                xP[i] = xyb.x; yP[i] = xyb.y; bP[i] = xyb.bOut
+            }
         }
 
         let qt = [Quantization.perceptualQuantTableXYB(distance: distance, channel: 0),
@@ -975,6 +984,7 @@ struct JLIEncoder: Sendable {
             var dcF = [[Int]](repeating: [Int](repeating: 0, count: 256), count: 2)
             var prev = [Int32](repeating: 0, count: 3)
             for i in 0..<blockCount {
+                if i % 256 == 0 { try NativeOperation.check() }
                 for c in 0..<3 {
                     let dc = planes[c][i * 64]
                     HuffmanEncoder.countDC(dc - prev[c], freq: &dcF[huffSet[c]])
@@ -1019,6 +1029,7 @@ struct JLIEncoder: Sendable {
         var prev = [Int32](repeating: 0, count: 3)
         var zz = [Int32](repeating: 0, count: 64)
         for i in 0..<blockCount {
+                if i % 256 == 0 { try NativeOperation.check() }
             for c in 0..<3 {
                 prev[c] = emitBlock(quantized: planes[c], blockIndex: i, prevDC: prev[c],
                                     dcTable: dcTable[huffSet[c]], acTable: acTable[huffSet[c]],
@@ -1652,7 +1663,8 @@ extension JLIEncoder {
         normalisedFloatInput: Bool = false,
         icc: [UInt8]?, exif: [UInt8]?, configuration: JLIEncoderConfiguration
     ) throws -> [UInt8] {
-        guard !configuration.lossless, configuration.colorSpace == .yCbCr,
+        guard !configuration.lossless,
+              configuration.colorSpace == .yCbCr || (configuration.colorSpace == .xyb && precision == 8 && components == 3),
               !normalisedFloatInput || precision == 8,
               precision == 8 || precision == 12, components == 1 || components == 3,
               components == 1 || configuration.chromaSubsampling != .yuv400 else {

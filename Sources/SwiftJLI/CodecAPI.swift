@@ -3,6 +3,9 @@ import Foundation
 
 /// DCT chroma resolution. Greyscale inputs always use one full-resolution plane.
 public enum ChromaSubsampling: Sendable, Equatable { case yuv444, yuv422, yuv420 }
+/// XYB input is explicitly interpreted as sRGB; arbitrary source ICC conversion is not implied.
+public enum DCTColourSpace: Sendable, Equatable { case yCbCr, xybFromSRGB }
+public enum ColourConversion: Sendable, Equatable { case sRGBToXYB, xybToSRGB }
 public enum ProgressiveMode: Sendable, Equatable { case sequential, spectralSelection, successiveApproximation }
 
 /// Float input is rejected unless the caller explicitly permits this lossy mapping.
@@ -25,24 +28,26 @@ public struct DCTOptions: Sendable, Equatable {
     /// jpegli masking/zero-bias path, replacing trellis. Requires 8-bit input.
     public let jpegliAdaptiveQuantisation: Bool
     public let floatInputPolicy: FloatInputPolicy
+    public let colourSpace: DCTColourSpace
     public init(quality: Double = 90, distance: Double? = nil,
                 chromaSubsampling: ChromaSubsampling = .yuv420,
                 progressiveMode: ProgressiveMode = .sequential,
                 optimiseHuffman: Bool = true, adaptiveQuantisation: Bool = true,
                 perceptualQuantisationTables: Bool = true,
                 adaptiveQuantisationField: Bool = false, jpegliAdaptiveQuantisation: Bool = false,
-                floatInputPolicy: FloatInputPolicy = .reject) {
+                floatInputPolicy: FloatInputPolicy = .reject, colourSpace: DCTColourSpace = .yCbCr) {
         self.quality = quality; self.distance = distance
         self.chromaSubsampling = chromaSubsampling; self.progressiveMode = progressiveMode
         self.optimiseHuffman = optimiseHuffman; self.adaptiveQuantisation = adaptiveQuantisation
         self.perceptualQuantisationTables = perceptualQuantisationTables
         self.adaptiveQuantisationField = adaptiveQuantisationField
         self.jpegliAdaptiveQuantisation = jpegliAdaptiveQuantisation
-        self.floatInputPolicy = floatInputPolicy
+        self.floatInputPolicy = floatInputPolicy; self.colourSpace = colourSpace
     }
     var native: JLIEncoderConfiguration {
         .init(quality: quality, distance: distance,
             chromaSubsampling: chromaSubsampling == .yuv444 ? .yuv444 : chromaSubsampling == .yuv422 ? .yuv422 : .yuv420,
+            colorSpace: colourSpace == .xybFromSRGB ? .xyb : .yCbCr,
             progressive: progressiveMode != .sequential,
             progressiveMode: progressiveMode == .successiveApproximation ? .successiveApproximation : .spectralSelection,
             optimiseHuffman: optimiseHuffman, adaptiveQuantization: adaptiveQuantisation,
@@ -77,6 +82,13 @@ public struct EncoderConfiguration: Sendable, Equatable {
         }
         guard !dct.adaptiveQuantisationField || (dct.adaptiveQuantisation && !dct.jpegliAdaptiveQuantisation) else {
             throw CodecError(.invalidArgument, "Adaptive trellis fields require trellis and cannot be combined with jpegli zero-bias quantisation.")
+        }
+        if dct.colourSpace == .xybFromSRGB {
+            guard dct.chromaSubsampling == .yuv444, dct.progressiveMode == .sequential,
+                  codecOptions.restartInterval == 0, dct.perceptualQuantisationTables,
+                  !dct.jpegliAdaptiveQuantisation else {
+                throw CodecError(.unsupportedFeature, "XYB requires sequential 4:4:4, perceptual tables, no restarts and no jpegli zero-bias field.")
+            }
         }
         guard mode == .lossy || dct == DCTOptions() else {
             throw CodecError(.invalidArgument, "DCT options require explicit lossy mode.")
@@ -151,14 +163,16 @@ public struct OperationReport: Sendable, Equatable {
     public let elapsedSeconds: Double?
     /// Explicit sample-value conversion, separate from memory-copy accounting.
     public let sampleConversion: SampleConversion?
+    public let colourConversion: ColourConversion?
     public init(backend: Backend, fallbackReason: String? = nil, fidelity: Fidelity,
                 copyEvents: [CopyEvent] = [], pixelAllocationCount: Int? = nil,
                 peakPixelBytes: Int? = nil, peakWorkspaceBytes: Int? = nil, elapsedSeconds: Double? = nil,
-                sampleConversion: SampleConversion? = nil) {
+                sampleConversion: SampleConversion? = nil, colourConversion: ColourConversion? = nil) {
         self.backend = backend; self.fallbackReason = fallbackReason; self.fidelity = fidelity
         self.copyEvents = copyEvents; self.pixelAllocationCount = pixelAllocationCount
         self.peakPixelBytes = peakPixelBytes; self.peakWorkspaceBytes = peakWorkspaceBytes
         self.elapsedSeconds = elapsedSeconds; self.sampleConversion = sampleConversion
+        self.colourConversion = colourConversion
     }
 }
 public struct ImageInfo: Sendable {

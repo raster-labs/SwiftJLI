@@ -297,7 +297,8 @@
     "Scalar DSP now compiles on every platform; task-local kernel dispatch selects scalar or Apple Accelerate. Byte conversion follows Accelerate nearest-even ties. Operation-owned native work remains serial to retain backend/cancellation context.",
     "DCT kernels accept borrowed source/final destination storage, with row-sized colour scratch, bounded DCT/trellis batches and throwing cancellation checks. Progressive input validation rejects unsupported topology and invalid approximation history; DC predictor arithmetic is checked.",
     "Public reduced-scale and raw greyscale Float32 output use the native DCT planes directly; full-frame workspace is admitted before preview decode. Adaptive field computations now propagate bounded cancellation and are exposed through explicit validated DCT options.",
-    "Finite normalised Float32 quantisation is fused into the borrowed DCT source reader under an explicit public lossy policy; non-finite values reject and conversion is reported. Accelerate stride arguments use the imported vDSP_Stride type explicitly."
+    "Finite normalised Float32 quantisation is fused into the borrowed DCT source reader under an explicit public lossy policy; non-finite values reject and conversion is reported. Accelerate stride arguments use the imported vDSP_Stride type explicitly.",
+    "Public XYB encoding reads borrowed sRGB samples and validates applicable options. Public decoding writes the XYB inverse into final storage, labels it with the unchanged ICC sRGB2014 profile and reports colour conversion; inspection retains original XYB component/profile meaning. XYB counting/emission gain bounded cancellation checks. ColourSync assertions now reject missing conversions rather than skipping them."
   ],
   "retired": [
     {
@@ -339,6 +340,16 @@
       "compiler": "Apple Swift 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)",
       "records": 71,
       "aggregateSHA256": "0e347394a1a9ae7170857ed54e2de2d8bed891184172a8fa36c6471b2d19800a"
+    }
+  ],
+  "thirdPartyAssets": [
+    {
+      "path": "Documentation/Migration/Fixtures/sRGB2014.icc",
+      "source": "https://registry.color.org/rgb-registry/profiles/sRGB2014.icc",
+      "sha256": "384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a",
+      "copyright": "Copyright International Color Consortium, 2015",
+      "license": "Documentation/Migration/Fixtures/ICC-LICENSE.txt",
+      "embeddedSwift": "Sources/SwiftJLI/Native/ColorSpace/SRGBICCProfile.swift"
     }
   ]
 }

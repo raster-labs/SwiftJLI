@@ -75,6 +75,24 @@ import SwiftJLI
               try decoder.inspect(floatEncoded.data).descriptor.meaningfulBits == 8 else {
             throw SwiftJLI.CodecError(.internalFailure, "Explicit float quantisation was not reported.")
         }
-        print("Independent SwiftJLI consumer: predictive, progressive, raw-float preview and normalised float encoding passed.")
+        let rgbPlane = try SwiftJLI.PlaneDescriptor(width: 1, height: 1, components: [0, 1, 2],
+            sampleStride: 1, pixelStride: 3, rowBytes: 3, byteCount: 3)
+        let rgbDescriptor = try SwiftJLI.ImageDescriptor(width: 1, height: 1, storageBits: 8, meaningfulBits: 8,
+            components: [.red, .green, .blue], colour: .rgb, planes: [rgbPlane])
+        let rgbImage = try SwiftJLI.ImageDestination.allocate(descriptor: rgbDescriptor).write {
+            $0.initializeMemory(as: UInt8.self, repeating: 128)
+        }
+        let xybEncoder = try SwiftJLI.Encoder(configuration: .init(mode: .lossy,
+            codecOptions: .init(dct: .init(chromaSubsampling: .yuv444, colourSpace: .xybFromSRGB))))
+        let xybJPEG = try await xybEncoder.encode(rgbImage)
+        let xybInfo = try decoder.inspect(xybJPEG.data)
+        let srgb = try await decoder.decode(xybJPEG.data)
+        guard xybJPEG.report.colourConversion == .sRGBToXYB, srgb.report.colourConversion == .xybToSRGB,
+              srgb.image.descriptor.iccProfile != nil,
+              srgb.image.descriptor.iccProfile != xybInfo.descriptor.iccProfile,
+              srgb.image.descriptor.components == [.red, .green, .blue] else {
+            throw SwiftJLI.CodecError(.internalFailure, "XYB output colour interpretation is incorrect.")
+        }
+        print("Independent SwiftJLI consumer: predictive, progressive, raw-float preview, normalised float encoding and XYB colour passed.")
     }
 }
