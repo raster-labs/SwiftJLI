@@ -36,14 +36,17 @@ def pgm(path):
 
 for bits in range(2, 17):
     for predictor in range(1, 8):
-        stem = f'{bits}-{predictor}'
-        source = root / f'{stem}.pgm'
-        subprocess.run([args.cjpeg, '-precision', str(bits), '-lossless', str(predictor),
-                        '-restart', '2', '-outfile', str(root / f'{stem}-oracle.jpg'), str(source)], check=True)
-        decoded = root / f'{stem}-djpeg.pgm'
-        subprocess.run([args.djpeg, '-strict', '-pnm', '-outfile', str(decoded),
-                        str(root / f'{stem}-swift.jpg')], check=True)
-        if pgm(source) != pgm(decoded):
-            raise ValueError(f'Independent decode differs for precision/predictor {stem}')
-print('105 SwiftJLI outputs decoded sample-exactly by libjpeg-turbo', flush=True)
+        for point in [0, min(2, bits - 1)]:
+            stem = f'{bits}-{predictor}-pt{point}'
+            source = root / f'{stem}.pgm'
+            subprocess.run([args.cjpeg, '-precision', str(bits), '-lossless', f'{predictor},{point}',
+                            '-restart', '2', '-outfile', str(root / f'{stem}-oracle.jpg'), str(source)], check=True)
+            decoded = root / f'{stem}-djpeg.pgm'
+            subprocess.run([args.djpeg, '-strict', '-pnm', '-outfile', str(decoded),
+                            str(root / f'{stem}-swift.jpg')], check=True)
+            w, h, original = pgm(source)
+            expected = (w, h, [(value >> point) << point for value in original])
+            if expected != pgm(decoded):
+                raise ValueError(f'Independent decode differs for precision/predictor {stem}')
+print('210 SwiftJLI outputs matched the declared point transform through libjpeg-turbo', flush=True)
 subprocess.run(command + ['verify', str(root)], check=True)

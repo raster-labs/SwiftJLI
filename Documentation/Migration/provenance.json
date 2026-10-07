@@ -212,6 +212,77 @@
       "destination": "Sources/SwiftJLI/JPEGCodec.swift",
       "sourceSHA256": "b553916fc08bdfc3e40f4eab777c475af11e7abaf2c502473e7d0dfbeaf88525",
       "disposition": "Re-expressed through Encoder/Decoder; successor storage types retained. Adds RGB, 8-bit, bounds and operation policies."
+    },
+    {
+      "source": "Sources/JLIDICOM/DICOMReader.swift",
+      "destination": "Tests/SwiftJLITests/Support/DICOMReader.swift",
+      "sourceSHA256": "d14cfe4ea249c2e531dc15e313c3545bd24d60cf7c9f1b97f86d4f839585f5d5"
+    },
+    {
+      "source": "Sources/JLIDICOM/DICOMWriter.swift",
+      "destination": "Tests/SwiftJLITests/Support/DICOMWriter.swift",
+      "sourceSHA256": "b996a2770486aa5dd9d08af6adb8c08c7c1fa40f2b862ae01b0df445feef1abb"
+    },
+    {
+      "source": "Tests/JLISwiftTests/RegressionCorpusTests.swift",
+      "destination": "Tests/SwiftJLITests/Native/RegressionCorpusTests.swift",
+      "sourceSHA256": "5d504b2ed7b565166aa2a464edd4cf1f8a7463f9bdba81762579b72ae92c20d1"
+    },
+    {
+      "source": "Tests/JLISwiftTests/ConformanceEvidenceTests.swift",
+      "destination": "Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift",
+      "sourceSHA256": "b8f18e1a9a4fab869aa6f6c6fc30f8c1b39a599687c21aa9e8f3900d4b09caf4"
+    },
+    {
+      "source": "Tests/JLISwiftTests/DICOMFuzzTests.swift",
+      "destination": "Tests/SwiftJLITests/Native/DICOMFuzzTests.swift",
+      "sourceSHA256": "1f071a0b632ecb8d60368335018a76c18fb7b2b55980b426fc2b716098d04845"
+    },
+    {
+      "source": "Tests/JLISwiftTests/DICOMWriterTests.swift",
+      "destination": "Tests/SwiftJLITests/Native/DICOMWriterTests.swift",
+      "sourceSHA256": "1ea6a6f8fb3117864e0b4b4814996e614e7d93709d9b7877bcf68192139d65c7"
+    },
+    {
+      "source": "Tests/JLISwiftTests/DICOMReaderTests.swift",
+      "destination": "Tests/SwiftJLITests/Native/DICOMReaderTests.swift",
+      "sourceSHA256": "b276425f359a27e46c84daeb6561685ddeaafc365dd55b48801f5e09f12d3633"
+    },
+    {
+      "source": "Tests/JLISwiftTests/JLISwiftTests.swift",
+      "destination": "Tests/SwiftJLITests/Native/NativeCoreTests.swift",
+      "sourceSHA256": "11c2770684c12be14edb5b8480d8ff7f220f7432140daa1810c7a1b898630778"
+    },
+    {
+      "source": "Sources/JLIBench/Regression/Baseline.swift",
+      "destination": "Tests/SwiftJLITests/Support/Baseline.swift",
+      "sourceSHA256": "ba10af79942614379eb5c18d57aa28b329f6ce845dae3e37e09bfcfc1d62d6f4"
+    },
+    {
+      "source": "Sources/JLIBench/IdentityHashes.swift",
+      "destination": "Tests/SwiftJLITests/Support/IdentityHashes.swift",
+      "sourceSHA256": "822a83fbd348813f05ffe75381eb7e29e839f9907e305aff2c4467bdd987d030"
+    },
+    {
+      "source": "Sources/JLIBench/Harness.swift",
+      "destination": "Tests/SwiftJLITests/Support/SyntheticFixtures.swift",
+      "sourceSHA256": "11feae8d5e2cef39e2a499ab7a14c7b1509c66385ea772dfa64a7211acc6dba9"
+    },
+    {
+      "source": "Sources/JLIDICOM/DICOMWindowRenderer.swift",
+      "destination": "Tests/SwiftJLITests/Support/DICOMWindowRenderer.swift",
+      "sourceSHA256": "4864002b9424c50a1af3167ea12bee3a121a8ec9f358a0d3c40445a18823e8d7"
+    },
+    {
+      "source": "Tests/JLISwiftTests/DICOMColorTests.swift",
+      "destination": "Tests/SwiftJLITests/Native/DICOMColorTests.swift",
+      "sourceSHA256": "fa4fbeed510dcaa8f9fc13777041ec20e61c2537b17feeabd032a4fde80bddd7"
+    },
+    {
+      "source": "Tests/JLISwiftTests/ContractImageLayerTests.swift",
+      "destination": "Tests/SwiftJLITests/Native/ContractImageLayerTests.swift",
+      "sourceSHA256": "edf3c0f4874e361c75c1513f3c69d9c3d547f9d4504ebd82c50ec8f6d14c233e",
+      "disposition": "Public async API bridge; malformed entropy fixture retains valid envelope; unmeasured workspace peaks remain optional."
     }
   ],
   "transformations": [
@@ -219,6 +290,51 @@
     "In-house MIT identifiers normalised to Apache-2.0 under the recorded owner decision.",
     "Accelerate imports and CoreGraphics comparator guarded; Linux scalar primitives and ICC MD5 added.",
     "Shared lossless kernels gain row-bounded cancellation and serial operation execution.",
-    "Native parser is preceded by bounded marker-envelope validation."
+    "Native parser is preceded by bounded marker-envelope validation.",
+    "DICOM reader/writer and optional Apple window comparator retained only in the test target for frozen container regressions; no DICOM shipping product added.",
+    "Contract-layer regression assertions adapted through a test-only public async API bridge; marker-valid truncated entropy exercises post-borrow invalidation.",
+    "Synthetic benchmark generators, baseline helpers and identity matrix retained in test support. Native version-shape assertion is covered by successor VERSION/CLI checks."
+  ],
+  "retired": [
+    {
+      "source": "Sources/JLISwift/Contract/CodecAPI.swift",
+      "reason": "Duplicate contract surface retired under IMPLEMENTATION.md item 5; successor implementation retained."
+    },
+    {
+      "source": "Sources/JLISwift/Contract/Errors.swift",
+      "reason": "Duplicate contract surface retired under IMPLEMENTATION.md item 5; successor implementation retained."
+    },
+    {
+      "source": "Sources/JLISwift/Contract/Image.swift",
+      "reason": "Duplicate contract surface retired under IMPLEMENTATION.md item 5; successor implementation retained."
+    },
+    {
+      "source": "Sources/JLISwift/Contract/ImageDescriptor.swift",
+      "reason": "Duplicate contract surface retired under IMPLEMENTATION.md item 5; successor implementation retained."
+    },
+    {
+      "source": "Sources/JLISwift/Contract/ImageStorage.swift",
+      "reason": "Duplicate contract surface retired under IMPLEMENTATION.md item 5; successor implementation retained."
+    },
+    {
+      "source": "Sources/JLISwift/Contract/Options.swift",
+      "reason": "Duplicate contract surface retired under IMPLEMENTATION.md item 5; successor implementation retained."
+    },
+    {
+      "source": "Sources/JLISwift/JLISwift.swift",
+      "reason": "Predecessor module overview and static 0.5.0 version namespace retired; successor module and VERSION/CLI checks provide current identity."
+    }
+  ],
+  "generatedFixtures": [
+    {
+      "path": "Tests/SwiftJLITests/Fixtures/predecessor-identity-macos-arm64.txt",
+      "sha256": "1ff05081e5bc2dda8d0173cd52b72c9c283b4e4b6a680ce83d6226a99a9cdaa0",
+      "generator": "Sources/JLIBench/IdentityHashes.swift at source pin",
+      "command": "swift run --package-path <JLISwift> --scratch-path <scratch> --disable-sandbox JLIBench --identity-hashes <output>",
+      "platform": "macOS 27.0.1 arm64",
+      "compiler": "Apple Swift 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)",
+      "records": 71,
+      "aggregateSHA256": "0e347394a1a9ae7170857ed54e2de2d8bed891184172a8fa36c6471b2d19800a"
+    }
   ]
 }

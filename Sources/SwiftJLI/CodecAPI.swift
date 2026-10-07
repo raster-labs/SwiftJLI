@@ -19,10 +19,18 @@ public struct EncoderConfiguration: Sendable, Equatable {
         if case .nearLossless(let bound) = mode, bound <= 0 {
             throw CodecError(.invalidArgument, "Near-lossless error must be positive.")
         }
-        guard mode == .lossless else {
-            throw CodecError(.unsupportedFeature, "Only lossless SOF3 is exposed by this configuration.")
+        if mode == .lossy {
+            throw CodecError(.unsupportedFeature, "Lossy DCT configuration is not integrated yet.")
         }
         self.mode = mode; self.codecOptions = codecOptions
+    }
+    /// JPEG point transforms have error bounds 2^Pt - 1. Select the
+    /// greatest representable bound no larger than the caller's maximum.
+    /// Pt must remain below sample precision, including for a generous budget.
+    func pointTransform(precision: Int) -> Int {
+        guard case .nearLossless(let bound) = mode else { return 0 }
+        let candidate = bound == Int.max ? 15 : Int.bitWidth - (bound + 1).leadingZeroBitCount - 1
+        return min(15, min(precision - 1, candidate))
     }
     private init() { mode = .lossless; codecOptions = .init() }
     public static let `default` = Self()
@@ -113,7 +121,12 @@ public struct Decoder: Sendable {
     public let configuration: DecoderConfiguration
     public static let capabilities = JPEGCodec.capabilities
     public var capabilities: CodecCapabilities { Self.capabilities }
-    public init(configuration: DecoderConfiguration = .init()) throws { self.configuration = configuration }
+    public init(configuration: DecoderConfiguration = .init()) throws {
+        guard configuration.codecOptions == CodecOptions() else {
+            throw CodecError(.unsupportedFeature, "Predictor and restart controls are encoder options; decode reads them from JPEG.")
+        }
+        self.configuration = configuration
+    }
 
     public func inspect(_ data: Data, options: DecodeOptions = .init()) throws -> ImageInfo {
         try JPEGCodec.inspect(data, options: options)

@@ -6,7 +6,9 @@
 - Connect the public API to SOF3 lossless encoding/inspection/decoding, including padded shared storage, precision checks, ICC/Exif and bounded operation admission.
 - Add Linux scalar DSP and ICC profile hashing; retain the Apple comparator conditionally.
 - Add public API, layout, malformed-input and precision/predictor tests plus a repeatable independent libjpeg-turbo oracle.
-- Lossy public API, remaining corpus adaptation, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
+- Restore the predecessor regression/contract/container corpus and benchmark identity matrix; add explicit bounded-error SOF3 point-transform support.
+- Fix concurrent decode scratch initialisation exposed by macOS TSan; its CI requalification is pending.
+- Lossy public API, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
 
 ## 1.1.0-dev.1 — Swift 6.4 upgrade, 2026-09-19 (unreleased)
 

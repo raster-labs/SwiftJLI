@@ -20,7 +20,8 @@ struct NativeOperation: Sendable {
 /// internally while their common API storage/fidelity contracts are qualified.
 enum JPEGCodec {
     static let capabilities = CodecCapabilities(
-        formats: ["JPEG (lossless, SOF3)"], compressionModes: [.lossless],
+        formats: ["JPEG (SOF3)"], compressionModes: [.lossless] +
+            (1...15).map { .nearLossless(maximumAbsoluteError: (1 << $0) - 1) },
         sampleTypes: [.unsignedInteger], meaningfulPrecision: 2...16,
         layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16"],
         availableBackends: [.scalarCPU], canInspect: true, canEncode: true, canDecode: true)
@@ -106,6 +107,7 @@ enum JPEGCodec {
                       metadata: metadataBytes, limits: limits)
             var cfg = JLIEncoderConfiguration.diagnosticLossless
             cfg.losslessPrecision = d.meaningfulBits
+            cfg.losslessPointTransform = configuration.pointTransform(precision: d.meaningfulBits)
             cfg.losslessPredictor = configuration.codecOptions.predictor
             cfg.restartInterval = configuration.codecOptions.restartInterval
             guard cfg.restartInterval == 0 || cfg.restartInterval % d.width == 0 else {
@@ -139,9 +141,12 @@ enum JPEGCodec {
             try NativeOperation.check()
             try options.progress?(.init(phase: .completed, completedUnits: d.height, totalUnits: d.height))
             try NativeOperation.check()
-            return EncodedImage(data: Data(encoded), encoding: .init(format: "JPEG", mode: .lossless),
+            let errorBound = (1 << cfg.losslessPointTransform) - 1
+            let mode: CompressionMode = errorBound == 0 ? .lossless : .nearLossless(maximumAbsoluteError: errorBound)
+            return EncodedImage(data: Data(encoded), encoding: .init(format: "JPEG", mode: mode),
                 report: .init(backend: .scalarCPU, fallbackReason: fallback(options.executionPolicy),
-                              fidelity: .exactSamples, pixelAllocationCount: 0, peakPixelBytes: 0))
+                              fidelity: errorBound == 0 ? .exactSamples : .boundedError(errorBound),
+                              pixelAllocationCount: 0, peakPixelBytes: 0))
         }
     }
 
@@ -240,7 +245,8 @@ enum JPEGCodec {
             try NativeOperation.check()
             return DecodedImage(image: image, report: .init(backend: .scalarCPU,
                 fallbackReason: fallback(options.executionPolicy),
-                fidelity: parsed.scans[0].header.successiveApproxLow == 0 ? .exactSamples : .lossy,
+                fidelity: parsed.scans[0].header.successiveApproxLow == 0 ? .exactSamples
+                    : .boundedError((1 << parsed.scans[0].header.successiveApproxLow) - 1),
                 pixelAllocationCount: supplied == nil ? 1 : 0,
                 peakPixelBytes: supplied == nil ? descriptor.requiredByteCount : 0))
         }

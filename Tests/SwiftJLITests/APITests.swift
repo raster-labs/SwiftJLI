@@ -36,8 +36,11 @@ import SwiftJLI
 
 @Test func configurationsAndBackendRequestsRejectUnsupportedChoices() throws {
     #expect(throws: CodecError.self) { try EncoderConfiguration(mode: .nearLossless(maximumAbsoluteError: 0)) }
-    #expect(throws: CodecError.self) { try EncoderConfiguration(mode: .nearLossless(maximumAbsoluteError: 1)) }
+    #expect(try EncoderConfiguration(mode: .nearLossless(maximumAbsoluteError: 1)).mode == .nearLossless(maximumAbsoluteError: 1))
     #expect(throws: CodecError.self) { try EncoderConfiguration(mode: .lossy) }
+    #expect(throws: CodecError.self) {
+        try SwiftJLI.Decoder(configuration: .init(codecOptions: .init(predictor: 2)))
+    }
     do {
         _ = try SwiftJLI.Decoder().inspect(Data(), options: .init(executionPolicy: .required(.accelerated)))
         Issue.record("Required acceleration is unavailable.")
