@@ -61,7 +61,7 @@ enum SharedDCTStorage {
     /// Padding is untouched. The Float conversion sequence matches the legacy
     /// DSP path, including ties-to-even for colour and ties-away for greyscale.
     static func write(_ planes: [(data: [Float], width: Int, height: Int)],
-                      width: Int, height: Int, precision: Int,
+                      width: Int, height: Int, precision: Int, floatOutput: Bool = false,
                       into destination: BorrowedSampleDestination) throws {
         let nc = planes.count, bps = destination.bytesPerSample
         let cb = nc == 3 ? try ChromaSampling.upsample(planes[1].data, width: planes[1].width,
@@ -82,6 +82,16 @@ enum SharedDCTStorage {
                         for row in 0..<height {
                             try NativeOperation.check()
                             let y = yy + row * planes[0].width
+                            if floatOutput {
+                                guard nc == 1 && bps == 4 else { throw JLIError.unsupportedJPEGFeature("Invalid raw Float32 destination") }
+                                for x in 0..<width {
+                                    let value = y[x]
+                                    guard value.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                                    let bits = value.bitPattern, offset = row * destination.rowBytes + x * 4
+                                    for byte in 0..<4 { destination.bytes[offset + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+                                }
+                                continue
+                            }
                             if nc == 3, let cc = cp.baseAddress, let rr = rp.baseAddress {
                                 jliDSP_vsadd(cc + row * width, 1, &negCenter, cbS, 1, width)
                                 jliDSP_vsadd(rr + row * width, 1, &negCenter, crS, 1, width)

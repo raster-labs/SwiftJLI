@@ -265,8 +265,9 @@ struct ContractImageLayerTests {
 
     @Test func capabilitiesReportWhatIsImplemented() {
         // POL-08: planned capability is not reported as present.
-        let c = ContractSurface.capabilities
-        #expect(c.canEncode); #expect(c.canDecode); #expect(c.canInspect)
+        let e = SwiftJLI.Encoder.capabilities, c = SwiftJLI.Decoder.capabilities
+        #expect(e.canEncode && !e.canDecode && !e.canInspect)
+        #expect(c.canDecode && c.canInspect && !c.canEncode)
         #expect(c.compressionModes.contains(.lossless))
         #expect(c.compressionModes.contains(.nearLossless(maximumAbsoluteError: 1)))
         #expect(c.layouts.contains("greyscale16"))
@@ -281,7 +282,6 @@ struct ContractImageLayerTests {
 // Test-only bridge preserves predecessor fixture/assertion structure while
 // exercising the successor's public async API. No second codec API is shipped.
 private struct ContractSurface {
-    static var capabilities: CodecCapabilities { SwiftJLI.Decoder.capabilities }
     static func losslessConfiguration(precision: Int) -> JLIEncoderConfiguration {
         var configuration = JLIEncoderConfiguration.diagnosticLossless
         configuration.losslessPrecision = precision

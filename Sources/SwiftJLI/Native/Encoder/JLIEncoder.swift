@@ -329,7 +329,7 @@ struct JLIEncoder: Sendable {
         // jpegli's masking field is computed once on the luma plane and reused
         // (mapped) for every component.
         let lumaField: [Float] = jpegliAQ
-            ? JLIAdaptiveQuant.computeField(
+            ? try JLIAdaptiveQuant.computeField(
                 plane: yPlane, planeWidth: width, planeHeight: height,
                 blocksH: yBlocksPerRow, blocksV: yBlocksPerCol, yQuant01: yQuant01)
             : []
@@ -1112,7 +1112,7 @@ struct JLIEncoder: Sendable {
         // jpegli adaptive path: per-block masking field + per-coefficient
         // zero-bias (dead-zone) instead of trellis. Opt-in (WS-A / 0.3.0).
         if let j = jpegli {
-            return quantizeZeroBias(
+            return try quantizeZeroBias(
                 dctBuf: dctBuf, blockCount: n, invQuant: invQuant,
                 blocksH: blocksH, blocksV: blocksV, jpegli: j
             )
@@ -1134,7 +1134,7 @@ struct JLIEncoder: Sendable {
             // Adaptive quant is luma-only (like jpegli) — modulating chroma λ
             // hurts subsampled (4:2:0) output. The caller gates `adaptiveField`.
             if adaptiveField {
-                rdo.lambdaField = adaptiveLambdaField(dctBuf: dctBuf, blockCount: n)
+                rdo.lambdaField = try adaptiveLambdaField(dctBuf: dctBuf, blockCount: n)
             }
             try applyTrellisQuantization(dctBuf: dctBuf, quant: &quant, blockCount: n, rdo: rdo)
         }
@@ -1163,12 +1163,13 @@ struct JLIEncoder: Sendable {
     private func quantizeZeroBias(
         dctBuf: [Float], blockCount n: Int, invQuant: [Float],
         blocksH: Int, blocksV: Int, jpegli j: JpegliAQ
-    ) -> [Int32] {
+    ) throws -> [Int32] {
         // Map the luma-derived field onto this component's block grid: 1:1 for
         // luma / 4:4:4, box-average the covered luma blocks for subsampled chroma.
         let rH = max(1, j.lumaBlocksH / blocksH), rV = max(1, j.lumaBlocksV / blocksV)
         var field = [Float](repeating: 0, count: n)
         for yb in 0..<blocksV {
+            try NativeOperation.check()
             for xb in 0..<blocksH {
                 var s: Float = 0
                 for dy in 0..<rV {
@@ -1180,15 +1181,16 @@ struct JLIEncoder: Sendable {
         }
         let (zbOffset, zbMul) = JLIAdaptiveQuant.zeroBias(distance: j.distance, component: j.component)
         var quant = [Int32](unsafeUninitializedCapacity: n * 64) { _, c in c = n * 64 }
-        dctBuf.withUnsafeBufferPointer { db in
-            invQuant.withUnsafeBufferPointer { iq in
-                zbOffset.withUnsafeBufferPointer { zo in
-                    zbMul.withUnsafeBufferPointer { zm in
-                        field.withUnsafeBufferPointer { fb in
-                            quant.withUnsafeMutableBufferPointer { qb in
+        try dctBuf.withUnsafeBufferPointer { db in
+            try invQuant.withUnsafeBufferPointer { iq in
+                try zbOffset.withUnsafeBufferPointer { zo in
+                    try zbMul.withUnsafeBufferPointer { zm in
+                        try field.withUnsafeBufferPointer { fb in
+                            try quant.withUnsafeMutableBufferPointer { qb in
                                 let d = db.baseAddress!, q = qb.baseAddress!
                                 let inv = iq.baseAddress!, off = zo.baseAddress!, mul = zm.baseAddress!
                                 for b in 0..<n {
+                                    if b % 256 == 0 { try NativeOperation.check() }
                                     let base = b * 64
                                     let aq = fb[b]
                                     for k in 0..<64 {
@@ -1207,12 +1209,13 @@ struct JLIEncoder: Sendable {
         return quant
     }
 
-    private func adaptiveLambdaField(dctBuf: [Float], blockCount n: Int) -> [Float] {
+    private func adaptiveLambdaField(dctBuf: [Float], blockCount n: Int) throws -> [Float] {
         var energy = [Float](repeating: 0, count: n)
         var mean = 0.0
-        dctBuf.withUnsafeBufferPointer { buf in
+        try dctBuf.withUnsafeBufferPointer { buf in
             let d = buf.baseAddress!
             for b in 0..<n {
+                if b % 256 == 0 { try NativeOperation.check() }
                 let base = b * 64
                 var e: Float = 0
                 for k in 1..<64 { let v = d[base + k]; e += v * v }
@@ -1222,6 +1225,7 @@ struct JLIEncoder: Sendable {
         mean = max(mean / Double(max(1, n)), 1e-6)
         var field = [Float](repeating: 1, count: n)
         for b in 0..<n {
+            if b % 256 == 0 { try NativeOperation.check() }
             let r = Double(energy[b]) / mean
             field[b] = Float(min(max(pow(r, 0.4), 0.7), 1.8))
         }

@@ -317,9 +317,17 @@ struct JLIDecoder: Sendable {
                         }
                     }
                 }
-                AccelerateDSP.dequantizeBatch(
-                    natural, table: qtF, into: &dctBuf, blockCount: blockCount
-                )
+                if NativeOperation.current != nil {
+                    for base in stride(from: 0, to: blockCount, by: 1024) {
+                        try NativeOperation.check()
+                        let end = min(base + 1024, blockCount), range = (base * 64)..<(end * 64)
+                        var output = [Float](repeating: 0, count: range.count)
+                        AccelerateDSP.dequantizeBatch(Array(natural[range]), table: qtF, into: &output, blockCount: end - base)
+                        dctBuf.replaceSubrange(range, with: output)
+                    }
+                } else {
+                    AccelerateDSP.dequantizeBatch(natural, table: qtF, into: &dctBuf, blockCount: blockCount)
+                }
                 let bs = 8 / scale
                 let a = Self.boxAverageMatrix(scale: scale)        // bs×8, row-major
                 let pw = blocksH * bs, ph = blocksV * bs
@@ -426,14 +434,16 @@ struct JLIDecoder: Sendable {
         let outW = (frame.width + scale - 1) / scale
         let outH = (frame.height + scale - 1) / scale
         if let borrowedDestination {
-            guard configuration.outputPixelFormat == nil, configuration.outputColorModel == nil,
-                  parsed.iccProfile != XYBICCProfile.data else {
+            let floating = configuration.outputPixelFormat == .float32
+            guard configuration.outputPixelFormat == nil || (floating && numComponents == 1),
+                  configuration.outputColorModel == nil, parsed.iccProfile != XYBICCProfile.data,
+                  (!floating || borrowedDestination.bytesPerSample == 4) else {
                 throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT output")
             }
             try SharedDCTStorage.write(componentPlanes, width: outW, height: outH,
-                precision: frame.precision, into: borrowedDestination)
+                precision: frame.precision, floatOutput: floating, into: borrowedDestination)
             return try JLIImage(geometryOnlyWidth: outW, height: outH,
-                pixelFormat: frame.precision > 8 ? .uint16 : .uint8,
+                pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
                 colorModel: numComponents == 1 ? .grayscale : .rgb,
                 iccProfile: parsed.iccProfile, exif: parsed.exif)
         }

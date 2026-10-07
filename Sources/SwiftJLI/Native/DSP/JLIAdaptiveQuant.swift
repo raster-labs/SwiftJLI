@@ -9,12 +9,11 @@ import Foundation
 /// zero-bias (dead-zone) during quantization, quantizing busy/visually-masked
 /// blocks harder while preserving smooth (banding-prone) ones.
 ///
-/// This is the field computation only; the zero-bias application + RD-validation
-/// vs jpegli are the next WS-A steps. Operates on luma in the [0,255] range
+/// The encoder's explicit jpegli-adaptive option applies this field to its
+/// coefficient zero-bias thresholds. Operates on luma in the [0,255] range
 /// (JLISwift's `y` plane), matching the constants' `kInputScaling = 1/255`.
 ///
-/// **Not yet wired into the encoder** — gated behind the forthcoming opt-in
-/// quantization path; the simplified `adaptiveQuantField` λ-proxy is unchanged.
+/// The alternative `adaptiveQuantField` option retains the simpler trellis λ-proxy.
 enum JLIAdaptiveQuant {
 
     static let kInputScaling: Float = 1.0 / 255.0
@@ -108,16 +107,17 @@ enum JLIAdaptiveQuant {
     static func computeField(
         plane: [Float], planeWidth: Int, planeHeight: Int,
         blocksH: Int, blocksV: Int, yQuant01: Int
-    ) -> [Float] {
+    ) throws -> [Float] {
         // Work on the block-padded W×H grid; edge-replicate the (possibly
         // smaller, e.g. 886-wide) source plane so the multi-resolution indexing
         // is exact and reads never go out of bounds.
         let w = blocksH * 8, h = blocksV * 8
         var padded = [Float](unsafeUninitializedCapacity: w * h) { _, c in c = w * h }
-        plane.withUnsafeBufferPointer { src in
-            padded.withUnsafeMutableBufferPointer { dst in
+        try plane.withUnsafeBufferPointer { src in
+            try padded.withUnsafeMutableBufferPointer { dst in
                 let s = src.baseAddress!, d = dst.baseAddress!
                 for y in 0..<h {
+                    try NativeOperation.check()
                     let sy = min(y, planeHeight - 1) * planeWidth
                     let dy = y * w
                     for x in 0..<w { d[dy + x] = s[sy + min(x, planeWidth - 1)] }
@@ -129,12 +129,13 @@ enum JLIAdaptiveQuant {
         let matchGammaOffset = 0.019 / kInputScaling
         let limit: Float = 0.2
 
-        padded.withUnsafeBufferPointer { buf in
+        try padded.withUnsafeBufferPointer { buf in
             let p = buf.baseAddress!
             var rowAccum = [Float](repeating: 0, count: w)
-            rowAccum.withUnsafeMutableBufferPointer { ra in
+            try rowAccum.withUnsafeMutableBufferPointer { ra in
                 let acc = ra.baseAddress!
                 for y in 0..<h {
+                    try NativeOperation.check()
                     let row = y * w
                     let rowT = max(0, y - 1) * w
                     let rowB = min(h - 1, y + 1) * w
@@ -165,6 +166,7 @@ enum JLIAdaptiveQuant {
         var eroded = [Float](repeating: 0, count: pw * ph)
         var nb = [Float](repeating: 0, count: 9)
         for y in 0..<ph {
+            try NativeOperation.check()
             for x in 0..<pw {
                 var i = 0
                 for dy in -1...1 {
@@ -188,9 +190,10 @@ enum JLIAdaptiveQuant {
         let add = (1 - dampen) * baseLevel
 
         var field = [Float](repeating: 0, count: blocksH * blocksV)
-        padded.withUnsafeBufferPointer { buf in
+        try padded.withUnsafeBufferPointer { buf in
             let p = buf.baseAddress!
             for yb in 0..<blocksV {
+                try NativeOperation.check()
                 for xb in 0..<blocksH {
                     var v = eroded[(yb * 2) * pw + xb * 2] + eroded[(yb * 2) * pw + xb * 2 + 1]
                           + eroded[(yb * 2 + 1) * pw + xb * 2] + eroded[(yb * 2 + 1) * pw + xb * 2 + 1]

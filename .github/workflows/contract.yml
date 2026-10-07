@@ -67,10 +67,23 @@ jobs:
       - run: xcodebuild -version
       - run: swift build
       - run: swift test
+      - run: swift build -c release
+      - run: swift test -c release
       - name: Address sanitizer
         run: swift test --scratch-path .build/asan --sanitize address
       - name: Thread sanitizer
         run: swift test --scratch-path .build/tsan --sanitize thread
+
+  apple-sdk-builds:
+    name: Apple device, simulator and Intel SDK compilation
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Compile SwiftJLI for the required Apple SDKs
+        run: bash Scripts/build-apple-sdks.sh
 
   independent-consumer:
     name: Independent consumer resolves at tools 6.2

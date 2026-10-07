@@ -27,7 +27,14 @@ enum JPEGCodec {
             (1...15).map { .nearLossless(maximumAbsoluteError: (1 << $0) - 1) },
         sampleTypes: [.unsignedInteger], meaningfulPrecision: 2...16,
         layouts: ["greyscale8", "greyscale16", "rgb8", "rgb16"],
-        availableBackends: availableBackends, canInspect: true, canEncode: true, canDecode: true)
+        availableBackends: availableBackends, canInspect: false, canEncode: true, canDecode: false)
+
+    // Decoder profiles include integer 2...16 and IEEE Float32, not a single
+    // continuous precision range. Encoder capability queries remain integer-only.
+    static let decoderCapabilities = CodecCapabilities(formats: capabilities.formats,
+        compressionModes: capabilities.compressionModes, sampleTypes: [.unsignedInteger, .floatingPoint],
+        meaningfulPrecision: nil, layouts: capabilities.layouts + ["greyscaleFloat32RawSamples"],
+        availableBackends: capabilities.availableBackends, canInspect: true, canEncode: false, canDecode: true)
 
     static var availableBackends: [Backend] {
         #if canImport(Accelerate)
@@ -74,14 +81,16 @@ enum JPEGCodec {
         return nil
     }
 
-    static func layout(_ descriptor: ImageDescriptor, limits: ResourceLimits) throws -> PlaneDescriptor {
+    static func layout(_ descriptor: ImageDescriptor, allowFloat: Bool = false, limits: ResourceLimits) throws -> PlaneDescriptor {
         try descriptor.validate(limits: limits)
         let grey = descriptor.components == [.grey] && descriptor.colour == .greyscale
         let rgb = descriptor.components == [.red, .green, .blue] && descriptor.colour == .rgb
-        guard descriptor.sampleType == .unsignedInteger, descriptor.alpha == .absent,
-              grey || rgb, (2...16).contains(descriptor.meaningfulBits),
-              descriptor.storageBits == 8 || descriptor.storageBits == 16 else {
-            throw CodecError(.unsupportedFeature, "JPEG requires unsigned greyscale or RGB samples, without alpha.")
+        let integer = descriptor.sampleType == .unsignedInteger && (2...16).contains(descriptor.meaningfulBits)
+            && (descriptor.storageBits == 8 || descriptor.storageBits == 16)
+        let floating = allowFloat && descriptor.sampleType == .floatingPoint
+            && descriptor.meaningfulBits == 32 && descriptor.storageBits == 32 && grey
+        guard integer || floating, descriptor.alpha == .absent, grey || rgb else {
+            throw CodecError(.unsupportedFeature, "Unsupported JPEG sample type, precision, components or alpha.")
         }
         guard descriptor.width <= 65535, descriptor.height <= 65535 else {
             throw CodecError(.unsupportedFeature, "JPEG dimensions exceed the 16-bit frame fields.")
@@ -114,6 +123,9 @@ enum JPEGCodec {
             let isDCT = configuration.mode == .lossy
             guard !isDCT || (d.meaningfulBits == 8 && d.storageBits == 8) || (d.meaningfulBits == 12 && d.storageBits == 16) else {
                 throw CodecError(.unsupportedFeature, "DCT encoding requires 8-bit samples or 12-bit samples in 16-bit storage.")
+            }
+            if isDCT && (configuration.codecOptions.dct.adaptiveQuantisationField || configuration.codecOptions.dct.jpegliAdaptiveQuantisation), d.meaningfulBits != 8 {
+                throw CodecError(.unsupportedFeature, "Adaptive DCT fields require 8-bit input.")
             }
             let metadataBytes = try image.metadata.validate(limits: limits, additionalBytes: d.iccProfile?.count ?? 0)
             // ICC defines interpretation and is retained even when ancillary data is discarded.
@@ -211,7 +223,7 @@ enum JPEGCodec {
         return parsed
     }
 
-    static func info(_ parsed: ParsedJPEG, options: DecodeOptions) throws -> ImageInfo {
+    static func info(_ parsed: ParsedJPEG, scale: Int = 1, sampleFormat: DecoderSampleFormat = .nativeInteger, options: DecodeOptions) throws -> ImageInfo {
         let f = parsed.frameInfo, nc = f.components.count
         guard (2...16).contains(f.precision), nc == 1 || nc == 3 else {
             throw CodecError(.unsupportedFeature, "Unsupported JPEG precision or component count.")
@@ -220,13 +232,22 @@ enum JPEGCodec {
         guard !f.isLossless || nc == 1 || f.components.map(\.id) == [0x52, 0x47, 0x42] else {
             throw CodecError(.unsupportedFeature, "Lossless colour interpretation is ambiguous.")
         }
-        let bps = f.precision <= 8 ? 1 : 2
-        let row = try checkedMultiply(f.width, nc * bps)
-        let capacity = try checkedMultiply(row, f.height)
-        let plane = try PlaneDescriptor(width: f.width, height: f.height, components: Array(0..<nc),
+        guard !f.isLossless || scale == 1 else {
+            throw CodecError(.unsupportedFeature, "Reduced-scale decode requires DCT JPEG.")
+        }
+        let floating = sampleFormat == .float32RawSamples
+        guard !floating || (!f.isLossless && nc == 1 && parsed.iccProfile == nil) else {
+            throw CodecError(.unsupportedFeature, "Raw Float32 output requires greyscale DCT JPEG without ICC interpretation.")
+        }
+        let width = (f.width + scale - 1) / scale, height = (f.height + scale - 1) / scale
+        let bps = floating ? 4 : f.precision <= 8 ? 1 : 2
+        let row = try checkedMultiply(width, nc * bps)
+        let capacity = try checkedMultiply(row, height)
+        let plane = try PlaneDescriptor(width: width, height: height, components: Array(0..<nc),
             sampleStride: bps, pixelStride: nc * bps, rowBytes: row, byteCount: capacity)
-        let descriptor = try ImageDescriptor(width: f.width, height: f.height, storageBits: bps * 8,
-            meaningfulBits: f.precision, components: nc == 1 ? [.grey] : [.red, .green, .blue],
+        let descriptor = try ImageDescriptor(width: width, height: height,
+            sampleType: floating ? .floatingPoint : .unsignedInteger, storageBits: bps * 8,
+            meaningfulBits: floating ? 32 : f.precision, components: nc == 1 ? [.grey] : [.red, .green, .blue],
             colour: nc == 1 ? .greyscale : .rgb, planes: [plane],
             iccProfile: parsed.iccProfile.map { Data($0) }, limits: options.resourceLimits)
         let metadata = ImageMetadata(entries: options.metadataPolicy == .preserve
@@ -245,7 +266,7 @@ enum JPEGCodec {
         }
     }
 
-    static func decode(_ data: Data, into supplied: ImageDestination?, options: DecodeOptions) throws -> DecodedImage {
+    static func decode(_ data: Data, into supplied: ImageDestination?, configuration: DecoderConfiguration, options: DecodeOptions) throws -> DecodedImage {
         try run(limits: options.resourceLimits, policy: .scalarCPU) {
             let parsed = try parse(data, options: options)
             let isDCT = !parsed.frameInfo.isLossless
@@ -253,16 +274,20 @@ enum JPEGCodec {
             let context = NativeOperation(seconds: options.resourceLimits.deadlineSeconds, backend: backend,
                 started: NativeOperation.current?.started ?? .now)
             return try NativeOperation.$current.withValue(context) {
-                let information = try info(parsed, options: options), source = information.descriptor
+                let information = try info(parsed, scale: configuration.scale,
+                    sampleFormat: configuration.sampleFormat, options: options)
+                let source = information.descriptor
                 let descriptor = supplied?.descriptor ?? source
-                let plane = try layout(descriptor, limits: options.resourceLimits)
-                guard descriptor.width == source.width, descriptor.height == source.height,
+                let plane = try layout(descriptor, allowFloat: configuration.sampleFormat == .float32RawSamples, limits: options.resourceLimits)
+                guard descriptor.sampleType == source.sampleType, descriptor.width == source.width, descriptor.height == source.height,
                       descriptor.components == source.components, descriptor.meaningfulBits == source.meaningfulBits,
                       descriptor.storageBits >= source.storageBits,
                       descriptor.iccProfile == nil || descriptor.iccProfile == source.iccProfile else {
                     throw CodecError(.incompatibleImageLayout, "Destination does not match JPEG sample interpretation.")
                 }
-                let sampleCount = try checkedMultiply(checkedMultiply(source.width, source.height), source.components.count)
+                // Coefficient workspace remains full-frame even for small previews.
+                let frame = parsed.frameInfo
+                let sampleCount = try checkedMultiply(checkedMultiply(frame.width, frame.height), frame.components.count)
                 let workspace = try checkedAdd(checkedAdd(checkedMultiply(data.count, 64), checkedMultiply(sampleCount, isDCT ? 128 : 8)), 1_048_576)
                 let metadataSize = try information.metadata.validate(limits: options.resourceLimits, additionalBytes: source.iccProfile?.count ?? 0)
                 try admit(workspace: workspace, pixels: supplied?.storage.byteCount ?? descriptor.requiredByteCount,
@@ -273,12 +298,18 @@ enum JPEGCodec {
                 let filled = try destination.write { raw in
                     let borrowed = BorrowedSampleDestination(bytes: .init(rebasing: raw[plane.offset...]),
                         rowBytes: plane.rowBytes, bytesPerSample: descriptor.storageBits / 8)
-                    if isDCT { _ = try JLIDecoder().decodeParsed(parsed, borrowedDestination: borrowed) }
-                    else { try JLIDecoder().decodeSharedLossless(parsed, into: borrowed) }
+                    if isDCT {
+                        let native = JLIDecoderConfiguration(
+                            outputPixelFormat: configuration.sampleFormat == .float32RawSamples ? .float32 : nil,
+                            scale: configuration.scale)
+                        _ = try JLIDecoder().decodeParsed(parsed, configuration: native, borrowedDestination: borrowed)
+                    } else {
+                        try JLIDecoder().decodeSharedLossless(parsed, into: borrowed)
+                    }
                     try NativeOperation.check()
                 }
                 let outputDescriptor = try ImageDescriptor(width: descriptor.width, height: descriptor.height,
-                    storageBits: descriptor.storageBits, meaningfulBits: descriptor.meaningfulBits,
+                    sampleType: descriptor.sampleType, storageBits: descriptor.storageBits, meaningfulBits: descriptor.meaningfulBits,
                     byteOrder: descriptor.byteOrder, components: descriptor.components, colour: descriptor.colour,
                     planes: descriptor.planes, iccProfile: source.iccProfile, limits: options.resourceLimits)
                 let image = try Image(descriptor: outputDescriptor, storage: filled.storage,

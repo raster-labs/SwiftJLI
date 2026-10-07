@@ -14,15 +14,22 @@ public struct DCTOptions: Sendable, Equatable {
     public let optimiseHuffman: Bool
     public let adaptiveQuantisation: Bool
     public let perceptualQuantisationTables: Bool
+    /// Luma-derived trellis strength. Requires adaptiveQuantisation and 8-bit input.
+    public let adaptiveQuantisationField: Bool
+    /// jpegli masking/zero-bias path, replacing trellis. Requires 8-bit input.
+    public let jpegliAdaptiveQuantisation: Bool
     public init(quality: Double = 90, distance: Double? = nil,
                 chromaSubsampling: ChromaSubsampling = .yuv420,
                 progressiveMode: ProgressiveMode = .sequential,
                 optimiseHuffman: Bool = true, adaptiveQuantisation: Bool = true,
-                perceptualQuantisationTables: Bool = true) {
+                perceptualQuantisationTables: Bool = true,
+                adaptiveQuantisationField: Bool = false, jpegliAdaptiveQuantisation: Bool = false) {
         self.quality = quality; self.distance = distance
         self.chromaSubsampling = chromaSubsampling; self.progressiveMode = progressiveMode
         self.optimiseHuffman = optimiseHuffman; self.adaptiveQuantisation = adaptiveQuantisation
         self.perceptualQuantisationTables = perceptualQuantisationTables
+        self.adaptiveQuantisationField = adaptiveQuantisationField
+        self.jpegliAdaptiveQuantisation = jpegliAdaptiveQuantisation
     }
     var native: JLIEncoderConfiguration {
         .init(quality: quality, distance: distance,
@@ -30,7 +37,9 @@ public struct DCTOptions: Sendable, Equatable {
             progressive: progressiveMode != .sequential,
             progressiveMode: progressiveMode == .successiveApproximation ? .successiveApproximation : .spectralSelection,
             optimiseHuffman: optimiseHuffman, adaptiveQuantization: adaptiveQuantisation,
-            perceptualQuantTables: perceptualQuantisationTables)
+            adaptiveQuantField: adaptiveQuantisationField,
+            perceptualQuantTables: perceptualQuantisationTables,
+            jpegliAdaptiveQuant: jpegliAdaptiveQuantisation)
     }
 }
 
@@ -57,6 +66,9 @@ public struct EncoderConfiguration: Sendable, Equatable {
               dct.distance.map({ $0.isFinite && $0 >= 0 && $0 <= 25 }) ?? true else {
             throw CodecError(.invalidArgument, "DCT quality must be 0...100 and distance 0...25, both finite.")
         }
+        guard !dct.adaptiveQuantisationField || (dct.adaptiveQuantisation && !dct.jpegliAdaptiveQuantisation) else {
+            throw CodecError(.invalidArgument, "Adaptive trellis fields require trellis and cannot be combined with jpegli zero-bias quantisation.")
+        }
         guard mode == .lossy || dct == DCTOptions() else {
             throw CodecError(.invalidArgument, "DCT options require explicit lossy mode.")
         }
@@ -76,9 +88,20 @@ public struct EncoderConfiguration: Sendable, Equatable {
     private init() { mode = .lossless; codecOptions = .init() }
     public static let `default` = Self()
 }
+/// Float output is explicit and uses raw JPEG sample units, without normalisation.
+/// It is currently supported for greyscale DCT JPEG without an ICC profile.
+public enum DecoderSampleFormat: Sendable, Equatable { case nativeInteger, float32RawSamples }
+
 public struct DecoderConfiguration: Sendable, Equatable {
     public let codecOptions: CodecOptions
-    public init(codecOptions: CodecOptions = .init()) { self.codecOptions = codecOptions }
+    /// DCT output dimensions are ceil(encoded dimension / scale).
+    /// Predictive JPEG requires scale 1. Inspect always describes the codestream.
+    public let scale: Int
+    public let sampleFormat: DecoderSampleFormat
+    public init(codecOptions: CodecOptions = .init(), scale: Int = 1,
+                sampleFormat: DecoderSampleFormat = .nativeInteger) {
+        self.codecOptions = codecOptions; self.scale = scale; self.sampleFormat = sampleFormat
+    }
 }
 
 public struct CodecCapabilities: Sendable, Equatable {
@@ -160,11 +183,14 @@ public struct Encoder: Sendable {
 
 public struct Decoder: Sendable {
     public let configuration: DecoderConfiguration
-    public static let capabilities = JPEGCodec.capabilities
+    public static let capabilities = JPEGCodec.decoderCapabilities
     public var capabilities: CodecCapabilities { Self.capabilities }
     public init(configuration: DecoderConfiguration = .init()) throws {
         guard configuration.codecOptions == CodecOptions() else {
             throw CodecError(.unsupportedFeature, "Predictor and restart controls are encoder options; decode reads them from JPEG.")
+        }
+        guard [1, 2, 4, 8].contains(configuration.scale) else {
+            throw CodecError(.invalidArgument, "JPEG decode scale must be 1, 2, 4 or 8.")
         }
         self.configuration = configuration
     }
@@ -173,10 +199,10 @@ public struct Decoder: Sendable {
         try JPEGCodec.inspect(data, options: options)
     }
     @concurrent public func decode(_ data: Data, options: DecodeOptions = .init()) async throws -> DecodedImage {
-        try JPEGCodec.decode(data, into: nil, options: options)
+        try JPEGCodec.decode(data, into: nil, configuration: configuration, options: options)
     }
     @concurrent public func decode(_ data: Data, into destination: ImageDestination,
                                   options: DecodeOptions = .init()) async throws -> DecodedImage {
-        try JPEGCodec.decode(data, into: destination, options: options)
+        try JPEGCodec.decode(data, into: destination, configuration: configuration, options: options)
     }
 }

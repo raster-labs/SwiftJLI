@@ -8,8 +8,8 @@ import SwiftJLI
     let encoder = try SwiftJLI.Encoder()
     let decoder = try SwiftJLI.Decoder()
     #expect(encoder.configuration.mode == .lossless)
-    #expect(encoder.capabilities.canEncode)
-    #expect(decoder.capabilities.canDecode && decoder.capabilities.canInspect)
+    #expect(encoder.capabilities.canEncode && !encoder.capabilities.canDecode && !encoder.capabilities.canInspect)
+    #expect(decoder.capabilities.canDecode && decoder.capabilities.canInspect && !decoder.capabilities.canEncode)
     #if canImport(Accelerate)
     #expect(encoder.capabilities.availableBackends == [.scalarCPU, .accelerated])
     #else

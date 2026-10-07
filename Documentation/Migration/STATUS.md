@@ -84,9 +84,23 @@ A two-package local harness compared the actual pinned predecessor with the publ
 
 The first RGB direct writer was substantially slower; vectorised byte reads/final writes reduced its measured decode median from 7.212 to 4.177 ms. A gap remains: about 14–29% for encode and 17–31% for decode on these samples. Full-frame working memory is still unmeasured. These are provisional measurements, not acceptance: background load was not isolated, and both local release build engines produced runnable binaries but hung after linking and were interrupted (exit 130). Executing the final native-engine release binary exited 0. Clean build completion, controlled broader datasets and platform-specific performance remain required.
 
+## Output and adaptive profile extension
+
+Public decoder configuration now exposes native DCT scales 1/2/4/8 and an explicit `.float32RawSamples` profile for greyscale DCT without ICC. Raw floats preserve the native reconstructed sample units and exact Float32 bit patterns; they are not implicitly normalised. Both allocating and caller-owned output support the same profiles. Inspection retains encoded geometry/precision. Capabilities now describe the queried encoder/decoder operation, including decode-only Float32 support. Preview admission counts full-frame coefficients, not only the smaller result.
+
+Public DCT options now expose the retained adaptive trellis field and jpegli masking/zero-bias path. Incompatible combinations and 12-bit requests for these 8-bit algorithms fail before source borrowing. Added row/block cancellation checks cover field computation and reduced-scale dequantisation.
+
+Evidence:
+
+- Linux ARM64 / Swift 6.4: **303 tests in 36 suites passed**, including native/public equality, padded ownership, raw float units, rejected interpretations and preview workspace limits.
+- Local macOS ARM64 / Swift 6.4: new profile matrices passed on scalar and Accelerate in the executable harness; ASan and TSan both exited 0. All 71 pinned native identity records remain identical.
+- The independent DCT oracle now covers **48 profiles in each direction**, adding both adaptive paths for 8-bit greyscale/RGB. Maximum difference remains **2 sample units** against libjpeg-turbo 3.2.0. The 12-bit profiles retain their non-adaptive quantisation behaviour.
+- CI [37645149130](https://github.com/raster-labs/SwiftJLI/actions/runs/37645149130) passed all seven jobs at `bcd1201`, including the full macOS 26 / Swift 6.2 test, ASan and TSan suite. This closes the earlier empty-array scratch race check at that revision. The new output/adaptive changes still require their own head CI.
+- `Scripts/build-apple-sdks.sh` adds release compilation of the library for iOS/tvOS/watchOS/visionOS devices and ARM64 simulators, plus Intel macOS. Its syntax is checked locally; execution requires full Xcode and is a new CI gate, not yet passed evidence. macOS CI also gains release build/tests. These compile gates do not replace device/runtime coverage.
+
 ## Remaining migration requirements
 
-- Qualify and expose remaining advanced profiles: XYB/ICC interpretation, explicit float semantics, advanced adaptive fields and decoder output/scale controls. The common adapter currently rejects unsupported profiles.
+- Qualify and expose remaining XYB/ICC interpretation and explicit floating-point input/additional output semantics. Raw greyscale Float32, adaptive fields and decoder scale controls are now public; unsupported combinations remain explicit errors.
 - Qualify public DCT backend performance and resource instrumentation. Backend selection and direct storage are now implemented; full platform qualification remains open.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.

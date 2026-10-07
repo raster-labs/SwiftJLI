@@ -12,7 +12,7 @@ struct AdaptiveQuantFieldTests {
     /// non-negative strengths, and quantize the busy/masked side harder
     /// (higher aq_strength) than the smooth side.
     @Test("Field is finite, ≥0, and higher on busy blocks than smooth")
-    func fieldShape() {
+    func fieldShape() throws {
         let bw = 12, bh = 8           // 96×64, block grid 12×8
         let w = bw * 8, h = bh * 8
         var plane = [Float](repeating: 0, count: w * h)
@@ -28,7 +28,7 @@ struct AdaptiveQuantFieldTests {
             }
         }
 
-        let field = JLIAdaptiveQuant.computeField(
+        let field = try JLIAdaptiveQuant.computeField(
             plane: plane, planeWidth: w, planeHeight: h, blocksH: bw, blocksV: bh, yQuant01: 16
         )
         #expect(field.count == bw * bh)
@@ -75,11 +75,11 @@ struct AdaptiveQuantFieldTests {
     }
 
     @Test("Uniform plane yields a roughly uniform, finite field")
-    func uniformField() {
+    func uniformField() throws {
         let bw = 6, bh = 6
         let w = bw * 8, h = bh * 8
         let plane = [Float](repeating: 128, count: w * h)
-        let field = JLIAdaptiveQuant.computeField(
+        let field = try JLIAdaptiveQuant.computeField(
             plane: plane, planeWidth: w, planeHeight: h, blocksH: bw, blocksV: bh, yQuant01: 16
         )
         #expect(field.allSatisfy { $0.isFinite && $0 >= 0 })

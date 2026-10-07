@@ -9,7 +9,9 @@
 - Restore the predecessor regression/contract/container corpus and benchmark identity matrix; add explicit bounded-error SOF3 point-transform support.
 - Fix concurrent decode scratch initialisation exposed by macOS TSan; its CI requalification is pending.
 - Add public sequential/progressive 8/12-bit DCT controls, direct borrowed storage, explicit scalar/Accelerate selection, bounded kernel cancellation and progressive-input validation.
-- Advanced colour/float profiles, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
+- Add public reduced-scale and raw greyscale Float32 decode, adaptive trellis/jpegli controls, profile validation and full-frame preview workspace admission.
+- Add Apple device/simulator/Intel SDK compilation and macOS release CI gates; runtime qualification remains separate.
+- Advanced colour/float input profiles, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
 
 ## 1.1.0-dev.1 — Swift 6.4 upgrade, 2026-09-19 (unreleased)
 

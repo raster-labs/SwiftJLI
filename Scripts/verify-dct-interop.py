@@ -39,15 +39,16 @@ for bits in [8, 12]:
     for channels in [1, 3]:
         for script in range(3):
             for backend in ['scalar', 'auto']:
-                stem = f'dct-{bits}-{channels}-{script}-{backend}'
-                stems.append(stem)
-                options = ['-progressive'] if script else []
-                subprocess.run([args.cjpeg, '-precision', str(bits), '-quality', '85', '-sample', '1x1',
-                                '-restart', '3B', *options, '-outfile', str(root / f'{stem}-oracle.jpg'),
-                                str(root / f'{stem}-source.pnm')], check=True)
-                for origin in ['swift', 'oracle']:
-                    subprocess.run([args.djpeg, '-strict', '-dct', 'int', '-pnm', '-outfile',
-                                    str(root / f'{stem}-djpeg-{origin}.pnm'), str(root / f'{stem}-{origin}.jpg')], check=True)
+                for adaptive in ([0, 1, 2] if bits == 8 else [0]):
+                    stem = f'dct-{bits}-{channels}-{script}-{backend}-aq{adaptive}'
+                    stems.append(stem)
+                    options = ['-progressive'] if script else []
+                    subprocess.run([args.cjpeg, '-precision', str(bits), '-quality', '85', '-sample', '1x1',
+                                    '-restart', '3B', *options, '-outfile', str(root / f'{stem}-oracle.jpg'),
+                                    str(root / f'{stem}-source.pnm')], check=True)
+                    for origin in ['swift', 'oracle']:
+                        subprocess.run([args.djpeg, '-strict', '-dct', 'int', '-pnm', '-outfile',
+                                        str(root / f'{stem}-djpeg-{origin}.pnm'), str(root / f'{stem}-{origin}.jpg')], check=True)
 subprocess.run(command + ['verify-dct', str(root)], check=True)
 maximum_difference = 0
 for stem in stems:
@@ -63,4 +64,4 @@ for stem in stems:
         if difference > tolerance:
             raise ValueError(f'{stem}/{ours}: sample difference {difference} exceeds {tolerance}')
         maximum_difference = max(maximum_difference, difference)
-print(f'24 DCT profiles passed both oracle directions; maximum sample difference {maximum_difference}')
+print(f'48 DCT profiles passed both oracle directions; maximum sample difference {maximum_difference}')

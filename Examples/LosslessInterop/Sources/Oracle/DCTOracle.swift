@@ -4,9 +4,9 @@ import SwiftJLI
 
 enum DCTOracle {
     static func run(_ command: String, root: URL) async throws {
-        for bits in [8, 12] { for nc in [1, 3] { for script in 0...2 { for accelerated in [false, true] {
+        for bits in [8, 12] { for adaptive in (bits == 8 ? [0, 1, 2] : [0]) { for nc in [1, 3] { for script in 0...2 { for accelerated in [false, true] {
             let w = 31, h = 23, bps = bits == 8 ? 1 : 2, maxValue = (1 << bits) - 1
-            let stem = "dct-\(bits)-\(nc)-\(script)-\(accelerated ? "auto" : "scalar")"
+            let stem = "dct-\(bits)-\(nc)-\(script)-\(accelerated ? "auto" : "scalar")-aq\(adaptive)"
             let policy: ExecutionPolicy = accelerated ? .automatic : .scalarCPU
             let rowBytes = w * nc * bps + 8
             let plane = try PlaneDescriptor(width: w, height: h, components: Array(0..<nc), sampleStride: bps,
@@ -37,7 +37,8 @@ enum DCTOracle {
                 }
                 let options = DCTOptions(quality: 85, chromaSubsampling: .yuv444,
                     progressiveMode: script == 0 ? .sequential : script == 1 ? .spectralSelection : .successiveApproximation,
-                    adaptiveQuantisation: false, perceptualQuantisationTables: false)
+                    adaptiveQuantisation: adaptive != 0, perceptualQuantisationTables: false,
+                    adaptiveQuantisationField: adaptive == 1, jpegliAdaptiveQuantisation: adaptive == 2)
                 let encoder = try SwiftJLI.Encoder(configuration: .init(mode: .lossy, codecOptions: .init(restartInterval: 3, dct: options)))
                 let encoded = try await encoder.encode(image, options: .init(executionPolicy: policy))
                 try encoded.data.write(to: root.appendingPathComponent("\(stem)-swift.jpg"))
@@ -53,7 +54,7 @@ enum DCTOracle {
                 }
                 try writePNM(decoded.image, suffix: "swift-oracle")
             }
-        } } } }
-        print("24 \(command) cases passed")
+        } } } } }
+        print("48 \(command) cases passed")
     }
 }

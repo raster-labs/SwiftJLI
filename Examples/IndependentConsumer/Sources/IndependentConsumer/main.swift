@@ -51,6 +51,14 @@ import SwiftJLI
               restored.report.pixelAllocationCount == 0 else {
             throw SwiftJLI.CodecError(.internalFailure, "Progressive DCT storage/fidelity check failed.")
         }
-        print("Independent SwiftJLI consumer: predictive and progressive DCT storage checks passed.")
+        let previewDecoder = try SwiftJLI.Decoder(configuration: .init(scale: 2, sampleFormat: .float32RawSamples))
+        let preview = try await previewDecoder.decode(dct.data)
+        guard preview.image.descriptor.width == 7, preview.image.descriptor.height == 5,
+              preview.image.descriptor.sampleType == .floatingPoint,
+              preview.image.descriptor.storageBits == 32,
+              try previewDecoder.inspect(dct.data).descriptor.meaningfulBits == 12 else {
+            throw SwiftJLI.CodecError(.internalFailure, "Explicit raw-float preview interpretation changed.")
+        }
+        print("Independent SwiftJLI consumer: predictive, progressive and explicit raw-float preview checks passed.")
     }
 }
