@@ -10,14 +10,20 @@ import SwiftJLI
     #expect(encoder.configuration.mode == .lossless)
     #expect(encoder.capabilities.canEncode)
     #expect(decoder.capabilities.canDecode && decoder.capabilities.canInspect)
+    #if canImport(Accelerate)
+    #expect(encoder.capabilities.availableBackends == [.scalarCPU, .accelerated])
+    #else
     #expect(encoder.capabilities.availableBackends == [.scalarCPU])
+    #endif
     let descriptor = try ImageDescriptor.greyscale16(width: 1, height: 1)
     let image = try ImageDestination.allocate(descriptor: descriptor).writeUInt16 { _, _ in 65535 }
     let encoded = try await encoder.encode(image)
+    #expect(encoded.report.backend == .scalarCPU)
     #expect(encoded.data.prefix(2) == Data([0xff, 0xd8]))
     let info = try decoder.inspect(encoded.data)
     #expect(info.descriptor.meaningfulBits == 16)
     let decoded = try await decoder.decode(encoded.data)
+    #expect(decoded.report.backend == .scalarCPU)
     #expect(try decoded.image.sampleUInt16(x: 0, y: 0) == 65535)
     let destination = try ImageDestination.allocate(descriptor: descriptor)
     let direct = try await decoder.decode(encoded.data, into: destination)

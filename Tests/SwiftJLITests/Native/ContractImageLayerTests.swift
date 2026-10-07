@@ -270,7 +270,11 @@ struct ContractImageLayerTests {
         #expect(c.compressionModes.contains(.lossless))
         #expect(c.compressionModes.contains(.nearLossless(maximumAbsoluteError: 1)))
         #expect(c.layouts.contains("greyscale16"))
+        #if canImport(Accelerate)
+        #expect(c.availableBackends == [.scalarCPU, .accelerated])
+        #else
         #expect(c.availableBackends == [.scalarCPU])
+        #endif
     }
 }
 
