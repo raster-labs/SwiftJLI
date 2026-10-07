@@ -243,3 +243,9 @@ The three missing DCT input controls now exist: straight-alpha discard, preconve
 - CI [37662125536](https://github.com/raster-labs/SwiftJLI/actions/runs/37662125536) passed at inspection revision `bac6ade`; distance and colour changes still require new-head CI.
 
 No independent encoder allocation or controlled performance result is inferred from the functional tests. The final current-source fuzz/platform/performance gates remain open.
+
+## Controlled performance gate
+
+Two full macOS ARM64 release comparisons at `86c1d48` completed with exit 0 and exact output checks. Each used five warm-ups and twenty measurements for ten 512/1024-pixel cases. [Raw runs, source/binary hashes and per-case results](Benchmarks/Expanded/qualified-results.json) are retained. No local codec build/fuzz overlapped the timings; recorded thermal state remained nominal.
+
+The performance gate fails: predictive encode takes 3.42–4.27 times the predecessor duration, DCT encode is 13–51% slower and DCT decode is 9–38% slower across the repeated cases. Predictive decode ranges from 0.8% faster to 4.5% slower. The adapter's serial native execution and copied DCT chunks are source-level investigation candidates; no causal timing attribution has yet been measured. Fixes must retain cancellation, bounded workers and ownership safety. These measurements replace the earlier exploratory timing as the current evidence, and prevent a completed-migration claim.
