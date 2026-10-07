@@ -39,7 +39,7 @@ let encoder = try SwiftJLI.Encoder(configuration: configuration)
 let result = try await encoder.encode(image)
 ```
 
-DCT input is unsigned 8-bit storage/precision or 16-bit storage with exactly 12 meaningful bits; greyscale and RGB are supported. Quality is finite 0–100 (native table scaling clamps zero to quality 1); optional distance is finite 0–25 and takes precedence over quality. DCT-specific settings on a predictive configuration, or a nondefault predictive selector on a lossy configuration, are rejected. Decoding selects precision and scan behaviour from the stream; the output fidelity is `.lossy`.
+DCT input is unsigned 8-bit storage/precision or 16-bit storage with exactly 12 meaningful bits; greyscale and RGB are supported. Quality is finite 0–100 (native table scaling clamps zero to quality 1); optional distance is finite and nonnegative and takes precedence over quality. Large distances saturate quantisation steps within the JPEG table range before integer conversion; they do not require an arbitrary upper limit of 25. DCT-specific settings on a predictive configuration, or a nondefault predictive selector on a lossy configuration, are rejected. Decoding selects precision and scan behaviour from the stream; the output fidelity is `.lossy`.
 
 `.scalarCPU` and `.required(.scalarCPU)` select the scalar kernels on every platform. Automatic DCT uses Accelerate on Apple and scalar elsewhere; required acceleration fails when unavailable. SOF3 remains scalar. Reports identify the selected backend and preferred-backend fallback. Availability lists are unions across profiles: DCT does not support the entire 2–16-bit predictive range.
 

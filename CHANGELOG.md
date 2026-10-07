@@ -17,6 +17,9 @@
 - Embed the unchanged ICC sRGB2014 profile with its original copyright, licence and verified byte hash.
 - Add explicitly normalised fractional Float32 XYB decode with direct output storage and separate range-conversion reporting.
 - Add reproducible, supervised mutation-fuzz campaigns for inspection and both decode entry points.
+- Add bounded JPEG-specific inspection for compressed sampling/scan structure, recognised XYB and predictive settings; include its own fuzz entry.
+- Restore the predecessor's finite nonnegative distance range and saturate quantisation before integer conversion to avoid large-distance traps.
+- Retain independent heap allocation controls, a fresh remote consumer and completed one-hour decoder fuzz evidence at their exact source revisions.
 - Broader colour-profile coverage, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
 
 ## 1.1.0-dev.1 — Swift 6.4 upgrade, 2026-09-19 (unreleased)

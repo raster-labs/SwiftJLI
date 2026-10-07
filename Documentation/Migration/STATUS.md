@@ -202,9 +202,29 @@ The [expanded performance harness](Benchmarks/Expanded/README.md) now checks exa
 
 Signed standalone input remains rejected under COMMON_API API-06: the predecessor preserved bytes but lost signed provenance. No private JPEG marker or implicit signed-to-unsigned mapping is introduced. The guide records this required disposition; an external signed-metadata contract is separate work.
 
+## Full finite distance range
+
+The adapter now accepts every finite nonnegative distance, closing its artificial upper bound of 25. Perceptual YCbCr/XYB table construction saturates to 1–255 in floating point before integer conversion, so a finite distance whose intermediate scale overflows cannot trap. Quantisation behaviour for representable values is unchanged; NaN, infinities and negative distances still fail public configuration validation.
+
+- Linux ARM64 / Swift 6.4: **318 tests in 41 suites passed**, including sequential/progressive, greyscale/RGB, XYB and jpegli-AQ cases at distances 26, 1000 and the largest finite Double, plus saturated-table and rejection checks.
+- A macOS public consumer compared 14 cases at distances 26/1000 against the actual pinned predecessor: every codestream and decoded sample byte matched. Seven further 8/12-bit and colour/profile cases encoded and decoded at the largest finite Double without invoking the unsafe predecessor path. [Source hashes, harness and observations](DistanceRange/results.json) are retained; the record explicitly includes uncommitted source hashes.
+- The macOS native identity executable passed, and `cmp` against the executed predecessor identity file exited 0 for all 71 records. The inspection/distance changes still require their final head CI and final fuzz qualification.
+
+## Completed one-hour checkpoint fuzz campaigns
+
+The three campaigns launched against **`1072de44ee31e626886efb5cb9e37215648c3db8`** each completed at least 3600 seconds and exited 0. The supervisor exited 0. The on-disk executable still matches its recorded SHA-256, and every recorded source hash was checked against that exact Git revision after completion. [Manifest and compressed raw logs](Fuzz/1072de4/campaign.json) are retained, with archive and uncompressed hashes.
+
+| Entry | Attempts | Accepted | Rejected | Peak process RSS bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Common inspection | 745,166,768 | 275,254,304 | 469,912,464 | 24,117,248 |
+| Allocating decode | 83,473,135 | 21,455,539 | 62,017,596 | 26,243,072 |
+| Caller-destination decode | 78,344,826 | 20,119,894 | 58,224,932 | 25,944,064 |
+
+No unexpected error, crash or watchdog failure was observed. This is deterministic mutation fuzzing, not coverage-guided security certification. The accepted inspection count does not certify entropy validity. RSS is process memory, not allocator/copy accounting. These results qualify that checkpoint only: the later JPEG-specific inspection entry and subsequent changes require their own final campaigns. The original build cache was left intact while the later smoke used a separate cache and copied executable.
+
 ## Remaining migration requirements
 
-- Resolve the remaining profile/range gaps in PROFILE_AUDIT.md and qualify broader ICC/interoperability coverage. Specialised inspection is now implemented; RGBA, preconverted YCbCr, RGB-to-greyscale and finite distance range remain open. Unsupported combinations remain explicit errors.
+- Resolve the remaining profile gaps in PROFILE_AUDIT.md and qualify broader ICC/interoperability coverage. Specialised inspection and finite distance range are now implemented; RGBA, preconverted YCbCr and RGB-to-greyscale remain open. Unsupported combinations remain explicit errors.
 - Qualify public DCT backend performance and resource instrumentation. Backend selection and direct storage are now implemented; full platform qualification remains open.
 - Complete public-mode coverage of the retained regression corpus as lossy integration lands. All predecessor test files are now represented; the six duplicate contract files and predecessor module/version overview are explicitly retired in provenance.
 - Complete parser/entropy security review, mutation/resource/cancellation tests, fuzzing, sanitizers and native platform/SDK coverage.

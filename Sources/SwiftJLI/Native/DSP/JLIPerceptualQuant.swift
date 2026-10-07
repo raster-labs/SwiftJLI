@@ -90,7 +90,9 @@ extension Quantization {
         for k in 0..<64 {
             var scale = gscale * jpegliDistanceToScale(distance, k)
             if isYUV420 && chroma { scale *= jpegli420Rescale[k] }
-            table[k] = max(1, min(255, Int((scale * base[k]).rounded())))
+            // Saturate in floating point before converting: a finite distance
+            // can overflow intermediate scaling, but the JPEG step is 1...255.
+            table[k] = Int(min(255, max(1, scale * base[k])).rounded())
         }
         return table
     }
@@ -136,7 +138,7 @@ extension Quantization {
         var table = [Int](repeating: 0, count: 64)
         for k in 0..<64 {
             let scale = jpegliGlobalScaleXYB * jpegliDistanceToScale(distance, k)
-            table[k] = max(1, min(255, Int((scale * base[k]).rounded())))
+            table[k] = Int(min(255, max(1, scale * base[k])).rounded())
         }
         return table
     }

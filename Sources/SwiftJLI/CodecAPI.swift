@@ -77,8 +77,8 @@ public struct EncoderConfiguration: Sendable, Equatable {
         }
         let dct = codecOptions.dct
         guard dct.quality.isFinite, (0...100).contains(dct.quality),
-              dct.distance.map({ $0.isFinite && $0 >= 0 && $0 <= 25 }) ?? true else {
-            throw CodecError(.invalidArgument, "DCT quality must be 0...100 and distance 0...25, both finite.")
+              dct.distance.map({ $0.isFinite && $0 >= 0 }) ?? true else {
+            throw CodecError(.invalidArgument, "DCT quality must be 0...100 and distance nonnegative, both finite.")
         }
         guard !dct.adaptiveQuantisationField || (dct.adaptiveQuantisation && !dct.jpegliAdaptiveQuantisation) else {
             throw CodecError(.invalidArgument, "Adaptive trellis fields require trellis and cannot be combined with jpegli zero-bias quantisation.")
