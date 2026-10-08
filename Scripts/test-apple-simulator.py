@@ -51,7 +51,9 @@ def main():
         schemes = json.loads(run('schemes', ['xcodebuild', '-list', '-json']))
         names = [name for container in schemes.values() if isinstance(container, dict)
                  for name in container.get('schemes', [])]
-        scheme = next((name for name in ['SwiftJLI', 'SwiftJLI-Package'] if name in names), None)
+        # Xcode's library product scheme has no test action; the generated
+        # package scheme includes SwiftJLITests.
+        scheme = next((name for name in ['SwiftJLI-Package', 'SwiftJLI'] if name in names), None)
         if scheme is None:
             raise RuntimeError(f'Library test scheme missing: {names}')
         report['scheme'] = scheme
