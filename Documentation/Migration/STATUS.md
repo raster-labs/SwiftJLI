@@ -1,4 +1,9 @@
-# Codec migration status — 7 October 2026
+# Codec migration checkpoint history
+
+For the current disposition of every acceptance gate, read
+[ACCEPTANCE.md](ACCEPTANCE.md). The entries below are chronological evidence;
+earlier implementation descriptions and pending statements are superseded by
+later checkpoints and the acceptance ledger.
 
 Migration remains in progress. This checkpoint does not establish first-stable readiness.
 

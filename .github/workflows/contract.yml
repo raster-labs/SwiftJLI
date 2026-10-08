@@ -55,6 +55,15 @@ jobs:
       - run: swift build -c release
       - run: swift test -c release
 
+      - name: CLI and staged manual installation
+        if: matrix.swift == '6.4'
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3 man-db mandoc
+          # The minimised Swift image diverts man to a message-only stub.
+          if [ -x /usr/bin/man.REAL ]; then ln -s /usr/bin/man.REAL /usr/local/bin/man; fi
+          python3 Scripts/test-cli.py --binary "$PWD/.build/release/swiftjli-cli" --output "$RUNNER_TEMP/cli-evidence"
+
   macos:
     name: macOS 26 / Xcode default Swift
     runs-on: macos-26
