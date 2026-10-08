@@ -1,0 +1,535 @@
+warning: /Users/pushparaj/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/pushparaj/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+Building for debugging...
+[Planning deferred tasks]
+[2 / 9] SwiftJLI
+[4 / 26] SwiftJLI
+[7 / 26] SwiftJLI
+[8 / 26] SwiftJLI
+[12 / 29] SwiftJLI
+[17 / 30] SwiftJLI
+[20 / 30] SwiftJLI
+[20 / 44] SwiftJLI
+[22 / 44] SwiftJLI
+[25 / 44] SwiftJLI
+[26 / 44] SwiftJLI
+[27 / 44] SwiftJLI
+[28 / 44] Identity-product
+[29 / 44] Identity-product
+[30 / 44] Identity-product
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:38:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+36 |                 try JLIEncoder().encode(native, configuration: options.native)
+37 |             }
+38 |             try verify(jpeg.data == Data(reference))
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+39 |             try verify(jpeg.report.colourConversion == .sRGBToXYB && jpeg.report.fidelity == .lossy)
+40 |             try verify(jpeg.report.sampleConversion == (bps == 4 ? .normalisedFloat32ClampedToUInt8 : nil))
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:39:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+37 |             }
+38 |             try verify(jpeg.data == Data(reference))
+39 |             try verify(jpeg.report.colourConversion == .sRGBToXYB && jpeg.report.fidelity == .lossy)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+40 |             try verify(jpeg.report.sampleConversion == (bps == 4 ? .normalisedFloat32ClampedToUInt8 : nil))
+41 |             try verify(jpeg.report.pixelAllocationCount == 0 && jpeg.report.copyEvents.isEmpty)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:40:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+38 |             try verify(jpeg.data == Data(reference))
+39 |             try verify(jpeg.report.colourConversion == .sRGBToXYB && jpeg.report.fidelity == .lossy)
+40 |             try verify(jpeg.report.sampleConversion == (bps == 4 ? .normalisedFloat32ClampedToUInt8 : nil))
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+41 |             try verify(jpeg.report.pixelAllocationCount == 0 && jpeg.report.copyEvents.isEmpty)
+42 |             let info = try SwiftJLI.Decoder().inspect(jpeg.data)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:41:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+39 |             try verify(jpeg.report.colourConversion == .sRGBToXYB && jpeg.report.fidelity == .lossy)
+40 |             try verify(jpeg.report.sampleConversion == (bps == 4 ? .normalisedFloat32ClampedToUInt8 : nil))
+41 |             try verify(jpeg.report.pixelAllocationCount == 0 && jpeg.report.copyEvents.isEmpty)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+42 |             let info = try SwiftJLI.Decoder().inspect(jpeg.data)
+43 |             try verify(info.descriptor.iccProfile == Data(XYBICCProfile.data))
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:43:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+41 |             try verify(jpeg.report.pixelAllocationCount == 0 && jpeg.report.copyEvents.isEmpty)
+42 |             let info = try SwiftJLI.Decoder().inspect(jpeg.data)
+43 |             try verify(info.descriptor.iccProfile == Data(XYBICCProfile.data))
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+44 |             try verify(info.descriptor.components == [.uninterpreted("X"), .uninterpreted("Y"), .uninterpreted("B")])
+45 |             for scale in [1, 2, 4, 8] {
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:44:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+42 |             let info = try SwiftJLI.Decoder().inspect(jpeg.data)
+43 |             try verify(info.descriptor.iccProfile == Data(XYBICCProfile.data))
+44 |             try verify(info.descriptor.components == [.uninterpreted("X"), .uninterpreted("Y"), .uninterpreted("B")])
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+45 |             for scale in [1, 2, 4, 8] {
+46 |                 let decoder = try SwiftJLI.Decoder(configuration: .init(scale: scale))
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:52:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+50 |                 let decoded = try await decoder.decode(jpeg.data, options: .init(executionPolicy: .required(backend)))
+51 |                 try verify(try decoded.image.storage.withUnsafeBytes { Array($0) } == expected.data)
+52 |                 try verify(decoded.image.descriptor.iccProfile == Data(SRGBICCProfile.data))
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+53 |                 try verify(decoded.image.descriptor.components == [.red, .green, .blue])
+54 |                 try verify(decoded.report.colourConversion == .xybToSRGB)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:53:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+51 |                 try verify(try decoded.image.storage.withUnsafeBytes { Array($0) } == expected.data)
+52 |                 try verify(decoded.image.descriptor.iccProfile == Data(SRGBICCProfile.data))
+53 |                 try verify(decoded.image.descriptor.components == [.red, .green, .blue])
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+54 |                 try verify(decoded.report.colourConversion == .xybToSRGB)
+55 |                 let w = expected.width, height = expected.height, stride = w * 3 + 7
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:54:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+52 |                 try verify(decoded.image.descriptor.iccProfile == Data(SRGBICCProfile.data))
+53 |                 try verify(decoded.image.descriptor.components == [.red, .green, .blue])
+54 |                 try verify(decoded.report.colourConversion == .xybToSRGB)
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+55 |                 let w = expected.width, height = expected.height, stride = w * 3 + 7
+56 |                 let plane = try PlaneDescriptor(width: w, height: height, components: [0, 1, 2],
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:62:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+60 |                 let destination = try ImageDestination.allocate(descriptor: descriptor)
+61 |                 let direct = try await decoder.decode(jpeg.data, into: destination, options: .init(executionPolicy: .required(backend)))
+62 |                 try verify(direct.image.storage.allocationID == destination.storage.allocationID)
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+63 |                 try verify(direct.report.pixelAllocationCount == 0 && direct.report.copyEvents.isEmpty)
+64 |                 try direct.image.storage.withUnsafeBytes { raw in
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:63:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+61 |                 let direct = try await decoder.decode(jpeg.data, into: destination, options: .init(executionPolicy: .required(backend)))
+62 |                 try verify(direct.image.storage.allocationID == destination.storage.allocationID)
+63 |                 try verify(direct.report.pixelAllocationCount == 0 && direct.report.copyEvents.isEmpty)
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+64 |                 try direct.image.storage.withUnsafeBytes { raw in
+65 |                     for y in 0..<height {
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:66:25: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+64 |                 try direct.image.storage.withUnsafeBytes { raw in
+65 |                     for y in 0..<height {
+66 |                         try verify(raw[(y * stride)..<(y * stride + w * 3)].elementsEqual(expected.data[(y * w * 3)..<((y + 1) * w * 3)]))
+   |                         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+67 |                         try verify(raw[(y * stride + w * 3)..<((y + 1) * stride)].allSatisfy { $0 == 0 })
+68 |                     }
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:67:25: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+65 |                     for y in 0..<height {
+66 |                         try verify(raw[(y * stride)..<(y * stride + w * 3)].elementsEqual(expected.data[(y * w * 3)..<((y + 1) * w * 3)]))
+67 |                         try verify(raw[(y * stride + w * 3)..<((y + 1) * stride)].allSatisfy { $0 == 0 })
+   |                         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+68 |                     }
+69 |                 }
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:86:38: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+84 |                     let converted = try require(colour.converted(to: system, intent: .relativeColorimetric, options: nil))
+85 |                     let actual = try require(converted.components)
+86 |                     for c in 0..<3 { try verify(abs(actual[c] - values[c]) < 1.0 / 255) }
+   |                                      `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+87 |                     comparisons += 1
+88 |                 }
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBAPITests.swift:91:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+89 |             }
+90 |         }
+91 |         try verify(comparisons == 216)
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+92 |     }
+93 |     #endif
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[34 / 44] Identity-product
+[35 / 44] Identity-product
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:19:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+17 |     func iccMatchesInverse() throws {
+18 |         let profile = XYBICCProfile.data
+19 |         try verify(profile.count > 128, "profile suspiciously small")
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+20 |         // ICC magic 'acsp' at byte 36, and the declared size equals the data.
+21 |         try verify(Array(profile[36..<40]) == Array("acsp".utf8))
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:21:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+19 |         try verify(profile.count > 128, "profile suspiciously small")
+20 |         // ICC magic 'acsp' at byte 36, and the declared size equals the data.
+21 |         try verify(Array(profile[36..<40]) == Array("acsp".utf8))
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+22 |         let declared = (Int(profile[0]) << 24) | (Int(profile[1]) << 16)
+23 |             | (Int(profile[2]) << 8) | Int(profile[3])
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:24:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+22 |         let declared = (Int(profile[0]) << 24) | (Int(profile[1]) << 16)
+23 |             | (Int(profile[2]) << 8) | Int(profile[3])
+24 |         try verify(declared == profile.count, "ICC size field wrong")
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+25 | 
+26 |         // Apple's CMS must parse it, and applying it must reproduce our
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:29:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+27 |         // analytic XYB→sRGB to within a couple of LSBs (CLUT interpolation).
+28 |         let xyb = try require(CGColorSpace(iccData: Data(profile) as CFData))
+29 |         try verify(xyb.numberOfComponents == 3)
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+30 |         let srgb = try require(CGColorSpace(name: CGColorSpace.sRGB))
+31 |         var maxErr: Double = 0
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:53:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+51 |             }
+52 |         }
+53 |         try verify(comparisons == 256)
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+54 |         try verify(maxErr < 2.0, "XYB ICC transform disagrees with our inverse (max err \(maxErr))")
+55 |     }
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:54:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+52 |         }
+53 |         try verify(comparisons == 256)
+54 |         try verify(maxErr < 2.0, "XYB ICC transform disagrees with our inverse (max err \(maxErr))")
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+55 |     }
+56 | 
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:77:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+75 |         // It must carry the XYB ICC (APP2) and an Adobe APP14 (transform=0).
+76 |         let dec = try JLIDecoder().decode(from: jpeg)
+77 |         try verify(dec.iccProfile == XYBICCProfile.data, "XYB JPEG must embed the XYB ICC")
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+78 |         try verify(dec.width == w && dec.height == h && dec.colorModel == .rgb)
+79 | 
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:78:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+76 |         let dec = try JLIDecoder().decode(from: jpeg)
+77 |         try verify(dec.iccProfile == XYBICCProfile.data, "XYB JPEG must embed the XYB ICC")
+78 |         try verify(dec.width == w && dec.height == h && dec.colorModel == .rgb)
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+79 | 
+80 |         // Our decoder inverts XYB; round-trip error is bounded (lossy DCT + the
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:88:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+86 |         }
+87 |         let meanErr = sumErr / Double(rgb.count)
+88 |         try verify(meanErr < 4.0, "XYB round-trip mean error \(meanErr) too high")
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+89 |         try verify(maxErr < 40, "XYB round-trip max error \(maxErr) too high")
+90 |     }
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBTests.swift:89:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+87 |         let meanErr = sumErr / Double(rgb.count)
+88 |         try verify(meanErr < 4.0, "XYB round-trip mean error \(meanErr) too high")
+89 |         try verify(maxErr < 40, "XYB round-trip max error \(maxErr) too high")
+   |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+90 |     }
+91 | }
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[36 / 44] Identity-product
+[38 / 44] Identity-product
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/ScaledDecodeTests.swift:22:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+20 |                 let decoder = try SwiftJLI.Decoder(configuration: .init(scale: scale))
+21 |                 let info = try decoder.inspect(Data(data))
+22 |                 try verify(info.descriptor.width == width && info.descriptor.height == height)
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+23 |                 let reference = try NativeOperation.$current.withValue(.init(seconds: 120)) {
+24 |                     try JLIDecoder().decode(from: data, configuration: .init(scale: scale))
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/ScaledDecodeTests.swift:27:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+25 |                 }
+26 |                 let decoded = try await decoder.decode(Data(data), options: .init(executionPolicy: .scalarCPU))
+27 |                 try verify(decoded.image.descriptor.width == reference.width && decoded.image.descriptor.height == reference.height)
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+28 |                 try verify(decoded.report.fidelity == .lossy)
+29 |                 try verify(try decoded.image.storage.withUnsafeBytes { Array($0) } == reference.data)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/ScaledDecodeTests.swift:28:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+26 |                 let decoded = try await decoder.decode(Data(data), options: .init(executionPolicy: .scalarCPU))
+27 |                 try verify(decoded.image.descriptor.width == reference.width && decoded.image.descriptor.height == reference.height)
+28 |                 try verify(decoded.report.fidelity == .lossy)
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+29 |                 try verify(try decoded.image.storage.withUnsafeBytes { Array($0) } == reference.data)
+30 |                 let w = reference.width, h = reference.height, row = w * components * bps + 8
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/ScaledDecodeTests.swift:38:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+36 |                 let destination = try ImageDestination.allocate(descriptor: d)
+37 |                 let shared = try await decoder.decode(Data(data), into: destination, options: .init(executionPolicy: .scalarCPU))
+38 |                 try verify(shared.image.storage.allocationID == destination.storage.allocationID)
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+39 |                 try verify(shared.report.pixelAllocationCount == 0 && shared.report.copyEvents.isEmpty)
+40 |                 try shared.image.storage.withUnsafeBytes { raw in
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/ScaledDecodeTests.swift:39:17: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+37 |                 let shared = try await decoder.decode(Data(data), into: destination, options: .init(executionPolicy: .scalarCPU))
+38 |                 try verify(shared.image.storage.allocationID == destination.storage.allocationID)
+39 |                 try verify(shared.report.pixelAllocationCount == 0 && shared.report.copyEvents.isEmpty)
+   |                 `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+40 |                 try shared.image.storage.withUnsafeBytes { raw in
+41 |                     for y in 0..<h {
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/ScaledDecodeTests.swift:43:25: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+41 |                     for y in 0..<h {
+42 |                         let length = w * components * bps, start = 4 + y * row
+43 |                         try verify(raw[start..<(start + length)].elementsEqual(reference.data[(y * length)..<((y + 1) * length)]))
+   |                         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+44 |                         try verify(raw[(start + length)..<(start + row)].allSatisfy { $0 == 0 })
+45 |                     }
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/ScaledDecodeTests.swift:44:25: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+42 |                         let length = w * components * bps, start = 4 + y * row
+43 |                         try verify(raw[start..<(start + length)].elementsEqual(reference.data[(y * length)..<((y + 1) * length)]))
+44 |                         try verify(raw[(start + length)..<(start + row)].allSatisfy { $0 == 0 })
+   |                         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+45 |                     }
+46 |                 }
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:22:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+20 |             }
+21 |             let decoded = try await decoder.decode(jpeg, options: .init(executionPolicy: .required(backend)))
+22 |             try verify(decoded.image.descriptor.sampleType == .floatingPoint && decoded.image.descriptor.storageBits == 32)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+23 |             try verify(decoded.image.descriptor.iccProfile == Data(SRGBICCProfile.data))
+24 |             try verify(decoded.report.sampleConversion == .rawSRGBToNormalisedFloat32)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:23:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+21 |             let decoded = try await decoder.decode(jpeg, options: .init(executionPolicy: .required(backend)))
+22 |             try verify(decoded.image.descriptor.sampleType == .floatingPoint && decoded.image.descriptor.storageBits == 32)
+23 |             try verify(decoded.image.descriptor.iccProfile == Data(SRGBICCProfile.data))
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+24 |             try verify(decoded.report.sampleConversion == .rawSRGBToNormalisedFloat32)
+25 |             try verify(decoded.report.colourConversion == .xybToSRGB && decoded.report.fidelity == .lossy)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:24:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+22 |             try verify(decoded.image.descriptor.sampleType == .floatingPoint && decoded.image.descriptor.storageBits == 32)
+23 |             try verify(decoded.image.descriptor.iccProfile == Data(SRGBICCProfile.data))
+24 |             try verify(decoded.report.sampleConversion == .rawSRGBToNormalisedFloat32)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+25 |             try verify(decoded.report.colourConversion == .xybToSRGB && decoded.report.fidelity == .lossy)
+26 |             try verify(try decoder.inspect(jpeg).descriptor.meaningfulBits == 8)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:25:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+23 |             try verify(decoded.image.descriptor.iccProfile == Data(SRGBICCProfile.data))
+24 |             try verify(decoded.report.sampleConversion == .rawSRGBToNormalisedFloat32)
+25 |             try verify(decoded.report.colourConversion == .xybToSRGB && decoded.report.fidelity == .lossy)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+26 |             try verify(try decoder.inspect(jpeg).descriptor.meaningfulBits == 8)
+27 |             try decoded.image.storage.withUnsafeBytes { raw in
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:30:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+28 |                 for i in reference.indices {
+29 |                     let bits = UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: i * 4, as: UInt32.self))
+30 |                     try verify(bits == reference[i].bitPattern)
+   |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+31 |                 }
+32 |             }
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:33:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+31 |                 }
+32 |             }
+33 |             try verify(reference.allSatisfy { $0.isFinite && $0 >= 0 && $0 <= 1 })
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+34 |             try verify(reference.contains { abs($0 * 255 - ($0 * 255).rounded()) > 0.001 })
+35 |             let row = native.width * 12 + 16
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:34:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+32 |             }
+33 |             try verify(reference.allSatisfy { $0.isFinite && $0 >= 0 && $0 <= 1 })
+34 |             try verify(reference.contains { abs($0 * 255 - ($0 * 255).rounded()) > 0.001 })
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+35 |             let row = native.width * 12 + 16
+36 |             let plane = try PlaneDescriptor(width: native.width, height: native.height, components: [0, 1, 2], offset: 8,
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:43:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+41 |             let destination = try ImageDestination.allocate(descriptor: descriptor)
+42 |             let direct = try await decoder.decode(jpeg, into: destination, options: .init(executionPolicy: .required(backend)))
+43 |             try verify(direct.image.storage.allocationID == destination.storage.allocationID)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+44 |             try verify(direct.report.pixelAllocationCount == 0 && direct.report.copyEvents.isEmpty)
+45 |             try direct.image.storage.withUnsafeBytes { raw in
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:44:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+42 |             let direct = try await decoder.decode(jpeg, into: destination, options: .init(executionPolicy: .required(backend)))
+43 |             try verify(direct.image.storage.allocationID == destination.storage.allocationID)
+44 |             try verify(direct.report.pixelAllocationCount == 0 && direct.report.copyEvents.isEmpty)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+45 |             try direct.image.storage.withUnsafeBytes { raw in
+46 |                 for y in 0..<native.height {
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:49:25: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+47 |                     for x in 0..<(native.width * 3) {
+48 |                         let bits = UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: 8 + y * row + x * 4, as: UInt32.self))
+49 |                         try verify(bits == reference[y * native.width * 3 + x].bitPattern)
+   |                         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+50 |                     }
+51 |                     try verify(raw[(8 + y * row + native.width * 12)..<(8 + (y + 1) * row)].allSatisfy { $0 == 0 })
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/XYBFloatDecodeTests.swift:51:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+49 |                         try verify(bits == reference[y * native.width * 3 + x].bitPattern)
+50 |                     }
+51 |                     try verify(raw[(8 + y * row + native.width * 12)..<(8 + (y + 1) * row)].allSatisfy { $0 == 0 })
+   |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+52 |                 }
+53 |             }
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[40 / 44] Identity-product
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatDecodeTests.swift:24:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+22 |             }
+23 |             let decoded = try await decoder.decode(Data(encoded), options: .init(executionPolicy: .required(backend)))
+24 |             try verify(decoded.image.descriptor.sampleType == .floatingPoint)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+25 |             try verify(decoded.image.descriptor.storageBits == 32 && decoded.image.descriptor.meaningfulBits == 32)
+26 |             try verify(try decoded.image.storage.withUnsafeBytes { Array($0) } == reference.data)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatDecodeTests.swift:25:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+23 |             let decoded = try await decoder.decode(Data(encoded), options: .init(executionPolicy: .required(backend)))
+24 |             try verify(decoded.image.descriptor.sampleType == .floatingPoint)
+25 |             try verify(decoded.image.descriptor.storageBits == 32 && decoded.image.descriptor.meaningfulBits == 32)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+26 |             try verify(try decoded.image.storage.withUnsafeBytes { Array($0) } == reference.data)
+27 |             let outW = reference.width, outH = reference.height, row = outW * 4 + 12
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatDecodeTests.swift:34:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+32 |             let destination = try ImageDestination.allocate(descriptor: d)
+33 |             let direct = try await decoder.decode(Data(encoded), into: destination, options: .init(executionPolicy: .required(backend)))
+34 |             try verify(direct.image.storage.allocationID == destination.storage.allocationID)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+35 |             try verify(direct.report.fidelity == .lossy && direct.report.pixelAllocationCount == 0 && direct.report.copyEvents.isEmpty)
+36 |             var largest: Float = 0
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatDecodeTests.swift:35:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+33 |             let direct = try await decoder.decode(Data(encoded), into: destination, options: .init(executionPolicy: .required(backend)))
+34 |             try verify(direct.image.storage.allocationID == destination.storage.allocationID)
+35 |             try verify(direct.report.fidelity == .lossy && direct.report.pixelAllocationCount == 0 && direct.report.copyEvents.isEmpty)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+36 |             var largest: Float = 0
+37 |             try direct.image.storage.withUnsafeBytes { raw in
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatDecodeTests.swift:40:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+38 |                 for y in 0..<outH {
+39 |                     let start = 8 + y * row, length = outW * 4
+40 |                     try verify(raw[start..<(start + length)].elementsEqual(reference.data[(y * length)..<((y + 1) * length)]))
+   |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+41 |                     try verify(raw[(start + length)..<(start + row)].allSatisfy { $0 == 0 })
+42 |                     for x in 0..<outW {
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatDecodeTests.swift:41:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+39 |                     let start = 8 + y * row, length = outW * 4
+40 |                     try verify(raw[start..<(start + length)].elementsEqual(reference.data[(y * length)..<((y + 1) * length)]))
+41 |                     try verify(raw[(start + length)..<(start + row)].allSatisfy { $0 == 0 })
+   |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+42 |                     for x in 0..<outW {
+43 |                         let o = start + x * 4
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatDecodeTests.swift:46:25: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+44 |                         let bits = UInt32(raw[o]) | UInt32(raw[o + 1]) << 8 | UInt32(raw[o + 2]) << 16 | UInt32(raw[o + 3]) << 24
+45 |                         let sample = Float(bitPattern: bits)
+46 |                         try verify(sample.isFinite)
+   |                         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+47 |                         largest = max(largest, sample)
+48 |                     }
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatDecodeTests.swift:51:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+49 |                 }
+50 |             }
+51 |             try verify(largest > 1, "Raw Float32 sample units must not be normalised to [0, 1]")
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+52 |         } }
+53 |     }
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/AdvancedDCTTests.swift:35:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+33 |                         try JLIEncoder().encode(native, configuration: expectedConfig)
+34 |                     }
+35 |                     try verify(encoded.data == Data(expected))
+   |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+36 |                     try verify(encoded.report.backend == backend && encoded.report.fidelity == .lossy)
+37 |                     try verify(encoded.report.copyEvents.isEmpty && encoded.report.pixelAllocationCount == 0)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/AdvancedDCTTests.swift:36:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+34 |                     }
+35 |                     try verify(encoded.data == Data(expected))
+36 |                     try verify(encoded.report.backend == backend && encoded.report.fidelity == .lossy)
+   |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+37 |                     try verify(encoded.report.copyEvents.isEmpty && encoded.report.pixelAllocationCount == 0)
+38 |                     let decoded = try await SwiftJLI.Decoder().decode(encoded.data)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/AdvancedDCTTests.swift:37:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+35 |                     try verify(encoded.data == Data(expected))
+36 |                     try verify(encoded.report.backend == backend && encoded.report.fidelity == .lossy)
+37 |                     try verify(encoded.report.copyEvents.isEmpty && encoded.report.pixelAllocationCount == 0)
+   |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+38 |                     let decoded = try await SwiftJLI.Decoder().decode(encoded.data)
+39 |                     try verify(decoded.image.descriptor.width == w && decoded.image.descriptor.height == h)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/AdvancedDCTTests.swift:39:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+37 |                     try verify(encoded.report.copyEvents.isEmpty && encoded.report.pixelAllocationCount == 0)
+38 |                     let decoded = try await SwiftJLI.Decoder().decode(encoded.data)
+39 |                     try verify(decoded.image.descriptor.width == w && decoded.image.descriptor.height == h)
+   |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+40 |                 }
+41 |             }
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[41 / 44]
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatEncodeTests.swift:35:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+33 |                 try JLIEncoder().encode(reference, configuration: dct.native)
+34 |             }
+35 |             try verify(encoded.data == Data(expectedJPEG))
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+36 |             try verify(encoded.report.sampleConversion == .normalisedFloat32ClampedToUInt8)
+37 |             try verify(encoded.report.fidelity == .lossy && encoded.report.backend == backend)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatEncodeTests.swift:36:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+34 |             }
+35 |             try verify(encoded.data == Data(expectedJPEG))
+36 |             try verify(encoded.report.sampleConversion == .normalisedFloat32ClampedToUInt8)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+37 |             try verify(encoded.report.fidelity == .lossy && encoded.report.backend == backend)
+38 |             try verify(encoded.report.pixelAllocationCount == 0 && encoded.report.peakPixelBytes == 0)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatEncodeTests.swift:37:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+35 |             try verify(encoded.data == Data(expectedJPEG))
+36 |             try verify(encoded.report.sampleConversion == .normalisedFloat32ClampedToUInt8)
+37 |             try verify(encoded.report.fidelity == .lossy && encoded.report.backend == backend)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+38 |             try verify(encoded.report.pixelAllocationCount == 0 && encoded.report.peakPixelBytes == 0)
+39 |             try verify(encoded.report.copyEvents.isEmpty)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatEncodeTests.swift:38:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+36 |             try verify(encoded.report.sampleConversion == .normalisedFloat32ClampedToUInt8)
+37 |             try verify(encoded.report.fidelity == .lossy && encoded.report.backend == backend)
+38 |             try verify(encoded.report.pixelAllocationCount == 0 && encoded.report.peakPixelBytes == 0)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+39 |             try verify(encoded.report.copyEvents.isEmpty)
+40 |             let info = try SwiftJLI.Decoder().inspect(encoded.data)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatEncodeTests.swift:39:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+37 |             try verify(encoded.report.fidelity == .lossy && encoded.report.backend == backend)
+38 |             try verify(encoded.report.pixelAllocationCount == 0 && encoded.report.peakPixelBytes == 0)
+39 |             try verify(encoded.report.copyEvents.isEmpty)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+40 |             let info = try SwiftJLI.Decoder().inspect(encoded.data)
+41 |             try verify(info.descriptor.meaningfulBits == 8 && info.descriptor.iccProfile == d.iccProfile)
+
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Sources/Identity/FloatEncodeTests.swift:41:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+39 |             try verify(encoded.report.copyEvents.isEmpty)
+40 |             let info = try SwiftJLI.Decoder().inspect(encoded.data)
+41 |             try verify(info.descriptor.meaningfulBits == 8 && info.descriptor.iccProfile == d.iccProfile)
+   |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+42 |         }
+43 |     }
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/SwiftJLI/Package.swift: SwiftJLI: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Package.swift: Identity-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/identity-consumer/Package.swift: Identity-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[44 / 46] Identity-product
+Build complete! (5.92 secs)
+identity-hashes: 71 entries → /Users/pushparaj/Documents/Codex/2026-10-07/https-github-com-raster-labs-swiftjls/work/evidence/bulk-stitch-asan-identity.txt
+AGGREGATE 0e347394a1a9ae7170857ed54e2de2d8bed891184172a8fa36c6471b2d19800a
+Scalar/Accelerate tie rounding passed; maximum DCT coefficient difference: 1.5258789e-05
+Borrowed DCT matrix matched packed encoding/decoding on scalar and Accelerate
+Concurrent DCT scratch matrix completed
+Public scaled, raw Float32 and adaptive DCT matrices passed
+Explicit normalised Float32 input matrix passed
+Public XYB storage and independent sRGB ICC checks passed
+Independent XYB ICC inverse comparison completed all 256 colours
+Normalised Float32 XYB output matches fractional native reconstruction

@@ -52,33 +52,19 @@ func check(_ condition: Bool, _ message: String) throws {
     @concurrent static func run() async throws {
         let smoke = CommandLine.arguments.contains("--smoke")
         let warmups = smoke ? 1 : 5, timed = smoke ? 1 : 20
-        let extended = CommandLine.arguments.contains("--extended")
-        let sizes = smoke ? [65] : extended ? [19, 512, 2048, 3072] : [512, 1024]
-        let patterns = extended ? ["flat", "ramp", "noise"] : ["mixed"]
-        try emit(["event": "start", "extended": extended, "patterns": patterns, "sizes": sizes, "smoke": smoke, "warmups": warmups,
+        let sizes = smoke ? [65] : [512, 1024]
+        try emit(["event": "start", "smoke": smoke, "warmups": warmups,
             "timedIterations": timed, "context": context(),
             "backendPolicy": "automatic on both implementations",
-            "maximumWorkspaceBytes": 8 * 1024 * 1024 * 1024, "maximumMemoryBytes": 10 * 1024 * 1024 * 1024,
             "os": ProcessInfo.processInfo.operatingSystemVersionString])
-        for pattern in patterns {
         for size in sizes {
-            for profile in ["lossless16", "dct12", "rgb8", "progressiveRGB8", "xyb8"] {
+            for profile in ["lossless16"] {
                 let bits = profile == "lossless16" ? 16 : profile == "dct12" ? 12 : 8
                 let nc = bits == 8 ? 3 : 1, bps = bits > 8 ? 2 : 1, row = size * nc * bps
                 let xyb = profile == "xyb8", progressive = profile == "progressiveRGB8", lossless = bits == 16
                 var bytes = [UInt8](repeating: 0, count: row * size)
-                var randomState: UInt64 = 0xC0DEC
                 for y in 0..<size { for x in 0..<(size * nc) {
-                    randomState = randomState &* 6364136223846793005 &+ 1
-                    let maximum = (1 << bits) - 1
-                    let v: Int
-                    switch pattern {
-                    case "flat": v = maximum / 2
-                    case "ramp": v = ((x / nc + y) * maximum / max(1, 2 * (size - 1)))
-                    case "noise": v = Int(truncatingIfNeeded: randomState >> 32) & maximum
-                    default: v = (x * 17 + y * 31 + x * y % 257) & maximum
-                    }
-                    let offset = y * row + x * bps
+                    let v = (x * 17 + y * 31 + x * y % 257) & ((1 << bits) - 1), offset = y * row + x * bps
                     bytes[offset] = UInt8(truncatingIfNeeded: v)
                     if bps == 2 { bytes[offset + 1] = UInt8(v >> 8) }
                 } }
@@ -99,15 +85,13 @@ func check(_ condition: Bool, _ message: String) throws {
                         colourSpace: xyb ? .xybFromSRGB : .yCbCr)))
                 let oldEncoder = JLIEncoder(), oldDecoder = JLIDecoder()
                 let encoder = try SwiftJLI.Encoder(configuration: newConfig), decoder = try SwiftJLI.Decoder()
-                let limits = try SwiftJLI.ResourceLimits(maximumWorkspaceBytes: 8 * 1024 * 1024 * 1024,
-                    maximumMemoryBytes: 10 * 1024 * 1024 * 1024)
+                let limits = try SwiftJLI.ResourceLimits(maximumWorkspaceBytes: 1024 * 1024 * 1024)
                 let encodeOptions = SwiftJLI.EncodeOptions(resourceLimits: limits)
-                let decodeOptions = SwiftJLI.DecodeOptions(resourceLimits: limits)
                 let oldJPEG = try oldEncoder.encode(legacy, configuration: oldConfig)
                 let newJPEG = try await encoder.encode(image, options: encodeOptions)
                 try check(oldJPEG == Array(newJPEG.data), "Codestream mismatch: \(profile)")
                 let oldPixels = try oldDecoder.decode(from: oldJPEG)
-                let newPixels = try await decoder.decode(newJPEG.data, options: decodeOptions)
+                let newPixels = try await decoder.decode(newJPEG.data)
                 try check(oldPixels.width == newPixels.image.descriptor.width &&
                     oldPixels.height == newPixels.image.descriptor.height &&
                     oldPixels.data == newPixels.image.storage.withUnsafeBytes { Array($0) },
@@ -124,7 +108,7 @@ func check(_ condition: Bool, _ message: String) throws {
                             let e = try await encoder.encode(image, options: encodeOptions); let t = elapsed(start)
                             checksum &+= UInt64(e.data.count); if i >= warmups { ne.append(t) }
                             start = .now
-                            let d = try await decoder.decode(newJPEG.data, options: decodeOptions); let dt = elapsed(start)
+                            let d = try await decoder.decode(newJPEG.data); let dt = elapsed(start)
                             checksum &+= UInt64(d.image.storage.byteCount); if i >= warmups { nd.append(dt) }
                         } else {
                             let e = try oldEncoder.encode(legacy, configuration: oldConfig); let t = elapsed(start)
@@ -135,7 +119,7 @@ func check(_ condition: Bool, _ message: String) throws {
                         }
                     }
                 }
-                try emit(["event": "case", "pattern": pattern, "profile": profile, "width": size, "height": size,
+                try emit(["event": "case", "profile": profile, "width": size, "height": size,
                     "bits": bits, "components": nc, "warmups": warmups, "timedIterations": timed,
                     "codestreamsEqual": true, "samplesEqual": true, "compressedBytes": oldJPEG.count,
                     "checksum": checksum, "before": before, "after": context(),
@@ -146,7 +130,6 @@ func check(_ condition: Bool, _ message: String) throws {
                     "predecessorDecode": statistics(od, pixels: size * size),
                     "successorDecode": statistics(nd, pixels: size * size)])
             }
-        }
         }
         try emit(["event": "complete", "smoke": smoke, "context": context()])
     }

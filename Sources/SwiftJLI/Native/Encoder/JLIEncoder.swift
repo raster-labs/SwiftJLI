@@ -861,46 +861,38 @@ struct JLIEncoder: Sendable {
         diffs: UnsafePointer<Int32>, range: Range<Int>, table: HuffmanTable
     ) throws -> (bytes: [UInt8], bitCount: Int) {
         var rw = RawBitChunkWriter(capacity: range.count * 3 + 16)
-        for i in range {
-            if i % 4096 == 0 { try NativeOperation.check() }
-            let d = diffs[i]
-            let cat = d == -32768 ? 16 : HuffmanEncoder.category(for: d)
-            let e = table.encodingTable[cat]
-            if cat > 0 && cat < 16 {
-                let fused = (UInt32(e.code) << cat)
-                    | HuffmanEncoder.additionalBits(for: d, category: cat)
-                rw.writeBits(fused, count: Int(e.length) + cat)
-            } else {
-                rw.writeBits(UInt32(e.code), count: Int(e.length))
+        for start in stride(from: range.lowerBound, to: range.upperBound, by: 4096) {
+            try NativeOperation.check()
+            for i in start..<(start + min(4096, range.upperBound - start)) {
+                let d = diffs[i]
+                let cat = d == -32768 ? 16 : HuffmanEncoder.category(for: d)
+                let e = table.encodingTable[cat]
+                if cat > 0 && cat < 16 {
+                    let fused = (UInt32(e.code) << cat)
+                        | HuffmanEncoder.additionalBits(for: d, category: cat)
+                    rw.writeBits(fused, count: Int(e.length) + cat)
+                } else {
+                    rw.writeBits(UInt32(e.code), count: Int(e.length))
+                }
             }
         }
         rw.finish()
         return (rw.bytes, rw.bitCount)
     }
 
-    /// Replays an unstuffed bit sequence through the stuffing BitWriter, 24 bits
-    /// per call (writeBits' value mask handles ≤ 31). Appending the same bits in
-    /// different call granularity produces the same stream by the writer's
-    /// MSB-first accumulation.
+    /// Replays complete bytes in bounded batches, then appends the trailing bits.
+    /// Chunk boundaries need not be byte-aligned in the destination accumulator.
     private static func feedBits(_ bytes: [UInt8], bitCount: Int, into bw: inout BitWriter) throws {
-        var remaining = bitCount
+        let fullBytes = bitCount / 8
         try bytes.withUnsafeBufferPointer { p in
-            guard let b = p.baseAddress else { return }
-            var i = 0
-            while remaining >= 24 {
-                if i % 12288 == 0 { try NativeOperation.check() }
-                let v = (UInt32(b[i]) << 16) | (UInt32(b[i + 1]) << 8) | UInt32(b[i + 2])
-                bw.writeBits(v, count: 24)
-                i += 3
-                remaining -= 24
+            for start in stride(from: 0, to: fullBytes, by: 12288) {
+                try NativeOperation.check()
+                let end = start + min(12288, fullBytes - start)
+                bw.writeUnstuffedBytes(UnsafeBufferPointer(rebasing: p[start..<end]))
             }
-            while remaining >= 8 {
-                bw.writeBits(UInt32(b[i]), count: 8)
-                i += 1
-                remaining -= 8
-            }
-            if remaining > 0 {
-                bw.writeBits(UInt32(b[i]) >> (8 - remaining), count: remaining)
+            let tail = bitCount % 8
+            if tail > 0 {
+                bw.writeBits(UInt32(p[fullBytes]) >> (8 - tail), count: tail)
             }
         }
     }

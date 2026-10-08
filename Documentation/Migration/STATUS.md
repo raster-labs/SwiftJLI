@@ -267,3 +267,13 @@ Linux Swift 6.4 passes **332 tests in 44 suites**. The latest single public rele
 CI 37731508684 failed on a cancellation-test startup timeout at the preceding worker commit. Its controller now runs on a dedicated thread, waits for actual worker entry and cancels without waiting for a cooperative task to resume. It still requires CancellationError and zero active workers afterwards. This corrects the scheduling assumption rather than relaxing codec cancellation; new-head CI is required.
 
 The RGB row-batch checkpoint subsequently passed local macOS ASan and TSan executable matrices, including both exact 71-record predecessor comparisons (all commands exit 0). The full current-head CI sanitizer suite and final fuzz campaigns remain outstanding.
+
+## Predictive stitching and expanded-corpus checkpoint
+
+CI [37733503711](https://github.com/raster-labs/SwiftJLI/actions/runs/37733503711) passed every job at `fb86314257ef36414107b469fb64f089ad6f8d2f`, including the repaired cancellation test, macOS sanitizer suites and Linux/toolchain/SDK matrix. This supersedes the pending-CI statement above for that revision only.
+
+[Entropy stitching attribution and results](EntropyStitch/README.md) isolate a serial bit-writer cost. Bounded whole-byte appends now borrow the output buffer once per batch instead of once per three bytes, preserving stuffing, pending bits and restart boundaries. The operation-check outlining experiment was discarded. Linux ARM64 Swift 6.4 passes **334 tests in 45 suites**, including an independent bit-list oracle for the bulk writer.
+
+Two ordinary public release comparisons preserve exact output and measure predictive encode 3–8% faster than the predecessor at 512²/1024². The new 60-case flat/ramp/noise corpus covers 19²/512²/2048²/3072² across predictive16, DCT12, RGB8, progressive RGB8 and XYB8; all codestream/sample comparisons pass. The broader results also expose unresolved large flat RGB decode regressions (35–42% at 3072²). Performance acceptance remains incomplete. Raw samples, source/harness/binary hashes and all per-case results are retained; no safety-cost waiver is asserted. Current-head sanitizer/CI and final fuzz/allocation/platform qualification remain required.
+
+The bulk-stitch source subsequently passed local macOS AddressSanitizer identity/public checks and the exact 71-record predecessor comparison (both exit 0). Full current-head CI remains pending.

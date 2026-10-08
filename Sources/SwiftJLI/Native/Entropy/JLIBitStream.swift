@@ -58,6 +58,34 @@ struct BitWriter {
         }
     }
 
+    /// Appends unstuffed whole bytes to the pending bit sequence. The encoder
+    /// passes at most 12288 bytes between cancellation checks. Source storage is
+    /// independent of this writer and is borrowed only for this synchronous call.
+    /// Each input byte emits exactly one byte plus at most one stuffing byte;
+    /// the number of pending bits therefore remains unchanged (0...7).
+    mutating func writeUnstuffedBytes(_ bytes: UnsafeBufferPointer<UInt8>) {
+        guard !bytes.isEmpty else { return }
+        let required = byteCount + bytes.count * 2
+        while buffer.count < required { grow() }
+        var accumulator = acc
+        var written = byteCount
+        let pending = nbits
+        buffer.withUnsafeMutableBufferPointer { output in
+            for value in bytes {
+                accumulator = (accumulator << 8) | UInt64(value)
+                let byte = UInt8(truncatingIfNeeded: accumulator >> pending)
+                output[written] = byte
+                written += 1
+                if byte == 0xFF {
+                    output[written] = 0
+                    written += 1
+                }
+            }
+        }
+        acc = accumulator
+        byteCount = written
+    }
+
     /// Writes a single bit.
     mutating func writeBit(_ bit: Bool) {
         writeBits(bit ? 1 : 0, count: 1)

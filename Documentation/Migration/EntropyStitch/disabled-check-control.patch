@@ -1,0 +1,73 @@
+--- fb86314/Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift
++++ disabled-check-control/Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift
+@@ -861,17 +861,19 @@
+         diffs: UnsafePointer<Int32>, range: Range<Int>, table: HuffmanTable
+     ) throws -> (bytes: [UInt8], bitCount: Int) {
+         var rw = RawBitChunkWriter(capacity: range.count * 3 + 16)
+-        for i in range {
+-            if i % 4096 == 0 { try NativeOperation.check() }
+-            let d = diffs[i]
+-            let cat = d == -32768 ? 16 : HuffmanEncoder.category(for: d)
+-            let e = table.encodingTable[cat]
+-            if cat > 0 && cat < 16 {
+-                let fused = (UInt32(e.code) << cat)
+-                    | HuffmanEncoder.additionalBits(for: d, category: cat)
+-                rw.writeBits(fused, count: Int(e.length) + cat)
+-            } else {
+-                rw.writeBits(UInt32(e.code), count: Int(e.length))
++        for start in stride(from: range.lowerBound, to: range.upperBound, by: 4096) {
++            try NativeOperation.check()
++            for i in start..<min(start + 4096, range.upperBound) {
++                let d = diffs[i]
++                let cat = d == -32768 ? 16 : HuffmanEncoder.category(for: d)
++                let e = table.encodingTable[cat]
++                if cat > 0 && cat < 16 {
++                    let fused = (UInt32(e.code) << cat)
++                        | HuffmanEncoder.additionalBits(for: d, category: cat)
++                    rw.writeBits(fused, count: Int(e.length) + cat)
++                } else {
++                    rw.writeBits(UInt32(e.code), count: Int(e.length))
++                }
+             }
+         }
+         rw.finish()
+@@ -888,11 +890,14 @@
+             guard let b = p.baseAddress else { return }
+             var i = 0
+             while remaining >= 24 {
+-                if i % 12288 == 0 { try NativeOperation.check() }
+-                let v = (UInt32(b[i]) << 16) | (UInt32(b[i + 1]) << 8) | UInt32(b[i + 2])
+-                bw.writeBits(v, count: 24)
+-                i += 3
+-                remaining -= 24
++                try NativeOperation.check()
++                let groups = min(4096, remaining / 24)
++                for _ in 0..<groups {
++                    let v = (UInt32(b[i]) << 16) | (UInt32(b[i + 1]) << 8) | UInt32(b[i + 2])
++                    bw.writeBits(v, count: 24)
++                    i += 3
++                }
++                remaining -= groups * 24
+             }
+             while remaining >= 8 {
+                 bw.writeBits(UInt32(b[i]), count: 8)
+--- fb86314/Sources/SwiftJLI/NativeExecution.swift
++++ disabled-check-control/Sources/SwiftJLI/NativeExecution.swift
+@@ -37,15 +37,8 @@
+         } onCancel: { token.cancel() }
+     }
+ 
+-    static func check() throws {
+-        try Task.checkCancellation()
+-        if let context = current {
+-            try context.cancellation?.check()
+-            if context.started.duration(to: .now) >= .seconds(context.seconds) {
+-                throw CodecError(.resourceLimitExceeded, "JPEG operation deadline exceeded.")
+-            }
+-        }
+-    }
++    // Diagnostic synthetic-data control only. Never a shipping implementation.
++    @inline(never) static func check() throws {}
+ 
+     static var workerLimit: Int {
+         max(1, min(current?.maximumWorkers ?? ProcessInfo.processInfo.activeProcessorCount,
