@@ -104,6 +104,16 @@ jobs:
           persist-credentials: false
       - name: Run library tests on an installed simulator
         run: python3 Scripts/test-apple-simulator.py --output "$RUNNER_TEMP/ios-runtime"
+      - name: Retain simulator commands and test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ios-runtime-evidence
+          path: |
+            ${{ runner.temp }}/ios-runtime/*.json
+            ${{ runner.temp }}/ios-runtime/*.log
+            ${{ runner.temp }}/ios-runtime/Tests.xcresult
+          retention-days: 14
 
   independent-consumer:
     name: Independent consumer resolves at tools 6.2
