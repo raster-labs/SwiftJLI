@@ -2,6 +2,8 @@
 
 ## Unreleased — codec migration in progress, 2026-10-07
 
+- Reduce decode overhead with bounded entropy searches, specialised greyscale writes, joined chroma workers and bounded RGB row batches; preserve byte identity and cancellation checks.
+
 - Restore bounded parallel predictive/DCT stages with joined workers, cancellation propagation and backend context; remove impossible full-width sample checks and temporary DCT batch copies.
 
 - Add explicit DCT straight-alpha discard, preconverted YCbCr input and RGB-to-greyscale conversion, using caller storage and reporting conversions. Reject unqualified alpha, precision and ICC combinations.

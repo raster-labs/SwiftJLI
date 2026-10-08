@@ -158,10 +158,12 @@ enum ChromaSampling {
                                 sx0: x0b.baseAddress!, sx1: x1b.baseAddress!, fx: fxb.baseAddress!)
                             // Each output row is independent → bit-identical whether
                             // computed serially or split across cores.
-                            let rows: @Sendable (Int, Int) -> Void = { rowStart, rowEnd in
+                            let rows: @Sendable (Int, Int) throws -> Void = { rowStart, rowEnd in
                                 let p = ptrs.src, d = ptrs.dst
                                 let X0 = ptrs.sx0, X1 = ptrs.sx1, FX = ptrs.fx
+                                let rowsPerCheck = max(1, 4096 / tw)
                                 for ty in rowStart..<rowEnd {
+                                    if (ty - rowStart) % rowsPerCheck == 0 { try NativeOperation.check() }
                                     let srcY = Float(ty) * ys
                                     let sy0 = min(Int(srcY), h - 1)
                                     let sy1 = min(sy0 + 1, h - 1)
@@ -177,19 +179,16 @@ enum ChromaSampling {
                                     }
                                 }
                             }
-                            let cores = max(1, (NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1))
-                            if NativeOperation.current == nil && tw * th >= 65_536 && th >= 2 * cores {
+                            let cores = NativeOperation.workerLimit
+                            if tw * th >= 65_536 && th >= 2 * cores {
                                 let chunkRows = (th + cores - 1) / cores
                                 let chunks = (th + chunkRows - 1) / chunkRows
-                                DispatchQueue.concurrentPerform(iterations: chunks) { c in
+                                try NativeOperation.perform(iterations: chunks) { c in
                                     let s = c * chunkRows
-                                    rows(s, min(s + chunkRows, th))
+                                    try rows(s, min(s + chunkRows, th))
                                 }
                             } else {
-                                for row in 0..<th {
-                                    try NativeOperation.check()
-                                    rows(row, row + 1)
-                                }
+                                try rows(0, th)
                             }
                         }
                     }

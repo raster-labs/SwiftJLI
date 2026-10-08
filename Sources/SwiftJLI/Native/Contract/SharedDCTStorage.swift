@@ -90,11 +90,21 @@ enum SharedDCTStorage {
                       width: Int, height: Int, precision: Int, floatOutput: Bool = false, xyb: Bool = false,
                       into destination: BorrowedSampleDestination) throws {
         let nc = planes.count, bps = destination.bytesPerSample
+        if nc == 1 {
+            try writeGreyscale(planes[0], width: width, height: height, precision: precision,
+                               floatOutput: floatOutput, into: destination)
+            return
+        }
         let cb = xyb ? planes[1].data : nc == 3 ? try ChromaSampling.upsample(planes[1].data, width: planes[1].width,
             height: planes[1].height, targetWidth: width, targetHeight: height) : []
         try NativeOperation.check()
         let cr = xyb ? planes[2].data : nc == 3 ? try ChromaSampling.upsample(planes[2].data, width: planes[2].width,
             height: planes[2].height, targetWidth: width, targetHeight: height) : []
+        if nc == 3 && !xyb && !floatOutput && bps == 1 {
+            try writeRGB8(planes[0], cb: cb, cr: cr, width: width, height: height,
+                          precision: precision, into: destination)
+            return
+        }
         var scratch = [Float](repeating: 0, count: width * 5)
         try planes[0].data.withUnsafeBufferPointer { yp in
             try cb.withUnsafeBufferPointer { cp in
@@ -177,4 +187,97 @@ enum SharedDCTStorage {
             }
         }
     }
+    private static func writeGreyscale(_ plane: (data: [Float], width: Int, height: Int),
+                                       width: Int, height: Int, precision: Int, floatOutput: Bool,
+                                       into destination: BorrowedSampleDestination) throws {
+        let bps = destination.bytesPerSample
+        guard floatOutput ? bps == 4 : (bps == 1 && precision <= 8) || bps == 2,
+              let bytes = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+            throw JLIError.unsupportedJPEGFeature("Invalid greyscale destination")
+        }
+        let maximum = Float((1 << precision) - 1)
+        try plane.data.withUnsafeBufferPointer { source in
+            guard let base = source.baseAddress else { return }
+            for row in 0..<height {
+                try NativeOperation.check()
+                let src = base + row * plane.width, dst = bytes + row * destination.rowBytes
+                if floatOutput {
+                    for x in 0..<width {
+                        let sample = src[x]
+                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                        let bits = sample.bitPattern
+                        for byte in 0..<4 { dst[x * 4 + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+                    }
+                } else if bps == 2 {
+                    for x in 0..<width {
+                        let sample = src[x]
+                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                        let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
+                        dst[x * 2] = UInt8(truncatingIfNeeded: value)
+                        dst[x * 2 + 1] = UInt8(value >> 8)
+                    }
+                } else {
+                    for x in 0..<width {
+                        let sample = src[x]
+                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                        dst[x] = UInt8(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
+                    }
+                }
+            }
+        }
+    }
+    /// A bounded group of rows amortises vector-call overhead. Sources remain
+    /// borrowed; only colour scratch is allocated. Padded destinations are
+    /// written one row at a time, while packed destinations use one strided batch.
+    private static func writeRGB8(_ y: (data: [Float], width: Int, height: Int),
+                                  cb: [Float], cr: [Float], width: Int, height: Int, precision: Int,
+                                  into destination: BorrowedSampleDestination) throws {
+        let rowsPerBatch = y.width == width ? min(8, height) : 1
+        let capacity = width * rowsPerBatch
+        var scratch = [Float](repeating: 0, count: capacity * 5)
+        try y.data.withUnsafeBufferPointer { yp in
+            try cb.withUnsafeBufferPointer { cp in
+                try cr.withUnsafeBufferPointer { rp in
+                    try scratch.withUnsafeMutableBufferPointer { sp in
+                        guard let yy = yp.baseAddress, let cc = cp.baseAddress, let rr = rp.baseAddress,
+                              let s = sp.baseAddress,
+                              let bytes = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return }
+                        let cbS = s, crS = s + capacity, r = s + capacity * 2, g = s + capacity * 3, b = s + capacity * 4
+                        var negativeCentre = -Float(1 << (precision - 1))
+                        var rCr: Float = 1.402, gCb: Float = -0.344136, gCr: Float = -0.714136, bCb: Float = 1.772
+                        var lo: Float = 0, hi = Float((1 << precision) - 1)
+                        for firstRow in stride(from: 0, to: height, by: rowsPerBatch) {
+                            try NativeOperation.check()
+                            let rows = min(rowsPerBatch, height - firstRow), count = rows * width
+                            let source = yy + firstRow * y.width
+                            jliDSP_vsadd(cc + firstRow * width, 1, &negativeCentre, cbS, 1, count)
+                            jliDSP_vsadd(rr + firstRow * width, 1, &negativeCentre, crS, 1, count)
+                            jliDSP_vsma(crS, 1, &rCr, source, 1, r, 1, count)
+                            jliDSP_vsmul(cbS, 1, &gCb, g, 1, count)
+                            jliDSP_vsma(crS, 1, &gCr, g, 1, g, 1, count)
+                            jliDSP_vadd(source, 1, g, 1, g, 1, count)
+                            jliDSP_vsma(cbS, 1, &bCb, source, 1, b, 1, count)
+                            jliDSP_vclip(r, 1, &lo, &hi, r, 1, count)
+                            jliDSP_vclip(g, 1, &lo, &hi, g, 1, count)
+                            jliDSP_vclip(b, 1, &lo, &hi, b, 1, count)
+                            if destination.rowBytes == width * 3 {
+                                let out = bytes + firstRow * destination.rowBytes
+                                jliDSP_vfixru8(r, 1, out, 3, count)
+                                jliDSP_vfixru8(g, 1, out + 1, 3, count)
+                                jliDSP_vfixru8(b, 1, out + 2, 3, count)
+                            } else {
+                                for row in 0..<rows {
+                                    let offset = row * width, out = bytes + (firstRow + row) * destination.rowBytes
+                                    jliDSP_vfixru8(r + offset, 1, out, 3, width)
+                                    jliDSP_vfixru8(g + offset, 1, out + 1, 3, width)
+                                    jliDSP_vfixru8(b + offset, 1, out + 2, 3, width)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

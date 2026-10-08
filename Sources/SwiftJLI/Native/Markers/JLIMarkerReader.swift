@@ -456,23 +456,8 @@ struct MarkerReader {
         // nextMarker(). One slice copy replaces the previous per-byte append
         // (which paid an Array uniqueness check + growth per byte and showed up
         // at ~7-9% of a whole lossless decode).
-        let n = data.count
         let start = offset
-        var pos = offset
-        try data.withUnsafeBufferPointer { buf in
-            let p = buf.baseAddress!
-            while pos < n {
-                if pos % 4096 == 0 { try NativeOperation.check() }
-                if p[pos] != 0xFF { pos += 1; continue }
-                guard pos + 1 < n else { break }              // trailing lone 0xFF
-                let next = p[pos + 1]
-                if next == 0x00 || (next >= 0xD0 && next <= 0xD7) {
-                    pos += 2                                   // stuffing / restart
-                } else {
-                    break                                      // real marker — stop
-                }
-            }
-        }
+        let pos = try JPEGEntropyBoundary.find(in: data, from: start)
         offset = pos
         return Array(data[start..<pos])
     }

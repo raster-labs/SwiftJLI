@@ -128,13 +128,7 @@ enum JPEGEnvelope {
             }
             p = end
             if marker == 0xDA {
-                while p < b.count {
-                    if p % 4096 == 0 { try NativeOperation.check() }
-                    if b[p] != 255 { p += 1; continue }
-                    guard p + 1 < b.count else { throw malformed() }
-                    if b[p + 1] == 0 || (208...215).contains(b[p + 1]) { p += 2 }
-                    else { break }
-                }
+                p = try JPEGEntropyBoundary.find(in: b, from: p)
             }
         }
         throw malformed()

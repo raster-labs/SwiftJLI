@@ -41,32 +41,32 @@ import Testing
 
     @Test func cancellationReachesDispatchWorkersAndJoins() async throws {
         let entered = DispatchSemaphore(value: 0)
-        let active = Mutex(0)
+        let state = Mutex((active: 0, started: 0))
         let lanes = min(2, ProcessInfo.processInfo.activeProcessorCount)
         let task = Task.detached {
+            // Also unblock the cancellation thread if setup fails before a worker
+            // starts; the started assertion and expected error expose that failure.
+            defer { entered.signal() }
             try await NativeOperation.withCancellation {
                 try NativeOperation.$current.withValue(.init(seconds: 10, maximumWorkers: lanes)) {
                     try NativeOperation.perform(iterations: lanes) { _ in
-                        active.withLock { $0 += 1 }
-                        defer { active.withLock { $0 -= 1 } }
+                        state.withLock { $0.active += 1; $0.started += 1 }
+                        defer { state.withLock { $0.active -= 1 } }
                         entered.signal()
                         while true { try NativeOperation.check(); Thread.sleep(forTimeInterval: 0.001) }
                     }
                 }
             }
         }
-        // Suspend this Swift task while a dedicated thread waits. Blocking a
-        // cooperative executor here can prevent the codec task from starting.
-        // concurrentPerform need not start every lane simultaneously.
-        let started: Bool = await withCheckedContinuation { continuation in
-            Thread {
-                continuation.resume(returning: entered.wait(timeout: .now() + 5) == .success)
-            }.start()
-        }
-        #expect(started)
-        task.cancel()
+        // Cancellation must not wait for a saturated cooperative executor to
+        // resume this test. The dedicated thread cancels only after real work
+        // starts; there is no assumption about task startup latency or lane order.
+        let canceller = Thread { entered.wait(); task.cancel() }
+        canceller.qualityOfService = .userInitiated
+        canceller.start()
         await #expect(throws: CancellationError.self) { try await task.value }
-        #expect(active.withLock { $0 } == 0)
+        let observed = state.withLock { $0 }
+        #expect(observed.started > 0 && observed.active == 0)
     }
 
     @Test func deadlineReachesJoinedWorkers() throws {
