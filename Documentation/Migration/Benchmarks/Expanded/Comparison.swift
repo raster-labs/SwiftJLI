@@ -55,14 +55,16 @@ func check(_ condition: Bool, _ message: String) throws {
         let extended = CommandLine.arguments.contains("--extended")
         let sizes = smoke ? [65] : extended ? [19, 512, 2048, 3072] : [512, 1024]
         let patterns = extended ? ["flat", "ramp", "noise"] : ["mixed"]
-        try emit(["event": "start", "extended": extended, "patterns": patterns, "sizes": sizes, "smoke": smoke, "warmups": warmups,
+        let profiles = CommandLine.arguments.contains("--rgb-only") ? ["rgb8", "progressiveRGB8"]
+            : ["lossless16", "dct12", "rgb8", "progressiveRGB8", "xyb8"]
+        try emit(["event": "start", "extended": extended, "patterns": patterns, "sizes": sizes, "profiles": profiles, "smoke": smoke, "warmups": warmups,
             "timedIterations": timed, "context": context(),
             "backendPolicy": "automatic on both implementations",
             "maximumWorkspaceBytes": 8 * 1024 * 1024 * 1024, "maximumMemoryBytes": 10 * 1024 * 1024 * 1024,
             "os": ProcessInfo.processInfo.operatingSystemVersionString])
         for pattern in patterns {
         for size in sizes {
-            for profile in ["lossless16", "dct12", "rgb8", "progressiveRGB8", "xyb8"] {
+            for profile in profiles {
                 let bits = profile == "lossless16" ? 16 : profile == "dct12" ? 12 : 8
                 let nc = bits == 8 ? 3 : 1, bps = bits > 8 ? 2 : 1, row = size * nc * bps
                 let xyb = profile == "xyb8", progressive = profile == "progressiveRGB8", lossless = bits == 16

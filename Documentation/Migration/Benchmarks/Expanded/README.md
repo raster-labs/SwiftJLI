@@ -21,3 +21,5 @@ Source inspection identifies candidates for investigation, not measured attribut
 ## Expanded corpus and entropy-stitch correction
 
 The current harness adds `--extended` for 19²/512²/2048²/3072² flat, ramp and deterministic noise in all five profiles. It explicitly raises conservative workspace/memory admission ceilings to 8/10 GiB for large colour cases; these are limits, not measured allocation. Its ordinary invocation retains the 512²/1024² mixed-pattern comparison, and `--smoke` remains available. [EntropyStitch](../../EntropyStitch/README.md) retains the exact shipping/harness/binary hashes, two ordinary comparisons and the completed 60-case expanded run. Every case preserved codestream/sample identity. Predictive encoding improved; DCT regressions, allocator attribution and final qualification remain open.
+
+`--rgb-only` restricts either matrix to sequential/progressive RGB8 for changes confined to colour output. The [RGBOutput checkpoint](../../RGBOutput/README.md) uses that targeted expanded matrix plus two ordinary five-profile runs; it does not relabel older unchanged-profile measurements as current-source qualification.

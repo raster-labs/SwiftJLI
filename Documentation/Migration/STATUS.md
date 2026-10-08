@@ -277,3 +277,11 @@ CI [37733503711](https://github.com/raster-labs/SwiftJLI/actions/runs/3773350371
 Two ordinary public release comparisons preserve exact output and measure predictive encode 3–8% faster than the predecessor at 512²/1024². The new 60-case flat/ramp/noise corpus covers 19²/512²/2048²/3072² across predictive16, DCT12, RGB8, progressive RGB8 and XYB8; all codestream/sample comparisons pass. The broader results also expose unresolved large flat RGB decode regressions (35–42% at 3072²). Performance acceptance remains incomplete. Raw samples, source/harness/binary hashes and all per-case results are retained; no safety-cost waiver is asserted. Current-head sanitizer/CI and final fuzz/allocation/platform qualification remain required.
 
 The bulk-stitch source subsequently passed local macOS AddressSanitizer identity/public checks and the exact 71-record predecessor comparison (both exit 0). Full current-head CI remains pending.
+
+## Direct RGB output correction
+
+[Flat-colour attribution and current evidence](RGBOutput/README.md) isolate the large flat-image decode regression to the shared-storage output writer. It now uses contiguous byte conversion plus direct padded-row interleave on Accelerate, with bounded joined lanes and at most eight rows of scratch per worker. Sources remain borrowed, destination rows are disjoint, and cancellation/joins remain mandatory.
+
+Linux Swift 6.4 passes **335 tests in 46 suites**. Focused local macOS ASan/TSan probes pass scalar/accelerated, workers 1/8, batch edges, fractional samples and padded/guarded storage, including a size that executes parallel output. Two ordinary public release runs plus 24 expanded RGB cases all preserve compressed bytes and decoded samples. Large flat RGB decode now measures 22–28% faster than the predecessor. Small/512² cases and encoder overhead still require investigation; no complete performance pass is asserted. New-head CI, final fuzz, independent allocator/workspace and platform/runtime gates remain open.
+
+CI [37741119583](https://github.com/raster-labs/SwiftJLI/actions/runs/37741119583) subsequently passed every job for the preceding entropy-stitch checkpoint `535938a989ba3e8f0a3a33aa560353b1c94662f1`, including full macOS ASan/TSan, Linux 6.2/6.4 ARM/x86 and Apple SDK compilation. It does not qualify this later RGB-output change.
