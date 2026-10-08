@@ -223,7 +223,9 @@ public struct Encoder: Sendable {
     public init(configuration: EncoderConfiguration = .default) throws { self.configuration = configuration }
 
     @concurrent public func encode(_ image: Image, options: EncodeOptions = .init()) async throws -> EncodedImage {
-        try JPEGCodec.encode(image, configuration: configuration, options: options)
+        try await NativeOperation.withCancellation {
+            try JPEGCodec.encode(image, configuration: configuration, options: options)
+        }
     }
 }
 
@@ -245,10 +247,14 @@ public struct Decoder: Sendable {
         try JPEGCodec.inspect(data, options: options)
     }
     @concurrent public func decode(_ data: Data, options: DecodeOptions = .init()) async throws -> DecodedImage {
-        try JPEGCodec.decode(data, into: nil, configuration: configuration, options: options)
+        try await NativeOperation.withCancellation {
+            try JPEGCodec.decode(data, into: nil, configuration: configuration, options: options)
+        }
     }
     @concurrent public func decode(_ data: Data, into destination: ImageDestination,
                                   options: DecodeOptions = .init()) async throws -> DecodedImage {
-        try JPEGCodec.decode(data, into: destination, configuration: configuration, options: options)
+        try await NativeOperation.withCancellation {
+            try JPEGCodec.decode(data, into: destination, configuration: configuration, options: options)
+        }
     }
 }

@@ -1,25 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import Foundation
 
-/// Synchronous kernels borrow the operation's cancellation/deadline context.
-/// The shared path stays on its invoking task; legacy Dispatch workers are not
-/// used here, so the task-local context and cancellation cannot be lost.
-struct NativeOperation: Sendable {
-    @TaskLocal static var current: NativeOperation?
-    let started: ContinuousClock.Instant
-    let seconds: Double
-    let backend: Backend
-    init(seconds: Double, backend: Backend = .scalarCPU, started: ContinuousClock.Instant = .now) {
-        self.seconds = seconds; self.backend = backend; self.started = started
-    }
-    static func check() throws {
-        try Task.checkCancellation()
-        if let context = current, context.started.duration(to: .now) >= .seconds(context.seconds) {
-            throw CodecError(.resourceLimitExceeded, "JPEG operation deadline exceeded.")
-        }
-    }
-}
-
 /// Common owning-storage adapter for predictive and DCT JPEG kernels.
 enum JPEGCodec {
     static let capabilities = CodecCapabilities(
@@ -60,7 +41,7 @@ enum JPEGCodec {
     static func run<T>(limits: ResourceLimits, policy: ExecutionPolicy, dct: Bool = false,
                        _ body: () throws -> T) throws -> T {
         let backend = try selectBackend(policy, dct: dct)
-        return try NativeOperation.$current.withValue(NativeOperation(seconds: limits.deadlineSeconds, backend: backend)) {
+        return try NativeOperation.$current.withValue(NativeOperation(seconds: limits.deadlineSeconds, backend: backend, maximumWorkers: limits.maximumWorkers)) {
             try NativeOperation.check()
             do { return try body() }
             catch let error as JLIError {
@@ -200,7 +181,9 @@ enum JPEGCodec {
                 }
                 let bps = d.storageBits / 8, maxSample = UInt32(1) << precision
                 // Float finiteness is checked by the fused quantising reader.
-                if !floating {
+                // An unsigned full-width sample cannot exceed its declared range.
+                // Only reduced meaningful precision needs a separate bounds pass.
+                if !floating && d.meaningfulBits < d.storageBits {
                     for y in 0..<d.height {
                         try NativeOperation.check()
                         for x in 0..<(d.width * d.components.count) {
@@ -340,7 +323,7 @@ enum JPEGCodec {
             let isDCT = !parsed.frameInfo.isLossless
             let backend = try selectBackend(options.executionPolicy, dct: isDCT)
             let context = NativeOperation(seconds: options.resourceLimits.deadlineSeconds, backend: backend,
-                started: NativeOperation.current?.started ?? .now)
+                started: NativeOperation.current?.started ?? .now, maximumWorkers: options.resourceLimits.maximumWorkers)
             return try NativeOperation.$current.withValue(context) {
                 let information = try info(parsed, scale: configuration.scale,
                     sampleFormat: configuration.sampleFormat, decodedOutput: true, options: options)

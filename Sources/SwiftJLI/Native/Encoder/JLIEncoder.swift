@@ -686,34 +686,24 @@ struct JLIEncoder: Sendable {
         // above, so each segment's first row predicts like the scan's first row.
         let segRows = restartInterval > 0 ? restartInterval / w : 0
 
-        let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
+        let chunks = min(NativeOperation.workerLimit,
                          max(1, (count * nc) / JLIEncoder.losslessParallelMinSamples))
         var dcFreq: [Int]
-        if NativeOperation.current != nil {
-            dcFreq = [Int](repeating: 0, count: 256)
-            for y in 0..<h {
-                try NativeOperation.check()
-                let partial = JLIEncoder.losslessResiduals(
-                    rows: y..<(y + 1), width: w, nc: nc, count: count,
-                    predictor: predictor, half: half, segRows: segRows,
-                    planes: planeBase, diffs: diffBase)
-                for i in 0..<256 { dcFreq[i] += partial[i] }
-            }
-        } else if chunks <= 1 {
-            dcFreq = JLIEncoder.losslessResiduals(
+        if chunks <= 1 {
+            dcFreq = try JLIEncoder.losslessResiduals(
                 rows: 0..<h, width: w, nc: nc, count: count,
                 predictor: predictor, half: half, segRows: segRows,
                 planes: planeBase, diffs: diffBase)
         } else {
             let span = (h + chunks - 1) / chunks
             var partials = [[Int]](repeating: [], count: chunks)
-            partials.withUnsafeMutableBufferPointer { buf in
+            try partials.withUnsafeMutableBufferPointer { buf in
                 let ptrs = LosslessPtrs(planes: planeBase, diffs: diffBase,
                                         partials: buf.baseAddress!)
-                DispatchQueue.concurrentPerform(iterations: chunks) { ci in
+                try NativeOperation.perform(iterations: chunks) { ci in
                     let lo = ci * span, hi = min(lo + span, h)
                     ptrs.partials[ci] = lo < hi
-                        ? JLIEncoder.losslessResiduals(
+                        ? try JLIEncoder.losslessResiduals(
                             rows: lo..<hi, width: w, nc: nc, count: count,
                             predictor: predictor, half: half, segRows: segRows,
                             planes: ptrs.planes, diffs: ptrs.diffs)
@@ -766,7 +756,7 @@ struct JLIEncoder: Sendable {
                 pieces.append(s..<min(s + segSamples, totalSamples)); s += segSamples
             }
         } else {
-            let n = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
+            let n = min(NativeOperation.workerLimit,
                         max(1, totalSamples / JLIEncoder.losslessParallelMinSamples))
             let span = (totalSamples + n - 1) / n
             var s = 0
@@ -775,19 +765,19 @@ struct JLIEncoder: Sendable {
             }
         }
 
-        if NativeOperation.current == nil, pieces.count > 1, totalSamples >= JLIEncoder.losslessParallelMinSamples {
+        if NativeOperation.workerLimit > 1, pieces.count > 1, totalSamples >= JLIEncoder.losslessParallelMinSamples {
             let piecesFinal = pieces        // immutable snapshot for the @Sendable workers
             var emitted = [(bytes: [UInt8], bitCount: Int)](repeating: ([], 0), count: pieces.count)
-            emitted.withUnsafeMutableBufferPointer { eb in
+            try emitted.withUnsafeMutableBufferPointer { eb in
                 let slots = EmitSlots(chunks: eb.baseAddress!, diffs: diffBase, table: table)
-                DispatchQueue.concurrentPerform(iterations: piecesFinal.count) { k in
-                    slots.chunks[k] = JLIEncoder.emitLosslessChunk(
+                try NativeOperation.perform(iterations: piecesFinal.count) { k in
+                    slots.chunks[k] = try JLIEncoder.emitLosslessChunk(
                         diffs: slots.diffs, range: piecesFinal[k], table: slots.table)
                 }
             }
             for (k, chunk) in emitted.enumerated() {
                 if k > 0 && segRows > 0 { bw.emitRestartMarker((k - 1) & 7) }
-                JLIEncoder.feedBits(chunk.bytes, bitCount: chunk.bitCount, into: &bw)
+                try JLIEncoder.feedBits(chunk.bytes, bitCount: chunk.bitCount, into: &bw)
             }
         } else {
             var sinceRestart = 0
@@ -869,9 +859,10 @@ struct JLIEncoder: Sendable {
     /// unstuffed buffer — the exact same per-sample bits as the serial emit.
     private static func emitLosslessChunk(
         diffs: UnsafePointer<Int32>, range: Range<Int>, table: HuffmanTable
-    ) -> (bytes: [UInt8], bitCount: Int) {
+    ) throws -> (bytes: [UInt8], bitCount: Int) {
         var rw = RawBitChunkWriter(capacity: range.count * 3 + 16)
         for i in range {
+            if i % 4096 == 0 { try NativeOperation.check() }
             let d = diffs[i]
             let cat = d == -32768 ? 16 : HuffmanEncoder.category(for: d)
             let e = table.encodingTable[cat]
@@ -891,12 +882,13 @@ struct JLIEncoder: Sendable {
     /// per call (writeBits' value mask handles ≤ 31). Appending the same bits in
     /// different call granularity produces the same stream by the writer's
     /// MSB-first accumulation.
-    private static func feedBits(_ bytes: [UInt8], bitCount: Int, into bw: inout BitWriter) {
+    private static func feedBits(_ bytes: [UInt8], bitCount: Int, into bw: inout BitWriter) throws {
         var remaining = bitCount
-        bytes.withUnsafeBufferPointer { p in
+        try bytes.withUnsafeBufferPointer { p in
             guard let b = p.baseAddress else { return }
             var i = 0
             while remaining >= 24 {
+                if i % 12288 == 0 { try NativeOperation.check() }
                 let v = (UInt32(b[i]) << 16) | (UInt32(b[i + 1]) << 8) | UInt32(b[i + 2])
                 bw.writeBits(v, count: 24)
                 i += 3
@@ -1110,13 +1102,17 @@ struct JLIEncoder: Sendable {
 
         var dctBuf = [Float](unsafeUninitializedCapacity: n * 64) { _, c in c = n * 64 }
         if NativeOperation.current != nil {
-            for base in stride(from: 0, to: n, by: 512) {
-                try NativeOperation.check()
-                let end = min(base + 512, n), range = (base * 64)..<(end * 64)
-                var output = [Float](repeating: 0, count: range.count)
-                var work = output
-                AccelerateDSP.forwardDCTBatch(Array(blockBuf[range]), into: &output, scratch: &work, blockCount: end - base)
-                dctBuf.replaceSubrange(range, with: output)
+            try blockBuf.withUnsafeBufferPointer { input in
+                try dctBuf.withUnsafeMutableBufferPointer { output in
+                    try scratch.withUnsafeMutableBufferPointer { work in
+                        for base in stride(from: 0, to: n, by: 512) {
+                            try NativeOperation.check()
+                            let end = min(base + 512, n), range = (base * 64)..<(end * 64)
+                            AccelerateDSP.forwardDCTBatch(.init(rebasing: input[range]),
+                                into: .init(rebasing: output[range]), scratch: work, blockCount: end - base)
+                        }
+                    }
+                }
             }
         } else {
             AccelerateDSP.forwardDCTBatch(blockBuf, into: &dctBuf, scratch: &scratch, blockCount: n)
@@ -1133,12 +1129,15 @@ struct JLIEncoder: Sendable {
 
         var quant = [Int32](unsafeUninitializedCapacity: n * 64) { _, c in c = n * 64 }
         if NativeOperation.current != nil {
-            for base in stride(from: 0, to: n, by: 512) {
-                try NativeOperation.check()
-                let end = min(base + 512, n), range = (base * 64)..<(end * 64)
-                var output = [Int32](repeating: 0, count: range.count)
-                AccelerateDSP.quantizeBatch(Array(dctBuf[range]), invTable: invQuant, into: &output, blockCount: end - base)
-                quant.replaceSubrange(range, with: output)
+            try dctBuf.withUnsafeBufferPointer { input in
+                try quant.withUnsafeMutableBufferPointer { output in
+                    for base in stride(from: 0, to: n, by: 512) {
+                        try NativeOperation.check()
+                        let end = min(base + 512, n), range = (base * 64)..<(end * 64)
+                        AccelerateDSP.quantizeBatch(.init(rebasing: input[range]), invTable: invQuant,
+                            into: .init(rebasing: output[range]), blockCount: end - base)
+                    }
+                }
             }
         } else {
             AccelerateDSP.quantizeBatch(dctBuf, invTable: invQuant, into: &quant, blockCount: n)
@@ -1277,28 +1276,16 @@ struct JLIEncoder: Sendable {
     private func applyTrellisQuantization(
         dctBuf: [Float], quant: inout [Int32], blockCount: Int, rdo: RDOContext
     ) throws {
-        // Partition blocks across cores when there's enough work; each worker owns
-        // its scratch and writes only its disjoint quant[base...] slice, so the
-        // result is byte-identical to a serial run.
-        let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
+        let chunks = min(NativeOperation.workerLimit,
                          max(1, blockCount / JLIEncoder.trellisMinBlocksPerChunk))
         try dctBuf.withUnsafeBufferPointer { dbuf in
             try quant.withUnsafeMutableBufferPointer { qbuf in
-                let dct = dbuf.baseAddress!
-                let qnt = qbuf.baseAddress!
-                if chunks <= 1 {
-                    for base in stride(from: 0, to: blockCount, by: 256) {
-                        try NativeOperation.check()
-                        JLIEncoder.trellisBlocks(base..<min(base + 256, blockCount), dct: dct, quant: qnt, rdo: rdo)
-                    }
-                    return
-                }
+                let ptrs = TrellisPtrs(dct: dbuf.baseAddress!, quant: qbuf.baseAddress!)
                 let span = (blockCount + chunks - 1) / chunks
-                let ptrs = TrellisPtrs(dct: dct, quant: qnt)
-                DispatchQueue.concurrentPerform(iterations: chunks) { c in
+                try NativeOperation.perform(iterations: chunks) { c in
                     let lo = c * span, hi = min(lo + span, blockCount)
                     if lo < hi {
-                        JLIEncoder.trellisBlocks(lo..<hi, dct: ptrs.dct, quant: ptrs.quant, rdo: rdo)
+                        try JLIEncoder.trellisBlocks(lo..<hi, dct: ptrs.dct, quant: ptrs.quant, rdo: rdo)
                     }
                 }
             }
@@ -1347,11 +1334,13 @@ struct JLIEncoder: Sendable {
         rows: Range<Int>, width w: Int, nc: Int, count: Int,
         predictor: Int, half: Int32, segRows: Int,
         planes: UnsafePointer<Int32>, diffs: UnsafeMutablePointer<Int32>
-    ) -> [Int] {
+    ) throws -> [Int] {
+        let rowsPerCheck = max(1, 4096 / (w * nc))
         var freq = [Int](repeating: 0, count: 256)
-        freq.withUnsafeMutableBufferPointer { fb in
+        try freq.withUnsafeMutableBufferPointer { fb in
             let f = fb.baseAddress!
             for y in rows {
+                if (y - rows.lowerBound) % rowsPerCheck == 0 { try NativeOperation.check() }
                 let row = y * w, prevRow = row - w
                 // The first row of the scan AND of each restart segment predicts
                 // with scan-start semantics (default value, then Ra) per T.81 —
@@ -1399,10 +1388,11 @@ struct JLIEncoder: Sendable {
 
     /// AC symbol histogram for `quant`'s blocks in `blocks` (zigzag + run-length
     /// count). Order-independent, so callable on any disjoint block range.
-    private static func countACFreqs(_ quant: [Int32], blocks: Range<Int>) -> [Int] {
+    private static func countACFreqs(_ quant: [Int32], blocks: Range<Int>) throws -> [Int] {
         var freq = [Int](repeating: 0, count: 256)
         var zz = [Int32](repeating: 0, count: 64)
         for b in blocks {
+            if b % 1024 == 0 { try NativeOperation.check() }
             Quantization.zigzagScan(quant, offset: b * 64, into: &zz)
             HuffmanEncoder.countAC(zz, freq: &freq)
         }
@@ -1415,24 +1405,16 @@ struct JLIEncoder: Sendable {
     /// for small inputs (see ``acCountMinBlocksPerChunk``).
     private static func parallelACFreqs(_ quant: [Int32], blockCount: Int) throws -> [Int] {
         guard blockCount > 0 else { return [Int](repeating: 0, count: 256) }
-        let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
+        let chunks = min(NativeOperation.workerLimit,
                          max(1, blockCount / acCountMinBlocksPerChunk))
-        if chunks <= 1 {
-            var total = [Int](repeating: 0, count: 256)
-            for base in stride(from: 0, to: blockCount, by: 1024) {
-                try NativeOperation.check()
-                let part = countACFreqs(quant, blocks: base..<min(base + 1024, blockCount))
-                for i in 0..<256 { total[i] += part[i] }
-            }
-            return total
-        }
+        if chunks <= 1 { return try countACFreqs(quant, blocks: 0..<blockCount) }
         let span = (blockCount + chunks - 1) / chunks
         var partials = [[Int]](repeating: [], count: chunks)
-        partials.withUnsafeMutableBufferPointer { buf in
+        try partials.withUnsafeMutableBufferPointer { buf in
             let ptr = ACPartialsPtr(p: buf.baseAddress!)
-            DispatchQueue.concurrentPerform(iterations: chunks) { c in
+            try NativeOperation.perform(iterations: chunks) { c in
                 let lo = c * span, hi = min(lo + span, blockCount)
-                ptr.p[c] = lo < hi ? countACFreqs(quant, blocks: lo..<hi)
+                ptr.p[c] = lo < hi ? try countACFreqs(quant, blocks: lo..<hi)
                                    : [Int](repeating: 0, count: 256)
             }
         }
@@ -1448,7 +1430,7 @@ struct JLIEncoder: Sendable {
     private static func trellisBlocks(
         _ blocks: Range<Int>, dct: UnsafePointer<Float>,
         quant: UnsafeMutablePointer<Int32>, rdo: RDOContext
-    ) {
+    ) throws {
         let zz = Quantization.zigzagOrder
         let lambda = rdo.lambda
         let eobLen = Int(rdo.acTable.encodingTable[0x00].length)
@@ -1484,6 +1466,7 @@ struct JLIEncoder: Sendable {
         var chosen = [Int](repeating: -1, count: 64)         // backtracked variant per candidate, -1 = dropped
 
         for b in blocks {
+            if b % 256 == 0 { try NativeOperation.check() }
             let base = b * 64
             // Per-block λ for adaptive quantization (uniform when no field).
             let blockLambda = lambda * Double(rdo.lambdaField?[b] ?? 1.0)
@@ -1708,10 +1691,11 @@ func jliReadInterleavedPlanes(
     samplesPerPlane count: Int, bytesPerSample bps: Int, pointTransform pt: Int
 ) throws {
     guard let s = src.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return }
+    let rowsPerCheck = max(1, 4096 / (width * nc))
     for c in 0..<nc {
         let p = planeBase + c * count
         for y in 0..<height {
-            try NativeOperation.check()
+            if y % rowsPerCheck == 0 { try NativeOperation.check() }
             let rowBase = y &* rowSamples
             let out = y &* width
             if bps == 1 {

@@ -390,7 +390,7 @@ struct JLIDecoder: Sendable {
             var plane = [Float](unsafeUninitializedCapacity: compWidth * compHeight) {
                 _, c in c = compWidth * compHeight
             }
-            let chunks = min((NativeOperation.current == nil ? ProcessInfo.processInfo.activeProcessorCount : 1),
+            let chunks = min(NativeOperation.workerLimit,
                              max(1, blockCount / JLIDecoder.reconstructMinBlocksPerChunk))
             try componentZigzag[compIdx].withUnsafeBufferPointer { zzb in
                 try qtF.withUnsafeBufferPointer { qtb in
@@ -411,11 +411,12 @@ struct JLIDecoder: Sendable {
                                     }
                                 } else {
                                     let span = (blockCount + chunks - 1) / chunks
-                                    DispatchQueue.concurrentPerform(iterations: chunks) { c in
+                                    try NativeOperation.perform(iterations: chunks) { c in
                                         let lo = c * span, hi = min(lo + span, blockCount)
-                                        if lo < hi {
+                                        for base in stride(from: lo, to: hi, by: 1024) {
+                                            try NativeOperation.check()
                                             JLIDecoder.reconstructBlocks(
-                                                lo..<hi, ptrs: ptrs, blocksH: blocksH,
+                                                base..<min(base + 1024, hi), ptrs: ptrs, blocksH: blocksH,
                                                 compWidth: compWidth, compHeight: compHeight,
                                                 precision: frame.precision)
                                         }

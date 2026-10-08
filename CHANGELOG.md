@@ -2,6 +2,8 @@
 
 ## Unreleased — codec migration in progress, 2026-10-07
 
+- Restore bounded parallel predictive/DCT stages with joined workers, cancellation propagation and backend context; remove impossible full-width sample checks and temporary DCT batch copies.
+
 - Add explicit DCT straight-alpha discard, preconverted YCbCr input and RGB-to-greyscale conversion, using caller storage and reporting conversions. Reject unqualified alpha, precision and ICC combinations.
 
 - Adapt the pinned JLISwift native kernels and tests into internal SwiftJLI sources with per-file provenance.

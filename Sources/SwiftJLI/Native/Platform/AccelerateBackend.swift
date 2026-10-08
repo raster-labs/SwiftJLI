@@ -102,58 +102,37 @@ enum AccelerateDSP {
         _ input: [Float], into output: inout [Float], scratch: inout [Float],
         blockCount n: Int
     ) {
+        input.withUnsafeBufferPointer { src in
+            output.withUnsafeMutableBufferPointer { dst in
+                scratch.withUnsafeMutableBufferPointer { work in
+                    forwardDCTBatch(src, into: dst, scratch: work, blockCount: n)
+                }
+            }
+        }
+    }
+
+    /// Borrowed ranges of distinct algorithm buffers; no pointer is retained.
+    /// The scratch range may be reused after this synchronous call completes.
+    static func forwardDCTBatch(
+        _ input: UnsafeBufferPointer<Float>, into output: UnsafeMutableBufferPointer<Float>,
+        scratch: UnsafeMutableBufferPointer<Float>, blockCount n: Int
+    ) {
         precondition(input.count >= n * 64 && output.count >= n * 64 && scratch.count >= n * 64)
         guard n > 0 else { return }
-        let eightN = JLI_DSPCount(8 * n)
-
-        // Pack input (per-block-contig) into M-layout (8 × 8N row-major) where
-        // block i occupies columns [8i, 8i+8). After packing,
-        //   M[r * 8N + 8i + c] == input[64i + 8r + c].
-        // We use the scratch buffer as M.
-        input.withUnsafeBufferPointer { inBuf in
-            scratch.withUnsafeMutableBufferPointer { mBuf in
-                let src = inBuf.baseAddress!
-                let dst = mBuf.baseAddress!
-                let rowStride = 8 * n
-                for i in 0..<n {
-                    for r in 0..<8 {
-                        // 8 contiguous floats per row of one block.
-                        memcpy(
-                            dst + r * rowStride + 8 * i,
-                            src + 64 * i + 8 * r,
-                            8 * MemoryLayout<Float>.size
-                        )
-                    }
-                }
+        let src = input.baseAddress!, dst = output.baseAddress!, work = scratch.baseAddress!
+        let rowStride = 8 * n
+        for i in 0..<n {
+            for r in 0..<8 {
+                memcpy(work + r * rowStride + 8 * i, src + 64 * i + 8 * r, 8 * MemoryLayout<Float>.size)
             }
         }
-
-        // Pass 1: T = C · M, both shaped (8 × 8N). Write into `output` to free
-        // scratch for the next rearrangement.
-        jliDSP_mmul(dctMatrix, 1, scratch, 1, &output, 1, 8, eightN, 8)
-
-        // Rearrange T (8 × 8N col-block-major) → V (8N × 8 per-block-contig)
-        // for the second-pass right-multiply. After rearranging,
-        //   V[64i + 8r + c] == T[r * 8N + 8i + c].
-        output.withUnsafeBufferPointer { tBuf in
-            scratch.withUnsafeMutableBufferPointer { vBuf in
-                let src = tBuf.baseAddress!
-                let dst = vBuf.baseAddress!
-                let rowStride = 8 * n
-                for i in 0..<n {
-                    for r in 0..<8 {
-                        memcpy(
-                            dst + 64 * i + 8 * r,
-                            src + r * rowStride + 8 * i,
-                            8 * MemoryLayout<Float>.size
-                        )
-                    }
-                }
+        jliDSP_mmul(dctMatrix, 1, work, 1, dst, 1, 8, rowStride, 8)
+        for i in 0..<n {
+            for r in 0..<8 {
+                memcpy(work + 64 * i + 8 * r, dst + r * rowStride + 8 * i, 8 * MemoryLayout<Float>.size)
             }
         }
-
-        // Pass 2: F = V · Cᵀ, both shaped (8N × 8). Output is per-block-contig.
-        jliDSP_mmul(scratch, 1, dctMatrixTransposed, 1, &output, 1, eightN, 8, 8)
+        jliDSP_mmul(work, 1, dctMatrixTransposed, 1, dst, 1, rowStride, 8, 8)
     }
 
     /// Inverse DCT-II on `n` contiguous 8×8 blocks: `f_i = Cᵀ · F_i · C` for each i.
@@ -577,18 +556,23 @@ enum AccelerateDSP {
         _ input: [Float], invTable: [Float],
         into output: inout [Int32], blockCount n: Int
     ) {
+        input.withUnsafeBufferPointer { src in
+            output.withUnsafeMutableBufferPointer { dst in
+                quantizeBatch(src, invTable: invTable, into: dst, blockCount: n)
+            }
+        }
+    }
+
+    static func quantizeBatch(
+        _ input: UnsafeBufferPointer<Float>, invTable: [Float],
+        into output: UnsafeMutableBufferPointer<Int32>, blockCount n: Int
+    ) {
         precondition(input.count >= n * 64 && invTable.count == 64 && output.count >= n * 64)
-        input.withUnsafeBufferPointer { inBuf in
-            invTable.withUnsafeBufferPointer { invBuf in
-                output.withUnsafeMutableBufferPointer { outBuf in
-                    let inP = inBuf.baseAddress!
-                    let invP = invBuf.baseAddress!
-                    let outP = outBuf.baseAddress!
-                    for i in 0..<(n * 64) {
-                        let q = (inP[i] * invP[i & 63]).rounded(.toNearestOrEven)
-                        outP[i] = Int32(q)
-                    }
-                }
+        guard n > 0 else { return }
+        invTable.withUnsafeBufferPointer { table in
+            let src = input.baseAddress!, dst = output.baseAddress!, inv = table.baseAddress!
+            for i in 0..<(n * 64) {
+                dst[i] = Int32((src[i] * inv[i & 63]).rounded(.toNearestOrEven))
             }
         }
     }
