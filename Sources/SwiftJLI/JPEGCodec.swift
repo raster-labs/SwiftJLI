@@ -182,8 +182,11 @@ enum JPEGCodec {
                 let bps = d.storageBits / 8, maxSample = UInt32(1) << precision
                 // Float finiteness is checked by the fused quantising reader.
                 // An unsigned full-width sample cannot exceed its declared range.
-                // Only reduced meaningful precision needs a separate bounds pass.
-                if !floating && d.meaningfulBits < d.storageBits {
+                // The greyscale UInt12 DCT reader validates in its required
+                // conversion pass. Other reduced-precision paths still preflight
+                // every component, including alpha that will be discarded.
+                let fusedPrecisionCheck = isDCT && precision == 12 && d.components.count == 1
+                if !floating && d.meaningfulBits < d.storageBits && !fusedPrecisionCheck {
                     for y in 0..<d.height {
                         try NativeOperation.check()
                         for x in 0..<(d.width * d.components.count) {

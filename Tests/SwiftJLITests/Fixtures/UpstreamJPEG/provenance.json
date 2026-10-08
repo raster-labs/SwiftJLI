@@ -1,0 +1,289 @@
+{
+  "repository": "https://github.com/libjpeg-turbo/libjpeg-turbo",
+  "revision": "c85e6b905bf237038faa936dab160ebfc5da0344",
+  "tag": "3.2.0",
+  "originalSources": [
+    {
+      "name": "monkey12.jpg",
+      "url": "https://github.com/libjpeg-turbo/libjpeg-turbo/blob/3.2.0/testimages/monkey12.jpg",
+      "sha256": "a3cb218412cecfa877a4adee520aa3d58ac0d6d0f36a7a2541e598324ce481e3"
+    },
+    {
+      "name": "testimgari.jpg",
+      "url": "https://github.com/libjpeg-turbo/libjpeg-turbo/blob/3.2.0/testimages/testimgari.jpg",
+      "sha256": "4672c7f08864cd0a8c73a4fa4b66ca32b635d38464551c1ecf06564ae8c89b38"
+    },
+    {
+      "name": "testimgint.jpg",
+      "url": "https://github.com/libjpeg-turbo/libjpeg-turbo/blob/3.2.0/testimages/testimgint.jpg",
+      "sha256": "491679b8057739b3c8e5bacd1e918efb1691d271cbbd69820ff8d480dcb90963"
+    },
+    {
+      "name": "testorig.jpg",
+      "url": "https://github.com/libjpeg-turbo/libjpeg-turbo/blob/3.2.0/testimages/testorig.jpg",
+      "sha256": "acc6ec555d41d15b368320edaa3b20958ee6fa97cb6e4a18d1213d5ae8bec73b"
+    }
+  ],
+  "derivationCommands": [
+    {
+      "argv": [
+        "djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "work/external-jpeg-corpus/monkey12-input.pnm",
+        "work/external-jpeg-corpus/monkey12.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cjpeg",
+        "-precision",
+        "12",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-outfile",
+        "work/external-jpeg-corpus/monkey12-444.jpg",
+        "work/external-jpeg-corpus/monkey12-input.pnm"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "work/external-jpeg-corpus/monkey12-444-oracle.pnm",
+        "work/external-jpeg-corpus/monkey12-444.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cjpeg",
+        "-precision",
+        "12",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-progressive",
+        "-outfile",
+        "work/external-jpeg-corpus/monkey12-444-progressive.jpg",
+        "work/external-jpeg-corpus/monkey12-input.pnm"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "work/external-jpeg-corpus/monkey12-444-progressive-oracle.pnm",
+        "work/external-jpeg-corpus/monkey12-444-progressive.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "work/external-jpeg-corpus/testorig-input.pnm",
+        "work/external-jpeg-corpus/testorig.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cjpeg",
+        "-precision",
+        "8",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-outfile",
+        "work/external-jpeg-corpus/testorig-444.jpg",
+        "work/external-jpeg-corpus/testorig-input.pnm"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "work/external-jpeg-corpus/testorig-444-oracle.pnm",
+        "work/external-jpeg-corpus/testorig-444.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cjpeg",
+        "-precision",
+        "8",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-progressive",
+        "-outfile",
+        "work/external-jpeg-corpus/testorig-444-progressive.jpg",
+        "work/external-jpeg-corpus/testorig-input.pnm"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "work/external-jpeg-corpus/testorig-444-progressive-oracle.pnm",
+        "work/external-jpeg-corpus/testorig-444-progressive.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "work/external-jpeg-corpus/testimgint-input.pnm",
+        "work/external-jpeg-corpus/testimgint.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cjpeg",
+        "-precision",
+        "8",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-outfile",
+        "work/external-jpeg-corpus/testimgint-444.jpg",
+        "work/external-jpeg-corpus/testimgint-input.pnm"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "work/external-jpeg-corpus/testimgint-444-oracle.pnm",
+        "work/external-jpeg-corpus/testimgint-444.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cjpeg",
+        "-precision",
+        "8",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-progressive",
+        "-outfile",
+        "work/external-jpeg-corpus/testimgint-444-progressive.jpg",
+        "work/external-jpeg-corpus/testimgint-input.pnm"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "work/external-jpeg-corpus/testimgint-444-progressive-oracle.pnm",
+        "work/external-jpeg-corpus/testimgint-444-progressive.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    }
+  ],
+  "toolVersion": "libjpeg-turbo 3.2.0 (build 20260630)",
+  "purpose": "Upstream JPEG regression fixtures and independent 4:4:4 sequential/progressive oracle samples",
+  "tolerances": {
+    "8bitMaximumSampleError": 2,
+    "12bitMaximumSampleError": 4,
+    "basis": "Existing Scripts/verify-dct-interop.py Float-versus-integer IDCT limits, fixed before these measurements"
+  },
+  "licenses": [
+    "LICENSE.txt",
+    "README.ijg",
+    "LICENSE.md"
+  ],
+  "files": {
+    "testorig-444-progressive-oracle.pnm": "9d7068ddb451de520bd1339b27ee7ea939eaf7ce7590cb1d96d198752ec38757",
+    "monkey12-444-oracle.pnm": "04bb6e6ea1d57f1c0f072131d2c21b7caf9a951c27ba7421ae45beb4248b75c8",
+    "LICENSE.md": "ba6bceebcba0fdd35488477c2cca8c4632ce82c74dbfbc87d886ce6fc4433579",
+    "monkey12.jpg": "a3cb218412cecfa877a4adee520aa3d58ac0d6d0f36a7a2541e598324ce481e3",
+    "testorig-444.jpg": "866a74e9fafc0253eb465b1f8f34f314d46b9df9d9d316e09b9186b52c23054d",
+    "monkey12-444-progressive-oracle.pnm": "04bb6e6ea1d57f1c0f072131d2c21b7caf9a951c27ba7421ae45beb4248b75c8",
+    "testorig-444-progressive.jpg": "a6daa70e9d081333e899381eeb932a307fc7f1651f311f6ea2a9327b0ab70773",
+    "testimgint.jpg": "491679b8057739b3c8e5bacd1e918efb1691d271cbbd69820ff8d480dcb90963",
+    "README.ijg": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6",
+    "testimgint-444-progressive.jpg": "41bc9e3cf62fb790669ff9070bb09a9f5508f08703f04abf207410862582a1ba",
+    "testorig-444-oracle.pnm": "9d7068ddb451de520bd1339b27ee7ea939eaf7ce7590cb1d96d198752ec38757",
+    "monkey12-444.jpg": "d4773d122eced6e975a44a0c533bd843c60918c5bd1f3be6921673541b528d58",
+    "testimgint-444-oracle.pnm": "3a2e957e1cf4c43e106b79434312ec4a5e67f8b09d690eb6c481a08ce9cbaf08",
+    "testimgint-444.jpg": "1deb929f0cf6c6b1228d6ff1e4a3d7b3e45a463f07a03fdf129a3cc2fdff6cd8",
+    "testimgari.jpg": "4672c7f08864cd0a8c73a4fa4b66ca32b635d38464551c1ecf06564ae8c89b38",
+    "testimgint-444-progressive-oracle.pnm": "3a2e957e1cf4c43e106b79434312ec4a5e67f8b09d690eb6c481a08ce9cbaf08",
+    "testorig.jpg": "acc6ec555d41d15b368320edaa3b20958ee6fa97cb6e4a18d1213d5ae8bec73b",
+    "LICENSE.txt": "1c4d5dfc985d5061ba11180a8ffb541cc1778bccf87fd9f0fb92cbae69d8a9cc",
+    "monkey12-444-progressive.jpg": "6853655760ba2e42f5b47083e3ae0bf354fab0466cbef207b5bdbe589d19db36",
+    "sRGB2014.icc": "384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a"
+  },
+  "iccOrigin": "https://www.color.org/sRGBprofiles.xalter; identical to the already licensed migration fixture"
+}

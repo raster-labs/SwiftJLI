@@ -11,8 +11,12 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--package-path', type=Path)
+    parser.add_argument('--scheme', default='SwiftJLI-Package')
     args = parser.parse_args()
     root = Path(__file__).resolve().parent.parent
+    if args.package_path:
+        root = args.package_path.resolve()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=False)
     report = {'platform': 'iOS Simulator', 'commands': [], 'status': 'running'}
@@ -53,7 +57,7 @@ def main():
                  for name in container.get('schemes', [])]
         # Xcode's library product scheme has no test action; the generated
         # package scheme includes SwiftJLITests.
-        scheme = next((name for name in ['SwiftJLI-Package', 'SwiftJLI'] if name in names), None)
+        scheme = args.scheme if args.scheme in names else None
         if scheme is None:
             raise RuntimeError(f'Library test scheme missing: {names}')
         report['scheme'] = scheme

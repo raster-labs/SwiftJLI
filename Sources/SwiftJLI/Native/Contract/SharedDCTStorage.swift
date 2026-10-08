@@ -21,6 +21,23 @@ enum SharedDCTStorage {
         if precision == 8 && !normalisedFloatInput && components == 3 && !preconvertedYCbCr && !greyscaleOutput {
             return try readRGB8(source, width: width, height: height)
         }
+        if precision == 12 && !normalisedFloatInput && components == 1 {
+            // Validate meaningful precision while reading each sample into the
+            // required algorithm plane. Padding is never interpreted as samples.
+            var y = [Float](repeating: 0, count: width * height)
+            for row in 0..<height {
+                try NativeOperation.check()
+                for x in 0..<width {
+                    let p = row * source.rowBytes + x * 2
+                    let value = Int(source.bytes[p]) | Int(source.bytes[p + 1]) << 8
+                    guard value < 4096 else {
+                        throw CodecError(.invalidArgument, "Sample exceeds declared meaningful precision.")
+                    }
+                    y[row * width + x] = Float(value)
+                }
+            }
+            return (y, [], [])
+        }
         let count = width * height, bps = normalisedFloatInput ? 4 : precision == 8 ? 1 : 2
         let colourOutput = components > 1 && !greyscaleOutput
         var y = [Float](repeating: 0, count: count)

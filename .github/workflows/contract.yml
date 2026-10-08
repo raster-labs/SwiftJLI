@@ -94,6 +94,27 @@ jobs:
       - name: Compile SwiftJLI for the required Apple SDKs
         run: bash Scripts/build-apple-sdks.sh
 
+  macos-intel:
+    name: Native macOS 26 Intel runtime and CLI
+    runs-on: macos-26-intel
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Record native host and compiler
+        run: |
+          test "$(uname -m)" = x86_64
+          sw_vers
+          swift --version
+          xcodebuild -version
+      - run: swift test -j 3
+      - run: swift test -c release -j 3
+      - name: Qualify CLI installation and manual
+        run: |
+          command -v mandoc >/dev/null || brew install mandoc
+          python3 Scripts/test-cli.py --binary "$PWD/.build/release/swiftjli-cli" --output "$RUNNER_TEMP/cli-intel"
+
   ios-simulator:
     name: iOS 26+ simulator runtime
     runs-on: macos-26
@@ -104,6 +125,8 @@ jobs:
           persist-credentials: false
       - name: Run library tests on an installed simulator
         run: python3 Scripts/test-apple-simulator.py --output "$RUNNER_TEMP/ios-runtime"
+      - name: Compare the actual predecessor on the same simulator
+        run: python3 Scripts/test-apple-simulator.py --package-path Examples/PredecessorComparison --scheme PredecessorComparison-Package --output "$RUNNER_TEMP/ios-predecessor"
       - name: Retain simulator commands and test results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -113,6 +136,9 @@ jobs:
             ${{ runner.temp }}/ios-runtime/*.json
             ${{ runner.temp }}/ios-runtime/*.log
             ${{ runner.temp }}/ios-runtime/Tests.xcresult
+            ${{ runner.temp }}/ios-predecessor/*.json
+            ${{ runner.temp }}/ios-predecessor/*.log
+            ${{ runner.temp }}/ios-predecessor/Tests.xcresult
           retention-days: 14
 
   independent-consumer:

@@ -51,6 +51,16 @@ for item in manifest.get('thirdPartyAssets', []):
     literal = re.search(r'static let data: \[UInt8\] = (\[[\s\S]*?\])', swift)
     if not literal or bytes(ast.literal_eval(literal.group(1))) != original:
         raise ValueError(f'Embedded profile differs from licensed bytes: {item["embeddedSwift"]}')
+for name in manifest.get('externalRegressionManifests', []):
+    fixture_manifest = root / name
+    fixtures = json.loads(fixture_manifest.read_text())
+    for path, digest in fixtures['files'].items():
+        if hashlib.sha256((fixture_manifest.parent / path).read_bytes()).hexdigest() != digest:
+            raise ValueError(f'External regression fixture drift: {path}')
+    for license in fixtures['licenses']:
+        if license not in fixtures['files']:
+            raise ValueError(f'External fixture licence is not hash-bound: {license}')
 print(f'Provenance passed: {len(inventory)} principal-source/test paths accounted for; '
       f'{len(manifest["files"])} migrated source hashes and {len(manifest.get("generatedFixtures", []))} generated fixtures verified; '
-      f'{len(manifest.get("thirdPartyAssets", []))} third-party profiles match their embedded bytes and notices.')
+      f'{len(manifest.get("thirdPartyAssets", []))} third-party profiles match their embedded bytes and notices; '
+      f'{len(manifest.get("externalRegressionManifests", []))} external regression manifests verified.')
