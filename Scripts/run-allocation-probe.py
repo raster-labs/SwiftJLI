@@ -22,6 +22,20 @@ def check(condition, message):
 
 
 def validate(rows, control, operation="decode"):
+    if operation == "stress":
+        expected = {(size, mode, count) for size in [257, 1024] for count in [2, 32]
+                    for mode in ["concurrentEncode", "concurrentDecode", "invalidFinalSample",
+                                 "encodeAdmissionDenied", "decodeAdmissionDenied", "encodeCancellation", "decodeCancellation"]}
+        check(len(rows) == 28 and {(r["width"], r["mode"], r["operations"]) for r in rows} == expected, "Stress matrix incomplete")
+        for r in rows:
+            m = r["measurement"]
+            check(r["expectedOutcomes"] and r["controlCopy"] == control and m["overflow"] == 0, "Stress check failed")
+            check(r["maximumInFlight"] == 2 and r["workersPerOperation"] == 2, "Unbounded stress workload")
+            if control:
+                check(m["liveRequestedBytes"] >= r["sourceBytes"] * r["operations"], "Retained-frame control missed")
+            else:
+                check(m["liveRequestedBytes"] < r["sourceBytes"], "Full source frame retained after joined batch")
+        return None
     check(len(rows) == (31 if operation == "encode" else 61) and rows[0]["cPassed"], "Missing records or calibration")
     calibration = rows[0]
     large = [b["requestedBytes"] for b in calibration["measurement"]["allocationSizes"]
@@ -62,7 +76,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", required=True, type=pathlib.Path)
     parser.add_argument("--docker-image", default="swift:6.4-noble")
-    parser.add_argument("--operation", choices=["decode", "encode"], default="decode")
+    parser.add_argument("--operation", choices=["decode", "encode", "stress"], default="decode")
     args = parser.parse_args()
     out = args.output_dir.resolve()
     out.mkdir(parents=True, exist_ok=False)
@@ -100,7 +114,7 @@ def main():
         manifest["binarySHA256"] = sha(binary)
         for name, digest in manifest["sourceHashes"].items():
             check(sha(ROOT / name) == digest, f"Source changed during build: {name}")
-        flags = ["--encode"] if args.operation == "encode" else []
+        flags = ["--" + args.operation] if args.operation in ["encode", "stress"] else []
         run(["/src/.build-allocation-probe/release/AllocationProbe", *flags], "baseline")
         run(["/src/.build-allocation-probe/release/AllocationProbe", *flags, "--control-copy"], "control")
         baseline = [json.loads(s) for s in (out / "baseline.stdout").read_text().splitlines()]
@@ -109,7 +123,7 @@ def main():
         check(validate(control, True, args.operation) == header, "Calibration changed between runs")
         manifest["arrayHeaderRequestedBytes"] = header
         manifest["summary"] = []
-        for size, profile, entry in sorted({(r["width"], r["profile"], r["entry"]) for r in baseline[1:]}):
+        for size, profile, entry in sorted({(r["width"], r["profile"], r["entry"]) for r in baseline[1:]} if args.operation != "stress" else set()):
             group = [r for r in baseline[1:] if (r["width"], r["profile"], r["entry"]) == (size, profile, entry)]
             manifest["summary"].append({"width": size, "height": size, "profile": profile, "entry": entry,
                 "repetitions": len(group), "logicalPixelBytes": group[0]["logicalPixelBytes"],
@@ -123,8 +137,8 @@ def main():
     finally:
         manifest["logHashes"] = {p.name: sha(p) for p in sorted(out.iterdir()) if p.is_file()}
         (out / "results.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    print(json.dumps({"status": manifest["status"], "operation": args.operation, "measurements": len(baseline) - 1,
-                      "positiveControls": len(control) - 1, "arrayHeaderRequestedBytes": header}))
+    print(json.dumps({"status": manifest["status"], "operation": args.operation, "measurements": len(baseline) - int(args.operation != "stress"),
+                      "positiveControls": len(control) - int(args.operation != "stress"), "arrayHeaderRequestedBytes": header}))
 
 
 if __name__ == "__main__":

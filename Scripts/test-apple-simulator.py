@@ -13,20 +13,35 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--package-path', type=Path)
     parser.add_argument('--scheme', default='SwiftJLI-Package')
+    parser.add_argument('--platform', choices=['iOS', 'tvOS', 'visionOS', 'watchOS'], default='iOS')
     args = parser.parse_args()
     root = Path(__file__).resolve().parent.parent
     if args.package_path:
         root = args.package_path.resolve()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=False)
-    report = {'platform': 'iOS Simulator', 'commands': [], 'status': 'running'}
+    platforms = {'iOS': ('iOS', 'iphonesimulator', 'iPhone'),
+                 'tvOS': ('tvOS', 'appletvsimulator', 'Apple TV'),
+                 'visionOS': ('xrOS', 'xrsimulator', 'Apple Vision'),
+                 'watchOS': ('watchOS', 'watchsimulator', 'Apple Watch')}
+    runtime_name, sdk_name, device_prefix = platforms[args.platform]
+    destination_platform = args.platform + ' Simulator'
+    report = {'platform': destination_platform, 'commands': [], 'status': 'running'}
 
     def save():
         (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
 
     def run(name, command, timeout=120):
         print('Running: ' + ' '.join(command), flush=True)
-        result = subprocess.run(command, cwd=root, text=True, capture_output=True, timeout=timeout)
+        try:
+            result = subprocess.run(command, cwd=root, text=True, capture_output=True, timeout=timeout)
+        except subprocess.TimeoutExpired as error:
+            def text(value):
+                return value.decode(errors='replace') if isinstance(value, bytes) else value or ''
+            (out / (name + '.log')).write_text(text(error.stdout) + text(error.stderr))
+            report['commands'].append({'name': name, 'argv': command, 'timeoutSeconds': timeout})
+            save()
+            raise
         (out / (name + '.log')).write_text(result.stdout + result.stderr)
         report['commands'].append({'name': name, 'argv': command, 'exit_code': result.returncode})
         save()
@@ -39,17 +54,17 @@ def main():
         report['revision'] = run('revision', ['git', 'rev-parse', 'HEAD']).strip()
         report['xcode'] = run('xcode', ['xcodebuild', '-version']).strip()
         report['compiler'] = run('compiler', ['swift', '--version']).strip()
-        report['sdk'] = run('sdk', ['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-version']).strip()
+        report['sdk'] = run('sdk', ['xcrun', '--sdk', sdk_name, '--show-sdk-version']).strip()
         devices = json.loads(run('devices', ['xcrun', 'simctl', 'list', 'devices', 'available', '--json']))
         candidates = []
         for runtime, values in devices['devices'].items():
-            match = re.search(r'SimRuntime\.iOS-(\d+)(?:-(\d+))?', runtime)
+            match = re.search(r'SimRuntime\.' + runtime_name + r'-(\d+)(?:-(\d+))?', runtime)
             if match and int(match[1]) >= 26:
                 for device in values:
-                    if device.get('isAvailable') and device['name'].startswith('iPhone'):
+                    if device.get('isAvailable') and device['name'].startswith(device_prefix):
                         candidates.append(((int(match[1]), int(match[2] or 0)), runtime, device))
         if not candidates:
-            raise RuntimeError('No installed OS 26+ iPhone simulator: runtime gate is unexecuted')
+            raise RuntimeError(f'No installed OS 26+ {args.platform} simulator: runtime gate is unexecuted')
         _, runtime, device = sorted(candidates, key=lambda c: (c[0], c[2]['name']))[-1]
         report.update(runtime=runtime, device=device)
         schemes = json.loads(run('schemes', ['xcodebuild', '-list', '-json']))
@@ -62,7 +77,7 @@ def main():
             raise RuntimeError(f'Library test scheme missing: {names}')
         report['scheme'] = scheme
         log = run('test', ['xcodebuild', 'test', '-scheme', scheme,
-            '-destination', 'platform=iOS Simulator,id=' + device['udid'],
+            '-destination', 'platform=' + destination_platform + ',id=' + device['udid'],
             '-destination-timeout', '120', '-parallel-testing-enabled', 'NO',
             '-derivedDataPath', str(out / 'DerivedData'),
             '-resultBundlePath', str(out / 'Tests.xcresult'), 'CODE_SIGNING_ALLOWED=NO'], timeout=1500)
@@ -73,7 +88,7 @@ def main():
         report['testsPassed'] = max(map(int, counts))
         report['status'] = 'passed'
         save()
-        print(f'iOS simulator passed: {report["testsPassed"]} tests on {device["name"]}, {runtime}')
+        print(f'{args.platform} simulator passed: {report["testsPassed"]} tests on {device["name"]}, {runtime}')
     except Exception as error:
         report.update(status='failed', error=str(error))
         save()

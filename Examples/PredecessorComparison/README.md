@@ -16,7 +16,7 @@ Run on macOS with `swift run -Xswiftc -enable-testing CompareIdentity`, or from
 the repository root on an installed iOS 26+ simulator:
 
 ```sh
-python3 Scripts/test-apple-simulator.py --package-path Examples/PredecessorComparison --scheme PredecessorComparison-Package --output /tmp/swiftjli-live-predecessor
+python3 Scripts/test-apple-simulator.py --package-path Examples/PredecessorComparison --scheme PredecessorComparison --output /tmp/swiftjli-live-predecessor
 ```
 
 The actual predecessor imports CryptoKit unconditionally, so the package does

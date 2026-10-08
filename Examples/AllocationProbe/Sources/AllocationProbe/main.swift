@@ -56,6 +56,10 @@ func equalSamples(_ a: Image, _ b: Image) throws {
     }
     static func run() async throws {
         let controlCopy = CommandLine.arguments.dropFirst().contains("--control-copy")
+        if CommandLine.arguments.dropFirst().contains("--stress") {
+            try await runMemoryStress(controlCopy: controlCopy)
+            return
+        }
         let measureEncode = CommandLine.arguments.dropFirst().contains("--encode")
         try require(hp_calibrate() == 1, "glibc malloc/calloc/realloc/posix_memalign calibration failed")
         // Check that Swift heap allocations actually traverse the interposer too.
