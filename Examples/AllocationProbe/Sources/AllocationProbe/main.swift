@@ -56,6 +56,7 @@ func equalSamples(_ a: Image, _ b: Image) throws {
     }
     static func run() async throws {
         let controlCopy = CommandLine.arguments.dropFirst().contains("--control-copy")
+        let measureEncode = CommandLine.arguments.dropFirst().contains("--encode")
         try require(hp_calibrate() == 1, "glibc malloc/calloc/realloc/posix_memalign calibration failed")
         // Check that Swift heap allocations actually traverse the interposer too.
         hp_begin()
@@ -66,7 +67,9 @@ func equalSamples(_ a: Image, _ b: Image) throws {
         try emit(["event": "calibration", "cPassed": true, "swiftByteCount": storage.byteCount,
             "measurement": snapshot(calibration)])
         for size in [257, 1024] {
-            for profile in ["lossless16", "dct12", "rgb8", "xyb8", "xybFloat32"] {
+            let profiles = measureEncode ? ["lossless16", "dct12", "rgb8", "progressiveRGB8", "xyb8"]
+                : ["lossless16", "dct12", "rgb8", "xyb8", "xybFloat32"]
+            for profile in profiles {
                 let bits = profile == "lossless16" ? 16 : profile == "dct12" ? 12 : 8
                 let nc = profile == "lossless16" || profile == "dct12" ? 1 : 3
                 let bps = bits > 8 ? 2 : 1, row = size * nc * bps
@@ -85,9 +88,32 @@ func equalSamples(_ a: Image, _ b: Image) throws {
                 let xyb = profile.hasPrefix("xyb")
                 let encoder = try Encoder(configuration: .init(mode: bits == 16 ? .lossless : .lossy,
                     codecOptions: .init(dct: .init(chromaSubsampling: xyb ? .yuv444 : .yuv420,
+                        progressiveMode: profile == "progressiveRGB8" ? .spectralSelection : .sequential,
                         colourSpace: xyb ? .xybFromSRGB : .yCbCr))))
                 let limits = try ResourceLimits(maximumWorkspaceBytes: 1024 * 1024 * 1024)
                 let jpeg = try await encoder.encode(source, options: .init(resourceLimits: limits))
+                if measureEncode {
+                    for _ in 0..<3 { _ = try await encoder.encode(source, options: .init(resourceLimits: limits)) }
+                    for repetition in 0..<3 {
+                        hp_begin()
+                        let encoded: EncodedImage
+                        do { encoded = try await encoder.encode(source, options: .init(resourceLimits: limits)) }
+                        catch { _ = hp_end(); throw error }
+                        // Positive control: a full source copy must add a measured
+                        // source-sized allocation even when the codec report is unchanged.
+                        let copy = controlCopy ? try source.storage.withUnsafeBytes { Array($0) } : nil
+                        let stats = withExtendedLifetime(copy) { hp_end() }
+                        let measurement = try snapshot(stats)
+                        try require(encoded.data == jpeg.data, "Encoder output changed")
+                        try require(encoded.report.pixelAllocationCount == 0, "Encoder pixel report changed")
+                        try emit(["event": "encode", "profile": profile, "width": size, "height": size,
+                            "entry": "borrowedSource", "repetition": repetition,
+                            "logicalPixelBytes": source.storage.byteCount, "sourceCapacity": source.storage.byteCount,
+                            "controlCopy": controlCopy, "compressedBytes": encoded.data.count,
+                            "codestreamsMatch": true, "measurement": measurement])
+                    }
+                    continue
+                }
                 let decoder = try Decoder(configuration: .init(sampleFormat:
                     profile == "xybFloat32" ? .float32NormalisedSRGB : .nativeInteger))
                 let reference = try await decoder.decode(jpeg.data)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Run the Linux/glibc decoder allocation experiment, including its positive control."""
+"""Run the Linux/glibc encoder or decoder allocation experiment, including its positive control."""
 import argparse
 import hashlib
 import json
@@ -21,8 +21,8 @@ def check(condition, message):
         raise RuntimeError(message)
 
 
-def validate(rows, control):
-    check(len(rows) == 61 and rows[0]["cPassed"], "Missing records or calibration")
+def validate(rows, control, operation="decode"):
+    check(len(rows) == (31 if operation == "encode" else 61) and rows[0]["cPassed"], "Missing records or calibration")
     calibration = rows[0]
     large = [b["requestedBytes"] for b in calibration["measurement"]["allocationSizes"]
              if b["requestedBytes"] >= calibration["swiftByteCount"]]
@@ -35,21 +35,25 @@ def validate(rows, control):
         check(key not in seen, "Duplicate measurement")
         seen.add(key)
         m = r["measurement"]
-        check(r["samplesMatch"] and r["controlCopy"] == control and m["overflow"] == 0,
+        check(r["codestreamsMatch" if operation == "encode" else "samplesMatch"] and r["controlCopy"] == control and m["overflow"] == 0,
               "Failed sample/control/allocator check")
         sizes = {b["requestedBytes"]: b["count"] for b in m["allocationSizes"]}
-        # Packed frame allocation only occurs in allocating decode; a supplied
-        # padded destination predates the scope. Its deliberate copy adds one.
-        expected = int(r["entry"] == "allocating") + int(control)
-        check(sizes.get(r["destinationCapacity"] + header, 0) == expected,
-              f"Unexpected final-frame-size allocations: {key}")
-        if r["entry"] == "callerDestination":
-            check(sizes.get(r["logicalPixelBytes"] + header, 0) == 0,
-                  f"Unexpected packed intermediate-frame allocation: {key}")
+        if operation == "encode":
+            check(sizes.get(r["sourceCapacity"] + header, 0) == int(control),
+                  f"Unexpected source-frame-size allocations: {key}")
+        else:
+            # Supplied padded storage predates the measured scope.
+            expected = int(r["entry"] == "allocating") + int(control)
+            check(sizes.get(r["destinationCapacity"] + header, 0) == expected,
+                  f"Unexpected final-frame-size allocations: {key}")
+            if r["entry"] == "callerDestination":
+                check(sizes.get(r["logicalPixelBytes"] + header, 0) == 0,
+                      f"Unexpected packed intermediate-frame allocation: {key}")
+    profiles = ["lossless16", "dct12", "rgb8", "progressiveRGB8", "xyb8"] if operation == "encode" else ["lossless16", "dct12", "rgb8", "xyb8", "xybFloat32"]
+    entries = ["borrowedSource"] if operation == "encode" else ["allocating", "callerDestination"]
     expected_keys = {(size, profile, entry, repetition)
-                     for size in [257, 1024]
-                     for profile in ["lossless16", "dct12", "rgb8", "xyb8", "xybFloat32"]
-                     for entry in ["allocating", "callerDestination"] for repetition in range(3)}
+                     for size in [257, 1024] for profile in profiles
+                     for entry in entries for repetition in range(3)}
     check(seen == expected_keys, "Profile matrix incomplete")
     return header
 
@@ -58,12 +62,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", required=True, type=pathlib.Path)
     parser.add_argument("--docker-image", default="swift:6.4-noble")
+    parser.add_argument("--operation", choices=["decode", "encode"], default="decode")
     args = parser.parse_args()
     out = args.output_dir.resolve()
     out.mkdir(parents=True, exist_ok=False)
     image = subprocess.check_output(["docker", "image", "inspect", args.docker_image,
                                     "--format", "{{.Id}}"], text=True).strip()
-    manifest = {"status": "running", "image": image,
+    manifest = {"status": "running", "image": image, "operation": args.operation,
                 "revision": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                 "workingTree": subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True),
                 "sourceHashes": {}, "commands": []}
@@ -93,12 +98,15 @@ def main():
              ".build-allocation-probe", "-c", "release", "-j", "2"], "build")
         binary = ROOT / ".build-allocation-probe/release/AllocationProbe"
         manifest["binarySHA256"] = sha(binary)
-        run(["/src/.build-allocation-probe/release/AllocationProbe"], "baseline")
-        run(["/src/.build-allocation-probe/release/AllocationProbe", "--control-copy"], "control")
+        for name, digest in manifest["sourceHashes"].items():
+            check(sha(ROOT / name) == digest, f"Source changed during build: {name}")
+        flags = ["--encode"] if args.operation == "encode" else []
+        run(["/src/.build-allocation-probe/release/AllocationProbe", *flags], "baseline")
+        run(["/src/.build-allocation-probe/release/AllocationProbe", *flags, "--control-copy"], "control")
         baseline = [json.loads(s) for s in (out / "baseline.stdout").read_text().splitlines()]
         control = [json.loads(s) for s in (out / "control.stdout").read_text().splitlines()]
-        header = validate(baseline, False)
-        check(validate(control, True) == header, "Calibration changed between runs")
+        header = validate(baseline, False, args.operation)
+        check(validate(control, True, args.operation) == header, "Calibration changed between runs")
         manifest["arrayHeaderRequestedBytes"] = header
         manifest["summary"] = []
         for size, profile, entry in sorted({(r["width"], r["profile"], r["entry"]) for r in baseline[1:]}):
@@ -115,8 +123,8 @@ def main():
     finally:
         manifest["logHashes"] = {p.name: sha(p) for p in sorted(out.iterdir()) if p.is_file()}
         (out / "results.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    print(json.dumps({"status": manifest["status"], "decodeMeasurements": 60,
-                      "positiveControls": 60, "arrayHeaderRequestedBytes": header}))
+    print(json.dumps({"status": manifest["status"], "operation": args.operation, "measurements": len(baseline) - 1,
+                      "positiveControls": len(control) - 1, "arrayHeaderRequestedBytes": header}))
 
 
 if __name__ == "__main__":

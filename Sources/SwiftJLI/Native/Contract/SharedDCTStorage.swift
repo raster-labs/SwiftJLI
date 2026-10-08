@@ -18,6 +18,9 @@ enum SharedDCTStorage {
     static func read(_ source: BorrowedSamplePlane, width: Int, height: Int,
                      components: Int, precision: Int, normalisedFloatInput: Bool = false,
                      preconvertedYCbCr: Bool = false, greyscaleOutput: Bool = false) throws -> (y: [Float], cb: [Float], cr: [Float]) {
+        if precision == 8 && !normalisedFloatInput && components == 3 && !preconvertedYCbCr && !greyscaleOutput {
+            return try readRGB8(source, width: width, height: height)
+        }
         let count = width * height, bps = normalisedFloatInput ? 4 : precision == 8 ? 1 : 2
         let colourOutput = components > 1 && !greyscaleOutput
         var y = [Float](repeating: 0, count: count)

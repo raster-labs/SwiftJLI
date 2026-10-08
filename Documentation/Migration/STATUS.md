@@ -285,3 +285,15 @@ The bulk-stitch source subsequently passed local macOS AddressSanitizer identity
 Linux Swift 6.4 passes **335 tests in 46 suites**. Focused local macOS ASan/TSan probes pass scalar/accelerated, workers 1/8, batch edges, fractional samples and padded/guarded storage, including a size that executes parallel output. Two ordinary public release runs plus 24 expanded RGB cases all preserve compressed bytes and decoded samples. Large flat RGB decode now measures 22–28% faster than the predecessor. Small/512² cases and encoder overhead still require investigation; no complete performance pass is asserted. New-head CI, final fuzz, independent allocator/workspace and platform/runtime gates remain open.
 
 CI [37741119583](https://github.com/raster-labs/SwiftJLI/actions/runs/37741119583) subsequently passed every job for the preceding entropy-stitch checkpoint `535938a989ba3e8f0a3a33aa560353b1c94662f1`, including full macOS ASan/TSan, Linux 6.2/6.4 ARM/x86 and Apple SDK compilation. It does not qualify this later RGB-output change.
+
+## Borrowed RGB input correction and encoder heap evidence
+
+[Input-stage attribution](RGBInput/README.md) measured the former RGB8 reader at 0.542 ms versus the predecessor's 0.164 ms at 512². Bounded deinterleaving, contiguous widening and joined row conversion now produce exactly the same Float planes while reducing that stage to 0.098 ms in the diagnostic run. Scratch is bounded per worker; source pixels remain borrowed. Other precision/conversion policies are unchanged.
+
+Linux Swift 6.4 passes **336 tests in 47 suites**. Focused macOS ASan/TSan probes pass scalar/accelerated, workers 1/8, batch edges and guarded/padded source cases, including parallel sizes. Two ordinary public release runs and 24 expanded RGB cases preserve all compressed bytes and decoded samples. Large flat RGB encoding now measures 7–11% faster than the predecessor; some 512² flat/ramp and UInt12 DCT cases remain slower. Performance acceptance stays open.
+
+The allocator probe now supports `--operation encode`. Thirty measured cases plus thirty deliberate full-source-copy controls pass across five profiles at 257²/1024². No source-frame-sized allocation appears in the baseline; each control adds one, with matching codestreams and no tracker overflow. This extends the Linux requested-heap evidence to encoding, not to all copy shapes, Apple allocation behaviour, cancellation/failure/concurrency or complete workspace attribution.
+
+CI [37743004801](https://github.com/raster-labs/SwiftJLI/actions/runs/37743004801) passed every job at preceding RGB-output revision `bbb44675fd6f5997794ecf66aac349006fc636d4`. New-head CI and final fuzz/platform/qualification requirements remain open.
+
+The decoder heap experiment was refreshed at the same current source: all 60 measured cases and 60 deliberate-copy controls pass. Caller storage retains its allocation identity and avoids the measured final-frame/packed-intermediate bins; allocating decode has one final-frame allocation. All sample/padding checks pass. Raw allocator evidence is retained with RGBInput; platform and failure/cancellation/workspace limits still apply.
