@@ -1,0 +1,100 @@
+{
+  "platform": "iOS Simulator",
+  "commands": [
+    {
+      "name": "revision",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "xcode",
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "compiler",
+      "argv": [
+        "swift",
+        "--version"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "sdk",
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-version"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "devices",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "available",
+        "--json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "schemes",
+      "argv": [
+        "xcodebuild",
+        "-list",
+        "-json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "test",
+      "argv": [
+        "xcodebuild",
+        "test",
+        "-scheme",
+        "SwiftJLI-Package",
+        "-destination",
+        "platform=iOS Simulator,id=CB15797E-6053-40B1-BB72-7F30D005A4F2",
+        "-destination-timeout",
+        "120",
+        "-parallel-testing-enabled",
+        "NO",
+        "-derivedDataPath",
+        "/Users/runner/work/_temp/ios-runtime/DerivedData",
+        "-resultBundlePath",
+        "/Users/runner/work/_temp/ios-runtime/Tests.xcresult",
+        "CODE_SIGNING_ALLOWED=NO"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "status": "passed",
+  "revision": "c2a143a87e34d4799639fdd4146679757aac117d",
+  "xcode": "Xcode 26.6\nBuild version 17F113",
+  "compiler": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+  "sdk": "26.5",
+  "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-26-5",
+  "device": {
+    "dataPath": "/Users/runner/Library/Developer/CoreSimulator/Devices/CB15797E-6053-40B1-BB72-7F30D005A4F2/data",
+    "dataPathSize": 18337792,
+    "logPath": "/Users/runner/Library/Logs/CoreSimulator/CB15797E-6053-40B1-BB72-7F30D005A4F2",
+    "udid": "CB15797E-6053-40B1-BB72-7F30D005A4F2",
+    "isAvailable": true,
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Air",
+    "state": "Shutdown",
+    "name": "iPhone Air"
+  },
+  "scheme": "SwiftJLI-Package",
+  "testsPassed": 347
+}

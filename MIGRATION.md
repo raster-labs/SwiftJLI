@@ -88,6 +88,35 @@ swift run --package-path Examples/IndependentConsumer
 
 Set realistic ResourceLimits for compressed bytes, samples, metadata and workspace. The predictive algorithm uses full-frame Int32 working planes and DCT uses Float/coefficient workspace; required sharing eliminates a hand-off copy, not that workspace. Conservative admission reservations and unmeasured peak fields are documented in the migration status. A preflight failure leaves an unwritten destination usable; failure after writing begins invalidates it.
 
+### Explicit memory admission
+
+Admission uses conservative reservations, not measured live workspace. For example,
+a 1024 × 1024 RGB DCT encode reserves 605,028,352 bytes of algorithm workspace
+(`width × height × 3 × 192 + 1,048,576`), so it exceeds the general 512 MiB
+workspace ceiling before encoding starts. A caller with a suitable budget can
+explicitly supply `ResourceLimits(maximumWorkspaceBytes: 1024 * 1024 * 1024)`.
+This does not change the defaults or make that budget suitable for every device.
+Concurrent callers must also bound their combined in-flight work.
+
+For `N` full-resolution component samples, `B` compressed bytes and `M` encoded
+metadata bytes, the current reservations are:
+
+| Stage | Reserved workspace bytes |
+| --- | --- |
+| Predictive encode | `64 × N + 4 × M + 1,048,576` |
+| DCT encode | `192 × N + 4 × M + 1,048,576` |
+| Parsing | `64 × B + 1,048,576` |
+| Predictive decode | `64 × B + 8 × N + 1,048,576` |
+| DCT decode, including reduced-scale output | `64 × B + 128 × N + 1,048,576` |
+
+Admission also counts supplied/final pixel storage, compressed data or the encode
+output bound, and metadata against `maximumMemoryBytes`. Padding counts as storage.
+
+The Data-based decoder currently materialises one bounded compressed-byte array
+for validation and native parsing. This is compressed input workspace, distinct
+from the no-copy decoded-image hand-off. Reports with unknown workspace peaks
+remain `nil`; admission reservations must not be presented as measured peaks.
+
 ## Application acceptance
 
 1. Record exact old/new revisions, deployment targets, toolchains, modes, metadata and optional products. Preserve the application's existing fixtures and baseline failures.
