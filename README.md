@@ -2,13 +2,17 @@
 
 JPEG, including native lossless JPEG for the **Swift Image Compression Suite**.
 
-**Status: codec migration in progress.** The common API now encodes, inspects and decodes unsigned SOF3 lossless and bounded-error JPEG (2–16 meaningful bits; greyscale and explicit RGB). Compatible interleaved storage supports padded rows and direct caller-destination decode. Explicit lossy mode now supports sequential and progressive DCT JPEG at 8/12-bit precision, with scalar execution and optional Apple Accelerate. Reduced-size decode, explicit raw greyscale Float32 output and both adaptive quantisation fields are available. Explicit normalised Float32 input can be clamped and quantised to 8-bit in lossy mode. Explicit sRGB-to-XYB encoding and direct sRGB integer or explicitly normalised Float32 decode are also available with matching ICC interpretation. Additional colour-output profiles and complete qualification remain open. See [current evidence and remaining work](Documentation/Migration/STATUS.md). No stable release or complete platform qualification is claimed.
+**Status: codec implementation merged; stable-release acceptance remains open.**
 
-SwiftJLI is the standalone successor to [JLISwift](https://github.com/Raster-Lab/JLISwift). The successor is intended to provide a harmonised API, explicit memory ownership, high-precision sample preservation and efficient shared-storage integration. It has no mandatory dependency on another suite library or CompressionFamily. Apache-2.0 licensing applies to these documents and subsequent authorised in-house implementation; third-party material retains its own terms.
+The common API now encodes, inspects and decodes unsigned SOF3 lossless and bounded-error JPEG (2–16 meaningful bits; greyscale and explicit RGB). Compatible interleaved storage supports padded rows and direct caller-destination decode. Explicit lossy mode now supports sequential and progressive DCT JPEG at 8/12-bit precision, with scalar execution and optional Apple Accelerate. Reduced-size decode, explicit raw greyscale Float32 output and both adaptive quantisation fields are available. Explicit normalised Float32 input can be clamped and quantised to 8-bit in lossy mode. Explicit sRGB-to-XYB encoding and direct sRGB integer or explicitly normalised Float32 decode are also available with matching ICC interpretation. Explicit RGBA alpha discard, preconverted YCbCr input and RGB-to-greyscale conversion are implemented.
+
+[PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged on 9 October 2026 as `a967d27`; all 13 CI jobs passed on its tested source revision `a1920c7`. Performance acceptance and physical Watch resource validation remain open. See the [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) for exact evidence revisions, limitations and deferred work. No stable release or application cutover is claimed.
+
+SwiftJLI is the standalone successor to [JLISwift](https://github.com/Raster-Lab/JLISwift). The successor provides a harmonised API, explicit memory ownership, high-precision sample preservation and efficient shared-storage integration. It has no mandatory dependency on another suite library or CompressionFamily. Apache-2.0 licensing applies to these documents and subsequent authorised in-house implementation; third-party material retains its own terms.
 
 ## Swift 6.4 development candidate
 
-Current development version: **1.1.0-dev.2** ([VERSION](VERSION)); shared contract **0.9.0**. This increments the earlier unreleased 1.0.0 target and creates no release/tag. See the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md) for adopted features, exact Xcode/Swift Build evidence and open platform gates; its platform claims are superseded history, since contract 0.5.0 returned the Apple floor to 26.0 and the compiler minimum to 6.2, while its CLI content remains current. The historical [Milestone 1 evidence](Documentation/MILESTONE1.md) remains unchanged.
+Current development version: **1.1.0-dev.2** ([VERSION](VERSION)); shared suite policy **0.10.0**. This increments the earlier unreleased 1.0.0 target and creates no release/tag. See the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md) for adopted features, exact Xcode/Swift Build evidence and open platform gates; its platform claims are superseded history, since contract 0.5.0 returned the Apple floor to 26.0 and the compiler minimum to 6.2, while its CLI content remains current. The historical [Milestone 1 evidence](Documentation/MILESTONE1.md) remains unchanged.
 
 ## Intended platform baseline
 
@@ -16,7 +20,7 @@ Swift 6.2 manifest minimum with Swift 6.4 as the qualified primary toolchain, Sw
 
 ## Start reading
 
-The active migration builds on the completed API/storage foundation. See [migration status](Documentation/Migration/STATUS.md) and [historical foundation evidence](Documentation/MILESTONE1.md).
+The merged codec builds on the completed API/storage foundation. Read the [current acceptance ledger](Documentation/Migration/ACCEPTANCE.md) first; [migration checkpoints](Documentation/Migration/STATUS.md) and [foundation evidence](Documentation/MILESTONE1.md) retain historical results.
 
 - [Coding-agent entry point](AGENTS.md) and [codec-specific implementation plan](IMPLEMENTATION.md).
 - [Application migration guide: JLISwift → SwiftJLI](MIGRATION.md), including current limitations, API mappings and a staged cutover checklist for humans and coding agents.
@@ -30,7 +34,7 @@ The active migration builds on the completed API/storage foundation. See [migrat
 
 The four independent libraries are SwiftJ2K, SwiftJLS, SwiftJXL and SwiftJLI, all intended to live under Raster-Lab. A future optional umbrella adapts them for codec selection and in-process transcoding. The codecs do not depend on that umbrella. SwiftCompressionFamily is not part of this successor plan. The common contract is mirrored documentation plus behavioural tests, not a shared runtime package.
 
-The main module is `SwiftJLI`; the diagnostic CLI is `swiftjli-cli`. Feature coverage is being migrated and verified; see IMPLEMENTATION.md. Nothing here changes the predecessor repository's current maintenance configuration.
+The main module is `SwiftJLI`; the diagnostic CLI is `swiftjli-cli`. Implemented coverage and explicit product deferrals are recorded in IMPLEMENTATION.md. Nothing here changes the predecessor repository's current maintenance configuration.
 
 ## Synthetic storage example
 
@@ -56,7 +60,7 @@ To run headless with the installed Xcode toolchain:
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcrun swift test
 ```
 
-See the evidence for sandbox-compatible commands, sanitizer results and unexecuted platform gates. Performance and the full platform matrix remain qualification gates; Linux ARM64 tests and a local macOS build are recorded in the migration evidence.
+See the evidence for sandbox-compatible commands, sanitizer results and unexecuted platform gates. The tested revision passes Linux Swift 6.2/6.4 ARM64/x86_64, macOS ARM/Intel runtime checks, separate macOS sanitizers, Apple SDK compilation and four Apple simulator suites. Performance acceptance and physical Watch resource validation remain open; simulator success does not establish device memory ceilings.
 
 ## Command-line help and manual
 

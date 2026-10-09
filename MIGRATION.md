@@ -1,6 +1,6 @@
 # Migrating applications from JLISwift to SwiftJLI
 
-The migration is in progress. The public API currently supports native SOF3 lossless/bounded-error and SOF0/SOF1/SOF2 lossy JPEG; advanced predecessor profiles and full qualification remain open. Keep each production use case on its qualified predecessor until its successor profile passes acceptance. [Current evidence and open requirements](Documentation/Migration/ACCEPTANCE.md) distinguish implementation from qualification.
+The codec implementation was merged into main through [PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) on 9 October 2026 (`a967d27`). The public API supports native SOF3 lossless/bounded-error and SOF0/SOF1/SOF2 lossy JPEG, including the explicit Float32, XYB and colour policies documented below. Stable-release acceptance remains open for performance and physical Watch resource validation. Keep each production use case on its qualified predecessor until its successor profile passes acceptance. [Current evidence and open requirements](Documentation/Migration/ACCEPTANCE.md) distinguish implementation from qualification.
 
 The source pin is JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. SwiftJLI requires Swift tools 6.2 or later, Swift 6 language mode and Apple deployment floors of 26.0. Raise the application's floor in its separately assigned cutover. No stable 1.1.0 release is implied: use an explicitly reviewed revision for trials.
 
@@ -43,7 +43,7 @@ DCT input is unsigned 8-bit storage/precision or 16-bit storage with exactly 12 
 
 `.scalarCPU` and `.required(.scalarCPU)` select the scalar kernels on every platform. Automatic DCT uses Accelerate on Apple and scalar elsewhere; required acceleration fails when unavailable. SOF3 remains scalar. Reports identify the selected backend and preferred-backend fallback. Availability lists are unions across profiles: DCT does not support the entire 2–16-bit predictive range.
 
-Progressive DC scans currently require all components in frame order, with single-component AC scans. Multiple sequential scans, changing quantisation/restart definitions between scans and ambiguous RGB/CMYK JPEG interpretations are rejected. The recognised XYB profile has an explicit colour policy described below. The remaining restrictions are additional acceptance work, not silent conversions.
+Progressive DC scans currently require all components in frame order, with single-component AC scans. Multiple sequential scans, changing quantisation/restart definitions between scans and ambiguous RGB/CMYK JPEG interpretations are rejected. The recognised XYB profile has an explicit colour policy described below. These are explicit capability boundaries; applications needing an unsupported combination must retain their existing qualified route. They are not silently converted.
 
 ## Decoder output and adaptive profiles
 
@@ -60,7 +60,7 @@ Signed-labelled predecessor input deserves separate review: its SOF3 encoder pre
 
 `DecoderConfiguration(scale: 2, sampleFormat: .float32RawSamples)` explicitly returns raw reconstructed sample values as little-endian IEEE Float32, without integer rounding or normalisation. For example, a reconstructed 12-bit sample near 2048 remains near 2048, not 0.5. This profile supports greyscale DCT JPEG without ICC interpretation; colour, ICC-bearing input and SOF3 are rejected before the destination borrow. The result descriptor is `.floatingPoint` with 32 storage/meaningful bits. Supplied destinations must declare that same interpretation; default integer decode does not infer a float conversion from the destination.
 
-The Float32 restriction avoids attaching a nominal integer-range ICC profile to differently represented samples without a qualified range/colour policy. Broader ICC and independent interoperability qualification remain migration work. Capabilities describe the queried operation and include Float32 profiles. Their precision range is nil because integer 2–16 and IEEE Float32 are separate profiles rather than one continuous range.
+The Float32 restriction avoids attaching a nominal integer-range ICC profile to differently represented samples without a qualified range/colour policy. Arbitrary ICC conversion and broader Float32 colour profiles are outside the currently supported capability matrix; the acceptance ledger records the independent interoperability evidence for supported profiles. Capabilities describe the queried operation and include Float32 profiles. Their precision range is nil because integer 2–16 and IEEE Float32 are separate profiles rather than one continuous range.
 
 `DCTOptions(adaptiveQuantisationField: true)` enables the luma-derived trellis-strength field. It requires `adaptiveQuantisation: true`. `DCTOptions(jpegliAdaptiveQuantisation: true)` instead selects the masking/zero-bias path. These field options require 8-bit input and cannot be combined; unsuitable combinations fail rather than silently selecting a different quantiser. Both preserve direct source reads and use accounted algorithm workspace.
 
@@ -124,7 +124,7 @@ remain `nil`; admission reservations must not be presented as measured peaks.
 3. Verify padded storage, copy/allocation identity, malformed input, budgets, cancellation, concurrency and lifetime on the required platforms. Unknown report measurements do not mean zero.
 4. Enable only qualified profiles behind the application's rollback mechanism. Keep the old dependency lock and adapter until persisted-file compatibility and platform acceptance are complete.
 
-The diagnostic `swiftjli-cli` reports actual library capabilities. Its encode/decode/inspect/validate payload verbs remain unavailable under the separately budgeted CLI work. This guide does not announce a completed migration, stable release or complete platform support.
+The diagnostic `swiftjli-cli` reports actual library capabilities. Its encode/decode/inspect/validate payload verbs remain unavailable under the separately budgeted CLI work. The repository implementation is merged; downstream application cutover, stable release and complete device qualification are separate steps and have not been established by that merge.
 
 ## Explicit DCT input conversions
 
