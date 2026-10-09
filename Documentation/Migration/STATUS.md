@@ -5,7 +5,20 @@ For the current disposition of every acceptance gate, read
 earlier implementation descriptions and pending statements are superseded by
 later checkpoints and the acceptance ledger.
 
-Migration remains in progress. This checkpoint does not establish first-stable readiness.
+## Latest disposition — 9 October 2026
+
+The codec implementation and reviewed deadline correction merged through
+[PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) as `a967d27`.
+[CI 37900647193](https://github.com/raster-labs/SwiftJLI/actions/runs/37900647193)
+passes all 13 jobs at `a1920c7`, whose source/tests/workflow match the merge commit.
+Performance acceptance and physical Watch resource validation remain open. The
+merge does not establish stable-release readiness, predecessor retirement or an
+application cutover. See the acceptance ledger for current product dispositions.
+
+## Historical implementation checkpoints
+
+The following records describe their original source revisions; their pending
+statements and early capability restrictions do not describe all of current main.
 
 Source: JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. Successor base: `41b3cbc34e5e96db41853c925ec720fad4120b65`. Common suite policy: 0.10.0; shared contract documents are unchanged. Per-file origins and original hashes are in [provenance.json](provenance.json).
 

@@ -104,3 +104,20 @@ Removing the fallback exposed a second limitation it had been hiding: on Apple S
 ## Native codec migration checkpoint — 7 October 2026
 
 The assigned migration now connects predictive lossless/bounded-error and 8/12-bit sequential/progressive DCT kernels to the common owning-storage API, with explicit fidelity/backend reporting. Pinned predecessor fixtures and native identity records are retained. This is an implementation checkpoint, not a release: advanced colour/float profiles, complete public corpus coverage, memory/performance qualification and the required platform matrix remain open. See [executed evidence and limitations](Documentation/Migration/STATUS.md).
+
+## Codec implementation merged — 9 October 2026
+
+[PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged as
+`a967d27bc5756fab8b7fe9db6eb302ff0645c362`. The migrated predecessor remains pinned
+at `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. Native predictive and DCT profiles,
+explicit colour/Float32 policies, caller storage, bounded execution and retained
+provenance are implemented. The final source revision `a1920c7` also fixes a
+reviewed finite-deadline overflow without disabling cancellation or deadline checks.
+All 13 jobs in CI 37900647193 pass at that revision; source/tests/workflow match
+the merge commit. Earlier fuzz, interoperability, memory and performance evidence
+retains its own exact revision rather than being relabelled as fresh execution.
+
+Performance acceptance and physical Watch resource validation remain open.
+JLIDICOM/JLIBench product deferrals and the separate CLI payload milestone remain
+explicit. This merge does not publish a stable release, retire JLISwift or migrate
+DICOMKit/Voxelia. See [the current ledger](Documentation/Migration/ACCEPTANCE.md).

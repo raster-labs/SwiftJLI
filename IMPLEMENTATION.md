@@ -2,6 +2,26 @@
 
 Read AGENTS.md and every common contract document first. Milestone 1 implements API shapes and owning storage; see [executed evidence](Documentation/MILESTONE1.md). Later milestones require an owner-assigned implementation task. Follow the common contract when predecessor conventions differ. Maintain performance, reliability and security together.
 
+## Verified status — 9 October 2026
+
+[PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged the codec migration
+and deadline-overflow correction into main as `a967d27`. The 13-job CI matrix
+passes at its source revision `a1920c7`; source, tests, package, scripts and workflow
+are unchanged in the merge commit. The milestones below remain the plan of record,
+not a claim that every release gate has passed.
+
+| Scope | Current disposition |
+| --- | --- |
+| Milestones 1–2: API/storage foundation and native migration baseline | Implemented; source inventory, provenance, predecessor comparisons and independent JPEG oracle evidence retained. |
+| Milestone 3: caller storage and first suite pair | Implemented; shared storage/copy/lifetime checks and SwiftJ2K ↔ SwiftJLI integration evidence retained at their recorded revisions. |
+| Milestone 4: profiles and qualification | Supported codec profiles and CI platform matrix implemented; performance acceptance and physical Watch resource qualification remain open. Unsupported combinations reject explicitly. |
+| Milestone 5: release preparation | Consumer, documentation and provenance evidence present; stable-release acceptance remains open. No stable tag or downstream cutover is established. |
+| Auxiliary products and CLI payload commands | Explicit I1–I3 dispositions below remain in force; deferred work is not claimed as implemented. |
+
+The [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) is authoritative
+for current evidence and remaining gates. Historical measurements are not relabelled
+as runs against the merged revision.
+
 ## Source and destination
 
 Predecessor: [Raster-Lab/JLISwift](https://github.com/Raster-Lab/JLISwift). Target module/product: `SwiftJLI`. Target CLI: `swiftjli-cli`. Intended first stable library version: `1.1.0`.
