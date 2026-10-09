@@ -1,0 +1,60 @@
+--- pinned-base/Sources/JLISwift/Encoder/JLIEncoder.swift
++++ JLISwift-phase/Sources/JLISwift/Encoder/JLIEncoder.swift
+@@ -623,6 +623,7 @@
+         // review; the old bounds-checked subscripts trapped instead).
+         let bps = image.pixelFormat == .uint16 ? 2 : 1
+ 
++        let phaseStart = ContinuousClock.now
+         let count = w * h
+         // De-interleave source into flat per-component planes (plane c at offset
+         // c·count; raw + uninitialized — every element is written below). For
+@@ -658,6 +659,7 @@
+             }
+         }
+ 
++        let phaseRead = ContinuousClock.now
+         let half = Int32(1 << (precision - 1 - pt))
+ 
+         // Residuals are memoized once, in emit order (diffs[(y·w + x)·nc + c]),
+@@ -701,6 +703,7 @@
+             dcFreq = [Int](repeating: 0, count: 256)
+             for part in partials { for i in 0..<256 { dcFreq[i] += part[i] } }
+         }
++        let phaseResiduals = ContinuousClock.now
+         let table = HuffmanTableBuilder.build(
+             frequencies: dcFreq, fallback: StandardHuffmanTables.dcLuminance)
+ 
+@@ -733,6 +736,8 @@
+         // sequence — so the output bytes are identical (gated by the
+         // forced-serial test and the identity-hash matrix, whose lossless-RGB
+         // entries exercise this path).
++        let phaseTables = ContinuousClock.now
++        var phaseEmitted = phaseTables
+         var bw = BitWriter(estimatedMaxSize: w * h * nc * 2 + 1024)
+         let totalSamples = count * nc
+         let segSamples = segRows > 0 ? segRows * w * nc : Int.max
+@@ -763,6 +768,7 @@
+                         diffs: slots.diffs, range: piecesFinal[k], table: slots.table)
+                 }
+             }
++            phaseEmitted = .now
+             for (k, chunk) in emitted.enumerated() {
+                 if k > 0 && segRows > 0 { bw.emitRestartMarker((k - 1) & 7) }
+                 JLIEncoder.feedBits(chunk.bytes, bitCount: chunk.bitCount, into: &bw)
+@@ -792,9 +798,16 @@
+                 }
+             }
+         }
++        let phaseStitched = ContinuousClock.now
+         bw.flush()
+         mw.writeEntropyData(bw.data)
+         mw.writeEOI()
++        let phaseFinished = ContinuousClock.now
++        func millis(_ a: ContinuousClock.Instant, _ b: ContinuousClock.Instant) -> Double {
++            let d = a.duration(to: b).components
++            return Double(d.seconds) * 1000 + Double(d.attoseconds) / 1e15
++        }
++        print("PHASE predecessor \(w) \(h) \(millis(phaseStart, phaseRead)) \(millis(phaseRead, phaseResiduals)) \(millis(phaseResiduals, phaseTables)) \(millis(phaseTables, phaseEmitted)) \(millis(phaseEmitted, phaseStitched)) \(millis(phaseStitched, phaseFinished))")
+         return mw.data
+     }
+ 

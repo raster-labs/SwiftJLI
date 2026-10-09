@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "IndependentConsumer",
     platforms: [.macOS("26.0")],
-    dependencies: [.package(path: "../..")],
+    dependencies: [.package(name: "SwiftJLI", path: "../..")],
     targets: [
         .executableTarget(name: "IndependentConsumer", dependencies: [
             .product(name: "SwiftJLI", package: "SwiftJLI")

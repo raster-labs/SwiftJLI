@@ -1,0 +1,14 @@
+--- a/Sources/SwiftJLI/NativeExecution.swift
++++ b/Sources/SwiftJLI/NativeExecution.swift
+@@ -40,9 +40,2 @@
+-    static func check() throws {
+-        try Task.checkCancellation()
+-        if let context = current {
+-            try context.cancellation?.check()
+-            if context.started.duration(to: .now) >= .seconds(context.seconds) {
+-                throw CodecError(.resourceLimitExceeded, "JPEG operation deadline exceeded.")
+-            }
+-        }
+-    }
++    // DIAGNOSTIC ONLY: disables required cancellation/deadline checks.
++    static func check() throws {}

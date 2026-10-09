@@ -13,7 +13,7 @@ let package = Package(
     targets: [
         .target(name: "SwiftJLI"),
         .executableTarget(name: "SwiftJLICLI", dependencies: ["SwiftJLI"]),
-        .testTarget(name: "SwiftJLITests", dependencies: ["SwiftJLI"])
+        .testTarget(name: "SwiftJLITests", dependencies: ["SwiftJLI"], resources: [.copy("Fixtures")])
     ],
     swiftLanguageModes: [.v6]
 )

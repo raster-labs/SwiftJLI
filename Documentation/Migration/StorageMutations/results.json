@@ -1,0 +1,74 @@
+{
+  "revision": "fc02b48b2215cd4111e28fb73f3e7ef1ce193ec7",
+  "compiler": "Swift version 6.4 (swift-6.4-RELEASE)\nTarget: aarch64-unknown-linux-gnu",
+  "source_sha256": "d201ba4a0b2a3dd5818eed170ad22fac31726e46e8a5f0b247c5f80fa76a0b8a",
+  "test_sha256": "124fefd10956574042aa2cd96f76594b98eb0d45d0f9eb74618840879703e00d",
+  "results": [
+    {
+      "name": "baseline",
+      "exit_code": 0,
+      "issues": 0,
+      "expectation_failure_messages": 0,
+      "caught_error_messages": 0,
+      "mutated_source_sha256": "d201ba4a0b2a3dd5818eed170ad22fac31726e46e8a5f0b247c5f80fa76a0b8a",
+      "expected_outcome_observed": true,
+      "log": "baseline.log",
+      "log_sha256": "e2e5bd4cfac6badf230bec45e37c494ce79b11ec483a1e91c6a98923c338bb8a"
+    },
+    {
+      "name": "encode-packed-stride",
+      "exit_code": 1,
+      "issues": 40,
+      "expectation_failure_messages": 38,
+      "caught_error_messages": 2,
+      "mutated_source_sha256": "8bfb073c0d23c9fa0ab192511377a5ba3bd386f86b2d4cbf155efc9eea1de390",
+      "expected_outcome_observed": true,
+      "log": "encode-packed-stride.log",
+      "log_sha256": "264a3a7ba84c8312b92aa1956fbc1bec1adf8c13d60a97d2f587721d17adc015"
+    },
+    {
+      "name": "encode-big-endian",
+      "exit_code": 1,
+      "issues": 4,
+      "expectation_failure_messages": 2,
+      "caught_error_messages": 2,
+      "mutated_source_sha256": "e10ad36608ffc94063fb9f141ea930d297927c5eebc5d3effeff949959caf3fc",
+      "expected_outcome_observed": true,
+      "log": "encode-big-endian.log",
+      "log_sha256": "876c941102ec44166ab051d3ab7d06e2af68966db0f796ada2bb1e291a72b8b3"
+    },
+    {
+      "name": "decode-packed-stride",
+      "exit_code": 1,
+      "issues": 1422,
+      "expectation_failure_messages": 1404,
+      "caught_error_messages": 0,
+      "mutated_source_sha256": "4a236a9ff0bf770509089f91d48ed50231b33db7acfea642a4f960dc30332dcd",
+      "expected_outcome_observed": true,
+      "log": "decode-packed-stride.log",
+      "log_sha256": "918f91892deed58b4a4f2d6e75fea99f6b610feb49696ebf7ec5217a555d2870"
+    },
+    {
+      "name": "decode-big-endian",
+      "exit_code": 1,
+      "issues": 144,
+      "expectation_failure_messages": 144,
+      "caught_error_messages": 0,
+      "mutated_source_sha256": "cc71147c3cbe85ff0be6032cac49e0fbe8cc66752da35321a87d2138900436d4",
+      "expected_outcome_observed": true,
+      "log": "decode-big-endian.log",
+      "log_sha256": "5ec46085ec7e855a5eb7a03b23648631422fa5062f65155d9475ddf3fb0858cd"
+    }
+  ],
+  "container_image": "sha256:31d14d727f4451f25e29bac9c42563a098c39ac66415e8bad970f48038e38aca",
+  "command": [
+    "swift",
+    "test",
+    "--jobs",
+    "4",
+    "--filter",
+    "SharedDCTStorageTests"
+  ],
+  "host_platform": "macOS-27.0.1-arm64-arm-64bit",
+  "reproduce": "python3 Scripts/verify-storage-mutations.py --docker-image swift:6.4-noble --output-dir /tmp/swiftjli-storage-mutations"
+}

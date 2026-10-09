@@ -1,4 +1,4 @@
-name: Milestone 1 contract
+name: Codec and contract
 
 # Contract 0.5.0 PLAT-01: Swift 6.2 is the manifest minimum and Swift 6.4 the
 # qualified primary toolchain, so both are built and tested here. A gate that
@@ -55,8 +55,17 @@ jobs:
       - run: swift build -c release
       - run: swift test -c release
 
+      - name: CLI and staged manual installation
+        if: matrix.swift == '6.4'
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3 man-db mandoc
+          # The minimised Swift image diverts man to a message-only stub.
+          if [ -x /usr/bin/man.REAL ]; then ln -s /usr/bin/man.REAL /usr/local/bin/man; fi
+          python3 Scripts/test-cli.py --binary "$PWD/.build/release/swiftjli-cli" --output "$RUNNER_TEMP/cli-evidence"
+
   macos:
-    name: macOS 26 / Swift 6.2
+    name: macOS 26 / Xcode default Swift
     runs-on: macos-26
     timeout-minutes: 30
     steps:
@@ -67,10 +76,95 @@ jobs:
       - run: xcodebuild -version
       - run: swift build
       - run: swift test
+      - run: swift build -c release
+      - run: swift test -c release
       - name: Address sanitizer
         run: swift test --scratch-path .build/asan --sanitize address
       - name: Thread sanitizer
         run: swift test --scratch-path .build/tsan --sanitize thread
+
+  apple-sdk-builds:
+    name: Apple device, simulator and Intel SDK compilation
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Compile SwiftJLI for the required Apple SDKs
+        run: bash Scripts/build-apple-sdks.sh
+
+  macos-intel:
+    name: Native macOS 26 Intel runtime and CLI
+    runs-on: macos-26-intel
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Record native host and compiler
+        run: |
+          test "$(uname -m)" = x86_64
+          sw_vers
+          swift --version
+          xcodebuild -version
+      - run: swift test -j 3
+      - run: swift test -c release -j 3
+      - name: Qualify CLI installation and manual
+        run: |
+          command -v mandoc >/dev/null || brew install mandoc
+          python3 Scripts/test-cli.py --binary "$PWD/.build/release/swiftjli-cli" --output "$RUNNER_TEMP/cli-intel"
+
+  ios-simulator:
+    name: iOS 26+ simulator runtime
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Run library tests on an installed simulator
+        run: python3 Scripts/test-apple-simulator.py --output "$RUNNER_TEMP/ios-runtime"
+      - name: Compare the actual predecessor on the same simulator
+        run: python3 Scripts/test-apple-simulator.py --package-path Examples/PredecessorComparison --scheme PredecessorComparison --output "$RUNNER_TEMP/ios-predecessor"
+      - name: Retain simulator commands and test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ios-runtime-evidence
+          path: |
+            ${{ runner.temp }}/ios-runtime/*.json
+            ${{ runner.temp }}/ios-runtime/*.log
+            ${{ runner.temp }}/ios-runtime/Tests.xcresult
+            ${{ runner.temp }}/ios-predecessor/*.json
+            ${{ runner.temp }}/ios-predecessor/*.log
+            ${{ runner.temp }}/ios-predecessor/Tests.xcresult
+          retention-days: 14
+
+  other-apple-simulators:
+    name: ${{ matrix.platform }} 26+ simulator runtime
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [tvOS, visionOS, watchOS]
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Run the library suite on the target simulator
+        run: python3 Scripts/test-apple-simulator.py --platform "${{ matrix.platform }}" --output "$RUNNER_TEMP/runtime"
+      - name: Retain simulator commands and test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ matrix.platform }}-runtime-evidence
+          path: |
+            ${{ runner.temp }}/runtime/*.json
+            ${{ runner.temp }}/runtime/*.log
+            ${{ runner.temp }}/runtime/Tests.xcresult
+          retention-days: 14
 
   independent-consumer:
     name: Independent consumer resolves at tools 6.2
@@ -98,9 +192,9 @@ jobs:
             echo '    name: "Consumer",'
             echo "    dependencies: [.package(path: \"$GITHUB_WORKSPACE/package\")],"
             echo '    targets: [.executableTarget(name: "Consumer", dependencies: ['
-            echo "        .product(name: \"$NAME\", package: \"$NAME\")])]"
+            echo "        .product(name: \"$NAME\", package: \"package\")])]"
             echo ')'
           } > Package.swift
-          printf 'import %s\nprint("consumer built")\n' "$NAME" > Sources/Consumer/main.swift
+          cp "$GITHUB_WORKSPACE/package/Examples/IndependentConsumer/Sources/IndependentConsumer/main.swift" Sources/Consumer/main.swift
           swift build
           swift run Consumer

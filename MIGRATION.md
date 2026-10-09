@@ -1,115 +1,145 @@
 # Migrating applications from JLISwift to SwiftJLI
 
-The successor declares a **Swift 6.2 manifest minimum**, with Swift 6.4 as the qualified primary toolchain, and **Apple deployment floors of 26.0**. Contract 0.4.0 briefly raised those floors to 27.0; contract 0.5.0 reversed the raise and contract 0.9.0 confirmed 26.0, so an earlier reading of this guide that told you to prepare for OS 27 was wrong and is corrected here. See the [Swift 6.4 upgrade record](Documentation/Engineering/Swift64/README.md) for development versioning and validation; current codec availability is unchanged.
+The migration is in progress. The public API currently supports native SOF3 lossless/bounded-error and SOF0/SOF1/SOF2 lossy JPEG; advanced predecessor profiles and full qualification remain open. Keep each production use case on its qualified predecessor until its successor profile passes acceptance. [Current evidence and open requirements](Documentation/Migration/ACCEPTANCE.md) distinguish implementation from qualification.
 
-Under contract 0.9.0 (Decision D3) the floor is deliberate and is not lowered to meet a consumer: you raise your application's Apple deployment target to 26.0 in the same change that re-points it from JLISwift to SwiftJLI. Until you make that change, JLISwift remains your supported route.
+The source pin is JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. SwiftJLI requires Swift tools 6.2 or later, Swift 6 language mode and Apple deployment floors of 26.0. Raise the application's floor in its separately assigned cutover. No stable 1.1.0 release is implied: use an explicitly reviewed revision for trials.
 
-This guide is for application maintainers and coding agents. It describes **Milestone 1, contract 0.9.0**: SwiftJLI provides public API shapes and owning sample storage, but **does not yet inspect, encode or decode JPEG**. Keep JLISwift serving real codec operations until the particular successor modes your application needs are implemented and qualified. Renaming the dependency and imports alone is insufficient.
+## API mappings
 
-The predecessor API was inspected at [JLISwift `9f1c6eb609fe6f26498db82b13df6b305630a374`](https://github.com/Raster-Lab/JLISwift/tree/9f1c6eb609fe6f26498db82b13df6b305630a374), not an assumed version range. That commit is what the annotated `v0.5.0` tag dereferences to; the two references the foundation recorded separately are the same commit. The API mappings in this guide describe that revision. Milestone 2 is pinned at a later predecessor commit, `0a4ded0`, which adds shared-storage paths but does not change the public API this guide maps; see [IMPLEMENTATION.md](IMPLEMENTATION.md). See [provenance](HISTORY.md), [current implementation evidence](Documentation/MILESTONE1.md) and the [remaining milestones](IMPLEMENTATION.md). Source inspection does not establish that predecessor codec tests passed.
-
-## 1. Inventory and pin the application baseline
-
-Record the application's resolved JLISwift commit, tools/SDK versions, deployment targets and existing test failures. Inventory imports, products, `JLIImage` construction, encode/decode/inspection calls, configuration values, metadata handling and error switches. Preserve representative existing JPEG files and expected samples, including signed and high-precision cases, before editing.
-
-| Dependency or build item | JLISwift baseline | SwiftJLI target |
-| --- | --- | --- |
-| Repository | `https://github.com/Raster-Lab/JLISwift.git` | `https://github.com/Raster-Lab/SwiftJLI.git` |
-| Package / core product / import | `JLISwift` | `SwiftJLI` |
-| Optional products | `JLIDICOM`, executable `JLIBench` | Both **deferred** under POL-05, recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md). No successor equivalent ships; deferred is not deleted, so each stays with JLISwift through its maintenance window. Keep any DICOM parsing and windowing in your own application. |
-| Swift toolchain | Pinned manifest requires 6.2 | 6.2 manifest minimum; Swift 6.4 qualified primary toolchain; Swift 6 language mode |
-| Apple deployment floors | macOS 14, iOS/tvOS 17, watchOS 10, visionOS 1 | All 26.0 |
-
-The intended SwiftJLI `1.1.0` is **not a published release requirement**. For a migration trial, use a reviewed checkout with `.package(path: "../SwiftJLI")`; add `.product(name: "SwiftJLI", package: "SwiftJLI")` to the consumer target's dependencies. Alternatively select an actually available, reviewed revision of the new repository and record its full SHA in the package requirement. Do not invent a `from: "1.1.0"` requirement or rely on moving `main`. Preserve `Package.resolved` in the application where applicable.
-
-In Xcode, add the successor package/product to an experimental target and use `import SwiftJLI`. Keep older deployment targets on their existing dependency while evaluating the 26.0 requirement. Linux and other platform qualification must be checked against [recorded evidence](Documentation/MILESTONE1.md), rather than inferred from the [intended platform matrix](Documentation/PLATFORMS.md).
-
-## 2. Map operations explicitly
-
-The right-hand call shapes below exist in source. Codec rows remain **unsupported in Milestone 1**; capabilities have `canInspect`, `canEncode` and `canDecode` all `false` and empty format/mode lists. Validation may fail before the deliberate `CodecError(.unsupportedFeature, ...)` result.
-
-| Earlier API or behaviour | Successor API and migration action |
+| JLISwift | SwiftJLI |
 | --- | --- |
-| `JLIImage(width:height:pixelFormat:colorModel:data:isSigned:iccProfile:exif:)` owns `[UInt8]` | `ImageDescriptor` describes sample meaning/layout; `Image` retains sealed `ReadOnlyImageStorage`. Build through `ImageDestination` or a correctly owning provider. |
-| `JLIEncoder().encode(image, configuration: config) throws -> [UInt8]` | Configure `try SwiftJLI.Encoder(configuration:)`, then `try await encoder.encode(image, options:) -> EncodedImage`. Compressed bytes are `result.data: Data`; inspect `result.report`. **Encoding deferred.** |
-| `JLIDecoder().decode(from: bytes, configuration: config)` | Configure `try SwiftJLI.Decoder(configuration:)`, then `try await decoder.decode(Data, options:) -> DecodedImage`; use `result.image`. **Decoding deferred.** |
-| `JLIDecoder().inspect(data: bytes) -> JLIJPEGInfo` | `try decoder.inspect(Data, options:) -> ImageInfo`; geometry/precision move into `descriptor`. Old progressive/XYB/subsampling fields have no qualified replacement. **Inspection deferred.** |
-| Decoder-owned result array | `decode(_:into:options:)` also exists for caller storage, but performs no decode today. Direct shared-storage codec proof is a later milestone. |
-| Mutable `JLIEncoderConfiguration` passed on each call | Immutable `EncoderConfiguration` belongs to the encoder; `EncodeOptions` carries per-call limits/execution/copy/metadata policy. `CodecOptions` is currently empty. |
-| `JLIError` cases | Handle `CodecError.category` and Swift `CancellationError` explicitly; do not mechanically rename old case switches. |
+| `JLIImage` containing packed `[UInt8]` | `ImageDescriptor` plus owning, sealed `Image` storage |
+| `JLIEncoder().encode(_:configuration:)` | `try Encoder(configuration:)`, then `try await encode(_:options:)`; compressed bytes are `EncodedImage.data` |
+| `JLIDecoder().decode(from:configuration:)` | `try Decoder(configuration:)`, then `try await decode(_:options:)`; samples are in `DecodedImage.image` |
+| Decoder-owned result array | `decode(_:into:options:)` writes into a caller's `ImageDestination` |
+| `inspect(data:)` | `inspect(_:options:)`, returning `ImageInfo` |
+| `JLIError` | `CodecError.category`; task cancellation remains `CancellationError` |
+| Mutable per-call codec configuration | Immutable encoder/decoder configuration, with per-call resource/execution/copy options |
 
-Do not add a synchronous wrapper that blocks an actor waiting for an async operation. Move async handling through the application service boundary. Qualify shared names such as `SwiftJLI.Image` and `SwiftJLI.Encoder` when importing other suite codecs; their identically named types are distinct.
+Use module-qualified names when importing several suite libraries. Their types are independent; no shared runtime package or sibling checkout is required. `JLIDICOM` and `JLIBench` remain deferred products, not dependencies of SwiftJLI. DICOM parsing, windowing and transfer-syntax policy belong in consumers. Their disposition and fixture obligations are recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 
-## 3. Preserve JPEG mode and sample semantics
+## Current fidelity and layouts
 
-- **Default changes:** the pinned predecessor's `.default` is lossy quality 90 with 4:2:0 sampling. SwiftJLI's configuration defaults to `.lossless`; it does not currently encode. Do not claim equivalent output or size after substituting defaults. The planned lossless mode is native SOF3 with point transform zero. High-quality baseline/extended/progressive JPEG is still lossy.
-- **Options are deferred:** quality/distance, sampling, XYB, progressive scan scripts, restart interval, predictor, point transform, adaptive/perceptual quantisation and decoder output-format/colour/scale controls have no implemented successor mapping. Current `.lossy` and positive `.nearLossless(...)` configurations throw `unsupportedFeature`. A nonzero predecessor `losslessPointTransform` discards low bits; it cannot satisfy sample-exact lossless acceptance.
-- **Precision is explicit:** old `.uint16` storage does not by itself mean a 16-bit JPEG. The pinned lossless configuration derives 12 bits from `.uint16` when `losslessPrecision == 0`; full 16-bit use requires an explicit old precision of 16. Set the new `storageBits` and `meaningfulBits` from the application's declared source semantics, not observed extrema. Low-align meaningful integer bits; preserve 0/4095 for 12-bit and 0/65535 for 16-bit data. Descriptor acceptance is not codec support for that precision.
-- **Layouts and colour:** the old image is tightly packed, row-major and interleaved. Map every plane, component, byte order, offset and stride explicitly; padding is not pixels. Current descriptors reject subsampled planes. Do not convert YCbCr/CMYK/XYB/RGBA to RGB or discard alpha simply to fit the new API. Additional codec layouts remain unqualified.
-- **Signed samples:** map `isSigned` to a declared signed sample type only with an explicit interpretation contract. A RAM flag cannot guarantee portable signedness in standalone JPEG. Preserve the external metadata and test signed extrema, or reject output that cannot represent the required meaning. Never offset or reinterpret signed data silently.
-- **Float samples:** the old encoder treats float input as normalised `[0,1]` and quantises to 8-bit; supported old float decode paths return raw reconstructed sample values. Preserve this distinction in the application inventory. SwiftJLI's float descriptor support does not imply a float codec path. Do not normalise, reinterpret or accept non-finite values without a separately tested policy.
-- **Metadata:** map ICC bytes deliberately to `ImageDescriptor.iccProfile`; image-level metadata uses `ImageMetadata`. There is no implemented JPEG Exif field/marker mapping or metadata round trip yet. Keep Exif and required interpretation data in the application until its codec mapping is qualified. Default `.preserve` does not make stub operations preserve a file. `.discardAncillary` may never discard required sample/colour meaning.
+The predecessor defaults to lossy quality 90/4:2:0; SwiftJLI defaults to true lossless SOF3 with point transform zero. The output size and format are therefore not equivalent defaults. `CodecOptions(predictor:restartInterval:)` selects predictors 1–7 and a restart interval in pixels for predictive JPEG, requiring complete rows (DCT uses MCU counts). For `.nearLossless(maximumAbsoluteError:)`, a positive integer bound selects the largest legal point-transform bound no greater than the request. Reports state the effective bound, which can be smaller (for example, a requested maximum of 2 selects an actual bound of 1). Lossy DCT requires explicit `.lossy` mode; `CodecOptions.dct` controls quality/distance, chroma sampling, sequential/progressive scan script, Huffman optimisation, trellis quantisation and perceptual tables.
 
-The old definitions are in [JLIImage.swift](https://github.com/Raster-Lab/JLISwift/blob/9f1c6eb609fe6f26498db82b13df6b305630a374/Sources/JLISwift/Core/JLIImage.swift) and [JLIConfiguration.swift](https://github.com/Raster-Lab/JLISwift/blob/9f1c6eb609fe6f26498db82b13df6b305630a374/Sources/JLISwift/Core/JLIConfiguration.swift); verify actual paths and fixtures rather than interpreting their comments as successor guarantees.
+Meaningful precision is explicit: 2–16 integer bits, stored in 8- or 16-bit unsigned words. Declaring `.uint16` in the predecessor could default to 12-bit precision; do not infer the new meaningfulBits from storage width or observed values. Samples exceeding their declared precision are rejected.
 
-## 4. Compile a storage/API trial today
+The shared path supports interleaved greyscale or RGB, little-endian words, prefix offsets and padded rows. Both caller-storage and allocating decode use the same final writer. Unsupported endian/layout conversions fail even with allowCopy at this checkpoint. Signed samples, CMYK and unrecognised colour interpretation are rejected. DCT RGBA and preconverted YCbCr require the explicit policies described below. Float input requires the explicit policy below. An explicit greyscale Float32 decode profile is described below.
 
-This standalone executable source uses only the current public SwiftJLI product. It verifies 12 meaningful bits in padded 16-bit storage and the expected unsupported encoder result; it performs **no JPEG compression**. Put it in the consumer executable's `main.swift` after adding the local package above.
+ICC is `ImageDescriptor.iccProfile`; Exif TIFF bytes are `ImageMetadata.entries["Exif"]` (without the JPEG Exif identifier). Unknown preservation requirements fail. ICC interpretation is retained even under discardAncillary. Inspect reports decoded layout and metadata but does not certify the entropy stream.
+
+## Explicit lossy trial
 
 ```swift
-import Foundation
-import SwiftJLI
-
-enum MigrationTrialError: Error {
-    case sampleMismatch, unexpectedCapability, unexpectedEncodeSuccess
-}
-
-let limits = try SwiftJLI.ResourceLimits(
-    maximumDecodedBytes: 1024, maximumMemoryBytes: 4096)
-let descriptor = try SwiftJLI.ImageDescriptor.greyscale16(
-    width: 3, height: 2, meaningfulBits: 12, rowBytes: 8, limits: limits)
-let destination = try SwiftJLI.ImageDestination.allocate(
-    descriptor: descriptor, limits: limits)
-let samples: [UInt16] = [0, 4095, 1, 2048, 17, 3000]
-let image = try destination.writeUInt16 { x, y in samples[y * 3 + x] }
-guard try image.sampleUInt16(x: 1, y: 0) == 4095 else {
-    throw MigrationTrialError.sampleMismatch
-}
-let encoder = try SwiftJLI.Encoder()
-guard !encoder.capabilities.canEncode else {
-    throw MigrationTrialError.unexpectedCapability
-}
-do {
-    _ = try await encoder.encode(image, options: .init(resourceLimits: limits))
-    throw MigrationTrialError.unexpectedEncodeSuccess
-} catch let error as SwiftJLI.CodecError {
-    guard error.category == .unsupportedFeature else { throw error }
-}
-print("Storage/API trial passed; JPEG encoding remains deferred.")
+let configuration = try SwiftJLI.EncoderConfiguration(
+    mode: .lossy,
+    codecOptions: .init(dct: .init(quality: 90, chromaSubsampling: .yuv420,
+                                  progressiveMode: .successiveApproximation)))
+let encoder = try SwiftJLI.Encoder(configuration: configuration)
+let result = try await encoder.encode(image)
 ```
 
-Run the consumer with Xcode's headless toolchain, for example `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcrun swift run`. The [independent consumer](Examples/IndependentConsumer) covers further public call shapes. When codec work lands, replace the expected rejection with fixture-based assertions for its advertised capabilities.
+DCT input is unsigned 8-bit storage/precision or 16-bit storage with exactly 12 meaningful bits; greyscale and RGB are supported. Quality is finite 0–100 (native table scaling clamps zero to quality 1); optional distance is finite and nonnegative and takes precedence over quality. Large distances saturate quantisation steps within the JPEG table range before integer conversion; they do not require an arbitrary upper limit of 25. DCT-specific settings on a predictive configuration, or a nondefault predictive selector on a lossy configuration, are rejected. Decoding selects precision and scan behaviour from the stream; the output fidelity is `.lossy`.
 
-Do not let pointers from old array/Data borrows escape or survive `await`. An array-to-owned-storage adapter may copy a whole image: record that cost rather than claim zero-copy. New supplied-storage operations default to `.requireSharedStorage`; `.allowCopy` explicitly permits value-preserving layout conversion with reporting. Custom providers must retain the actual allocation, enforce one writer, seal before publication and preserve allocation identity across adapters; see the [memory contract](Documentation/MEMORY_CONTRACT.md).
+`.scalarCPU` and `.required(.scalarCPU)` select the scalar kernels on every platform. Automatic DCT uses Accelerate on Apple and scalar elsewhere; required acceleration fails when unavailable. SOF3 remains scalar. Reports identify the selected backend and preferred-backend fallback. Availability lists are unions across profiles: DCT does not support the entire 2–16-bit predictive range.
 
-Set `ResourceLimits` for the application's input, destination, metadata, workspace and concurrent workload. Milestone 1 exercises admission checks, not real JPEG work/deadline enforcement. Preserve error categories, surface resource/backend/layout failures and propagate `CancellationError` without converting it to success or retrying with lossy settings. Once a destination write begins, failure/cancellation invalidates it; a preflight rejection by today's codec stubs leaves the reservation unwritten. Never publish a partial image.
+Progressive DC scans currently require all components in frame order, with single-component AC scans. Multiple sequential scans, changing quantisation/restart definitions between scans and ambiguous RGB/CMYK JPEG interpretations are rejected. The recognised XYB profile has an explicit colour policy described below. The remaining restrictions are additional acceptance work, not silent conversions.
 
-## 5. Stage the change and retain rollback
+## Decoder output and adaptive profiles
 
-1. Keep JLISwift pinned and add SwiftJLI in a separate application adapter/experimental target. Keep any necessary old-target build path. Introduce an application-owned codec interface and feature flag so production remains on the qualified predecessor.
-2. Run the synthetic trial, then audit copied sample buffers, precision, metadata and errors. Capture the predecessor configuration and expected behaviour for each use case; do not silently route unsupported successor requests to another fidelity mode.
-3. After the needed successor modes exist, compare both implementations against the same fixtures and a suitable independent decoder/encoder. Qualify SOF3 and each required lossy mode separately; an oracle supporting baseline JPEG alone cannot validate 16-bit SOF3. Compare logical samples for lossless operation and agreed metrics/tolerances for lossy operation, not arbitrary compressed-byte equality.
-4. Enable only validated configurations gradually. Keep the old dependency lock, fixtures and rollback flag until acceptance is complete; a rollback must restore the old adapter and configuration together. Check persisted outputs with all readers before removing the old path. Existing JPEG files do not need rewriting merely because the Swift module changed.
+`Decoder.inspectJPEG(_:options:)` is the JPEG-specific extension for predecessor `JLIJPEGInfo` users. It returns common `imageInfo` plus encoded coding process, progressive/extended-precision flags, recognised XYB, relative chroma sampling, exact component sampling factors, scan count and restart interval. Predictive streams also expose predictor and point transform; nonzero point transform is not exact lossless fidelity. This extension is necessary because the common full-resolution descriptor cannot represent compressed scan/sampling structure (COMMON_API API-13). It uses the same bounded parser and errors as `inspect`, without a pixel decode. Neither inspection call certifies entropy validity, and decoder output scale/format does not alter encoded inspection geometry.
 
-`JLIDICOM` and `JLIBench` are explicit migration deferrals. Keep DICOM parsing, transfer syntax, patient metadata, rescaling and windowing in the application/optional integration. `JLIBench` is a benchmark executable, not equivalent to the new `swiftjli-cli` diagnostic CLI, which provides help/version/capabilities only ([CLI guide](CLI.md)). Do not replace these dependencies or scripts with guessed names, and do not add a sibling codec or umbrella dependency to make SwiftJLI work.
+```swift
+let details = try SwiftJLI.Decoder().inspectJPEG(jpegData)
+print(details.codingProcess, details.chromaSubsampling, details.bitsPerComponent)
+```
 
-## Acceptance checklist for humans and agents
+Signed-labelled predecessor input deserves separate review: its SOF3 encoder preserves the bit patterns, but its decoder does not restore `isSigned`. The successor's standalone JPEG path rejects signed descriptors as COMMON_API API-06 requires. A caller needing signed interpretation must qualify an explicit external-metadata contract; a RAM flag or a private JPEG marker would not establish that contract.
 
-- [ ] Record exact predecessor/successor SHAs, contract version, tools/SDKs, deployment requirements and a feature/product disposition table.
-- [ ] Build the application and a fresh standalone consumer; run relevant existing tests and record failures/skips. The current trial proves storage/API use only.
-- [ ] Before production cutover, prove each required codec capability and independent interoperability, including 12/16-bit precision, signedness, colour/alpha, metadata and agreed fidelity.
-- [ ] Exercise padded rows, invalid/truncated input, resource exhaustion, cancellation, lifetime/concurrency and copy-policy failures on the supported deployment environments.
-- [ ] Record allocations/copies and measured latency/memory for implemented codec paths; do not treat unknown report measurements as zero.
-- [ ] Demonstrate rollback and persisted-file compatibility, and explicitly retain/defer every `JLIDICOM`, benchmark and CLI dependency.
+`DecoderConfiguration(scale:)` accepts 1, 2, 4 or 8. DCT output dimensions are `ceil(encodedDimension / scale)`; the existing native DCT reduction is used directly. Predictive JPEG requires scale 1. `inspect` always describes encoded geometry/precision, even on a decoder configured for reduced output. Resource admission still includes the full coefficient workspace.
 
-Coding agents: read [AGENTS.md](AGENTS.md) and [IMPLEMENTATION.md](IMPLEMENTATION.md), then use this checklist in the application PR. Report implemented, tested, unsupported and unexecuted items separately. This guide authorises no further codec milestone and makes no stable-release or full-platform claim.
+`DecoderConfiguration(scale: 2, sampleFormat: .float32RawSamples)` explicitly returns raw reconstructed sample values as little-endian IEEE Float32, without integer rounding or normalisation. For example, a reconstructed 12-bit sample near 2048 remains near 2048, not 0.5. This profile supports greyscale DCT JPEG without ICC interpretation; colour, ICC-bearing input and SOF3 are rejected before the destination borrow. The result descriptor is `.floatingPoint` with 32 storage/meaningful bits. Supplied destinations must declare that same interpretation; default integer decode does not infer a float conversion from the destination.
+
+The Float32 restriction avoids attaching a nominal integer-range ICC profile to differently represented samples without a qualified range/colour policy. Broader ICC and independent interoperability qualification remain migration work. Capabilities describe the queried operation and include Float32 profiles. Their precision range is nil because integer 2–16 and IEEE Float32 are separate profiles rather than one continuous range.
+
+`DCTOptions(adaptiveQuantisationField: true)` enables the luma-derived trellis-strength field. It requires `adaptiveQuantisation: true`. `DCTOptions(jpegliAdaptiveQuantisation: true)` instead selects the masking/zero-bias path. These field options require 8-bit input and cannot be combined; unsuitable combinations fail rather than silently selecting a different quantiser. Both preserve direct source reads and use accounted algorithm workspace.
+
+### Explicit normalised Float32 encoding
+
+`DCTOptions(floatInputPolicy: .normalisedClampedToUInt8)` with `mode: .lossy` enables little-endian Float32 greyscale/RGB input. Each finite value is clamped to [0,1], multiplied by 255, and rounded to nearest with ties away from zero, matching the predecessor's finite Float32 input mapping. NaN and infinity fail with `invalidArgument`. The default policy rejects float input; selecting this policy for integer storage also fails. It cannot enable float lossless encoding.
+
+Quantisation is fused into the scoped source reader. Padded rows and prefix offsets are honoured without materialising an intermediate UInt8 image. The result reports `.lossy` fidelity and `sampleConversion == .normalisedFloat32ClampedToUInt8`; `copyEvents` continues to describe actual memory copies. The output JPEG has 8-bit precision. ICC/Exif are retained under the existing metadata policy. This explicit normalised input policy differs from raw sample-unit Float32 decode; callers must not feed raw decode values back as normalised input without their own deliberate mapping.
+
+### Explicit XYB colour encoding and decoded interpretation
+
+`DCTOptions(chromaSubsampling: .yuv444, colourSpace: .xybFromSRGB)` with explicit lossy mode enables the retained XYB encoder. Input must be RGB8, or normalised RGB Float32 with the explicit quantisation policy above. Selecting this mode asserts sRGB interpretation. An absent source ICC or the exact sRGB2014 profile emitted by this decoder is accepted; other source profiles reject rather than being silently reinterpreted. XYB requires sequential 4:4:4, perceptual tables and zero restart interval. Trellis and its adaptive field remain selectable; the unrelated jpegli zero-bias field is rejected. These restrictions expose the predecessor's actual supported path instead of ignoring options.
+
+The JPEG contains the retained XYB ICC profile and Adobe transform 0. Inspection reports original X/Y/B component roles, unknown generic colour interpretation and the embedded profile. Decode recognises that exact profile/transform combination, writes sRGB integer samples directly into final caller storage, and attaches the unchanged ICC sRGB2014 profile. `OperationReport.colourConversion` records `.sRGBToXYB` or `.xybToSRGB`. Scaling 1/2/4/8 is supported. `DecoderConfiguration(sampleFormat: .float32NormalisedSRGB)` returns the fractional XYB inverse divided by 255, before integer rounding, with the same sRGB profile and `.rawSRGBToNormalisedFloat32` sample-conversion report. Unlike the predecessor's raw 0–255 float RGB buffer, these explicitly selected samples use the normalised 0–1 range expected by the profile. The greyscale `.float32RawSamples` policy remains separate; it does not accept XYB. Other JPEG colour interpretations cannot silently acquire sRGB normalisation. Supplying a destination with the original XYB profile is incompatible with the converted sRGB result.
+
+The profile's [source and licence](Documentation/Migration/Fixtures/ICC-LICENSE.txt) and exact byte hash are recorded; provenance verification checks the embedded bytes. No runtime colour-management service or external codec is required. ColourSync is used only as an independent test oracle.
+
+## Executable trial
+
+[Examples/IndependentConsumer](Examples/IndependentConsumer) encodes real lossless JPEG, inspects precision, and verifies both allocating and caller-storage decode through the public API. It needs only this package:
+
+```sh
+swift run --package-path Examples/IndependentConsumer
+```
+
+Set realistic ResourceLimits for compressed bytes, samples, metadata and workspace. The predictive algorithm uses full-frame Int32 working planes and DCT uses Float/coefficient workspace; required sharing eliminates a hand-off copy, not that workspace. Conservative admission reservations and unmeasured peak fields are documented in the migration status. A preflight failure leaves an unwritten destination usable; failure after writing begins invalidates it.
+
+### Explicit memory admission
+
+Admission uses conservative reservations, not measured live workspace. For example,
+a 1024 × 1024 RGB DCT encode reserves 605,028,352 bytes of algorithm workspace
+(`width × height × 3 × 192 + 1,048,576`), so it exceeds the general 512 MiB
+workspace ceiling before encoding starts. A caller with a suitable budget can
+explicitly supply `ResourceLimits(maximumWorkspaceBytes: 1024 * 1024 * 1024)`.
+This does not change the defaults or make that budget suitable for every device.
+Concurrent callers must also bound their combined in-flight work.
+
+For `N` full-resolution component samples, `B` compressed bytes and `M` encoded
+metadata bytes, the current reservations are:
+
+| Stage | Reserved workspace bytes |
+| --- | --- |
+| Predictive encode | `64 × N + 4 × M + 1,048,576` |
+| DCT encode | `192 × N + 4 × M + 1,048,576` |
+| Parsing | `64 × B + 1,048,576` |
+| Predictive decode | `64 × B + 8 × N + 1,048,576` |
+| DCT decode, including reduced-scale output | `64 × B + 128 × N + 1,048,576` |
+
+Admission also counts supplied/final pixel storage, compressed data or the encode
+output bound, and metadata against `maximumMemoryBytes`. Padding counts as storage.
+
+The Data-based decoder currently materialises one bounded compressed-byte array
+for validation and native parsing. This is compressed input workspace, distinct
+from the no-copy decoded-image hand-off. Reports with unknown workspace peaks
+remain `nil`; admission reservations must not be presented as measured peaks.
+
+## Application acceptance
+
+1. Record exact old/new revisions, deployment targets, toolchains, modes, metadata and optional products. Preserve the application's existing fixtures and baseline failures.
+2. Run the independent consumer and application tests, then compare both codec versions with independent oracles for each required mode and precision. Qualify lossy modes separately.
+3. Verify padded storage, copy/allocation identity, malformed input, budgets, cancellation, concurrency and lifetime on the required platforms. Unknown report measurements do not mean zero.
+4. Enable only qualified profiles behind the application's rollback mechanism. Keep the old dependency lock and adapter until persisted-file compatibility and platform acceptance are complete.
+
+The diagnostic `swiftjli-cli` reports actual library capabilities. Its encode/decode/inspect/validate payload verbs remain unavailable under the separately budgeted CLI work. This guide does not announce a completed migration, stable release or complete platform support.
+
+## Explicit DCT input conversions
+
+`DCTOptions(alphaPolicy: .discardStraightAlpha)` permits interleaved RGB plus straight alpha at UInt8, UInt12-in-UInt16 or opted-in normalised Float32 precision. The descriptor must use `[.red, .green, .blue, .alpha]`, `.rgb` and `.straight`. Alpha is discarded without compositing; premultiplied alpha is rejected. `OperationReport.alphaDiscarded` records the loss. The default still rejects RGBA. Every actual Float32 component, including discarded alpha, must be finite; padding is not interpreted as samples.
+
+`DCTOptions(sourceColourSpace: .yCbCr)` permits full-range JPEG Y/Cb/Cr input at UInt8 or opted-in normalised Float32 precision. Use `[.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")]`, `.unknown` generic colour, absent alpha and no ICC profile. UInt8 chroma is centred at 128; Float32 uses the same explicit clamped 0–1 to UInt8 mapping. Components feed the codec planes directly without a second RGB-to-YCbCr transform. Twelve-bit preconverted YCbCr, XYB conversion and greyscale conversion from this profile reject.
+
+`DCTOptions(chromaSubsampling: .greyscale)` explicitly converts RGB8 or opted-in normalised Float32 RGB to one luma component. It can combine with straight-alpha discard for RGBA. The report records `.rgbToGreyscale`; no RGB ICC profile is copied onto greyscale output. ICC-bearing colour input and UInt12 RGB-to-greyscale currently reject because their conversion semantics are unqualified. The existing greyscale input path remains available at 8/12 bits.
+
+These options require `.lossy`. All three paths borrow source storage, honour prefix offsets/padded rows and use bounded colour-row scratch plus algorithm planes. There is no packed intermediate image. [118 public comparisons](Documentation/Migration/ColourInput/results.json) against the actual pinned predecessor match codestreams and decoded samples; the retained Linux matrix also checks scalar operation, padding and explicit rejection. Allocation reports are source-path assertions, not new independent encoder allocator measurements.
+
+## Bounded codec workers
+
+`ResourceLimits.maximumWorkers` now bounds joined parallel predictive encoding, DCT trellis/AC counting, chroma interpolation and full-resolution reconstruction. One remains a supported deterministic serial policy. Workers receive the selected backend, deadline and operation cancellation token explicitly; all lanes join before any borrowed storage is released or an error is returned. Cancellation checks cover bounded sample/block units and final publication. Progress callbacks stay on the invoking task. Other public stages remain serial; a worker cap is a ceiling, not a promise to parallelise every stage. The default ceiling is at most eight CPUs (two for the Watch profile).
+
+RGB8 output conversion also uses bounded joined workers. Each owns at most eight rows of colour scratch; accelerated conversion uses contiguous byte planes and interleaves directly into the final destination with its actual row stride. The scratch is algorithm workspace and is covered by conservative resource admission. [RGB output evidence](Documentation/Migration/RGBOutput/README.md) records padding, race/sanitizer and performance checks, including unresolved smaller-case regressions.
+
+Ordinary RGB8-to-YCbCr input conversion now also uses bounded joined row workers. Source pixels remain borrowed, source row padding is honoured, and each worker owns at most eight rows of scratch. The explicit RGBA/Float32/YCbCr/greyscale/UInt12 paths retain their existing policies. [RGB input evidence](Documentation/Migration/RGBInput/README.md) records exact-plane tests, sanitizers, public comparisons and the scoped Linux encoder allocation experiment.

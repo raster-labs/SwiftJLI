@@ -1,5 +1,33 @@
 # Change log
 
+## Unreleased — codec migration in progress, 2026-10-07
+
+- Reduce decode overhead with bounded entropy searches, specialised greyscale writes, joined chroma workers and bounded RGB row batches; preserve byte identity and cancellation checks.
+
+- Restore bounded parallel predictive/DCT stages with joined workers, cancellation propagation and backend context; remove impossible full-width sample checks and temporary DCT batch copies.
+
+- Add explicit DCT straight-alpha discard, preconverted YCbCr input and RGB-to-greyscale conversion, using caller storage and reporting conversions. Reject unqualified alpha, precision and ICC combinations.
+
+- Adapt the pinned JLISwift native kernels and tests into internal SwiftJLI sources with per-file provenance.
+- Connect the public API to SOF3 lossless encoding/inspection/decoding, including padded shared storage, precision checks, ICC/Exif and bounded operation admission.
+- Add Linux scalar DSP and ICC profile hashing; retain the Apple comparator conditionally.
+- Add public API, layout, malformed-input and precision/predictor tests plus a repeatable independent libjpeg-turbo oracle.
+- Restore the predecessor regression/contract/container corpus and benchmark identity matrix; add explicit bounded-error SOF3 point-transform support.
+- Fix concurrent decode scratch initialisation exposed by macOS TSan; CI requalification passed at bcd1201.
+- Add public sequential/progressive 8/12-bit DCT controls, direct borrowed storage, explicit scalar/Accelerate selection, bounded kernel cancellation and progressive-input validation.
+- Add public reduced-scale and raw greyscale Float32 decode, adaptive trellis/jpegli controls, profile validation and full-frame preview workspace admission.
+- Add Apple device/simulator/Intel SDK compilation and macOS release CI gates; runtime qualification remains separate.
+- Add opt-in normalised Float32 encoding with fused clamping/quantisation, non-finite rejection and explicit conversion reporting.
+- Convert Accelerate strides explicitly for SDKs that import vDSP_Stride as Int64.
+- Expose borrowed XYB encoding and direct sRGB integer decoding with explicit colour-conversion reports, accurate ICC output and strict profile/option validation.
+- Embed the unchanged ICC sRGB2014 profile with its original copyright, licence and verified byte hash.
+- Add explicitly normalised fractional Float32 XYB decode with direct output storage and separate range-conversion reporting.
+- Add reproducible, supervised mutation-fuzz campaigns for inspection and both decode entry points.
+- Add bounded JPEG-specific inspection for compressed sampling/scan structure, recognised XYB and predictive settings; include its own fuzz entry.
+- Restore the predecessor's finite nonnegative distance range and saturate quantisation before integer conversion to avoid large-distance traps.
+- Retain independent heap allocation controls, a fresh remote consumer and completed one-hour decoder fuzz evidence at their exact source revisions.
+- Broader colour-profile coverage, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
+
 ## 1.1.0-dev.1 — Swift 6.4 upgrade, 2026-09-19 (unreleased)
 
 - Require Swift tools/compiler 6.4, retaining Swift 6 language mode and OS 26 deployment floors.

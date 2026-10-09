@@ -1,0 +1,111 @@
+--- pinned-base/Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift
++++ SwiftJLI-phase/Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift
+@@ -635,6 +635,7 @@
+         // review; the old bounds-checked subscripts trapped instead).
+         let bps = image.pixelFormat == .uint16 ? 2 : 1
+ 
++        let phaseStart = ContinuousClock.now
+         let count = w * h
+         // De-interleave source into flat per-component planes (plane c at offset
+         // c·count; raw + uninitialized — every element is written below). For
+@@ -670,6 +671,7 @@
+             }
+         }
+ 
++        let phaseRead = ContinuousClock.now
+         let half = Int32(1 << (precision - 1 - pt))
+ 
+         // Residuals are memoized once, in emit order (diffs[(y·w + x)·nc + c]),
+@@ -713,6 +715,7 @@
+             dcFreq = [Int](repeating: 0, count: 256)
+             for part in partials { for i in 0..<256 { dcFreq[i] += part[i] } }
+         }
++        let phaseResiduals = ContinuousClock.now
+         let table = HuffmanTableBuilder.build(
+             frequencies: dcFreq, fallback: StandardHuffmanTables.dcLuminance)
+ 
+@@ -745,6 +748,8 @@
+         // sequence — so the output bytes are identical (gated by the
+         // forced-serial test and the identity-hash matrix, whose lossless-RGB
+         // entries exercise this path).
++        let phaseTables = ContinuousClock.now
++        var phaseEmitted = phaseTables
+         var bw = BitWriter(estimatedMaxSize: w * h * nc * 2 + 1024)
+         let totalSamples = count * nc
+         let segSamples = segRows > 0 ? segRows * w * nc : Int.max
+@@ -775,6 +780,7 @@
+                         diffs: slots.diffs, range: piecesFinal[k], table: slots.table)
+                 }
+             }
++            phaseEmitted = .now
+             for (k, chunk) in emitted.enumerated() {
+                 if k > 0 && segRows > 0 { bw.emitRestartMarker((k - 1) & 7) }
+                 try JLIEncoder.feedBits(chunk.bytes, bitCount: chunk.bitCount, into: &bw)
+@@ -805,9 +811,16 @@
+                 }
+             }
+         }
++        let phaseStitched = ContinuousClock.now
+         bw.flush()
+         mw.writeEntropyData(bw.data)
+         mw.writeEOI()
++        let phaseFinished = ContinuousClock.now
++        func millis(_ a: ContinuousClock.Instant, _ b: ContinuousClock.Instant) -> Double {
++            let d = a.duration(to: b).components
++            return Double(d.seconds) * 1000 + Double(d.attoseconds) / 1e15
++        }
++        print("PHASE successor \(w) \(h) \(millis(phaseStart, phaseRead)) \(millis(phaseRead, phaseResiduals)) \(millis(phaseResiduals, phaseTables)) \(millis(phaseTables, phaseEmitted)) \(millis(phaseEmitted, phaseStitched)) \(millis(phaseStitched, phaseFinished))")
+         return mw.data
+     }
+ 
+@@ -861,17 +874,19 @@
+         diffs: UnsafePointer<Int32>, range: Range<Int>, table: HuffmanTable
+     ) throws -> (bytes: [UInt8], bitCount: Int) {
+         var rw = RawBitChunkWriter(capacity: range.count * 3 + 16)
+-        for i in range {
+-            if i % 4096 == 0 { try NativeOperation.check() }
+-            let d = diffs[i]
+-            let cat = d == -32768 ? 16 : HuffmanEncoder.category(for: d)
+-            let e = table.encodingTable[cat]
+-            if cat > 0 && cat < 16 {
+-                let fused = (UInt32(e.code) << cat)
+-                    | HuffmanEncoder.additionalBits(for: d, category: cat)
+-                rw.writeBits(fused, count: Int(e.length) + cat)
+-            } else {
+-                rw.writeBits(UInt32(e.code), count: Int(e.length))
++        for start in stride(from: range.lowerBound, to: range.upperBound, by: 4096) {
++            try NativeOperation.check()
++            for i in start..<min(start + 4096, range.upperBound) {
++                let d = diffs[i]
++                let cat = d == -32768 ? 16 : HuffmanEncoder.category(for: d)
++                let e = table.encodingTable[cat]
++                if cat > 0 && cat < 16 {
++                    let fused = (UInt32(e.code) << cat)
++                        | HuffmanEncoder.additionalBits(for: d, category: cat)
++                    rw.writeBits(fused, count: Int(e.length) + cat)
++                } else {
++                    rw.writeBits(UInt32(e.code), count: Int(e.length))
++                }
+             }
+         }
+         rw.finish()
+@@ -888,11 +903,14 @@
+             guard let b = p.baseAddress else { return }
+             var i = 0
+             while remaining >= 24 {
+-                if i % 12288 == 0 { try NativeOperation.check() }
+-                let v = (UInt32(b[i]) << 16) | (UInt32(b[i + 1]) << 8) | UInt32(b[i + 2])
+-                bw.writeBits(v, count: 24)
+-                i += 3
+-                remaining -= 24
++                try NativeOperation.check()
++                let groups = min(4096, remaining / 24)
++                for _ in 0..<groups {
++                    let v = (UInt32(b[i]) << 16) | (UInt32(b[i + 1]) << 8) | UInt32(b[i + 2])
++                    bw.writeBits(v, count: 24)
++                    i += 3
++                }
++                remaining -= groups * 24
+             }
+             while remaining >= 8 {
+                 bw.writeBits(UInt32(b[i]), count: 8)

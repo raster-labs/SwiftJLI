@@ -4,45 +4,53 @@ import Synchronization
 import Testing
 import SwiftJLI
 
-@Test func publicOperationsRejectCodecWorkAndAdvertiseEmptyCapabilities() async throws {
+@Test func publicOperationsEncodeDecodeAndAdvertiseRealCapabilities() async throws {
     let encoder = try SwiftJLI.Encoder()
     let decoder = try SwiftJLI.Decoder()
     #expect(encoder.configuration.mode == .lossless)
-    #expect(!encoder.capabilities.canEncode)
-    #expect(!decoder.capabilities.canDecode && !decoder.capabilities.canInspect)
-    #expect(encoder.capabilities.formats.isEmpty && decoder.capabilities.formats.isEmpty)
-    #expect(encoder.capabilities.availableBackends.isEmpty)
+    #expect(encoder.capabilities.canEncode && !encoder.capabilities.canDecode && !encoder.capabilities.canInspect)
+    #expect(decoder.capabilities.canDecode && decoder.capabilities.canInspect && !decoder.capabilities.canEncode)
+    #if canImport(Accelerate)
+    #expect(encoder.capabilities.availableBackends == [.scalarCPU, .accelerated])
+    #else
+    #expect(encoder.capabilities.availableBackends == [.scalarCPU])
+    #endif
     let descriptor = try ImageDescriptor.greyscale16(width: 1, height: 1)
     let image = try ImageDestination.allocate(descriptor: descriptor).writeUInt16 { _, _ in 65535 }
+    let encoded = try await encoder.encode(image)
+    #expect(encoded.report.backend == .scalarCPU)
+    #expect(encoded.data.prefix(2) == Data([0xff, 0xd8]))
+    let info = try decoder.inspect(encoded.data)
+    #expect(info.descriptor.meaningfulBits == 16)
+    let decoded = try await decoder.decode(encoded.data)
+    #expect(decoded.report.backend == .scalarCPU)
+    #expect(try decoded.image.sampleUInt16(x: 0, y: 0) == 65535)
     let destination = try ImageDestination.allocate(descriptor: descriptor)
-    #expect(throws: CodecError(.unsupportedFeature, "Format inspection is deferred until codec migration.")) {
-        try decoder.inspect(Data())
-    }
+    let direct = try await decoder.decode(encoded.data, into: destination)
+    #expect(direct.image.storage.allocationID == destination.storage.allocationID)
+    #expect(direct.report.pixelAllocationCount == 0 && direct.report.copyEvents.isEmpty)
+    #expect(try direct.image.sampleUInt16(x: 0, y: 0) == 65535)
+    #expect(throws: CodecError.self) { try decoder.inspect(Data()) }
+    let reserved = try ImageDestination.allocate(descriptor: descriptor)
     do {
-        _ = try await encoder.encode(image)
-        Issue.record("Milestone 1 must not emit a pretend JPEG.")
-    } catch let error as CodecError { #expect(error.category == .unsupportedFeature) }
-    do {
-        _ = try await decoder.decode(Data([0xff, 0xd8, 0xff, 0xd9]))
-        Issue.record("Milestone 1 must not return a pretend decoded image.")
-    } catch let error as CodecError { #expect(error.category == .unsupportedFeature) }
-    do {
-        _ = try await decoder.decode(Data(), into: destination)
-        Issue.record("Milestone 1 must reject decode into storage.")
-    } catch let error as CodecError { #expect(error.category == .unsupportedFeature) }
-    // Rejection is preflight: no write began and the caller's reserved owner remains usable.
-    let next = try destination.writeUInt16 { _, _ in 123 }
+        _ = try await decoder.decode(Data(), into: reserved)
+        Issue.record("Empty input must fail before writing.")
+    } catch let error as CodecError { #expect(error.category == .malformedInput) }
+    let next = try reserved.writeUInt16 { _, _ in 123 }
     #expect(try next.sampleUInt16(x: 0, y: 0) == 123)
 }
 
 @Test func configurationsAndBackendRequestsRejectUnsupportedChoices() throws {
     #expect(throws: CodecError.self) { try EncoderConfiguration(mode: .nearLossless(maximumAbsoluteError: 0)) }
-    #expect(throws: CodecError.self) { try EncoderConfiguration(mode: .nearLossless(maximumAbsoluteError: 1)) }
-    #expect(throws: CodecError.self) { try EncoderConfiguration(mode: .lossy) }
+    #expect(try EncoderConfiguration(mode: .nearLossless(maximumAbsoluteError: 1)).mode == .nearLossless(maximumAbsoluteError: 1))
+    #expect(try EncoderConfiguration(mode: .lossy).mode == .lossy)
+    #expect(throws: CodecError.self) {
+        try SwiftJLI.Decoder(configuration: .init(codecOptions: .init(predictor: 2)))
+    }
     do {
         _ = try SwiftJLI.Decoder().inspect(Data(), options: .init(executionPolicy: .required(.accelerated)))
-        Issue.record("Required acceleration is unavailable.")
-    } catch let error as CodecError { #expect(error.category == .backendUnavailable) }
+        Issue.record("Malformed input must be rejected before choosing a codec backend.")
+    } catch let error as CodecError { #expect(error.category == .malformedInput) }
     let limits = try ResourceLimits(maximumCompressedBytes: 1)
     do {
         _ = try SwiftJLI.Decoder().inspect(Data([0, 1]), options: .init(resourceLimits: limits))

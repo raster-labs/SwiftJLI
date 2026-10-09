@@ -164,11 +164,11 @@ private func help(_ command: String?) -> String {
     USAGE: \(tool) [OPTIONS] <command> [OPTIONS]
 
     COMMANDS
-      capabilities [--json]      Report actual library support (currently empty).
+      capabilities [--json]      Report actual library support.
       help [command]             Show global or command-specific help.
       version                    Show the development version.
       \(reserved.joined(separator: ", "))
-                                Reserved; codec algorithms are unavailable (exit 4).
+                                Reserved; payload commands are unavailable (exit 4).
 
     Builds with Swift 6.2 or later; Apple OS baseline \(minimumAppleOS). CLI hosts: macOS/Linux.
     This development tool provides help/version/capabilities, not compression yet.
