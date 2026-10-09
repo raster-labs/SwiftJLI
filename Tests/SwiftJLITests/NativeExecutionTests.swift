@@ -39,7 +39,8 @@ import Testing
         #expect(active.withLock { $0 } == 0)
     }
 
-    @Test func cancellationReachesDispatchWorkersAndJoins() async throws {
+    @Test(arguments: [10.0, Double.greatestFiniteMagnitude])
+    func cancellationReachesDispatchWorkersAndJoins(seconds: Double) async throws {
         let entered = DispatchSemaphore(value: 0)
         let state = Mutex((active: 0, started: 0))
         let lanes = min(2, ProcessInfo.processInfo.activeProcessorCount)
@@ -48,7 +49,7 @@ import Testing
             // starts; the started assertion and expected error expose that failure.
             defer { entered.signal() }
             try await NativeOperation.withCancellation {
-                try NativeOperation.$current.withValue(.init(seconds: 10, maximumWorkers: lanes)) {
+                try NativeOperation.$current.withValue(.init(seconds: seconds, maximumWorkers: lanes)) {
                     try NativeOperation.perform(iterations: lanes) { _ in
                         state.withLock { $0.active += 1; $0.started += 1 }
                         defer { state.withLock { $0.active -= 1 } }
@@ -75,6 +76,43 @@ import Testing
                 try NativeOperation.perform(iterations: 8) { _ in try NativeOperation.check() }
             }
             Issue.record("Worker deadline was ignored")
+        } catch let error as CodecError { #expect(error.category == .resourceLimitExceeded) }
+    }
+
+    @Test(arguments: [120.0, 1e100, Double.greatestFiniteMagnitude])
+    func finiteDeadlinesDoNotTrap(seconds: Double) async throws {
+        let limits = try ResourceLimits(deadlineSeconds: seconds)
+        let decoder = try Decoder()
+        // Invalid input must still return its defined error, even with a
+        // deadline too large to construct as a Duration.
+        do {
+            _ = try decoder.inspect(Data(), options: .init(resourceLimits: limits))
+            Issue.record("Empty JPEG accepted")
+        } catch let error as CodecError { #expect(error.category == .malformedInput) }
+
+        let descriptor = try ImageDescriptor.greyscale16(width: 2, height: 2)
+        let image = try ImageDestination.allocate(descriptor: descriptor).writeUInt16 { x, y in
+            UInt16(x + y * 2)
+        }
+        let encoded = try await Encoder().encode(image, options: .init(resourceLimits: limits))
+        #expect(try decoder.inspectJPEG(encoded.data, options: .init(resourceLimits: limits)).width == 2)
+        let allocated = try await decoder.decode(encoded.data, options: .init(resourceLimits: limits))
+        let destination = try ImageDestination.allocate(descriptor: descriptor)
+        let supplied = try await decoder.decode(encoded.data, into: destination,
+            options: .init(resourceLimits: limits))
+        for y in 0..<2 { for x in 0..<2 {
+            #expect(try allocated.image.sampleUInt16(x: x, y: y) == image.sampleUInt16(x: x, y: y))
+            #expect(try supplied.image.sampleUInt16(x: x, y: y) == image.sampleUInt16(x: x, y: y))
+        } }
+    }
+
+    @Test func fractionalDeadlineStillExpires() throws {
+        let started = ContinuousClock.now.advanced(by: .seconds(-2))
+        do {
+            try NativeOperation.$current.withValue(.init(seconds: 1.5, started: started)) {
+                try NativeOperation.check()
+            }
+            Issue.record("Elapsed deadline was ignored")
         } catch let error as CodecError { #expect(error.category == .resourceLimitExceeded) }
     }
 

@@ -41,7 +41,12 @@ struct NativeOperation: Sendable {
         try Task.checkCancellation()
         if let context = current {
             try context.cancellation?.check()
-            if context.started.duration(to: .now) >= .seconds(context.seconds) {
+            // ResourceLimits accepts every positive finite Double. Converting
+            // that caller value to Duration can trap outside Duration's range.
+            // Elapsed components always fit in Double, so compare in seconds.
+            let elapsed = context.started.duration(to: .now).components
+            let elapsedSeconds = Double(elapsed.seconds) + Double(elapsed.attoseconds) / 1e18
+            if elapsedSeconds >= context.seconds {
                 throw CodecError(.resourceLimitExceeded, "JPEG operation deadline exceeded.")
             }
         }

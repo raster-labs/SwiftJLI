@@ -1,12 +1,18 @@
-# Migration acceptance ledger — 8 October 2026
+# Migration acceptance ledger — 9 October 2026
 
 **The migration is not yet fully accepted.** This ledger is the current summary;
 STATUS.md retains chronological checkpoints, whose old pending statements and
 earlier implementation descriptions do not override this table.
 
-Shipping source: `0a714f32a2ef5e1b8be48f6b02500e43833489d2`.
+Broad qualification baseline: `0a714f32a2ef5e1b8be48f6b02500e43833489d2`.
 Qualification workflow/harness revision: `7d85c34af5d70ae931eeb0bd87b79099f0bb774b`;
 its shipping Sources are byte-identical to 0a714f3.
+Post-review correction: the accepted finite-deadline overflow is fixed after
+cf3cf5f. Qualification/DeadlineOverflow records the crash reproduction, corrected
+public behaviour, 344 Linux release tests and focused release benchmarks. Earlier
+broad CI/fuzz evidence remains pinned to its original source; this fix's CI is
+reported on PR #19. Performance and physical Watch acceptance remain open.
+
 Predecessor: `0a4ded0b0b2e8e38127f4f302b286e74ee352474`.
 Suite policy: 0.10.0. Earlier aa6e298 evidence remains historical and separately
 hashed. The UInt12 reader refinement, runtime jobs, fresh URL consumer and
