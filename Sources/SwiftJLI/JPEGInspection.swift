@@ -48,14 +48,14 @@ extension Decoder {
     /// the same bounded parser as inspect(_:options:), without decoding pixels.
     /// Decode scale/sample-format configuration does not reinterpret inspection.
     public func inspectJPEG(_ data: Data, options: DecodeOptions = .init()) throws -> JPEGInspection {
-        try JPEGCodec.inspectJPEG(data, options: options)
+        try JPEGCodec.inspectJPEG(data, sourceColourModel: configuration.sourceColourModel, options: options)
     }
 }
 
 extension JPEGCodec {
-    static func inspectJPEG(_ data: Data, options: DecodeOptions) throws -> JPEGInspection {
+    static func inspectJPEG(_ data: Data, sourceColourModel: JPEGSourceColourModel? = nil, options: DecodeOptions) throws -> JPEGInspection {
         try run(limits: options.resourceLimits, policy: .scalarCPU) {
-            let parsed = try parse(data, options: options)
+            let parsed = try parse(data, options: options, sourceColourModel: sourceColourModel)
             let frame = parsed.frameInfo
             _ = try selectBackend(options.executionPolicy, dct: !frame.isLossless)
             let information = try info(parsed, options: options)

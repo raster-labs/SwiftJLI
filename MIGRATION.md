@@ -45,6 +45,16 @@ DCT input is unsigned 8-bit storage/precision or 16-bit storage with exactly 12 
 
 Progressive DC scans currently require all components in frame order, with single-component AC scans. Multiple sequential scans, changing quantisation/restart definitions between scans and ambiguous RGB/CMYK JPEG interpretations are rejected. The recognised XYB profile has an explicit colour policy described below. The remaining restrictions are additional acceptance work, not silent conversions.
 
+## JPEG maintenance fixes
+
+Full-resolution integer 4:2:2/4:2:0 YCbCr decoding uses centred JPEG chroma reconstruction, including odd dimensions. Both output-storage paths share this reconstruction. Existing 4:4:4 oracle limits and reduced-scale, greyscale, Float32 and XYB behaviour are retained.
+
+Raw RGB DCT at 8/12-bit precision is recognised from Adobe APP14 transform 0 or RGB component identifiers. With neither Adobe nor recognised XYB signalling, `DecoderConfiguration(sourceColourModel: .rgb)` or `.yCbCr` explicitly selects source interpretation; the output remains RGB. The option is honoured by `inspect`, `inspectJPEG` and both decode overloads. It is rejected for greyscale, SOF3 and Adobe/XYB-marked input. Direct RGB accepts no ICC profile or the recognised sRGB profile; unknown profiles and conflicting RGB identifiers/Adobe YCbCr signalling remain unsupported. This does not add general ICC colour management or colour Float32 output.
+
+A single zero byte following EOI is accepted only when the JPEG length excluding that byte is odd. Other trailing bytes, repeated padding, concatenated streams and missing EOI are rejected. This narrow padding allowance does not add DICOM parsing. Resource-limit defaults are unchanged; map the predecessor's caller budgets explicitly when migrating.
+
+Source pins, fixture provenance, verification and remaining platform limits are in [JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md).
+
 ## Decoder output and adaptive profiles
 
 `Decoder.inspectJPEG(_:options:)` is the JPEG-specific extension for predecessor `JLIJPEGInfo` users. It returns common `imageInfo` plus encoded coding process, progressive/extended-precision flags, recognised XYB, relative chroma sampling, exact component sampling factors, scan count and restart interval. Predictive streams also expose predictor and point transform; nonzero point transform is not exact lossless fidelity. This extension is necessary because the common full-resolution descriptor cannot represent compressed scan/sampling structure (COMMON_API API-13). It uses the same bounded parser and errors as `inspect`, without a pixel decode. Neither inspection call certifies entropy validity, and decoder output scale/format does not alter encoded inspection geometry.

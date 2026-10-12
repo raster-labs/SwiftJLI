@@ -1,5 +1,12 @@
 # Change log
 
+## Unreleased — JPEG decode parity, 2026-10-12
+
+- Correct full-resolution subsampled YCbCr reconstruction using SOF sample centres and component rounding, through both allocating and caller-storage decode. Retain established 4:4:4, preview, greyscale and XYB behaviour.
+- Decode 8/12-bit raw RGB DCT signalled by Adobe transform 0 or RGB component identifiers. Add explicit `DecoderConfiguration(sourceColourModel:)` for unmarked three-component DCT; refuse conflicting/unsupported colour metadata.
+- Accept one zero byte after an odd-length JPEG, while retaining all other trailing-data and bounded-input rejection.
+- Carry the 15 independent JLISwift chroma fixtures and focused parity tests. Seven corrected macOS decoded hashes match JLISwift v0.5.2; encoder hashes and the historical identity fixture are unchanged. See [verification](Documentation/Migration/JPEGDecodeParity.md).
+
 ## Unreleased — codec migration in progress, 2026-10-07
 
 - Reduce decode overhead with bounded entropy searches, specialised greyscale writes, joined chroma workers and bounded RGB row batches; preserve byte identity and cancellation checks.
