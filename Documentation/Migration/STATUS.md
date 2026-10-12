@@ -7,19 +7,12 @@ later checkpoints and the acceptance ledger.
 
 ## Latest disposition — 12 October 2026
 
-Draft [PR #21](https://github.com/raster-labs/SwiftJLI/pull/21) closes the three
-identified maintenance gaps: full-resolution subsampled chroma reconstruction,
-raw RGB DCT interpretation and one legal zero padding byte. The same 15 independent
-chroma fixtures pass with maxima 0–2 (unchanged limit 3); all 349 Linux Swift 6.4
-tests pass. [JPEGDecodeParity.md](JPEGDecodeParity.md) records source pins,
-sanitizers, caller-storage checks, CI corrections and the 16–21% advisory
-4:2:0 latency cost. CI and acceptance are revision-specific. No new codec source
-was changed during this documentation reconciliation.
+The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation still needs a repository administrator; the supported-version policy is documented. No stable release or application cutover is claimed.
 
-The migration is implemented for its documented scope, but full acceptance is
-**not complete**. Performance, physical Watch resource validation and reconciliation
-of required evidence against the eventual release candidate remain open. The
-acceptance ledger separates these gates from deliberate product deferrals.
+[Source-bound results and reproduction](Qualification/NonWatchCompletion/README.md)
+retain every measured cost and capability limit. The three maintenance fixes
+remain in draft PR #21, separate from main. Shipping code is unchanged during
+this qualification follow-up.
 
 ## Merged baseline — 9 October 2026
 

@@ -2,6 +2,10 @@
 
 SwiftJLI baseline `a967d27bc5756fab8b7fe9db6eb302ff0645c362`; common contract 0.10.0. Sources: JLISwift `fix/bounded-dicom-decoding` at `a250354a2feec396aad533d8b6999b88cc1160ef` and `fix/jpeg-chroma-sample-centers` / v0.5.2 at `981da4efb7d62e4370c5d6de706d56a729b9552e`.
 
+Current candidate qualification is in [NonWatchCompletion](Qualification/NonWatchCompletion/README.md).
+The earlier advisory/open-gate statements below are historical; physical Watch
+and administrator activation of private reporting remain release limits.
+
 ## Behaviour and scope
 
 - Centred reconstruction and component rounding are applied once, before either final-storage writer, for full-resolution integer subsampled YCbCr. The helper is adapted from JLISwift with bounded cancellation and joined disjoint-row workers. Unlike a blanket predecessor cherry-pick, 4:4:4 retains its established reconstruction: rounding that path broke the existing tighter natural-texture oracle. No oracle threshold was relaxed. Preview, greyscale, floating-point and XYB paths retain their behaviour.
@@ -45,7 +49,7 @@ Local macOS Swift Testing remains unavailable because the CommandLineTools Testi
 
 The new seven-line `centered-chroma-identity-macos-arm64.txt` is extracted from the fixed predecessor's 71-record identity run using SwiftJLI's unchanged synthetic generators/digest/identity support (with the module import changed to JLISwift in scratch). Every selected complete record matches the successor, and its encoded prefix matches the original fixture. The historical predecessor fixture remains byte-for-byte unchanged. This explicitly updates only the outputs corrected by this bug fix. [Source and fixture hashes](Qualification/JPEGDecodeParity/provenance.json) pin the evidence.
 
-## Performance and memory — advisory, open release gate
+## Historical advisory performance and memory
 
 Two interleaved before/after rounds on the same macOS ARM64 host, Release builds, scalar and automatic execution, 5 warm-ups and 20 timed decodes per case per round. Final table pools 40 timed decodes per case/backend. Input generation/encoding occurs outside the timed region; encoded byte counts are unchanged. Raw samples retain spread and p95 can be recomputed. These finite synthetic cases on a working developer machine are not the controlled representative release corpus.
 
@@ -100,3 +104,11 @@ The [acceptance ledger](ACCEPTANCE.md) is the final status index. The implemente
 fixes do not establish complete migration acceptance: controlled performance,
 physical Watch validation, current-candidate fuzzing and affected workspace/oracle
 qualification remain open. Main remains `a967d27`; this work is in draft PR #21.
+
+## Completed non-Watch requalification — 12 October 2026
+
+The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation still needs a repository administrator; the supported-version policy is documented. No stable release or application cutover is claimed.
+
+[Current evidence and explicit performance baseline](Qualification/NonWatchCompletion/README.md)
+supersede the advisory/open qualification statements above. The original
+maintenance fixture evidence and historical measurements remain unchanged.

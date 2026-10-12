@@ -138,3 +138,11 @@ unfulfilled release gates. Performance acceptance, physical Watch validation and
 final-candidate evidence remain open. Auxiliary products and CLI payload verbs
 retain their explicit dispositions; no application cutover or stable release is
 performed. See [current acceptance](Documentation/Migration/ACCEPTANCE.md).
+
+## Non-Watch migration qualification — 12 October 2026
+
+The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation still needs a repository administrator; the supported-version policy is documented. No stable release or application cutover is claimed.
+
+See [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md). Shipping library code and dependencies are unchanged
+in this qualification follow-up; the new four-codec and raw-RGB oracle harnesses
+are development-only. Historical records and common contracts remain intact.

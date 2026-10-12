@@ -60,8 +60,10 @@ The original audit pin above predates the two branches assigned for this follow-
 
 Exact branch pins, tests, storage evidence and limitations are in
 [JPEGDecodeParity.md](JPEGDecodeParity.md). This is payload decoding support;
-DICOM container parsing remains the consumer's responsibility. These draft changes
-do not close performance, physical-device or stable-release qualification.
+DICOM container parsing remains the consumer's responsibility. The refreshed [non-Watch qualification](Qualification/NonWatchCompletion/README.md)
+closes executable qualification with explicit measured performance trade-offs.
+Physical Watch testing and administrator activation of private reporting remain
+release limits; these draft changes are not yet merged.
 
 ## Decoder and inspection
 

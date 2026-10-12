@@ -1,0 +1,1858 @@
+{
+  "status": "passed",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "sh",
+        "-c",
+        "g++ -O2 /charls-pgm.cpp -lcharls -o /output/charls-pgm && dpkg-query -W libcharls-dev libjxl-tools && djxl --version"
+      ],
+      "exitCode": 0,
+      "stdout": "libcharls-dev:arm64\t2.4.2-2build2\nlibjxl-tools\t0.7.0-10.2ubuntu6.1\ndjxl v0.7.0 [NEON,NEON_WITHOUT_AES]\nCopyright (c) the JPEG XL Project\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-version"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "libjpeg-turbo version 3.2.0 (build 20260630)\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u12-j2k-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u12-j2k-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/19x13-u12-j2k-to-jls.jls",
+        "/output/19x13-u12-j2k-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/19x13-u12-j2k-to-jxl.jxl",
+        "/output/19x13-u12-j2k-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 358 compressed bytes.\nDecoded to pixels.\n19 x 13, 0.75 MP/s [0.75, 0.75], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u12-jli-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u12-jli-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u12-jli-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/19x13-u12-jli-to-jls.jls",
+        "/output/19x13-u12-jli-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/19x13-u12-jli-to-jxl.jxl",
+        "/output/19x13-u12-jli-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 358 compressed bytes.\nDecoded to pixels.\n19 x 13, 0.99 MP/s [0.99, 0.99], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u12-jls-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u12-jls-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u12-jls-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u12-jls-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u12-jls-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/19x13-u12-jls-to-jxl.jxl",
+        "/output/19x13-u12-jls-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 358 compressed bytes.\nDecoded to pixels.\n19 x 13, 0.43 MP/s [0.43, 0.43], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u12-jxl-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u12-jxl-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u12-jxl-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u12-jxl-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u12-jxl-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/19x13-u12-jxl-to-jls.jls",
+        "/output/19x13-u12-jxl-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u16-j2k-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u16-j2k-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/19x13-u16-j2k-to-jls.jls",
+        "/output/19x13-u16-j2k-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/19x13-u16-j2k-to-jxl.jxl",
+        "/output/19x13-u16-j2k-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 314 compressed bytes.\nDecoded to pixels.\n19 x 13, 0.51 MP/s [0.51, 0.51], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u16-jli-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u16-jli-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u16-jli-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/19x13-u16-jli-to-jls.jls",
+        "/output/19x13-u16-jli-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/19x13-u16-jli-to-jxl.jxl",
+        "/output/19x13-u16-jli-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 314 compressed bytes.\nDecoded to pixels.\n19 x 13, 0.88 MP/s [0.88, 0.88], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u16-jls-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u16-jls-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u16-jls-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u16-jls-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u16-jls-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/19x13-u16-jls-to-jxl.jxl",
+        "/output/19x13-u16-jls-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 314 compressed bytes.\nDecoded to pixels.\n19 x 13, 0.62 MP/s [0.62, 0.62], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u16-jxl-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u16-jxl-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u16-jxl-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/19x13-u16-jxl-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/19x13-u16-jxl-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/19x13-u16-jxl-to-jls.jls",
+        "/output/19x13-u16-jxl-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u12-j2k-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u12-j2k-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/257x17-u12-j2k-to-jls.jls",
+        "/output/257x17-u12-j2k-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/257x17-u12-j2k-to-jxl.jxl",
+        "/output/257x17-u12-j2k-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 5382 compressed bytes.\nDecoded to pixels.\n257 x 17, 10.28 MP/s [10.28, 10.28], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u12-jli-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u12-jli-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u12-jli-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/257x17-u12-jli-to-jls.jls",
+        "/output/257x17-u12-jli-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/257x17-u12-jli-to-jxl.jxl",
+        "/output/257x17-u12-jli-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 5382 compressed bytes.\nDecoded to pixels.\n257 x 17, 3.87 MP/s [3.87, 3.87], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u12-jls-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u12-jls-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u12-jls-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u12-jls-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u12-jls-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/257x17-u12-jls-to-jxl.jxl",
+        "/output/257x17-u12-jls-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 5382 compressed bytes.\nDecoded to pixels.\n257 x 17, 10.24 MP/s [10.24, 10.24], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u12-jxl-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u12-jxl-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u12-jxl-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u12-jxl-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u12-jxl-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/257x17-u12-jxl-to-jls.jls",
+        "/output/257x17-u12-jxl-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u16-j2k-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u16-j2k-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/257x17-u16-j2k-to-jls.jls",
+        "/output/257x17-u16-j2k-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/257x17-u16-j2k-to-jxl.jxl",
+        "/output/257x17-u16-j2k-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 4287 compressed bytes.\nDecoded to pixels.\n257 x 17, 5.21 MP/s [5.21, 5.21], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u16-jli-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u16-jli-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u16-jli-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/257x17-u16-jli-to-jls.jls",
+        "/output/257x17-u16-jli-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/257x17-u16-jli-to-jxl.jxl",
+        "/output/257x17-u16-jli-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 4287 compressed bytes.\nDecoded to pixels.\n257 x 17, 10.70 MP/s [10.70, 10.70], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u16-jls-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u16-jls-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u16-jls-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u16-jls-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u16-jls-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/257x17-u16-jls-to-jxl.jxl",
+        "/output/257x17-u16-jls-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 4287 compressed bytes.\nDecoded to pixels.\n257 x 17, 8.64 MP/s [8.64, 8.64], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u16-jxl-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u16-jxl-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u16-jxl-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/257x17-u16-jxl-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/257x17-u16-jxl-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/257x17-u16-jxl-to-jls.jls",
+        "/output/257x17-u16-jxl-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u12-j2k-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u12-j2k-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/65x31-u12-j2k-to-jls.jls",
+        "/output/65x31-u12-j2k-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/65x31-u12-j2k-to-jxl.jxl",
+        "/output/65x31-u12-j2k-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 2765 compressed bytes.\nDecoded to pixels.\n65 x 31, 4.99 MP/s [4.99, 4.99], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u12-jli-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u12-jli-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u12-jli-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/65x31-u12-jli-to-jls.jls",
+        "/output/65x31-u12-jli-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/65x31-u12-jli-to-jxl.jxl",
+        "/output/65x31-u12-jli-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 2765 compressed bytes.\nDecoded to pixels.\n65 x 31, 3.96 MP/s [3.96, 3.96], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u12-jls-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u12-jls-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u12-jls-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u12-jls-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u12-jls-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/65x31-u12-jls-to-jxl.jxl",
+        "/output/65x31-u12-jls-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 2765 compressed bytes.\nDecoded to pixels.\n65 x 31, 2.62 MP/s [2.62, 2.62], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u12-jxl-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u12-jxl-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u12-jxl-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u12-jxl-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u12-jxl-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/65x31-u12-jxl-to-jls.jls",
+        "/output/65x31-u12-jxl-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u16-j2k-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u16-j2k-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/65x31-u16-j2k-to-jls.jls",
+        "/output/65x31-u16-j2k-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/65x31-u16-j2k-to-jxl.jxl",
+        "/output/65x31-u16-j2k-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 1978 compressed bytes.\nDecoded to pixels.\n65 x 31, 0.60 MP/s [0.60, 0.60], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u16-jli-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u16-jli-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u16-jli-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/65x31-u16-jli-to-jls.jls",
+        "/output/65x31-u16-jli-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/65x31-u16-jli-to-jxl.jxl",
+        "/output/65x31-u16-jli-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 1978 compressed bytes.\nDecoded to pixels.\n65 x 31, 4.83 MP/s [4.83, 4.83], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u16-jls-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u16-jls-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u16-jls-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u16-jls-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u16-jls-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "djxl",
+        "/inputs/65x31-u16-jls-to-jxl.jxl",
+        "/output/65x31-u16-jls-to-jxl.jxl.pgm",
+        "--num_threads=1"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "JPEG XL decoder v0.7.0 [NEON,NEON_WITHOUT_AES]\nRead 1978 compressed bytes.\nDecoded to pixels.\n65 x 31, 5.57 MP/s [5.57, 5.57], 1 reps, 1 threads.\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/opj_decompress",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u16-jxl-to-j2k.j2k",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u16-jxl-to-j2k.j2k.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "[INFO] Start to read j2k main header (0).\n[INFO] Main header has been correctly decoded.\n[INFO] No decoded area parameters, set the decoded area to the whole image\n[INFO] Header of tile 1 / 1 has been read.\n[INFO] Generated Outfile /Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u16-jxl-to-j2k.j2k.pgm\ndecode time: 0 ms\n",
+      "stderr": "\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified/65x31-u16-jxl-to-jli.jpg.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final/65x31-u16-jxl-to-jli.jpg"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-pairs-final:/inputs:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-independent-qualified:/output",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Examples/SuitePairIntegration/Oracle/charls-pgm.cpp:/charls-pgm.cpp:ro",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/output/charls-pgm",
+        "/inputs/65x31-u16-jxl-to-jls.jls",
+        "/output/65x31-u16-jxl-to-jls.jls.pgm"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "file": "19x13-u12-j2k-to-jli.jpg",
+      "inputSHA256": "4e2a82fe8907e8bda17c3db0d8585bbc48048771cd56831fffbc21b5b6985a71",
+      "outputSHA256": "150e286a4d3e2816e296dd5faf45cf85d30439ab1105f9ee4dd0b50776d3e346",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u12-j2k-to-jls.jls",
+      "inputSHA256": "fb2921ca666ed577620fc97b7229fd5f1ed1bb89a5c41196824a6d03bfd63461",
+      "outputSHA256": "150e286a4d3e2816e296dd5faf45cf85d30439ab1105f9ee4dd0b50776d3e346",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u12-j2k-to-jxl.jxl",
+      "inputSHA256": "c1c5cc8c5d0cb0942bfa527007f2fa7d94997e77143eceada504ae4e66f2ca8b",
+      "outputSHA256": "0bd6b484216ebb5def70bad4fff38f26003b4d58c6c49d93bbb459fb033e7267",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 1
+    },
+    {
+      "file": "19x13-u12-jli-to-j2k.j2k",
+      "inputSHA256": "82b88f1983c4634ac3720983dea8976abf9182a947310b6c77376a31efe580b2",
+      "outputSHA256": "a03f8703e3077bd1a44268ea914704dba60203e9c60ade2a5f9c5ce5a34b718c",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u12-jli-to-jls.jls",
+      "inputSHA256": "fb2921ca666ed577620fc97b7229fd5f1ed1bb89a5c41196824a6d03bfd63461",
+      "outputSHA256": "150e286a4d3e2816e296dd5faf45cf85d30439ab1105f9ee4dd0b50776d3e346",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u12-jli-to-jxl.jxl",
+      "inputSHA256": "c1c5cc8c5d0cb0942bfa527007f2fa7d94997e77143eceada504ae4e66f2ca8b",
+      "outputSHA256": "0bd6b484216ebb5def70bad4fff38f26003b4d58c6c49d93bbb459fb033e7267",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 1
+    },
+    {
+      "file": "19x13-u12-jls-to-j2k.j2k",
+      "inputSHA256": "82b88f1983c4634ac3720983dea8976abf9182a947310b6c77376a31efe580b2",
+      "outputSHA256": "a03f8703e3077bd1a44268ea914704dba60203e9c60ade2a5f9c5ce5a34b718c",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u12-jls-to-jli.jpg",
+      "inputSHA256": "4e2a82fe8907e8bda17c3db0d8585bbc48048771cd56831fffbc21b5b6985a71",
+      "outputSHA256": "150e286a4d3e2816e296dd5faf45cf85d30439ab1105f9ee4dd0b50776d3e346",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u12-jls-to-jxl.jxl",
+      "inputSHA256": "c1c5cc8c5d0cb0942bfa527007f2fa7d94997e77143eceada504ae4e66f2ca8b",
+      "outputSHA256": "0bd6b484216ebb5def70bad4fff38f26003b4d58c6c49d93bbb459fb033e7267",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 1
+    },
+    {
+      "file": "19x13-u12-jxl-to-j2k.j2k",
+      "inputSHA256": "82b88f1983c4634ac3720983dea8976abf9182a947310b6c77376a31efe580b2",
+      "outputSHA256": "a03f8703e3077bd1a44268ea914704dba60203e9c60ade2a5f9c5ce5a34b718c",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u12-jxl-to-jli.jpg",
+      "inputSHA256": "4e2a82fe8907e8bda17c3db0d8585bbc48048771cd56831fffbc21b5b6985a71",
+      "outputSHA256": "150e286a4d3e2816e296dd5faf45cf85d30439ab1105f9ee4dd0b50776d3e346",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u12-jxl-to-jls.jls",
+      "inputSHA256": "fb2921ca666ed577620fc97b7229fd5f1ed1bb89a5c41196824a6d03bfd63461",
+      "outputSHA256": "150e286a4d3e2816e296dd5faf45cf85d30439ab1105f9ee4dd0b50776d3e346",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-j2k-to-jli.jpg",
+      "inputSHA256": "d8c5cebaf7f4734a817831dcdd7f2cc1ec09304670fe2ecf8d61b2e36941c70f",
+      "outputSHA256": "3daa25fab343e807839141c783e2bc3b20fc16ed16bd27dc9422a4469b842430",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-j2k-to-jls.jls",
+      "inputSHA256": "15c164602ff9460abf4739f5e97c3ff6d752b7f0b5c03a97553d3e34d81316fc",
+      "outputSHA256": "3daa25fab343e807839141c783e2bc3b20fc16ed16bd27dc9422a4469b842430",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-j2k-to-jxl.jxl",
+      "inputSHA256": "a4f0e3bfe864d25fc0fff03c2f539712eaa8049fbbb9ce130a78c7483567c711",
+      "outputSHA256": "3daa25fab343e807839141c783e2bc3b20fc16ed16bd27dc9422a4469b842430",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-jli-to-j2k.j2k",
+      "inputSHA256": "9c76992c11ae29e9aab5a6762ab181ad5604cf35de728cc1b5bc84f05dcc1259",
+      "outputSHA256": "3c4c4586d8c31fad07d52182613afde0bad772d9587788eb8932f979a18d2ee1",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-jli-to-jls.jls",
+      "inputSHA256": "15c164602ff9460abf4739f5e97c3ff6d752b7f0b5c03a97553d3e34d81316fc",
+      "outputSHA256": "3daa25fab343e807839141c783e2bc3b20fc16ed16bd27dc9422a4469b842430",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-jli-to-jxl.jxl",
+      "inputSHA256": "a4f0e3bfe864d25fc0fff03c2f539712eaa8049fbbb9ce130a78c7483567c711",
+      "outputSHA256": "3daa25fab343e807839141c783e2bc3b20fc16ed16bd27dc9422a4469b842430",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-jls-to-j2k.j2k",
+      "inputSHA256": "9c76992c11ae29e9aab5a6762ab181ad5604cf35de728cc1b5bc84f05dcc1259",
+      "outputSHA256": "3c4c4586d8c31fad07d52182613afde0bad772d9587788eb8932f979a18d2ee1",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-jls-to-jli.jpg",
+      "inputSHA256": "d8c5cebaf7f4734a817831dcdd7f2cc1ec09304670fe2ecf8d61b2e36941c70f",
+      "outputSHA256": "3daa25fab343e807839141c783e2bc3b20fc16ed16bd27dc9422a4469b842430",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-jls-to-jxl.jxl",
+      "inputSHA256": "a4f0e3bfe864d25fc0fff03c2f539712eaa8049fbbb9ce130a78c7483567c711",
+      "outputSHA256": "3daa25fab343e807839141c783e2bc3b20fc16ed16bd27dc9422a4469b842430",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-jxl-to-j2k.j2k",
+      "inputSHA256": "9c76992c11ae29e9aab5a6762ab181ad5604cf35de728cc1b5bc84f05dcc1259",
+      "outputSHA256": "3c4c4586d8c31fad07d52182613afde0bad772d9587788eb8932f979a18d2ee1",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-jxl-to-jli.jpg",
+      "inputSHA256": "d8c5cebaf7f4734a817831dcdd7f2cc1ec09304670fe2ecf8d61b2e36941c70f",
+      "outputSHA256": "3daa25fab343e807839141c783e2bc3b20fc16ed16bd27dc9422a4469b842430",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "19x13-u16-jxl-to-jls.jls",
+      "inputSHA256": "15c164602ff9460abf4739f5e97c3ff6d752b7f0b5c03a97553d3e34d81316fc",
+      "outputSHA256": "3daa25fab343e807839141c783e2bc3b20fc16ed16bd27dc9422a4469b842430",
+      "samples": 247,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u12-j2k-to-jli.jpg",
+      "inputSHA256": "e20a7c14d4c9ef4fc1c7613432c64df9b60782719595c7b14dc9abe21445c8da",
+      "outputSHA256": "61be264e7d2c709d706cf6dcfb37fb55a1fbb04d6a2f2c94bc6726ae25500a2b",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u12-j2k-to-jls.jls",
+      "inputSHA256": "9c9c23ed7afa2c2fa6e80bfaf2b409a66c50d43481d136242e22e9e6d58e1aa0",
+      "outputSHA256": "61be264e7d2c709d706cf6dcfb37fb55a1fbb04d6a2f2c94bc6726ae25500a2b",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u12-j2k-to-jxl.jxl",
+      "inputSHA256": "059b3874030edf1c6c83a92673f2ab42197a0fa541d4cf4afae2c8a3ddb75ab2",
+      "outputSHA256": "339dd9aa35a7a4c5d5e0796ff94488047786e3a777e48502e3348fc64771718d",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 1
+    },
+    {
+      "file": "257x17-u12-jli-to-j2k.j2k",
+      "inputSHA256": "c90d74814f06050a22d9fed2456c9634818068eda40529c476a6391ee96c97c8",
+      "outputSHA256": "d45824fdebd5d4bf8a5d57671ad94104c3071656868021cc1c5fdf3510393caa",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u12-jli-to-jls.jls",
+      "inputSHA256": "9c9c23ed7afa2c2fa6e80bfaf2b409a66c50d43481d136242e22e9e6d58e1aa0",
+      "outputSHA256": "61be264e7d2c709d706cf6dcfb37fb55a1fbb04d6a2f2c94bc6726ae25500a2b",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u12-jli-to-jxl.jxl",
+      "inputSHA256": "059b3874030edf1c6c83a92673f2ab42197a0fa541d4cf4afae2c8a3ddb75ab2",
+      "outputSHA256": "339dd9aa35a7a4c5d5e0796ff94488047786e3a777e48502e3348fc64771718d",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 1
+    },
+    {
+      "file": "257x17-u12-jls-to-j2k.j2k",
+      "inputSHA256": "c90d74814f06050a22d9fed2456c9634818068eda40529c476a6391ee96c97c8",
+      "outputSHA256": "d45824fdebd5d4bf8a5d57671ad94104c3071656868021cc1c5fdf3510393caa",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u12-jls-to-jli.jpg",
+      "inputSHA256": "e20a7c14d4c9ef4fc1c7613432c64df9b60782719595c7b14dc9abe21445c8da",
+      "outputSHA256": "61be264e7d2c709d706cf6dcfb37fb55a1fbb04d6a2f2c94bc6726ae25500a2b",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u12-jls-to-jxl.jxl",
+      "inputSHA256": "059b3874030edf1c6c83a92673f2ab42197a0fa541d4cf4afae2c8a3ddb75ab2",
+      "outputSHA256": "339dd9aa35a7a4c5d5e0796ff94488047786e3a777e48502e3348fc64771718d",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 1
+    },
+    {
+      "file": "257x17-u12-jxl-to-j2k.j2k",
+      "inputSHA256": "c90d74814f06050a22d9fed2456c9634818068eda40529c476a6391ee96c97c8",
+      "outputSHA256": "d45824fdebd5d4bf8a5d57671ad94104c3071656868021cc1c5fdf3510393caa",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u12-jxl-to-jli.jpg",
+      "inputSHA256": "e20a7c14d4c9ef4fc1c7613432c64df9b60782719595c7b14dc9abe21445c8da",
+      "outputSHA256": "61be264e7d2c709d706cf6dcfb37fb55a1fbb04d6a2f2c94bc6726ae25500a2b",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u12-jxl-to-jls.jls",
+      "inputSHA256": "9c9c23ed7afa2c2fa6e80bfaf2b409a66c50d43481d136242e22e9e6d58e1aa0",
+      "outputSHA256": "61be264e7d2c709d706cf6dcfb37fb55a1fbb04d6a2f2c94bc6726ae25500a2b",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-j2k-to-jli.jpg",
+      "inputSHA256": "b676a43865b5b0887c541cf16bf8fb0e5cc22e281b5ef1523a3cdf1119eb24ad",
+      "outputSHA256": "011ba72bd6e9fef316f9c657a5ab2a34d97cfb51a9c9984d7213a070323798b0",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-j2k-to-jls.jls",
+      "inputSHA256": "69a4ca10351044b8d29c51d01b88bfd4673b0568a8750111fad9bd71a66375a8",
+      "outputSHA256": "011ba72bd6e9fef316f9c657a5ab2a34d97cfb51a9c9984d7213a070323798b0",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-j2k-to-jxl.jxl",
+      "inputSHA256": "b2bb03b7616532bf60c4ac958038f8b5164f72d8d74fb43295641e5b7c852a98",
+      "outputSHA256": "011ba72bd6e9fef316f9c657a5ab2a34d97cfb51a9c9984d7213a070323798b0",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-jli-to-j2k.j2k",
+      "inputSHA256": "77babf7e4654341bbd6c5f2a7511236201ac227e7c14070cf6324d510f229ecb",
+      "outputSHA256": "d1da939b0213175763fa2ccf8d83fe33195340d8b3af2e826fe3fd726ba53c87",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-jli-to-jls.jls",
+      "inputSHA256": "69a4ca10351044b8d29c51d01b88bfd4673b0568a8750111fad9bd71a66375a8",
+      "outputSHA256": "011ba72bd6e9fef316f9c657a5ab2a34d97cfb51a9c9984d7213a070323798b0",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-jli-to-jxl.jxl",
+      "inputSHA256": "b2bb03b7616532bf60c4ac958038f8b5164f72d8d74fb43295641e5b7c852a98",
+      "outputSHA256": "011ba72bd6e9fef316f9c657a5ab2a34d97cfb51a9c9984d7213a070323798b0",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-jls-to-j2k.j2k",
+      "inputSHA256": "77babf7e4654341bbd6c5f2a7511236201ac227e7c14070cf6324d510f229ecb",
+      "outputSHA256": "d1da939b0213175763fa2ccf8d83fe33195340d8b3af2e826fe3fd726ba53c87",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-jls-to-jli.jpg",
+      "inputSHA256": "b676a43865b5b0887c541cf16bf8fb0e5cc22e281b5ef1523a3cdf1119eb24ad",
+      "outputSHA256": "011ba72bd6e9fef316f9c657a5ab2a34d97cfb51a9c9984d7213a070323798b0",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-jls-to-jxl.jxl",
+      "inputSHA256": "b2bb03b7616532bf60c4ac958038f8b5164f72d8d74fb43295641e5b7c852a98",
+      "outputSHA256": "011ba72bd6e9fef316f9c657a5ab2a34d97cfb51a9c9984d7213a070323798b0",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-jxl-to-j2k.j2k",
+      "inputSHA256": "77babf7e4654341bbd6c5f2a7511236201ac227e7c14070cf6324d510f229ecb",
+      "outputSHA256": "d1da939b0213175763fa2ccf8d83fe33195340d8b3af2e826fe3fd726ba53c87",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-jxl-to-jli.jpg",
+      "inputSHA256": "b676a43865b5b0887c541cf16bf8fb0e5cc22e281b5ef1523a3cdf1119eb24ad",
+      "outputSHA256": "011ba72bd6e9fef316f9c657a5ab2a34d97cfb51a9c9984d7213a070323798b0",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "257x17-u16-jxl-to-jls.jls",
+      "inputSHA256": "69a4ca10351044b8d29c51d01b88bfd4673b0568a8750111fad9bd71a66375a8",
+      "outputSHA256": "011ba72bd6e9fef316f9c657a5ab2a34d97cfb51a9c9984d7213a070323798b0",
+      "samples": 4369,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u12-j2k-to-jli.jpg",
+      "inputSHA256": "6bfa18330e488a4b67842e833479816fff06115ee748cbfda5a7d926ac97f74c",
+      "outputSHA256": "6c95c215cda7b35c3c44ff32d58c4920494d889e2d02512d892a362d2369efc6",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u12-j2k-to-jls.jls",
+      "inputSHA256": "f51b20fc8f3ac9ff749be8eac1352fe8d53a77d6e9de98dacdc43d31a0dc7dc3",
+      "outputSHA256": "6c95c215cda7b35c3c44ff32d58c4920494d889e2d02512d892a362d2369efc6",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u12-j2k-to-jxl.jxl",
+      "inputSHA256": "cdc7f0c1293ec41a5ad82645e4f29bba0bb51c8f94a97b96a8c79ce84cf1c592",
+      "outputSHA256": "066ccb62d544833e28afce2244941b87a4dab7bdeccafa9ba30dec1f7b9bd676",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 1
+    },
+    {
+      "file": "65x31-u12-jli-to-j2k.j2k",
+      "inputSHA256": "8f1c716e5ee7a005db8fd8db69e832c9a4004fd9067140a1b680347bbbef3a5e",
+      "outputSHA256": "bd7fbf184c486aecc4021682ecd17dd4a6d1f09e5cd680f6ff298784a9a339c3",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u12-jli-to-jls.jls",
+      "inputSHA256": "f51b20fc8f3ac9ff749be8eac1352fe8d53a77d6e9de98dacdc43d31a0dc7dc3",
+      "outputSHA256": "6c95c215cda7b35c3c44ff32d58c4920494d889e2d02512d892a362d2369efc6",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u12-jli-to-jxl.jxl",
+      "inputSHA256": "cdc7f0c1293ec41a5ad82645e4f29bba0bb51c8f94a97b96a8c79ce84cf1c592",
+      "outputSHA256": "066ccb62d544833e28afce2244941b87a4dab7bdeccafa9ba30dec1f7b9bd676",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 1
+    },
+    {
+      "file": "65x31-u12-jls-to-j2k.j2k",
+      "inputSHA256": "8f1c716e5ee7a005db8fd8db69e832c9a4004fd9067140a1b680347bbbef3a5e",
+      "outputSHA256": "bd7fbf184c486aecc4021682ecd17dd4a6d1f09e5cd680f6ff298784a9a339c3",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u12-jls-to-jli.jpg",
+      "inputSHA256": "6bfa18330e488a4b67842e833479816fff06115ee748cbfda5a7d926ac97f74c",
+      "outputSHA256": "6c95c215cda7b35c3c44ff32d58c4920494d889e2d02512d892a362d2369efc6",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u12-jls-to-jxl.jxl",
+      "inputSHA256": "cdc7f0c1293ec41a5ad82645e4f29bba0bb51c8f94a97b96a8c79ce84cf1c592",
+      "outputSHA256": "066ccb62d544833e28afce2244941b87a4dab7bdeccafa9ba30dec1f7b9bd676",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 1
+    },
+    {
+      "file": "65x31-u12-jxl-to-j2k.j2k",
+      "inputSHA256": "8f1c716e5ee7a005db8fd8db69e832c9a4004fd9067140a1b680347bbbef3a5e",
+      "outputSHA256": "bd7fbf184c486aecc4021682ecd17dd4a6d1f09e5cd680f6ff298784a9a339c3",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u12-jxl-to-jli.jpg",
+      "inputSHA256": "6bfa18330e488a4b67842e833479816fff06115ee748cbfda5a7d926ac97f74c",
+      "outputSHA256": "6c95c215cda7b35c3c44ff32d58c4920494d889e2d02512d892a362d2369efc6",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u12-jxl-to-jls.jls",
+      "inputSHA256": "f51b20fc8f3ac9ff749be8eac1352fe8d53a77d6e9de98dacdc43d31a0dc7dc3",
+      "outputSHA256": "6c95c215cda7b35c3c44ff32d58c4920494d889e2d02512d892a362d2369efc6",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-j2k-to-jli.jpg",
+      "inputSHA256": "08540619fa96ba15789056384f426facc7678e0b1825e45b4fa838e261b70044",
+      "outputSHA256": "2ed88ebabd9c10b3eda8b17236ec8c9e703531690aaa30ccd7271136e4c82193",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-j2k-to-jls.jls",
+      "inputSHA256": "c0da6bce2bbbf85f78109719b1a2045c5fe0799a699063e80e43c7538a4e8bf4",
+      "outputSHA256": "2ed88ebabd9c10b3eda8b17236ec8c9e703531690aaa30ccd7271136e4c82193",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-j2k-to-jxl.jxl",
+      "inputSHA256": "877da0478b796e8601b4931a9c0286bc7fcf5dea646f636d384e390f12c20726",
+      "outputSHA256": "2ed88ebabd9c10b3eda8b17236ec8c9e703531690aaa30ccd7271136e4c82193",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-jli-to-j2k.j2k",
+      "inputSHA256": "a5e68048359afc29dd53656e6ba2b6c47b15e85dcc332bb6243465855c767107",
+      "outputSHA256": "654186fb57e8d6cb52e85fde14058c0f11ca8d0ff4cde5aa9664066153fd9e5b",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-jli-to-jls.jls",
+      "inputSHA256": "c0da6bce2bbbf85f78109719b1a2045c5fe0799a699063e80e43c7538a4e8bf4",
+      "outputSHA256": "2ed88ebabd9c10b3eda8b17236ec8c9e703531690aaa30ccd7271136e4c82193",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-jli-to-jxl.jxl",
+      "inputSHA256": "877da0478b796e8601b4931a9c0286bc7fcf5dea646f636d384e390f12c20726",
+      "outputSHA256": "2ed88ebabd9c10b3eda8b17236ec8c9e703531690aaa30ccd7271136e4c82193",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-jls-to-j2k.j2k",
+      "inputSHA256": "a5e68048359afc29dd53656e6ba2b6c47b15e85dcc332bb6243465855c767107",
+      "outputSHA256": "654186fb57e8d6cb52e85fde14058c0f11ca8d0ff4cde5aa9664066153fd9e5b",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-jls-to-jli.jpg",
+      "inputSHA256": "08540619fa96ba15789056384f426facc7678e0b1825e45b4fa838e261b70044",
+      "outputSHA256": "2ed88ebabd9c10b3eda8b17236ec8c9e703531690aaa30ccd7271136e4c82193",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-jls-to-jxl.jxl",
+      "inputSHA256": "877da0478b796e8601b4931a9c0286bc7fcf5dea646f636d384e390f12c20726",
+      "outputSHA256": "2ed88ebabd9c10b3eda8b17236ec8c9e703531690aaa30ccd7271136e4c82193",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-jxl-to-j2k.j2k",
+      "inputSHA256": "a5e68048359afc29dd53656e6ba2b6c47b15e85dcc332bb6243465855c767107",
+      "outputSHA256": "654186fb57e8d6cb52e85fde14058c0f11ca8d0ff4cde5aa9664066153fd9e5b",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-jxl-to-jli.jpg",
+      "inputSHA256": "08540619fa96ba15789056384f426facc7678e0b1825e45b4fa838e261b70044",
+      "outputSHA256": "2ed88ebabd9c10b3eda8b17236ec8c9e703531690aaa30ccd7271136e4c82193",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    },
+    {
+      "file": "65x31-u16-jxl-to-jls.jls",
+      "inputSHA256": "c0da6bce2bbbf85f78109719b1a2045c5fe0799a699063e80e43c7538a4e8bf4",
+      "outputSHA256": "2ed88ebabd9c10b3eda8b17236ec8c9e703531690aaa30ccd7271136e4c82193",
+      "samples": 2015,
+      "exact": true,
+      "normalised16BitRoundingError": 0
+    }
+  ],
+  "charlsSourceSHA256": "992ea9f33dc2805809beb7bafb0438f88a1fdedcf5c1effc8bc680771f9d2c68",
+  "oracleImage": "sha256:7acb25bded1bfccaff374d35513586d51507db7704a145b1e075b9df7171b2ff"
+}

@@ -1,5 +1,14 @@
 # Change log
 
+## Non-Watch qualification follow-up — 12 October 2026
+
+The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation still needs a repository administrator; the supported-version policy is documented. No stable release or application cutover is claimed.
+
+See [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md). Shipping library code and dependencies are unchanged
+in this qualification follow-up; the new four-codec and raw-RGB oracle harnesses
+are development-only. Historical records and common contracts remain intact.
+
+
 ## Unreleased — JPEG decode parity, 2026-10-12
 
 - Correct full-resolution subsampled YCbCr reconstruction using SOF sample centres and component rounding, through both allocating and caller-storage decode. Retain established 4:4:4, preview, greyscale and XYB behaviour.

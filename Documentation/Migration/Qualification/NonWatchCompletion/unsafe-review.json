@@ -1,0 +1,17 @@
+{
+  "scope": "Migration executor and shared-storage adapter review; supplements existing regressions, fuzz and sanitizers.",
+  "sourceHashes": {
+    "Sources/SwiftJLI/NativeExecution.swift": "3347d264644496c0e13a5667c6f9c0797e2917ee61d17b5ea2d3524439bd3ad9",
+    "Sources/SwiftJLI/Native/Contract/SharedRGBInput.swift": "7902000f7f7f9a05b50b5bce717818e3c46e7bb4bb101013a0b206c2ee23a317",
+    "Sources/SwiftJLI/Native/Contract/BorrowedPlane.swift": "09cc85db6b1268760f0e27f8db4697544af2049ca2266b9520deb007f4b398f4",
+    "Examples/SuitePairIntegration/Sources/SuitePairIntegration/main.swift": "978eadabc835166427247b62f428bd8838e3a668ff57e9dcd846c446e2acea70"
+  },
+  "findings": [
+    "NativeOperation joins dispatch workers before scoped borrows return and transfers cancellation through mutex-owned state.",
+    "Suite adapter retains sealed read-only storage rather than a pointer or pixel array; concurrent encoders join before owner release.",
+    "Decoded storage is reused only through the original reserved destination after pre-write cancellation; a second reservation is not substituted.",
+    "Unknown SwiftJXL allocation counters remain unknown; independent heap telemetry checks the handoff."
+  ],
+  "unresolvedFindings": [],
+  "limits": "Finite source-path review, not an exhaustive audit of all native kernels."
+}

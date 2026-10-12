@@ -20,9 +20,9 @@ must include those changed decode paths before selecting a release candidate.
 | Scope | Current disposition |
 | --- | --- |
 | Milestones 1–2: API/storage foundation and native migration baseline | Implemented; source inventory, provenance, predecessor comparisons and independent JPEG oracle evidence retained. |
-| Milestone 3: caller storage and first suite pair | Implemented; shared storage/copy/lifetime checks and SwiftJ2K ↔ SwiftJLI integration evidence retained at their recorded revisions. |
-| Milestone 4: profiles and qualification | Supported codec profiles and CI platform matrix implemented; performance acceptance and physical Watch resource qualification remain open. Unsupported combinations reject explicitly. |
-| Milestone 5: release preparation | Consumer, documentation and provenance evidence present; stable-release acceptance remains open. No stable tag or downstream cutover is established. |
+| Milestone 3: caller storage and first suite pair | Implemented; refreshed sharing/copy/lifetime evidence covers all six available codec pairs in both directions, including the first SwiftJ2K ↔ SwiftJLS pair. |
+| Milestone 4: profiles and qualification | Supported profiles, all 13 CI jobs, full fuzz campaigns, independent oracles, memory controls and explicit performance dispositions qualified. Physical Watch resource testing is excluded here and remains unexecuted. Unsupported combinations reject explicitly. |
+| Milestone 5: release preparation | Consumer, documentation, provenance and supported-version policy refreshed. An administrator must activate the private reporting channel. Physical Watch remains a release qualification limit. No stable tag or downstream cutover is established. |
 | Auxiliary products and CLI payload commands | Explicit I1–I3 dispositions below remain in force; deferred work is not claimed as implemented. |
 
 The [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) is authoritative

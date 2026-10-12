@@ -2,7 +2,8 @@
 
 This is a historical checkpoint, not the current repository head. Current
 qualification and remaining gates are indexed by the [acceptance ledger](../ACCEPTANCE.md),
-with maintenance-fix evidence in [JPEG decode parity](../JPEGDecodeParity.md).
+with maintenance-fix evidence in [JPEG decode parity](../JPEGDecodeParity.md)
+and refreshed candidate evidence in [NonWatchCompletion](NonWatchCompletion/README.md).
 
 Shipping source for this checkpoint is `aa6e298cd89aadd37b27d69e9c8c957f39c3d409`; this checkpoint adds
 development integration and validation evidence. See [the acceptance ledger](../ACCEPTANCE.md)

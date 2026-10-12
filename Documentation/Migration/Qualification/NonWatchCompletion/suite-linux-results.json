@@ -1,0 +1,122 @@
+{
+  "status": "passed",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-suite-linux-build:/build:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence:/evidence",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/build/release/SuitePairIntegration",
+        "/evidence/suite-linux-verified"
+      ],
+      "exitCode": 0,
+      "log": "suite-linux.log"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-suite-linux-build:/build:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence:/evidence",
+        "-e",
+        "SWIFTJLI_COPY_CONTROL=1",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "/build/release/SuitePairIntegration",
+        "/evidence/suite-linux-control-verified"
+      ],
+      "exitCode": 0,
+      "log": "suite-linux-control.log"
+    },
+    {
+      "argv": [
+        "python3",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/SwiftJLI/Scripts/verify-cross-codec-heap.py",
+        "--suite",
+        "--baseline",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-linux.log",
+        "--control",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence/suite-linux-control.log"
+      ],
+      "exitCode": 0,
+      "log": "suite-linux-verification.log"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-suite-linux-build:/build:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence:/evidence",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "strace",
+        "-f",
+        "-e",
+        "trace=openat,execve",
+        "-o",
+        "/evidence/suite-file-access.log",
+        "/build/release/SuitePairIntegration",
+        "/evidence/suite-trace"
+      ],
+      "exitCode": 0,
+      "log": "suite-trace.log"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-suite-linux-build:/build:ro",
+        "-v",
+        "/Users/pushparaj/Documents/Codex/2026-10-12/i-have-beed-fixed-some-issues/work/completion-evidence:/evidence",
+        "swiftjli-completion-oracles:20261012-e7e54f7",
+        "strace",
+        "-f",
+        "-e",
+        "trace=open,openat,openat2,creat,memfd_create,execve,execveat",
+        "-o",
+        "/evidence/suite-file-access-complete.log",
+        "/build/release/SuitePairIntegration",
+        "/evidence/suite-trace-complete"
+      ],
+      "exitCode": 0,
+      "log": "suite-file-access-complete.log"
+    }
+  ],
+  "sourceSHA256": "978eadabc835166427247b62f428bd8838e3a668ff57e9dcd846c446e2acea70",
+  "imageID": "sha256:7acb25bded1bfccaff374d35513586d51507db7704a145b1e075b9df7171b2ff",
+  "finalCompressedWrites": 72,
+  "executedPrograms": 1,
+  "completeFileAndProcessTrace": {
+    "finalCompressedWrites": 72,
+    "executedPrograms": 1,
+    "syscalls": [
+      "open",
+      "openat",
+      "openat2",
+      "creat",
+      "memfd_create",
+      "execve",
+      "execveat"
+    ]
+  },
+  "binarySHA256": "9be11657e309143c863eb8163ae881433f87b3ccd9287a7d0ed44bce5d462201"
+}
