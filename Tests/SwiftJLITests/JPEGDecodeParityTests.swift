@@ -73,8 +73,11 @@ import Testing
             let result = try await decoder.decode(Data(bytes))
             #expect(try result.image.storage.withUnsafeBytes { Array($0) } == [UInt8](repeating: 73, count: 64))
         }
-        for bytes in [Array(stream.dropLast(2)), stream + stream, stream + [1,2],
-                      odd + [1], odd + [0,0], even + [0], evenUnpadded + [0]] {
+        let invalidStreams: [[UInt8]] = [
+            Array(stream.dropLast(2)), stream + stream, stream + [1,2],
+            odd + [1], odd + [0,0], even + [0], evenUnpadded + [0]
+        ]
+        for bytes in invalidStreams {
             do { _ = try await decoder.decode(Data(bytes)); Issue.record("Accepted invalid trailing data") }
             catch let error as CodecError { #expect(error.category == .malformedInput) }
         }

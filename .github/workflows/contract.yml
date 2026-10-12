@@ -118,7 +118,7 @@ jobs:
   ios-simulator:
     name: iOS 26+ simulator runtime
     runs-on: macos-26
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -127,6 +127,10 @@ jobs:
         run: python3 Scripts/test-apple-simulator.py --output "$RUNNER_TEMP/ios-runtime"
       - name: Compare the actual predecessor on the same simulator
         run: python3 Scripts/test-apple-simulator.py --package-path Examples/PredecessorComparison --scheme PredecessorComparison --output "$RUNNER_TEMP/ios-predecessor"
+      - name: Compare corrected chroma with the actual maintenance predecessor
+        env:
+          JLISWIFT_CENTERED_REFERENCE: '1'
+        run: python3 Scripts/test-apple-simulator.py --package-path Examples/PredecessorComparison --scheme PredecessorComparison --output "$RUNNER_TEMP/ios-chroma-predecessor"
       - name: Retain simulator commands and test results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -139,6 +143,9 @@ jobs:
             ${{ runner.temp }}/ios-predecessor/*.json
             ${{ runner.temp }}/ios-predecessor/*.log
             ${{ runner.temp }}/ios-predecessor/Tests.xcresult
+            ${{ runner.temp }}/ios-chroma-predecessor/*.json
+            ${{ runner.temp }}/ios-chroma-predecessor/*.log
+            ${{ runner.temp }}/ios-chroma-predecessor/Tests.xcresult
           retention-days: 14
 
   other-apple-simulators:
