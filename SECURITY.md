@@ -1,6 +1,6 @@
 # Security policy and implementation requirements
 
-Status: documentation foundation. No successor binary release exists and no vulnerability response time is promised here.
+Status: development codec implementation; [stable-release acceptance](Documentation/Migration/ACCEPTANCE.md) remains open. No successor binary release exists and no vulnerability response time is promised here.
 
 ## Reporting
 

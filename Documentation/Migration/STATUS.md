@@ -5,7 +5,37 @@ For the current disposition of every acceptance gate, read
 earlier implementation descriptions and pending statements are superseded by
 later checkpoints and the acceptance ledger.
 
-Migration remains in progress. This checkpoint does not establish first-stable readiness.
+## Latest disposition — 12 October 2026
+
+Draft [PR #21](https://github.com/raster-labs/SwiftJLI/pull/21) closes the three
+identified maintenance gaps: full-resolution subsampled chroma reconstruction,
+raw RGB DCT interpretation and one legal zero padding byte. The same 15 independent
+chroma fixtures pass with maxima 0–2 (unchanged limit 3); all 349 Linux Swift 6.4
+tests pass. [JPEGDecodeParity.md](JPEGDecodeParity.md) records source pins,
+sanitizers, caller-storage checks, CI corrections and the 16–21% advisory
+4:2:0 latency cost. CI and acceptance are revision-specific. No new codec source
+was changed during this documentation reconciliation.
+
+The migration is implemented for its documented scope, but full acceptance is
+**not complete**. Performance, physical Watch resource validation and reconciliation
+of required evidence against the eventual release candidate remain open. The
+acceptance ledger separates these gates from deliberate product deferrals.
+
+## Merged baseline — 9 October 2026
+
+The codec implementation and reviewed deadline correction merged through
+[PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) as `a967d27`.
+[CI 37900647193](https://github.com/raster-labs/SwiftJLI/actions/runs/37900647193)
+passes all 13 jobs at `a1920c7`, whose source/tests/workflow match the merge commit.
+The separate [main run 37903247015](https://github.com/raster-labs/SwiftJLI/actions/runs/37903247015) also passed all 13 jobs at `a967d27`.
+Performance acceptance and physical Watch resource validation remain open. The
+merge does not establish stable-release readiness, predecessor retirement or an
+application cutover. See the acceptance ledger for current product dispositions.
+
+## Historical implementation checkpoints
+
+The following records describe their original source revisions; their pending
+statements and early capability restrictions do not describe all of current main.
 
 Source: JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. Successor base: `41b3cbc34e5e96db41853c925ec720fad4120b65`. Common suite policy: 0.10.0; shared contract documents are unchanged. Per-file origins and original hashes are in [provenance.json](provenance.json).
 

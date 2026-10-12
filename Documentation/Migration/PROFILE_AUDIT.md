@@ -46,6 +46,23 @@ The predecessor image type declares UInt8, UInt16 and Float32 storage plus six c
 
 The initial three executed rejection cases required `unsupportedFeature`, not just any thrown error. Their source arrays and checks are retained in `ProfileAudit/Comparison.swift`.
 
+## Maintenance decoder additions — 12 October 2026
+
+The original audit pin above predates the two branches assigned for this follow-up.
+[Draft PR #21](https://github.com/raster-labs/SwiftJLI/pull/21) implements:
+
+| Maintenance behaviour | Successor disposition |
+| --- | --- |
+| JPEG sample centres | Full-resolution integer subsampled YCbCr uses centred reconstruction and component rounding; all 15 independent fixtures pass at the original tolerance. Existing 4:4:4, preview, greyscale, Float32 and XYB interpretations are retained. |
+| Raw RGB DCT | Adobe transform 0 or RGB identifiers select direct 8/12-bit RGB output at scales 1/2/4/8. Conflicting markers and unknown ICC interpretations reject. |
+| Explicit source interpretation | `DecoderConfiguration(sourceColourModel:)` handles unmarked three-component DCT consistently in inspect, inspectJPEG and decode; this interprets the source, rather than relabelling the decoded output. |
+| Encapsulated JPEG padding | One zero byte after an odd-length complete JPEG is accepted; even-length padding, additional bytes, concatenation and incomplete streams reject. Existing resource limits remain enforced. |
+
+Exact branch pins, tests, storage evidence and limitations are in
+[JPEGDecodeParity.md](JPEGDecodeParity.md). This is payload decoding support;
+DICOM container parsing remains the consumer's responsibility. These draft changes
+do not close performance, physical-device or stable-release qualification.
+
 ## Decoder and inspection
 
 | Predecessor control/information | Successor disposition |

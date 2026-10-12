@@ -1,6 +1,6 @@
 # Contributing
 
-Start with `AGENTS.md` and `IMPLEMENTATION.md`. Milestone 1 implements API shapes and owning storage; codec implementation remains staged. Keep pull requests focused and preserve independent package consumption.
+Start with `AGENTS.md` and `IMPLEMENTATION.md`. The codec implementation is merged; the [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) records maintenance changes and open qualification gates. Keep pull requests focused and preserve independent package consumption.
 
 [MIGRATION.md](MIGRATION.md) guides application upgrades from JLISwift. Update its mappings, executable example and current-versus-planned status when changing the public API or qualifying a codec capability.
 

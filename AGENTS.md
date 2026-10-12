@@ -4,11 +4,13 @@ Applies to Claude, Codex and other coding agents working in this repository.
 
 ## Start here
 
-Current owner-approved baseline: Apple OS 26.0, a Swift 6.2 manifest minimum with Swift 6.4 as the qualified primary toolchain, and the CLI foundation. The current contract revision is **0.9.0**. Contract 0.5.0 reversed the 0.4.0 raise to OS 27, and contract 0.9.0 (Decision D3) kept the floor at 26.0, placing the cost of adoption on each consumer at its own cutover. The OS 27 records under Documentation/Engineering/OS27CLI are superseded history for their platform claims, not the current baseline; their CLI content remains current.
+Current owner-approved baseline: Apple OS 26.0, a Swift 6.2 manifest minimum with Swift 6.4 as the qualified primary toolchain, and the CLI foundation. The current suite policy revision is **0.10.0**. Contract 0.5.0 reversed the 0.4.0 raise to OS 27, and contract 0.9.0 (Decision D3) kept the floor at 26.0, placing the cost of adoption on each consumer at its own cutover. The OS 27 records under Documentation/Engineering/OS27CLI are superseded history for their platform claims, not the current baseline; their CLI content remains current.
 
-For the compiler upgrade, read the [Swift 6.4 manifesto](Documentation/Engineering/Swift64/Swift_6.4_Upgrade_Manifesto_v1.0.0.md), [suite supplement](Documentation/Engineering/Swift64/Swift_Image_Compression_Suite_Swift_6.4_Supplement_v1.0.0.md), then the [historical upgrade record and feature register](Documentation/Engineering/Swift64/README.md). Preserve the supplied files byte-for-byte. Current contract 0.9.0 supersedes their older inspected contract snapshot; historical evidence is not rewritten.
+For the compiler upgrade, read the [Swift 6.4 manifesto](Documentation/Engineering/Swift64/Swift_6.4_Upgrade_Manifesto_v1.0.0.md), [suite supplement](Documentation/Engineering/Swift64/Swift_Image_Compression_Suite_Swift_6.4_Supplement_v1.0.0.md), then the [historical upgrade record and feature register](Documentation/Engineering/Swift64/README.md). Preserve the supplied files byte-for-byte. Current suite policy 0.10.0 supersedes their older inspected contract snapshot; historical evidence is not rewritten.
 
 Read `README.md`, `HISTORY.md`, this file and `IMPLEMENTATION.md`, then all seven common contract documents in `Documentation/`. Read the repository-specific `TRANSCODING.md` when present before work affecting transcoding. `CLAUDE.md` points here and is not a separate policy. Follow the precedence in `Documentation/SUITE_POLICY.md`.
+
+For current implementation and qualification status, start with [the acceptance ledger](Documentation/Migration/ACCEPTANCE.md). The original codec migration merged in PR #19; subsequent maintenance corrections retain separate source pins and evidence. Historical milestone instructions below do not mean the current repository contains only a foundation.
 
 For application upgrades from JLISwift, also read [MIGRATION.md](MIGRATION.md). Keep its API mappings, capability limitations and acceptance checklist accurate when public behaviour changes; an API rename alone is not a completed codec migration.
 
@@ -38,7 +40,7 @@ This repository began with documentation only. Reading its instructions does not
 
 State what behaviour changed and why, exact source/baseline/contract revisions, commands and exit results, skipped/unavailable gates, sample/copy/lifetime evidence, performance/memory impact and remaining limitations. Separate measured facts from expectations. Include links to tests and fixture provenance. No invented test counts, benchmark numbers, platform verification or medical/regulatory claims.
 
-## Ready-to-use first task prompt
+## Historical Milestone 1 task prompt
 
 "Read AGENTS.md, IMPLEMENTATION.md, HISTORY.md and the common contract. Carry out Milestone 1 only: validate the local public API and owning-memory contract in Swift 6.4, with meaningful descriptor, lifetime, concurrency and independent-consumer tests. Use synthetic buffers for the adapter experiment and preserve repository independence. Do not migrate codec algorithms or implement the real transcoder in this milestone. Return a reviewable PR, exact test evidence and any concrete contract issue requiring a coordinated revision."
 

@@ -1,6 +1,10 @@
 # Qualification checkpoint
 
-Shipping source is `aa6e298cd89aadd37b27d69e9c8c957f39c3d409`; this checkpoint adds
+This is a historical checkpoint, not the current repository head. Current
+qualification and remaining gates are indexed by the [acceptance ledger](../ACCEPTANCE.md),
+with maintenance-fix evidence in [JPEG decode parity](../JPEGDecodeParity.md).
+
+Shipping source for this checkpoint is `aa6e298cd89aadd37b27d69e9c8c957f39c3d409`; this checkpoint adds
 development integration and validation evidence. See [the acceptance ledger](../ACCEPTANCE.md)
 for remaining gates. `results.json` binds source, harness and evidence hashes.
 
