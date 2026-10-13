@@ -1,5 +1,12 @@
 # Change log
 
+## Milestone 4 device qualification preparation — 13 October 2026
+
+- Reconcile the current documentation with merged PR #21 (`e1ae85d`) and its passing 13-job post-merge CI run.
+- Add a development-only Watch resource qualification package and macOS CI smoke test. Cover Watch defaults, decoded-size boundaries, repeated padded caller-storage operations, concurrent readers, DCT profiles, workspace denial, cancellation, deadlines and recovery.
+- Label host/simulator measurements separately from physical Watch evidence. Physical device execution is still pending because no Watch is connected; no device memory ceiling or full Milestone 4 completion is claimed.
+- Leave Milestone 5 for a later task. Shipping codec sources, resource defaults, public API, common contracts and version are unchanged. See the [qualification record](Documentation/Migration/Qualification/Milestone4/README.md).
+
 ## AC performance qualification — 13 October 2026
 
 After the owner checked the charger, macOS recognised AC power. The same release

@@ -115,3 +115,7 @@ The remaining executable non-Watch qualification is complete for the recorded sh
 [Current evidence and explicit performance baseline](Qualification/NonWatchCompletion/README.md)
 supersede the advisory/open qualification statements above. The original
 maintenance fixture evidence and historical measurements remain unchanged.
+
+## Merged baseline — 13 October 2026
+
+PR #21 merged as `e1ae85d`; [post-merge CI](https://github.com/raster-labs/SwiftJLI/actions/runs/38355780498) passed all 13 jobs. Statements above describing draft status and `a967d27` as main are historical. The [Milestone 4 record](Qualification/Milestone4/README.md) retains the unexecuted physical Watch gate; Milestone 5 remains deferred.

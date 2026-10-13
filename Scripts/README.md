@@ -71,3 +71,7 @@ codecs. `verify-suite-outputs.py` checks the 72 completed outputs with independe
 JPEG/JPEG 2000/JPEG-LS/JPEG XL decoders. `verify-cross-codec-heap.py --suite`
 requires 72 allocator cases and 72 deliberate-copy controls; omitting `--suite`
 retains the original two-codec checks. These are development-only tools.
+
+## Watch resource qualification
+
+The development-only [WatchQualification package](../Examples/WatchQualification/README.md) supplies focused Watch-budget tests and a physical-device run procedure. Its macOS CI check validates the harness only. Device execution and measured resource acceptance remain necessary before closing Milestone 4.

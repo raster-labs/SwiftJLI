@@ -11,18 +11,19 @@ are unchanged in the merge commit. The milestones below remain the plan of recor
 not a claim that every release gate has passed. Main itself passed all 13 jobs in
 [CI 37903247015](https://github.com/raster-labs/SwiftJLI/actions/runs/37903247015).
 
-The three JPEG maintenance gaps are implemented separately in draft PR #21.
+The three JPEG maintenance gaps merged in PR #21 on 13 October 2026 as
+`e1ae85d`. Its post-merge [CI 38355780498](https://github.com/raster-labs/SwiftJLI/actions/runs/38355780498)
+passed all 13 jobs.
 The original migration pin remains intact; the two maintenance branch pins,
 independent regressions and measured performance cost are recorded in
-[JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md). Acceptance
-must include those changed decode paths before selecting a release candidate.
+[JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md). The refreshed non-Watch acceptance evidence includes those changed decode paths.
 
 | Scope | Current disposition |
 | --- | --- |
 | Milestones 1–2: API/storage foundation and native migration baseline | Implemented; source inventory, provenance, predecessor comparisons and independent JPEG oracle evidence retained. |
 | Milestone 3: caller storage and first suite pair | Implemented; refreshed sharing/copy/lifetime evidence covers all six available codec pairs in both directions, including the first SwiftJ2K ↔ SwiftJLS pair. |
-| Milestone 4: profiles and qualification | Supported profiles, all 13 CI jobs, full fuzz campaigns, independent oracles, memory controls and explicit performance dispositions qualified, including the AC rerun with 140 exact output comparisons and 43 assessed repeated above-threshold latency cases. Physical Watch resource testing is excluded here and remains unexecuted. Unsupported combinations reject explicitly. |
-| Milestone 5: release preparation | Consumer, documentation, provenance and supported-version policy refreshed. Private-reporting activation is deferred by the owner to a later task; an administrator must establish it before stable release. Physical Watch remains a release qualification limit. No stable tag or downstream cutover is established. |
+| Milestone 4: profiles and qualification | Supported profiles, all 13 CI jobs, full fuzz campaigns, independent oracles, memory controls and explicit performance dispositions qualified, including the AC rerun with 140 exact output comparisons and 43 assessed repeated above-threshold latency cases. Physical Watch resource testing remains unexecuted, so full Milestone 4 completion is pending. A development-only device harness is prepared and checked on macOS; see the [Milestone 4 record](Documentation/Migration/Qualification/Milestone4/README.md). Unsupported combinations reject explicitly. |
+| Milestone 5: release preparation | Deferred by the owner to a later task. Consumer, documentation, provenance and supported-version policy already refreshed. Private-reporting activation is deferred by the owner to a later task; an administrator must establish it before stable release. Physical Watch remains a release qualification limit. No stable tag or downstream cutover is established. |
 | Auxiliary products and CLI payload commands | Explicit I1–I3 dispositions below remain in force; deferred work is not claimed as implemented. |
 
 The [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) is authoritative
