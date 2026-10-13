@@ -104,3 +104,69 @@ Removing the fallback exposed a second limitation it had been hiding: on Apple S
 ## Native codec migration checkpoint — 7 October 2026
 
 The assigned migration now connects predictive lossless/bounded-error and 8/12-bit sequential/progressive DCT kernels to the common owning-storage API, with explicit fidelity/backend reporting. Pinned predecessor fixtures and native identity records are retained. This is an implementation checkpoint, not a release: advanced colour/float profiles, complete public corpus coverage, memory/performance qualification and the required platform matrix remain open. See [executed evidence and limitations](Documentation/Migration/STATUS.md).
+
+## Codec implementation merged — 9 October 2026
+
+[PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged as
+`a967d27bc5756fab8b7fe9db6eb302ff0645c362`. The migrated predecessor remains pinned
+at `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. Native predictive and DCT profiles,
+explicit colour/Float32 policies, caller storage, bounded execution and retained
+provenance are implemented. The final source revision `a1920c7` also fixes a
+reviewed finite-deadline overflow without disabling cancellation or deadline checks.
+All 13 jobs in CI 37900647193 pass at that revision; source/tests/workflow match
+the merge commit. Earlier fuzz, interoperability, memory and performance evidence
+retains its own exact revision rather than being relabelled as fresh execution.
+
+Performance acceptance and physical Watch resource validation remain open.
+JLIDICOM/JLIBench product deferrals and the separate CLI payload milestone remain
+explicit. This merge does not publish a stable release, retire JLISwift or migrate
+DICOMKit/Voxelia. See [the current ledger](Documentation/Migration/ACCEPTANCE.md).
+
+## JPEG maintenance parity and completion audit — 12 October 2026
+
+Draft PR #21 applies the requested fixes from JLISwift's bounded-decoding and
+centred-chroma branches, retaining their exact pins separately from the original
+migration baseline. The independent chroma fixtures, raw RGB and strict padding
+regressions pass. The first CI run exposed Swift 6.2 test-expression complexity
+and the iOS harness's obsolete chroma expectations; the follow-up simplifies the
+expression and compares unchanged and corrected records against their respective
+live predecessors. All encoder identities remain checked.
+
+The current guides, implementation table and acceptance ledger now distinguish
+merged implementation, draft maintenance fixes, historical measurements and
+unfulfilled release gates. Performance acceptance, physical Watch validation and
+final-candidate evidence remain open. Auxiliary products and CLI payload verbs
+retain their explicit dispositions; no application cutover or stable release is
+performed. See [current acceptance](Documentation/Migration/ACCEPTANCE.md).
+
+## Non-Watch migration qualification — 12 October 2026
+
+The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation still needs a repository administrator; the supported-version policy is documented. No stable release or application cutover is claimed.
+
+See [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md). Shipping library code and dependencies are unchanged
+in this qualification follow-up; the new four-codec and raw-RGB oracle harnesses
+are development-only. Historical records and common contracts remain intact.
+
+## Owner follow-up — 13 October 2026
+
+The owner deferred private vulnerability reporting activation to a later task.
+The last recorded API check remains disabled, and repository-admin action or an
+established private contact is required before stable release. Physical Watch
+testing remains excluded and unexecuted. This documentation-only disposition
+does not waive either release prerequisite or alter the qualified codec source.
+CI [38253517616](https://github.com/raster-labs/SwiftJLI/actions/runs/38253517616)
+passed all 13 jobs for the preceding qualification commit `2c45328`.
+
+## AC performance qualification — 13 October 2026
+
+After the owner checked the charger, macOS recognised AC power. The same release
+binary, harness and shipping source passed two expanded and two ordinary runs:
+140 exact output comparisons, nominal thermals and 66 stable AC power snapshots.
+Forty-three operation cases repeatedly exceed 5%, with explicit per-case costs,
+unchanged safety/correctness reasons and updated successor baselines. The three
+additional crossings versus battery use previously investigated tiny-image and
+UInt12 input paths. Battery results and diagnostic attribution remain separate.
+Source/binary/harness identity was checked before and after execution. No codec
+code, resource default or fidelity tolerance changed. Physical Watch remains
+excluded; private-reporting activation remains owner-deferred before release.
+See [the evidence](Documentation/Migration/Qualification/NonWatchCompletion/README.md).

@@ -4,6 +4,10 @@ import SwiftJLI
 @main struct Oracle {
     static func main() async throws {
         let root = URL(fileURLWithPath: CommandLine.arguments[2], isDirectory: true)
+        if CommandLine.arguments[1] == "verify-raw-rgb" {
+            try await RawRGBOracle.run(root: root)
+            return
+        }
         if CommandLine.arguments[1].hasSuffix("-dct") {
             try await DCTOracle.run(CommandLine.arguments[1], root: root)
             return

@@ -434,6 +434,24 @@ struct JLIDecoder: Sendable {
         // image dimensions reduced by `scale` (= full dims when scale == 1).
         let outW = (frame.width + scale - 1) / scale
         let outH = (frame.height + scale - 1) / scale
+        // Full-resolution integer YCbCr uses SOF sample centres and component
+        // rounding. Prepare the planes once for both final-storage writers;
+        // 4:4:4, previews, raw Float32, greyscale and XYB keep their existing
+        // semantics. The established 4:4:4 oracle has a tighter error bound.
+        if scale == 1, numComponents == 3, configuration.outputPixelFormat != .float32,
+           parsed.iccProfile != XYBICCProfile.data, !parsed.isRawRGB,
+           components.contains(where: { $0.horizontalSampling != hMaxSampling || $0.verticalSampling != vMaxSampling }) {
+            for index in componentPlanes.indices {
+                let plane = componentPlanes[index]
+                componentPlanes[index] = (try ChromaSampling.upsampleJPEG(
+                    plane.data, width: plane.width, height: plane.height,
+                    targetWidth: outW, targetHeight: outH,
+                    horizontalSampling: components[index].horizontalSampling,
+                    verticalSampling: components[index].verticalSampling,
+                    maximumHorizontalSampling: hMaxSampling,
+                    maximumVerticalSampling: vMaxSampling), outW, outH)
+            }
+        }
         if let borrowedDestination {
             let floating = configuration.outputPixelFormat == .float32
             let xyb = parsed.iccProfile == XYBICCProfile.data
@@ -445,7 +463,8 @@ struct JLIDecoder: Sendable {
                 throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT output")
             }
             try SharedDCTStorage.write(componentPlanes, width: outW, height: outH,
-                precision: frame.precision, floatOutput: floating, xyb: parsed.iccProfile == XYBICCProfile.data, into: borrowedDestination)
+                precision: frame.precision, floatOutput: floating, xyb: parsed.iccProfile == XYBICCProfile.data,
+                rawRGB: parsed.isRawRGB, into: borrowedDestination)
             return try JLIImage(geometryOnlyWidth: outW, height: outH,
                 pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
                 colorModel: numComponents == 1 ? .grayscale : .rgb,
@@ -483,6 +502,16 @@ struct JLIDecoder: Sendable {
                 outputData = plane.data.map { UInt8(clamping: Int($0.rounded())) }
             }
             outputColorModel = configuration.outputColorModel ?? .grayscale
+        } else if parsed.isRawRGB {
+            let bps = wantsFloat32 ? 4 : isExtendedPrecision ? 2 : 1
+            var bytes = [UInt8](repeating: 0, count: outW * outH * 3 * bps)
+            try bytes.withUnsafeMutableBytes { raw in
+                try SharedDCTStorage.write(componentPlanes, width: outW, height: outH,
+                    precision: frame.precision, floatOutput: wantsFloat32, rawRGB: true,
+                    into: .init(bytes: raw, rowBytes: outW * 3 * bps, bytesPerSample: bps))
+            }
+            outputData = bytes
+            outputColorModel = .rgb
         } else if numComponents == 3 && !isExtendedPrecision
                     && parsed.iccProfile == XYBICCProfile.data {
             // XYB color: the three full-resolution planes are scaled-XYB samples

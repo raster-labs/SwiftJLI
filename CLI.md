@@ -1,6 +1,6 @@
 # swiftjli-cli: help, diagnostics and installation
 
-Version **1.1.0-dev.2**; Swift 6.2 minimum with Swift 6.4 qualified / Swift 6, Apple OS minimum **26.0**. The CLI targets macOS and Linux; Linux execution remains a qualification requirement. No external parser package or sibling codec is required. Current commands report help, version and the library's actual capabilities. Encode/decode/inspect/validate remain unavailable (exit 4), without opening input, consuming stdin or creating output. Their help describes reserved syntax only.
+Version **1.1.0-dev.2**; Swift 6.2 minimum with Swift 6.4 qualified / Swift 6, Apple OS minimum **26.0**. The CLI targets macOS and Linux; the merged-baseline CI and retained process/install tests qualify the diagnostic commands on both. See the [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) for evidence revisions. No external parser package or sibling codec is required. Current commands report help, version and the library's actual capabilities. Encode/decode/inspect/validate remain unavailable (exit 4), without opening input, consuming stdin or creating output. Their help describes reserved syntax only.
 
 ```sh
 swift run swiftjli-cli --help

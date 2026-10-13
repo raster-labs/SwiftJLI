@@ -1,6 +1,52 @@
 # Change log
 
-## Unreleased — codec migration in progress, 2026-10-07
+## AC performance qualification — 13 October 2026
+
+After the owner checked the charger, macOS recognised AC power. The same release
+binary, harness and shipping source passed two expanded and two ordinary runs:
+140 exact output comparisons, nominal thermals and 66 stable AC power snapshots.
+Forty-three operation cases repeatedly exceed 5%, with explicit per-case costs,
+unchanged safety/correctness reasons and updated successor baselines. The three
+additional crossings versus battery use previously investigated tiny-image and
+UInt12 input paths. Battery results and diagnostic attribution remain separate.
+Source/binary/harness identity was checked before and after execution. No codec
+code, resource default or fidelity tolerance changed. Physical Watch remains
+excluded; private-reporting activation remains owner-deferred before release.
+See [the evidence](Documentation/Migration/Qualification/NonWatchCompletion/README.md).
+
+## Owner follow-up — 13 October 2026
+
+The owner deferred private vulnerability reporting activation to a later task.
+The last recorded API check remains disabled, and repository-admin action or an
+established private contact is required before stable release. Physical Watch
+testing remains excluded and unexecuted. This documentation-only disposition
+does not waive either release prerequisite or alter the qualified codec source.
+CI [38253517616](https://github.com/raster-labs/SwiftJLI/actions/runs/38253517616)
+passed all 13 jobs for the preceding qualification commit `2c45328`.
+
+## Non-Watch qualification follow-up — 12 October 2026
+
+The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation still needs a repository administrator; the supported-version policy is documented. No stable release or application cutover is claimed.
+
+See [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md). Shipping library code and dependencies are unchanged
+in this qualification follow-up; the new four-codec and raw-RGB oracle harnesses
+are development-only. Historical records and common contracts remain intact.
+
+
+## Unreleased — JPEG decode parity, 2026-10-12
+
+- Correct full-resolution subsampled YCbCr reconstruction using SOF sample centres and component rounding, through both allocating and caller-storage decode. Retain established 4:4:4, preview, greyscale and XYB behaviour.
+- Decode 8/12-bit raw RGB DCT signalled by Adobe transform 0 or RGB component identifiers. Add explicit `DecoderConfiguration(sourceColourModel:)` for unmarked three-component DCT; refuse conflicting/unsupported colour metadata.
+- Accept one zero byte after an odd-length JPEG, while retaining all other trailing-data and bounded-input rejection.
+- Reconcile migration status with the merged baseline and this draft correction; keep performance, physical Watch and final-source qualification gates explicit. Repair Swift 6.2 test compilation and use both pinned predecessors for same-platform identity checks.
+- Carry the 15 independent JLISwift chroma fixtures and focused parity tests. Seven corrected macOS decoded hashes match JLISwift v0.5.2; encoder hashes and the historical identity fixture are unchanged. See [verification](Documentation/Migration/JPEGDecodeParity.md).
+
+## Unreleased — codec implementation merged, 2026-10-09
+
+- Merge PR #19 into main as `a967d27`; retain development version 1.1.0-dev.2 and suite policy 0.10.0. No stable release is created.
+- Fix accepted large finite deadlines crashing during Duration conversion; preserve cancellation and expiry checks. Regression coverage passes in the 13-job CI matrix at `a1920c7`.
+- Record completed native macOS ARM/Intel and four Apple simulator checks, Linux Swift 6.2/6.4 ARM/x86 checks, independent consumer and shared-contract verification.
+- Retain historical fuzz, independent JPEG oracles, memory/copy controls, cross-codec integration and performance results with their original source revisions.
 
 - Reduce decode overhead with bounded entropy searches, specialised greyscale writes, joined chroma workers and bounded RGB row batches; preserve byte identity and cancellation checks.
 
@@ -26,7 +72,7 @@
 - Add bounded JPEG-specific inspection for compressed sampling/scan structure, recognised XYB and predictive settings; include its own fuzz entry.
 - Restore the predecessor's finite nonnegative distance range and saturate quantisation before integer conversion to avoid large-distance traps.
 - Retain independent heap allocation controls, a fresh remote consumer and completed one-hour decoder fuzz evidence at their exact source revisions.
-- Broader colour-profile coverage, performance/security and full platform qualification remain open; this is not a completed migration or release. See Documentation/Migration/STATUS.md.
+- Performance acceptance and physical Watch resource validation remain open. Unsupported profile combinations, auxiliary-product deferrals and separate CLI payload work remain explicit; see [the acceptance ledger](Documentation/Migration/ACCEPTANCE.md).
 
 ## 1.1.0-dev.1 — Swift 6.4 upgrade, 2026-09-19 (unreleased)
 

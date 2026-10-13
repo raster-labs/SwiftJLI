@@ -43,3 +43,31 @@ This script covers local macOS validation of the existing Milestone 1 API/storag
 ## CLI checks
 
 Active packages and generated consumers require Apple OS 26.0. The owner-approved CLI foundation is a separate executable product, with no main entry point in library tests. After building its release binary, run `python3 Scripts/test-cli.py --binary /absolute/path/to/the/tool --output /new/evidence/directory` for process-level help/verbosity/stream and staged install/man-page checks. The check requires `man` and `mandoc`; missing manual tools fail explicitly. `install-cli.sh --help` describes install/update and DESTDIR staging. Read [CLI.md](../CLI.md) and the [OS 27/CLI record](../Documentation/Engineering/OS27CLI/README.md), whose CLI content is current and whose platform claims are superseded history.
+
+## Independent JPEG interoperability
+
+Use libjpeg-turbo 3.2.0 development tools (`cjpeg` and `djpeg`) for these
+repeatable public-API checks. Each command needs a fresh evidence directory;
+no oracle process is used by the shipping library.
+
+```sh
+python3 Scripts/verify-lossless-interop.py --output-dir /new/lossless-evidence --scratch-path /new/oracle-build
+python3 Scripts/verify-dct-interop.py --output-dir /new/dct-evidence --scratch-path /new/oracle-build
+python3 Scripts/verify-raw-rgb-interop.py --output-dir /new/raw-rgb-evidence --scratch-path /new/oracle-build
+```
+
+The raw RGB extension uses independently encoded 8/12-bit sequential/progressive
+files, both scalar and automatic backends, and allocating/padded caller storage.
+It checks 16 decode/storage combinations, allocation identity and untouched
+prefix/row padding. The existing DCT maximum-error limits remain 2 sample units
+for 8-bit and 4 for 12-bit; the check does not infer a lower-precision or colour
+conversion. Commands, tool output and generated-fixture hashes are retained.
+
+## Shared-storage suite integration
+
+[SuitePairIntegration](../Examples/SuitePairIntegration/README.md) extends the
+original two-codec harness to all twelve directions among the four implemented
+codecs. `verify-suite-outputs.py` checks the 72 completed outputs with independent
+JPEG/JPEG 2000/JPEG-LS/JPEG XL decoders. `verify-cross-codec-heap.py --suite`
+requires 72 allocator cases and 72 deliberate-copy controls; omitting `--suite`
+retains the original two-codec checks. These are development-only tools.

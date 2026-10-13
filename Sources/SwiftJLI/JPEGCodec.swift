@@ -239,7 +239,7 @@ enum JPEGCodec {
         }
     }
 
-    static func parse(_ data: Data, options: DecodeOptions) throws -> ParsedJPEG {
+    static func parse(_ data: Data, options: DecodeOptions, sourceColourModel: JPEGSourceColourModel? = nil) throws -> ParsedJPEG {
         let limits = options.resourceLimits
         // Bound copies/table storage before materialising the array or parsing.
         let parserBudget = try checkedAdd(checkedMultiply(data.count, 64), 1_048_576)
@@ -247,12 +247,25 @@ enum JPEGCodec {
         let bytes = Array(data)
         let adobeTransform = try JPEGEnvelope.validate(bytes, limits: limits)
         var reader = MarkerReader(data: bytes)
-        let parsed = try reader.parse()
+        var parsed = try reader.parse()
         let f = parsed.frameInfo
+        if let sourceColourModel {
+            guard !f.isLossless, f.components.count == 3, adobeTransform == nil,
+                  parsed.iccProfile != XYBICCProfile.data else {
+                throw CodecError(.unsupportedFeature, "Source colour override requires unmarked three-component DCT JPEG.")
+            }
+            parsed.sourceColorModel = sourceColourModel == .rgb ? .rgb : .yCbCr
+        }
         if !f.isLossless {
             let xyb = parsed.iccProfile == XYBICCProfile.data
-            guard xyb ? adobeTransform == 0 : adobeTransform != 0 else {
-                throw CodecError(.unsupportedFeature, "Direct-component JPEG requires the recognised XYB profile and Adobe transform 0.")
+            guard !xyb || adobeTransform == 0 else {
+                throw CodecError(.unsupportedFeature, "XYB JPEG requires Adobe transform 0.")
+            }
+            guard xyb || adobeTransform != 1 || f.components.map(\.id) != [82, 71, 66] else {
+                throw CodecError(.unsupportedFeature, "RGB component identifiers conflict with Adobe YCbCr signalling.")
+            }
+            if parsed.isRawRGB, let icc = parsed.iccProfile, icc != SRGBICCProfile.data {
+                throw CodecError(.unsupportedFeature, "Direct RGB JPEG requires no ICC profile or the recognised sRGB profile.")
             }
             try validateDCT(parsed); return parsed
         }
@@ -310,9 +323,9 @@ enum JPEGCodec {
         return ImageInfo(format: "JPEG", descriptor: descriptor, frameCount: 1, metadata: metadata)
     }
 
-    static func inspect(_ data: Data, options: DecodeOptions) throws -> ImageInfo {
+    static func inspect(_ data: Data, sourceColourModel: JPEGSourceColourModel? = nil, options: DecodeOptions) throws -> ImageInfo {
         try run(limits: options.resourceLimits, policy: .scalarCPU) {
-            let parsed = try parse(data, options: options)
+            let parsed = try parse(data, options: options, sourceColourModel: sourceColourModel)
             _ = try selectBackend(options.executionPolicy, dct: !parsed.frameInfo.isLossless)
             let result = try info(parsed, options: options)
             try NativeOperation.check()
@@ -322,7 +335,7 @@ enum JPEGCodec {
 
     static func decode(_ data: Data, into supplied: ImageDestination?, configuration: DecoderConfiguration, options: DecodeOptions) throws -> DecodedImage {
         try run(limits: options.resourceLimits, policy: .scalarCPU) {
-            let parsed = try parse(data, options: options)
+            let parsed = try parse(data, options: options, sourceColourModel: configuration.sourceColourModel)
             let isDCT = !parsed.frameInfo.isLossless
             let backend = try selectBackend(options.executionPolicy, dct: isDCT)
             let context = NativeOperation(seconds: options.resourceLimits.deadlineSeconds, backend: backend,

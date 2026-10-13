@@ -111,7 +111,12 @@ enum SharedDCTStorage {
     /// DSP path, including ties-to-even for colour and ties-away for greyscale.
     static func write(_ planes: [(data: [Float], width: Int, height: Int)],
                       width: Int, height: Int, precision: Int, floatOutput: Bool = false, xyb: Bool = false,
-                      into destination: BorrowedSampleDestination) throws {
+                      rawRGB: Bool = false, into destination: BorrowedSampleDestination) throws {
+        if rawRGB {
+            try writeRawRGB(planes, width: width, height: height, precision: precision,
+                            floatOutput: floatOutput, into: destination)
+            return
+        }
         let nc = planes.count, bps = destination.bytesPerSample
         if nc == 1 {
             try writeGreyscale(planes[0], width: width, height: height, precision: precision,
@@ -210,6 +215,38 @@ enum SharedDCTStorage {
             }
         }
     }
+    /// Direct RGB planes are interleaved into the final borrow without YCbCr conversion.
+    private static func writeRawRGB(_ planes: [(data: [Float], width: Int, height: Int)],
+                                    width: Int, height: Int, precision: Int, floatOutput: Bool,
+                                    into destination: BorrowedSampleDestination) throws {
+        let bps = destination.bytesPerSample
+        guard planes.count == 3, floatOutput ? bps == 4 : (bps == 1 || bps == 2) else {
+            throw JLIError.unsupportedJPEGFeature("Unsupported direct RGB destination")
+        }
+        let maximum = Float((1 << precision) - 1)
+        for c in 0..<3 {
+            let plane = planes[c]
+            let samples = try ChromaSampling.upsample(plane.data, width: plane.width, height: plane.height,
+                targetWidth: width, targetHeight: height)
+            for y in 0..<height {
+                try NativeOperation.check()
+                for x in 0..<width {
+                    let sample = samples[y * width + x]
+                    guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite RGB sample") }
+                    let offset = y * destination.rowBytes + (x * 3 + c) * bps
+                    if floatOutput {
+                        let bits = sample.bitPattern
+                        for byte in 0..<4 { destination.bytes[offset + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+                    } else {
+                        let value = UInt16(max(0, min(maximum, sample)).rounded())
+                        destination.bytes[offset] = UInt8(truncatingIfNeeded: value)
+                        if bps == 2 { destination.bytes[offset + 1] = UInt8(value >> 8) }
+                    }
+                }
+            }
+        }
+    }
+
     private static func writeGreyscale(_ plane: (data: [Float], width: Int, height: Int),
                                        width: Int, height: Int, precision: Int, floatOutput: Bool,
                                        into destination: BorrowedSampleDestination) throws {

@@ -7,8 +7,9 @@ extension JPEGCodec {
     static func validateDCT(_ parsed: ParsedJPEG) throws {
         let f = parsed.frameInfo, ids = f.components.map(\.id)
         func malformed() -> CodecError { .init(.malformedInput, "Invalid JPEG DCT tables or scan progression.") }
-        guard f.precision == 8 || f.precision == 12, ids.count == 1 || ids == [1, 2, 3] else {
-            throw CodecError(.unsupportedFeature, "DCT requires 8/12-bit greyscale or YCbCr JPEG.")
+        guard f.precision == 8 || f.precision == 12,
+              ids.count == 1 || ids == [1, 2, 3] || ids == [82, 71, 66] else {
+            throw CodecError(.unsupportedFeature, "DCT requires 8/12-bit greyscale, YCbCr or explicit RGB JPEG.")
         }
         if parsed.iccProfile == XYBICCProfile.data {
             guard f.precision == 8, ids == [1, 2, 3],

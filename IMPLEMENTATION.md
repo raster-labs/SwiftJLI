@@ -2,6 +2,33 @@
 
 Read AGENTS.md and every common contract document first. Milestone 1 implements API shapes and owning storage; see [executed evidence](Documentation/MILESTONE1.md). Later milestones require an owner-assigned implementation task. Follow the common contract when predecessor conventions differ. Maintain performance, reliability and security together.
 
+## Verified status — 13 October 2026
+
+[PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged the codec migration
+and deadline-overflow correction into main as `a967d27`. The 13-job CI matrix
+passes at its source revision `a1920c7`; source, tests, package, scripts and workflow
+are unchanged in the merge commit. The milestones below remain the plan of record,
+not a claim that every release gate has passed. Main itself passed all 13 jobs in
+[CI 37903247015](https://github.com/raster-labs/SwiftJLI/actions/runs/37903247015).
+
+The three JPEG maintenance gaps are implemented separately in draft PR #21.
+The original migration pin remains intact; the two maintenance branch pins,
+independent regressions and measured performance cost are recorded in
+[JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md). Acceptance
+must include those changed decode paths before selecting a release candidate.
+
+| Scope | Current disposition |
+| --- | --- |
+| Milestones 1–2: API/storage foundation and native migration baseline | Implemented; source inventory, provenance, predecessor comparisons and independent JPEG oracle evidence retained. |
+| Milestone 3: caller storage and first suite pair | Implemented; refreshed sharing/copy/lifetime evidence covers all six available codec pairs in both directions, including the first SwiftJ2K ↔ SwiftJLS pair. |
+| Milestone 4: profiles and qualification | Supported profiles, all 13 CI jobs, full fuzz campaigns, independent oracles, memory controls and explicit performance dispositions qualified, including the AC rerun with 140 exact output comparisons and 43 assessed repeated above-threshold latency cases. Physical Watch resource testing is excluded here and remains unexecuted. Unsupported combinations reject explicitly. |
+| Milestone 5: release preparation | Consumer, documentation, provenance and supported-version policy refreshed. Private-reporting activation is deferred by the owner to a later task; an administrator must establish it before stable release. Physical Watch remains a release qualification limit. No stable tag or downstream cutover is established. |
+| Auxiliary products and CLI payload commands | Explicit I1–I3 dispositions below remain in force; deferred work is not claimed as implemented. |
+
+The [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) is authoritative
+for current evidence and remaining gates. Historical measurements are not relabelled
+as runs against the merged revision.
+
 ## Source and destination
 
 Predecessor: [Raster-Lab/JLISwift](https://github.com/Raster-Lab/JLISwift). Target module/product: `SwiftJLI`. Target CLI: `swiftjli-cli`. Intended first stable library version: `1.1.0`.
@@ -85,6 +112,9 @@ Selected 23 September 2026 under contract 0.9.0, which permits "selecting and re
 | `v0.6.0-rc.1` | `28e4b962dad5f8fd54219c879d1c31b07ad11905` | `0a4ded0b0b2e8e38127f4f302b286e74ee352474` | 2026-09-21 |
 
 `v0.6.0-rc.1` is an unpromoted release candidate, so the pin is recorded as the **commit**, not the tag. Promoting it is the predecessor's own release task (contract 0.8.0 item 6) and is not authorised here. If the final `v0.6.0` release carries further commits, this pin is re-recorded against that revision before Milestone 2 begins.
+
+The following pin-selection account describes 23 September 2026. Its unexecuted
+baseline statements are historical; the acceptance ledger records subsequent runs.
 
 ### Why this revision and not the last stable tag
 

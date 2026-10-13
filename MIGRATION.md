@@ -1,6 +1,8 @@
 # Migrating applications from JLISwift to SwiftJLI
 
-The migration is in progress. The public API currently supports native SOF3 lossless/bounded-error and SOF0/SOF1/SOF2 lossy JPEG; advanced predecessor profiles and full qualification remain open. Keep each production use case on its qualified predecessor until its successor profile passes acceptance. [Current evidence and open requirements](Documentation/Migration/ACCEPTANCE.md) distinguish implementation from qualification.
+The codec implementation was merged into main through [PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) on 9 October 2026 (`a967d27`). The public API supports native SOF3 lossless/bounded-error and SOF0/SOF1/SOF2 lossy JPEG, including the explicit Float32, XYB and colour policies documented below. Executable non-Watch qualification is complete, including the AC-powered rerun with 140 exact output comparisons and 43 explicitly assessed repeated latency increases above 5%. The earlier battery measurements are retained separately. Stable-release acceptance remains open for physical Watch resource validation (excluded from this task) and administrator activation of private reporting (deferred by the owner on 13 October 2026). Keep each production use case on its qualified predecessor until its successor profile passes acceptance. [Current evidence and open requirements](Documentation/Migration/ACCEPTANCE.md) distinguish implementation from qualification.
+
+The three maintenance fixes below are implemented in draft PR #21 and are not yet on main; [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md) records their refreshed verification.
 
 The source pin is JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. SwiftJLI requires Swift tools 6.2 or later, Swift 6 language mode and Apple deployment floors of 26.0. Raise the application's floor in its separately assigned cutover. No stable 1.1.0 release is implied: use an explicitly reviewed revision for trials.
 
@@ -43,7 +45,17 @@ DCT input is unsigned 8-bit storage/precision or 16-bit storage with exactly 12 
 
 `.scalarCPU` and `.required(.scalarCPU)` select the scalar kernels on every platform. Automatic DCT uses Accelerate on Apple and scalar elsewhere; required acceleration fails when unavailable. SOF3 remains scalar. Reports identify the selected backend and preferred-backend fallback. Availability lists are unions across profiles: DCT does not support the entire 2–16-bit predictive range.
 
-Progressive DC scans currently require all components in frame order, with single-component AC scans. Multiple sequential scans, changing quantisation/restart definitions between scans and ambiguous RGB/CMYK JPEG interpretations are rejected. The recognised XYB profile has an explicit colour policy described below. The remaining restrictions are additional acceptance work, not silent conversions.
+Progressive DC scans currently require all components in frame order, with single-component AC scans. Multiple sequential scans, changing quantisation/restart definitions between scans and ambiguous RGB/CMYK JPEG interpretations are rejected. The recognised XYB profile has an explicit colour policy described below. These are explicit capability boundaries; applications needing an unsupported combination must retain their existing qualified route. They are not silently converted.
+
+## JPEG maintenance fixes
+
+Full-resolution integer 4:2:2/4:2:0 YCbCr decoding uses centred JPEG chroma reconstruction, including odd dimensions. Both output-storage paths share this reconstruction. Existing 4:4:4 oracle limits and reduced-scale, greyscale, Float32 and XYB behaviour are retained.
+
+Raw RGB DCT at 8/12-bit precision is recognised from Adobe APP14 transform 0 or RGB component identifiers. With neither Adobe nor recognised XYB signalling, `DecoderConfiguration(sourceColourModel: .rgb)` or `.yCbCr` explicitly selects source interpretation; the output remains RGB. The option is honoured by `inspect`, `inspectJPEG` and both decode overloads. It is rejected for greyscale, SOF3 and Adobe/XYB-marked input. Direct RGB accepts no ICC profile or the recognised sRGB profile; unknown profiles and conflicting RGB identifiers/Adobe YCbCr signalling remain unsupported. This does not add general ICC colour management or colour Float32 output.
+
+A single zero byte following EOI is accepted only when the JPEG length excluding that byte is odd. Other trailing bytes, repeated padding, concatenated streams and missing EOI are rejected. This narrow padding allowance does not add DICOM parsing. Resource-limit defaults are unchanged; map the predecessor's caller budgets explicitly when migrating.
+
+Source pins, fixture provenance, verification and remaining platform limits are in [JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md).
 
 ## Decoder output and adaptive profiles
 
@@ -60,7 +72,7 @@ Signed-labelled predecessor input deserves separate review: its SOF3 encoder pre
 
 `DecoderConfiguration(scale: 2, sampleFormat: .float32RawSamples)` explicitly returns raw reconstructed sample values as little-endian IEEE Float32, without integer rounding or normalisation. For example, a reconstructed 12-bit sample near 2048 remains near 2048, not 0.5. This profile supports greyscale DCT JPEG without ICC interpretation; colour, ICC-bearing input and SOF3 are rejected before the destination borrow. The result descriptor is `.floatingPoint` with 32 storage/meaningful bits. Supplied destinations must declare that same interpretation; default integer decode does not infer a float conversion from the destination.
 
-The Float32 restriction avoids attaching a nominal integer-range ICC profile to differently represented samples without a qualified range/colour policy. Broader ICC and independent interoperability qualification remain migration work. Capabilities describe the queried operation and include Float32 profiles. Their precision range is nil because integer 2–16 and IEEE Float32 are separate profiles rather than one continuous range.
+The Float32 restriction avoids attaching a nominal integer-range ICC profile to differently represented samples without a qualified range/colour policy. Arbitrary ICC conversion and broader Float32 colour profiles are outside the currently supported capability matrix; the acceptance ledger records the independent interoperability evidence for supported profiles. Capabilities describe the queried operation and include Float32 profiles. Their precision range is nil because integer 2–16 and IEEE Float32 are separate profiles rather than one continuous range.
 
 `DCTOptions(adaptiveQuantisationField: true)` enables the luma-derived trellis-strength field. It requires `adaptiveQuantisation: true`. `DCTOptions(jpegliAdaptiveQuantisation: true)` instead selects the masking/zero-bias path. These field options require 8-bit input and cannot be combined; unsuitable combinations fail rather than silently selecting a different quantiser. Both preserve direct source reads and use accounted algorithm workspace.
 
@@ -124,7 +136,7 @@ remain `nil`; admission reservations must not be presented as measured peaks.
 3. Verify padded storage, copy/allocation identity, malformed input, budgets, cancellation, concurrency and lifetime on the required platforms. Unknown report measurements do not mean zero.
 4. Enable only qualified profiles behind the application's rollback mechanism. Keep the old dependency lock and adapter until persisted-file compatibility and platform acceptance are complete.
 
-The diagnostic `swiftjli-cli` reports actual library capabilities. Its encode/decode/inspect/validate payload verbs remain unavailable under the separately budgeted CLI work. This guide does not announce a completed migration, stable release or complete platform support.
+The diagnostic `swiftjli-cli` reports actual library capabilities. Its encode/decode/inspect/validate payload verbs remain unavailable under the separately budgeted CLI work. The repository implementation is merged; downstream application cutover, stable release and complete device qualification are separate steps and have not been established by that merge.
 
 ## Explicit DCT input conversions
 
@@ -140,6 +152,6 @@ These options require `.lossy`. All three paths borrow source storage, honour pr
 
 `ResourceLimits.maximumWorkers` now bounds joined parallel predictive encoding, DCT trellis/AC counting, chroma interpolation and full-resolution reconstruction. One remains a supported deterministic serial policy. Workers receive the selected backend, deadline and operation cancellation token explicitly; all lanes join before any borrowed storage is released or an error is returned. Cancellation checks cover bounded sample/block units and final publication. Progress callbacks stay on the invoking task. Other public stages remain serial; a worker cap is a ceiling, not a promise to parallelise every stage. The default ceiling is at most eight CPUs (two for the Watch profile).
 
-RGB8 output conversion also uses bounded joined workers. Each owns at most eight rows of colour scratch; accelerated conversion uses contiguous byte planes and interleaves directly into the final destination with its actual row stride. The scratch is algorithm workspace and is covered by conservative resource admission. [RGB output evidence](Documentation/Migration/RGBOutput/README.md) records padding, race/sanitizer and performance checks, including unresolved smaller-case regressions.
+RGB8 output conversion also uses bounded joined workers. Each owns at most eight rows of colour scratch; accelerated conversion uses contiguous byte planes and interleaves directly into the final destination with its actual row stride. The scratch is algorithm workspace and is covered by conservative resource admission. [RGB output evidence](Documentation/Migration/RGBOutput/README.md) records padding, race/sanitizer and performance checks, including historical smaller-case regressions. Their current measured costs and explicit acceptance dispositions are in [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md).
 
 Ordinary RGB8-to-YCbCr input conversion now also uses bounded joined row workers. Source pixels remain borrowed, source row padding is honoured, and each worker owns at most eight rows of scratch. The explicit RGBA/Float32/YCbCr/greyscale/UInt12 paths retain their existing policies. [RGB input evidence](Documentation/Migration/RGBInput/README.md) records exact-plane tests, sanitizers, public comparisons and the scoped Linux encoder allocation experiment.

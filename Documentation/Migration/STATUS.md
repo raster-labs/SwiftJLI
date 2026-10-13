@@ -5,7 +5,35 @@ For the current disposition of every acceptance gate, read
 earlier implementation descriptions and pending statements are superseded by
 later checkpoints and the acceptance ledger.
 
-Migration remains in progress. This checkpoint does not establish first-stable readiness.
+## Latest disposition — 13 October 2026
+
+The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation is deferred by the owner to a later administrator task; it remains a stable-release prerequisite. The supported-version policy is documented. No stable release or application cutover is claimed.
+
+The AC follow-up completed all four performance runs with 140 exact output
+comparisons, nominal thermals and 66 in-run AC power snapshots. Forty-three
+operation cases repeatedly exceed 5%; each has a recorded safety/correctness
+reason, measured cost and updated AC baseline. Battery results remain separate.
+
+[Source-bound results and reproduction](Qualification/NonWatchCompletion/README.md)
+retain every measured cost and capability limit. The three maintenance fixes
+remain in draft PR #21, separate from main. Shipping code is unchanged during
+this qualification follow-up.
+
+## Merged baseline — 9 October 2026
+
+The codec implementation and reviewed deadline correction merged through
+[PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) as `a967d27`.
+[CI 37900647193](https://github.com/raster-labs/SwiftJLI/actions/runs/37900647193)
+passes all 13 jobs at `a1920c7`, whose source/tests/workflow match the merge commit.
+The separate [main run 37903247015](https://github.com/raster-labs/SwiftJLI/actions/runs/37903247015) also passed all 13 jobs at `a967d27`.
+Performance acceptance and physical Watch resource validation remain open. The
+merge does not establish stable-release readiness, predecessor retirement or an
+application cutover. See the acceptance ledger for current product dispositions.
+
+## Historical implementation checkpoints
+
+The following records describe their original source revisions; their pending
+statements and early capability restrictions do not describe all of current main.
 
 Source: JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. Successor base: `41b3cbc34e5e96db41853c925ec720fad4120b65`. Common suite policy: 0.10.0; shared contract documents are unchanged. Per-file origins and original hashes are in [provenance.json](provenance.json).
 
