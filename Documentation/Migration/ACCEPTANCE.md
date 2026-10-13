@@ -1,4 +1,4 @@
-# Migration acceptance ledger — 12 October 2026
+# Migration acceptance ledger — 13 October 2026
 
 **Codec implementation merged; stable-release acceptance remains open.**
 [PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged on 9 October 2026
@@ -22,7 +22,7 @@ records the same independent fixtures, scoped source pins, verification and cost
 Executable non-Watch qualification is now complete in
 [NonWatchCompletion](Qualification/NonWatchCompletion/README.md). Full
 stable-release acceptance remains open for physical Watch testing and
-administrator activation of private reporting; finite regressions do not waive
+administrator activation of private reporting (deferred by the owner on 13 October 2026); finite regressions do not waive
 those requirements.
 
 The refreshed record covers current shipping source e7e54f7. Historical broad
@@ -56,11 +56,11 @@ memory experiments have their own source hashes under Qualification.
 | Memory under failure/cancellation and workspace (PERF-05; TEST-05/09) | Current-source Linux stress 28+28 and Apple stress 56+56 scopes/controls pass. Isolated-memory requalification retains 120 fresh-process comparisons and 54 attribution controls, all outputs exact. Required asynchronous execution and bounded compressed-input materialisation explain above-threshold RSS costs; all residual median differences are below 5% in this matrix. Explicit costs, spread and the successor baseline are in NonWatchCompletion. This does not measure pure workspace or certify every allocation failure; public peakWorkspaceBytes remains unknown. |
 | Native Apple runtime matrix (PLAT-01–05; TEST-06) | Native ARM/Intel and iOS/tvOS/visionOS/watchOS simulators pass at the candidate shipping source. Each simulator passes 354 tests; iOS additionally passes both pinned predecessor comparisons. **Physical Watch resource validation is excluded by the owner for this task and remains unexecuted**; it is still a separate release qualification limit. |
 | Build-associated SBOMs (PLAT Swift 6.4 qualification) | Refreshed build-associated CycloneDX 1.7 passes independent schema validation. Raw SPDX 3.0.1 still fails two producer records containing externalUrl/software_internalVersion. Versioned schemas, validator version, raw generated files and failures are retained in NonWatchCompletion/sbom. The documented toolchain discrepancy is not silently corrected or called a schema pass. |
-| Release preparation (milestone 5) | URL consumer, documentation, provenance, SBOM generation and candidate qualification refreshed; supported-version policy recorded. Private reporting still needs administrator activation. Physical Watch remains unexecuted. PR #21 is reviewable but unmerged; stable tag publication, predecessor retirement and application cutover remain separate tasks. |
+| Release preparation (milestone 5) | URL consumer, documentation, provenance, SBOM generation and candidate qualification refreshed; supported-version policy recorded. The owner has deferred private-reporting activation to a later administrator task; it remains a stable-release prerequisite. Physical Watch remains unexecuted. PR #21 is reviewable but unmerged; stable tag publication, predecessor retirement and application cutover remain separate tasks. |
 
 All executable non-Watch qualification assigned here is complete. Physical Watch
 resource testing is excluded by the owner and remains unexecuted; an administrator
-must establish the private reporting channel. These limits prevent unconditional
+must establish the private reporting channel in the owner-deferred follow-up. These limits prevent unconditional
 stable-release completion. Unsupported capabilities remain explicit, and the
 supplied common contracts remain byte-identical.
 
@@ -71,7 +71,7 @@ supplied common contracts remain byte-identical.
 | Performance acceptance — completed for measured scope | The controlled final-source comparisons and explicit PERF-03 dispositions are in NonWatchCompletion. All 40 repeated above-threshold cases have retained measurements, source-path explanations, diagnostic evidence and updated baselines. No guard, precision check or zero-copy requirement was relaxed. This replaces the earlier open 44-case historical result; it does not erase it. |
 | Physical Watch resource validation | Execute a device harness on supported physical Watch hardware with the documented default budgets; record model/OS/revision, memory and latency, boundary/admission failures, repeated work, cancellation and deadline behaviour. Adjust defaults conservatively through a shared-contract revision if necessary; simulator evidence is insufficient. |
 | Final candidate evidence reconciliation — completed for shipping source | All 13 candidate CI jobs, four full-hour fuzz campaigns, refreshed oracles, 72 four-codec handoffs, allocator/stress controls, isolated memory and controlled performance evidence cover the recorded shipping source. Later changes are separately tested development harnesses, evidence and documentation. Raw SPDX schema failures remain explicitly reported as a toolchain discrepancy. Stable version/tag publication requires a separate release task after outstanding release limits. |
-| Security release preparation | Supported-version policy is now recorded in SECURITY.md. GitHub private vulnerability reporting remains disabled; the authenticated account can push but cannot administer repository settings (activation returned HTTP 404). An administrator must activate it or supply an established private reporting contact. The prepared advisory URL is not represented as active. |
+| Security release preparation — owner-deferred activation | Supported-version policy is now recorded in SECURITY.md. GitHub private vulnerability reporting remains disabled; the authenticated account can push but cannot administer repository settings (activation returned HTTP 404). The owner explicitly deferred activation on 13 October 2026. An administrator must activate it or supply an established private reporting contact before stable release; this deferral does not waive that requirement. The prepared advisory URL is not represented as active. |
 | Application adoption / predecessor maintenance | Consumer dependency changes, deployment-floor changes, fixture acceptance, rollback and predecessor maintenance announcements are separate work; no application repository was cut over by PR #19. |
 
 `JLIDICOM` and `JLIBench` remain deferred products under I1/I2; their required

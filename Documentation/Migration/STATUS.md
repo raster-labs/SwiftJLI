@@ -5,9 +5,9 @@ For the current disposition of every acceptance gate, read
 earlier implementation descriptions and pending statements are superseded by
 later checkpoints and the acceptance ledger.
 
-## Latest disposition — 12 October 2026
+## Latest disposition — 13 October 2026
 
-The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation still needs a repository administrator; the supported-version policy is documented. No stable release or application cutover is claimed.
+The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation is deferred by the owner to a later administrator task; it remains a stable-release prerequisite. The supported-version policy is documented. No stable release or application cutover is claimed.
 
 [Source-bound results and reproduction](Qualification/NonWatchCompletion/README.md)
 retain every measured cost and capability limit. The three maintenance fixes

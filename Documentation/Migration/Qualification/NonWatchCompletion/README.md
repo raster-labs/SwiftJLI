@@ -10,10 +10,19 @@ comparisons use corrected predecessor v0.5.2,
 centred chroma samples. That comparison pin does not replace original provenance.
 Common suite policy remains 0.10.0 and the seven supplied documents are unchanged.
 
-The owner's exclusion covers **physical Watch testing only**. Watch simulator
+Physical Watch testing is excluded. On 13 October 2026 the owner also deferred
+private-reporting activation to a later administrator task; both remain
+stable-release prerequisites. Watch simulator
 qualification remains required. This work does not publish a release, retire the
 predecessor or cut over an application. The current acceptance decision is in
 [the ledger](../../ACCEPTANCE.md); historical evidence is not rewritten.
+
+On the owner follow-up, macOS continued to report battery power and discharging
+despite the reported charger connection. No AC benchmark was executed or claimed;
+`power-followup.json` records the observation. The controlled-battery results below
+remain the measured baseline. CI [38253517616](https://github.com/raster-labs/SwiftJLI/actions/runs/38253517616)
+subsequently passed all 13 jobs at qualification commit `2c45328`; its check
+summary is retained in `ci/qualification-commit-checks.json`.
 
 ## Platform and source identity
 
@@ -150,8 +159,10 @@ The supported-version policy is in SECURITY.md. Private vulnerability reporting
 is still disabled; activation returned HTTP 404 and the connected account has
 push access without admin permission. A repository administrator must enable it
 or supply an established private contact. The prepared advisory link is not
-advertised as active. This is the remaining administrative blocker to completing
-all non-Watch release preparation.
+advertised as active. On 13 October 2026 the owner deferred this administrative
+action to a later task. It remains a prerequisite before stable release; it is
+not an unfinished action assigned to this follow-up. The original API result is
+preserved in `private-reporting.json`; `owner-disposition.json` records the deferral.
 
 Physical Watch testing is excluded by the owner and remains unexecuted.
 JLIDICOM/JLIBench products and CLI payload verbs retain the explicit I1–I3

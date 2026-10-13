@@ -1,5 +1,15 @@
 # Change log
 
+## Owner follow-up — 13 October 2026
+
+The owner deferred private vulnerability reporting activation to a later task.
+The last recorded API check remains disabled, and repository-admin action or an
+established private contact is required before stable release. Physical Watch
+testing remains excluded and unexecuted. This documentation-only disposition
+does not waive either release prerequisite or alter the qualified codec source.
+CI [38253517616](https://github.com/raster-labs/SwiftJLI/actions/runs/38253517616)
+passed all 13 jobs for the preceding qualification commit `2c45328`.
+
 ## Non-Watch qualification follow-up — 12 October 2026
 
 The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation still needs a repository administrator; the supported-version policy is documented. No stable release or application cutover is claimed.

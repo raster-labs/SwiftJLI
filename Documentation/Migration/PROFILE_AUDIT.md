@@ -63,7 +63,7 @@ Exact branch pins, tests, storage evidence and limitations are in
 DICOM container parsing remains the consumer's responsibility. The refreshed [non-Watch qualification](Qualification/NonWatchCompletion/README.md)
 closes executable qualification with explicit measured performance trade-offs.
 Physical Watch testing and administrator activation of private reporting remain
-release limits; these draft changes are not yet merged.
+release limits. The owner deferred private-reporting activation on 13 October 2026; these draft changes are not yet merged.
 
 ## Decoder and inspection
 

@@ -4,7 +4,8 @@ SwiftJLI baseline `a967d27bc5756fab8b7fe9db6eb302ff0645c362`; common contract 0.
 
 Current candidate qualification is in [NonWatchCompletion](Qualification/NonWatchCompletion/README.md).
 The earlier advisory/open-gate statements below are historical; physical Watch
-and administrator activation of private reporting remain release limits.
+and administrator activation of private reporting remain release limits. The owner
+deferred private-reporting activation to a later task on 13 October 2026.
 
 ## Behaviour and scope
 

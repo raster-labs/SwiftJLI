@@ -146,3 +146,13 @@ The remaining executable non-Watch qualification is complete for the recorded sh
 See [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md). Shipping library code and dependencies are unchanged
 in this qualification follow-up; the new four-codec and raw-RGB oracle harnesses
 are development-only. Historical records and common contracts remain intact.
+
+## Owner follow-up — 13 October 2026
+
+The owner deferred private vulnerability reporting activation to a later task.
+The last recorded API check remains disabled, and repository-admin action or an
+established private contact is required before stable release. Physical Watch
+testing remains excluded and unexecuted. This documentation-only disposition
+does not waive either release prerequisite or alter the qualified codec source.
+CI [38253517616](https://github.com/raster-labs/SwiftJLI/actions/runs/38253517616)
+passed all 13 jobs for the preceding qualification commit `2c45328`.
