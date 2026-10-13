@@ -2,7 +2,9 @@
 
 SwiftJLI baseline `a967d27bc5756fab8b7fe9db6eb302ff0645c362`; common contract 0.10.0. Sources: JLISwift `fix/bounded-dicom-decoding` at `a250354a2feec396aad533d8b6999b88cc1160ef` and `fix/jpeg-chroma-sample-centers` / v0.5.2 at `981da4efb7d62e4370c5d6de706d56a729b9552e`.
 
-Current candidate qualification is in [NonWatchCompletion](Qualification/NonWatchCompletion/README.md).
+Current candidate qualification is in [NonWatchCompletion](Qualification/NonWatchCompletion/README.md),
+including the completed AC rerun: 140 exact output comparisons and 43 explicitly
+assessed repeated latency increases above 5%. Battery evidence is retained separately.
 The earlier advisory/open-gate statements below are historical; physical Watch
 and administrator activation of private reporting remain release limits. The owner
 deferred private-reporting activation to a later task on 13 October 2026.

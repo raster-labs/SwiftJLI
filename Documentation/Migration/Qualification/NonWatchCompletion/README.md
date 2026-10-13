@@ -17,10 +17,10 @@ qualification remains required. This work does not publish a release, retire the
 predecessor or cut over an application. The current acceptance decision is in
 [the ledger](../../ACCEPTANCE.md); historical evidence is not rewritten.
 
-On the owner follow-up, macOS continued to report battery power and discharging
-despite the reported charger connection. No AC benchmark was executed or claimed;
-`power-followup.json` records the observation. The controlled-battery results below
-remain the measured baseline. CI [38253517616](https://github.com/raster-labs/SwiftJLI/actions/runs/38253517616)
+The initial owner follow-up still reported battery power and discharging;
+`power-followup.json` preserves that observation. After the owner checked the
+charger, macOS recognised AC power and all four comparisons were rerun successfully.
+The AC baseline below supplements the retained battery measurements. CI [38253517616](https://github.com/raster-labs/SwiftJLI/actions/runs/38253517616)
 subsequently passed all 13 jobs at qualification commit `2c45328`; its check
 summary is retained in `ci/qualification-commit-checks.json`.
 
@@ -102,7 +102,52 @@ is permitted or observed in the independent allocation controls. No unsupported
 claim that `peakWorkspaceBytes` is measured is made: the public field remains
 unknown and reservations remain conservative admission bounds.
 
-## Explicit latency disposition and updated baseline
+## AC-powered performance follow-up — 13 October 2026
+
+The same public release binary and harness ran at repository revision `b6ac50e93999dad52a54637008e452961e3376cf`.
+Shipping source hashes match the previously qualified e7e54f7 source; binary,
+harness and source hashes were verified before and after execution. Corrected
+predecessor v0.5.2 (`981da4e`) and original migration provenance remain unchanged.
+Two expanded 60-case and two ordinary ten-case runs retain five warm-ups and
+twenty interleaved observations per implementation. All **140 output comparisons**
+match exactly. The 140 distinct encode/decode operation cases are each measured
+twice. All case thermal states are nominal; 66 in-run power snapshots plus the
+initial/final snapshots record AC power with unchanged settings. The owner
+confirmed heavy applications were idle; no local codec build, fuzzing, sanitizer
+or tracing overlapped the timings.
+
+**43 operation cases exceed 5% in both runs; 97 do not.** Each repeated increase
+has an explicit measured safety/correctness disposition and successor baseline in
+[performance-ac/disposition.json](performance-ac/disposition.json).
+
+| Accepted cost group | Cases | Observed repeated increases | Retained reason |
+| --- | ---: | --- | --- |
+| Tiny 19×19 images | 30 | 7.05–256.58%; **1.04–22.54 μs** | Checked admission, validation, bounded execution, cancellation and owning publication. |
+| Larger UInt12 DCT encodes | 9 | 5.03–17.86%; **0.18–5.87 ms** | Checked strided input reads, meaningful-precision validation and row cancellation into the required algorithm plane. |
+| 512² RGB/sequential-progressive encodes | 4 | 9.36–17.76%; **0.17–0.31 ms** | Direct borrowed RGB reads, bounded conversion scratch, joined workers and cancellation. |
+
+Compared with the battery assessment, three additional cases repeat above 5%:
+19×19 noise lossless16 encode (1.04–1.50 μs), 19×19 noise RGB encode
+(8.96–11.00 μs), and 3072² noise UInt12 encode (5.31–5.87 ms).
+They execute the same already investigated fixed-overhead and checked-loader
+paths. Their individual measurements and approximate paired bootstrap intervals
+are retained; the two-run threshold rule is not a population-significance claim.
+Earlier native/context/shared/public attribution probes cover identical shipping
+source and remain diagnostic evidence. They were collected during battery
+qualification: their private `@testable` timings are not AC timings and are not
+added to the public measurements. No unexplained confirmed case remains in this
+finite matrix; no safety guard or fidelity limit was relaxed.
+
+The AC results establish a separate current successor baseline for AC operation.
+The battery assessment below remains intact with its own 40 repeated crossings;
+the datasets are not pooled. This is one developer host and does not establish
+universal no-regression or cross-device performance. Raw samples, per-case
+medians/ranges, power records, command exits and archive hashes are under
+`performance-ac/`. Reproduction uses `run-completion-performance-ac.py`,
+`summarise-completion-performance-ac.py` and `record-ac-disposition.py` with fresh
+output paths; the scripts retain the qualification host paths and pinned inputs.
+
+## Retained battery latency disposition and baseline
 
 PERF-03 is qualified for this representative matrix with **explicit measured
 safety/correctness trade-offs**, not a claim of zero regressions. Two expanded

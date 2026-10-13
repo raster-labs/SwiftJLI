@@ -62,6 +62,9 @@ Exact branch pins, tests, storage evidence and limitations are in
 [JPEGDecodeParity.md](JPEGDecodeParity.md). This is payload decoding support;
 DICOM container parsing remains the consumer's responsibility. The refreshed [non-Watch qualification](Qualification/NonWatchCompletion/README.md)
 closes executable qualification with explicit measured performance trade-offs.
+The AC follow-up preserves 140 exact output comparisons and records 43 repeated
+above-threshold latency cases with explicit costs and reasons; battery evidence
+remains separate.
 Physical Watch testing and administrator activation of private reporting remain
 release limits. The owner deferred private-reporting activation on 13 October 2026; these draft changes are not yet merged.
 

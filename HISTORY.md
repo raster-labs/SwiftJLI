@@ -156,3 +156,17 @@ testing remains excluded and unexecuted. This documentation-only disposition
 does not waive either release prerequisite or alter the qualified codec source.
 CI [38253517616](https://github.com/raster-labs/SwiftJLI/actions/runs/38253517616)
 passed all 13 jobs for the preceding qualification commit `2c45328`.
+
+## AC performance qualification — 13 October 2026
+
+After the owner checked the charger, macOS recognised AC power. The same release
+binary, harness and shipping source passed two expanded and two ordinary runs:
+140 exact output comparisons, nominal thermals and 66 stable AC power snapshots.
+Forty-three operation cases repeatedly exceed 5%, with explicit per-case costs,
+unchanged safety/correctness reasons and updated successor baselines. The three
+additional crossings versus battery use previously investigated tiny-image and
+UInt12 input paths. Battery results and diagnostic attribution remain separate.
+Source/binary/harness identity was checked before and after execution. No codec
+code, resource default or fidelity tolerance changed. Physical Watch remains
+excluded; private-reporting activation remains owner-deferred before release.
+See [the evidence](Documentation/Migration/Qualification/NonWatchCompletion/README.md).

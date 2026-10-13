@@ -1,5 +1,19 @@
 # Change log
 
+## AC performance qualification — 13 October 2026
+
+After the owner checked the charger, macOS recognised AC power. The same release
+binary, harness and shipping source passed two expanded and two ordinary runs:
+140 exact output comparisons, nominal thermals and 66 stable AC power snapshots.
+Forty-three operation cases repeatedly exceed 5%, with explicit per-case costs,
+unchanged safety/correctness reasons and updated successor baselines. The three
+additional crossings versus battery use previously investigated tiny-image and
+UInt12 input paths. Battery results and diagnostic attribution remain separate.
+Source/binary/harness identity was checked before and after execution. No codec
+code, resource default or fidelity tolerance changed. Physical Watch remains
+excluded; private-reporting activation remains owner-deferred before release.
+See [the evidence](Documentation/Migration/Qualification/NonWatchCompletion/README.md).
+
 ## Owner follow-up — 13 October 2026
 
 The owner deferred private vulnerability reporting activation to a later task.
