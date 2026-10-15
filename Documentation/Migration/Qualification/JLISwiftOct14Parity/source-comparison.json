@@ -1,0 +1,226 @@
+{
+  "status": "source comparison complete; implementation audit pending",
+  "predecessor_branch": "fix/bounded-decode-allocation",
+  "predecessor_head": "fb1e188b4b1bad73febccf3b7c7595a78ae7a4c2",
+  "earlier_maintenance_pin": "981da4efb7d62e4370c5d6de706d56a729b9552e",
+  "swiftjli_baseline": "89d5e6a31c51384a48a01d2ac84983ee534c6d24",
+  "contract": "0.10.0",
+  "predecessor_files_changed": [
+    {
+      "path": "Documentation/AllocationQualification-0.6.0.md",
+      "sha256": "38af5329a4308ae716202972199c1c21a374117ad27807feb830e7e01e120fa0"
+    },
+    {
+      "path": "Documentation/AllocationSource-0.6.0.json",
+      "sha256": "aa1f26bb621444a58f67bdc619e9a77372dd59d300388198f2c8d6cabec1f0da"
+    },
+    {
+      "path": "Documentation/CallerStorage.md",
+      "sha256": "d94789aae2afdf63ec418fa92274544a83d75f69b969c4f08db8bfee227ed2ee"
+    },
+    {
+      "path": "README.md",
+      "sha256": "cdad7eeeabd7715fac3fa93f3f97f0213294df9c1c666b1b0b7aa6b211d28409"
+    },
+    {
+      "path": "RELEASE_NOTES_v0.6.0.md",
+      "sha256": "a7711a236e655d1ad166f3d994c7de3c6fee224b22c243b1689ff791fcd6cd4f"
+    },
+    {
+      "path": "Sources/JLISwift/ColorSpace/JLIChromaSampling.swift",
+      "sha256": "97472c4062b6eb5dd64a16f5842add51791e5a27385cb13f7eb25592ea2a3f4f"
+    },
+    {
+      "path": "Sources/JLISwift/ColorSpace/JLIColorConversion.swift",
+      "sha256": "e8f4bea53416a258b24bc0826a1838d19cf3dbdd509ddbdd12587d181c9b9f10"
+    },
+    {
+      "path": "Sources/JLISwift/ColorSpace/JLIXYBICCProfile.swift",
+      "sha256": "a915ef04bd447f11be87382c1d2479b91e3bd7c22502c92bc8a0e32daad1a7e1"
+    },
+    {
+      "path": "Sources/JLISwift/Contract/BorrowedPlane.swift",
+      "sha256": "3921de7571ec025c9ce85a2faeea408f31341d7a72450f9da1c216b0e981b4d1"
+    },
+    {
+      "path": "Sources/JLISwift/Contract/CodecAPI.swift",
+      "sha256": "f2744a85794dc40f46e9062e01bed9484ea4eca14ae729bbe870e589839b0e91"
+    },
+    {
+      "path": "Sources/JLISwift/Contract/ContractCodec.swift",
+      "sha256": "b553916fc08bdfc3e40f4eab777c475af11e7abaf2c502473e7d0dfbeaf88525"
+    },
+    {
+      "path": "Sources/JLISwift/Contract/Errors.swift",
+      "sha256": "cfae3357b4aba0e62df1ed6096b8af951d39d0155184b8881c737d48ec936643"
+    },
+    {
+      "path": "Sources/JLISwift/Contract/Image.swift",
+      "sha256": "167f902a02030ddc16451d5b3b4d2e924665361d5ce26faf2ab16d43fb1c70df"
+    },
+    {
+      "path": "Sources/JLISwift/Contract/ImageDescriptor.swift",
+      "sha256": "a6d91691d00c0bee8f19986f7bd95739589794898e3c163e80923885d21c5a96"
+    },
+    {
+      "path": "Sources/JLISwift/Contract/ImageStorage.swift",
+      "sha256": "5d3048cddbc98a1bc78e522e26bd83737b5a33bb12f883b15d845fc799f102a1"
+    },
+    {
+      "path": "Sources/JLISwift/Contract/Options.swift",
+      "sha256": "082a589b2172282b6a66ea3bd6e72f6d865671a782cb1b3839549db3e575f622"
+    },
+    {
+      "path": "Sources/JLISwift/Core/JLICoreFailure.swift",
+      "sha256": "a73e43c53770b8f2477f817925918af3356e60ccf75f4dc5f5532c556eafa8c1"
+    },
+    {
+      "path": "Sources/JLISwift/Core/JLIImage.swift",
+      "sha256": "c4652ea17457dd5cb8f99b0b94e3c5155f433bcbbacd120397fa6849df8d7686"
+    },
+    {
+      "path": "Sources/JLISwift/DSP/JLIQuantization.swift",
+      "sha256": "83b2f1270e3bae23d747dc5865c61f1e35ca9c1f0ebde6681da5e6bc4b9b9f77"
+    },
+    {
+      "path": "Sources/JLISwift/Decoder/JLIBaselineCallerStorage.swift",
+      "sha256": "900561736d7e8e118f3d141aae73d6ada70cf17664231f3c4d01279cccc6df83"
+    },
+    {
+      "path": "Sources/JLISwift/Decoder/JLIBaselineParseStorage.swift",
+      "sha256": "3ba306fc409ea5397208f60a1ddd99ef8272cedcfbfe1091637967f0170d744a"
+    },
+    {
+      "path": "Sources/JLISwift/Decoder/JLICoreStorage.swift",
+      "sha256": "975432a355918f1c2ebb72a4515479a5d4d426a7559a3a8a83019669bc6ddc03"
+    },
+    {
+      "path": "Sources/JLISwift/Decoder/JLIDecoder.swift",
+      "sha256": "2ab2ae206ea961e5fb83b91a3f212b8218a5093ea98745f86565bfcce1336cfa"
+    },
+    {
+      "path": "Sources/JLISwift/Decoder/JLILosslessCallerStorage.swift",
+      "sha256": "50b4fc826233ffcc2a56d8c1d50bf50b6660844bbabe6a35f3c5a92c61a116b8"
+    },
+    {
+      "path": "Sources/JLISwift/Decoder/JLILosslessParseStorage.swift",
+      "sha256": "ff9e5f4a620516401996b56f393c85493f7932f5be8dcaf9ffa4364412d7eddd"
+    },
+    {
+      "path": "Sources/JLISwift/Encoder/JLIEncoder.swift",
+      "sha256": "ab73a504c043a3ba53927e8c652cbc187cba335a1b65b7de4f8850d2a3b30155"
+    },
+    {
+      "path": "Sources/JLISwift/Entropy/JLIBitStream.swift",
+      "sha256": "8bad0e5774315b2c09d6c74d9199a451892ab6e651054209286aa53de02e55e7"
+    },
+    {
+      "path": "Sources/JLISwift/Entropy/JLIByteView.swift",
+      "sha256": "f1327d375dd4fbb84c284e57707b7a1f4e12f1c8929e63f81c93b8a319a42343"
+    },
+    {
+      "path": "Sources/JLISwift/Entropy/JLIHuffman.swift",
+      "sha256": "092850a62ab1acfb8082ce2f5340807a6676722c549badd845fea27ffe6cd3c4"
+    },
+    {
+      "path": "Sources/JLISwift/JLISwift.swift",
+      "sha256": "60afd307170e8ef6a832985e6df5b6e0e5b27607351a95c742b367a8c515cc2b"
+    },
+    {
+      "path": "Sources/JLISwift/Markers/JLIMarkerReader.swift",
+      "sha256": "a8a646e77829b28d9d9e113ad0f761b4371118a74f2007d7ca8db47e779a5ad1"
+    },
+    {
+      "path": "Sources/JLISwift/Platform/AccelerateBackend.swift",
+      "sha256": "609d054a18b3b59142f22de5cb3600f226f98cc4a4ad7d59b1a4f8efc2fdbe59"
+    },
+    {
+      "path": "Tests/JLISwiftTests/BaselineCallerStorageTests.swift",
+      "sha256": "26be71b8176afcd8b7698f5b1064e72bef3865e98e073c72e6d1fc35972eb749"
+    },
+    {
+      "path": "Tests/JLISwiftTests/ContractImageLayerTests.swift",
+      "sha256": "edf3c0f4874e361c75c1513f3c69d9c3d547f9d4504ebd82c50ec8f6d14c233e"
+    },
+    {
+      "path": "Tests/JLISwiftTests/CoreCallerControlTests.swift",
+      "sha256": "f988741d8a444e68b93a487cb9a0e61827b438fa987d6a82edf42d66fc0709e4"
+    },
+    {
+      "path": "Tests/JLISwiftTests/InPlaceChromaTests.swift",
+      "sha256": "a628001022b23a00300b6cf1ab5849bc73156fd1ab9bcf642d0fedf5541f749c"
+    },
+    {
+      "path": "Tests/JLISwiftTests/LosslessCallerStorageTests.swift",
+      "sha256": "ed829ae4ab23399042294bd5d83abae6dd7613fd4931d85b8f1e83c5714c9006"
+    },
+    {
+      "path": "Tests/JLISwiftTests/ReleasedAccelerateDecodeOracle.swift",
+      "sha256": "81c9f41efbfd1dedd4039e2cb7ddc864d3bd4fc882118a0885f4f066a9989844"
+    },
+    {
+      "path": "Tests/JLISwiftTests/SharedDecodeKernelParityTests.swift",
+      "sha256": "94fd31ef647ed7464db5ebb06c7a5724be41a4ed1a34e5cc879627308c3a144a"
+    },
+    {
+      "path": "Tests/JLISwiftTests/XYBProfileDefinitionTests.swift",
+      "sha256": "8e93a5050932b4d2f559abd5680ded2fd3362f43550dbc2019e6065ba2b47beb"
+    }
+  ],
+  "findings": [
+    {
+      "area": "Sequential DHT table scope",
+      "classification": "confirmed source mismatch; candidate fix pending",
+      "evidence": "MarkerReader retains SOS Huffman snapshots and JPEGDCTValidation validates them; sequential JLIDecoder selects final parser dictionaries. Envelope accepts later DHT. Progressive and lossless already use scan snapshots. New predecessor caller-core selects per-scan descriptors; its legacy owning path still uses globals."
+    },
+    {
+      "area": "SOF/SOS/DQT/DHT/DRI segment admission",
+      "classification": "equivalent public guards already present",
+      "evidence": "JPEGEnvelope validates each declared segment extent, exact component counts and DRI length before native parser. It enforces table ID/class and canonical counts."
+    },
+    {
+      "area": "Post-SOS DQT/DRI and multiple sequential scans",
+      "classification": "explicit supported-capability difference",
+      "evidence": "JPEGEnvelope rejects these inputs; MIGRATION documents limitation. New predecessor caller-core supports them. No silent decoding with final global state is admitted."
+    },
+    {
+      "area": "Undersampled luma and XYB expansion",
+      "classification": "explicit supported-capability difference",
+      "evidence": "JPEGDCTValidation permits sampling variation only in first colour component; others 1x1, and XYB requires all 1x1. New predecessor expansion is relevant to its additional supported profiles."
+    },
+    {
+      "area": "Cumulative DC and magnitude bounds",
+      "classification": "equivalent public/native guards already present",
+      "evidence": "Sequential and progressive decoder use Int64 accumulation and bounded precision; DCT validation limits categories; BitReader checks width <=16 before shifts."
+    },
+    {
+      "area": "Caller-workspace API, scalar failure records and borrowed spans",
+      "classification": "predecessor-specific architecture/API",
+      "evidence": "New JLICoreOutcome and caller-owned arenas have different ownership/capacity/metadata contract; SwiftJLI owning storage and executor remain intact. No zero-total-allocation equivalence claim."
+    },
+    {
+      "area": "ICC profile literal representation",
+      "classification": "verified byte-equivalent",
+      "evidence": "Independent standalone comparison: 728 bytes identical; icc-parity.swift and icc-inputs.json retain runner and source hashes."
+    },
+    {
+      "area": "Fixed constants, IDCT/colour refactor",
+      "classification": "caller-core allocation qualification refactor",
+      "evidence": "Tuple/literal constants retain values; supplied reconstruction constants and SIMD/scalar paths replace external DSP workspace for new caller-core. No demonstrated sample defect in existing supported SwiftJLI path."
+    },
+    {
+      "area": "Cancellation and joined lifetime",
+      "classification": "SwiftJLI equivalent policy already present",
+      "evidence": "NativeOperation checkpoints in parser/entropy boundary and row loops, scoped borrows and joined workers; new predecessor explicit callbacks differ from SwiftJLI task/executor policy."
+    }
+  ],
+  "independent_checks": [
+    {
+      "name": "XYB ICC byte identity",
+      "command": "swift -module-cache-path /private/tmp/swiftjli-oct14-icc-cache work/jliswift-oct14-parity/icc-parity.swift",
+      "exit_code": 0,
+      "result": "728 bytes identical",
+      "log": "icc-parity.log"
+    }
+  ]
+}

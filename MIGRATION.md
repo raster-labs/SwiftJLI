@@ -2,9 +2,9 @@
 
 The codec implementation was merged into main through [PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) on 9 October 2026 (`a967d27`). The public API supports native SOF3 lossless/bounded-error and SOF0/SOF1/SOF2 lossy JPEG, including the explicit Float32, XYB and colour policies documented below. Executable non-Watch qualification is complete, including the AC-powered rerun with 140 exact output comparisons and 43 explicitly assessed repeated latency increases above 5%. The earlier battery measurements are retained separately. Stable-release acceptance remains open for physical Watch resource validation and administrator activation of private reporting (deferred by the owner on 13 October 2026). Keep each production use case on its qualified predecessor until its successor profile passes acceptance. [Current evidence and open requirements](Documentation/Migration/ACCEPTANCE.md) distinguish implementation from qualification.
 
-The three maintenance fixes below merged into main through [PR #21](https://github.com/raster-labs/SwiftJLI/pull/21) on 13 October 2026 (`e1ae85d`); [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md) records their refreshed verification.
+The three maintenance fixes below merged into main through [PR #21](https://github.com/raster-labs/SwiftJLI/pull/21) on 13 October 2026 (`e1ae85d`), and the Milestone 4 CLI payload implementation merged through [PR #23](https://github.com/raster-labs/SwiftJLI/pull/23) on 15 October 2026 (`89d5e6a`); [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md) and [Milestone 4 qualification](Documentation/Migration/Qualification/Milestone4/README.md) record their verification.
 
-The source pin is JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`. SwiftJLI requires Swift tools 6.2 or later, Swift 6 language mode and Apple deployment floors of 26.0. Raise the application's floor in its separately assigned cutover. No stable 1.1.0 release is implied: use an explicitly reviewed revision for trials.
+The original source pin is JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`, supplemented by maintenance pins `981da4efb7d62e4370c5d6de706d56a729b9552e` (`v0.5.2`) and `fb1e188b4b1bad73febccf3b7c7595a78ae7a4c2` (`v0.6.0`, [parity record](Documentation/Migration/Qualification/JLISwiftOct14Parity/README.md)). SwiftJLI requires Swift tools 6.2 or later, Swift 6 language mode and Apple deployment floors of 26.0. Raise the application's floor in its separately assigned cutover. No stable 1.1.0 release is implied: use an explicitly reviewed revision for trials.
 
 ## API mappings
 
@@ -55,7 +55,9 @@ Raw RGB DCT at 8/12-bit precision is recognised from Adobe APP14 transform 0 or 
 
 A single zero byte following EOI is accepted only when the JPEG length excluding that byte is odd. Other trailing bytes, repeated padding, concatenated streams and missing EOI are rejected. This narrow padding allowance does not add DICOM parsing. Resource-limit defaults are unchanged; map the predecessor's caller budgets explicitly when migrating.
 
-Source pins, fixture provenance, verification and remaining platform limits are in [JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md).
+Sequential DCT, progressive DCT and lossless SOF3 decoding all select the Huffman table snapshot active at each `SOS` marker (`scan.dcTables` and `scan.acTables`), so valid trailing `DHT` segments after `SOS` do not overwrite the tables used by an earlier scan. `JLISwift` `0.6.0`'s raw-pointer caller-workspace entry points (`inspectBaselineRGBCore`, `decodeBaselineRGBCore`, `inspectLosslessMonochromeCore`, `decodeLosslessMonochromeCore` and `JLICoreOutcome`) are predecessor-specific APIs; in `SwiftJLI`, use `Decoder.inspect`, `Decoder.inspectJPEG`, `Decoder.decode(_:into:options:)` with `ImageDestination`, and `CodecError`.
+
+Source pins, fixture provenance, verification and remaining platform limits are in [JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md) and [JLISwift 14 October parity](Documentation/Migration/Qualification/JLISwiftOct14Parity/README.md).
 
 ## Decoder output and adaptive profiles
 

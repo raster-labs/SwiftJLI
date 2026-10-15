@@ -1,0 +1,207 @@
+{
+  "task": "JLISwift 14 October 2026 fix/bounded-decode-allocation (0.6.0) parity audit and migration",
+  "date": "2026-10-15",
+  "predecessor": {
+    "repository": "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/JLISwift-20261014",
+    "branch": "fix/bounded-decode-allocation",
+    "branch_commit": "fb1e188b4b1bad73febccf3b7c7595a78ae7a4c2",
+    "merged_main_commit": "b6df774a3c3ecdf4b98971f31543fdd18074ace2",
+    "comparison_base_merge": "09095056e37f66eb205ab051fc8acbe337ab1859",
+    "previously_migrated_pins": [
+      "0a4ded0b0b2e8e38127f4f302b286e74ee352474",
+      "981da4efb7d62e4370c5d6de706d56a729b9552e"
+    ]
+  },
+  "baseline": {
+    "branch": "main",
+    "commit": "89d5e6a31c51384a48a01d2ac84983ee534c6d24",
+    "tree": "53aeb158d94bf7a801a5a3e40d2deef7744aded2",
+    "suite_policy": "0.10.0"
+  },
+  "changed_files": {
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": {
+      "audited_snapshot_sha256": "a98bd2a3601b199155a916109c074307a4cdb22cac4424cfdbbc5715de140cb0",
+      "final_with_rationale_comment_sha256": "a9fc2a0878e13ffbef79450b6bd56197aa85f669e734a49bd40563561f33b20d"
+    },
+    "Tests/SwiftJLITests/JPEGDecodeParityTests.swift": "d7f302d740dfed5569f0b842a74ff0dd0becd8994d3f86103d65fb1f3b0e742f"
+  },
+  "provenance_notes": {
+    "sequential_dht_scope": "In JLISwift 0.6.0, per-scan DHT selection was added in its new caller-storage core (Sources/JLISwift/Decoder/JLIBaselineCallerStorage.swift), while its legacy owned decoder (Sources/JLISwift/Decoder/JLIDecoder.swift) still selects the final merged dictionaries. In SwiftJLI, the public Decoder routes sequential DCT through JLIDecoder.decodeParsed; updating JLIDecoder.decodeParsed to prepare dcTables and acTables from scan.dcTables and scan.acTables aligns sequential DCT with MarkerReader.parse, JPEGCodec.validateDCT, ProgressiveDecoder.decodeScan and JLIDecoder.decodeLossless.",
+    "xyb_icc_profile_bytes": 728
+  },
+  "classifications": [
+    {
+      "area": "Sequential DCT per-scan Huffman table snapshot (scan.dcTables / scan.acTables vs parsed.huffmanDCTables / parsed.huffmanACTables)",
+      "status": "confirmed_missing_migrated",
+      "files": [
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift",
+        "Tests/SwiftJLITests/JPEGDecodeParityTests.swift"
+      ]
+    },
+    {
+      "area": "Lossless and progressive per-scan Huffman table snapshots",
+      "status": "already_implemented",
+      "files": [
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift",
+        "Sources/SwiftJLI/Native/Decoder/JLIProgressiveDecoder.swift",
+        "Sources/SwiftJLI/JPEGDCTValidation.swift"
+      ]
+    },
+    {
+      "area": "SOF/SOS/DQT/DHT/DRI segment admission",
+      "status": "already_implemented",
+      "files": [
+        "Sources/SwiftJLI/JPEGEnvelope.swift",
+        "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift"
+      ]
+    },
+    {
+      "area": "Post-scan DRI/DQT and multi-scan sequential DCT rejection",
+      "status": "explicit_supported_capability_difference",
+      "files": [
+        "Sources/SwiftJLI/JPEGEnvelope.swift",
+        "Tests/SwiftJLITests/JPEGDecodeParityTests.swift"
+      ]
+    },
+    {
+      "area": "Undersampled luminance / XYB component geometry and ChromaSampling.upsampleInPlace",
+      "status": "explicit_supported_capability_difference",
+      "files": [
+        "Sources/SwiftJLI/JPEGDCTValidation.swift",
+        "Sources/SwiftJLI/Native/ColorSpace/JLIChromaSampling.swift"
+      ]
+    },
+    {
+      "area": "Cumulative DC and magnitude bounds",
+      "status": "already_implemented",
+      "files": [
+        "Sources/SwiftJLI/JPEGDCTValidation.swift",
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift",
+        "Sources/SwiftJLI/Native/Decoder/JLIProgressiveDecoder.swift",
+        "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift"
+      ]
+    },
+    {
+      "area": "Shared IDCT and colour conversion kernels (AccelerateBackend vs ScalarDSP + AccelerateBackend)",
+      "status": "caller_core_allocation_qualification_refactor_dual_backends_preserved",
+      "files": [
+        "Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift",
+        "Sources/SwiftJLI/Native/Platform/ScalarDSP.swift"
+      ]
+    },
+    {
+      "area": "XYB ICC profile literal representation (728 bytes)",
+      "status": "verified_byte_equivalent",
+      "files": [
+        "Sources/SwiftJLI/Native/ColorSpace/JLIXYBICCProfile.swift"
+      ]
+    },
+    {
+      "area": "Caller-workspace API, scalar failure records, borrowed spans and cancellation callbacks",
+      "status": "predecessor_specific_architecture_and_qualification",
+      "files": [
+        "Sources/SwiftJLI/CodecAPI.swift",
+        "Sources/SwiftJLI/Image.swift",
+        "Sources/SwiftJLI/ImageStorage.swift",
+        "Sources/SwiftJLI/NativeExecution.swift"
+      ]
+    }
+  ],
+  "failed_attempts": [
+    {
+      "name": "Initial focused test with stripped pre-scan DHT (stripPreScanDHT)",
+      "reason": "JPEGCodec.validateDCT explicitly requires per-scan scan.dcTables and scan.acTables entries for DCT scans and rejected the stripped stream with CodecError(.malformedInput, \"Invalid JPEG DCT tables or scan progression.\"). Revised test to use explicit pre-scan Annex K and optimised DHT segments followed by trailing post-SOS DHT redefinitions.",
+      "log": "failed-implicit-dht-attempt.log",
+      "log_sha256": "eaf935ca9a35b4674c41c866bb1a1859604bb141f445da72f23e50166faaec6b"
+    }
+  ],
+  "validation": {
+    "scope": "native macOS ARM64 and iOS 26.0 Simulator (iPhone 17 Pro)",
+    "implementer_macos_release_tests": {
+      "command": "swift test --scratch-path /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build --build-system native -c release -j 2",
+      "exit_code": 0,
+      "test_count": 355,
+      "suite_count": 50,
+      "log": "macos-release-tests.log",
+      "log_sha256": "c100397a79bca8159a035bc0ab8dccdfade607ca767f8b60a1f2981464f276f6"
+    },
+    "implementer_ios26_simulator_tests": {
+      "command": "xcodebuild test -scheme SwiftJLI-Package -destination 'platform=iOS Simulator,id=9021546C-CD90-4663-A01B-B4E92851C3DF' -destination-timeout 120 -parallel-testing-enabled NO -derivedDataPath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/ios26-derived -resultBundlePath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/ios26.xcresult CODE_SIGNING_ALLOWED=NO",
+      "exit_code": 0,
+      "test_count": 355,
+      "suite_count": 50,
+      "log": "ios26-tests.log",
+      "log_sha256": "5277ed87714df174814b0fbad5163b7309397b650ecb6ba78a98534b23600d9a",
+      "log_gz": "ios26-tests.log.gz",
+      "log_gz_sha256": "fbddde7bf318b52ae1239c82c9c1c64e6ec87bdbf0f98dad98c0b8de72462f84"
+    },
+    "implementer_macos_cli_checks": {
+      "command": "python3 Scripts/test-cli.py --binary /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/release/swiftjli-cli --output /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json",
+      "exit_code": 0,
+      "process_checks": 203,
+      "binary_sha256": "7c266a07f68cee68722c5e52a5d41172045151b3aad6934d7cefc983a4117b",
+      "report": "cli-report.json",
+      "report_sha256": "bdfac08990c9b7c79820364aadbf3fd5f857a6f571fb2f66f77cb4e052820be0"
+    },
+    "post_comment_focused_test": {
+      "command": "swift test -c release --filter sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT --scratch-path /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build --build-system native -j 2",
+      "exit_code": 0,
+      "test_count": 1,
+      "suite_count": 1,
+      "log": "focused-test-post-comment.log",
+      "log_sha256": "269a593bb8b2be78eb0145a22b8672b73bef5edc6a6c8f4c6716aa6912fd4e67"
+    },
+    "codex_independent_audit": {
+      "summary_json": "codex-audit-ready.json",
+      "summary_json_sha256": "07e2adf660ad9401329779ad95cb5cd276d665e1559893cba3efca52c066099d",
+      "source_manifest": "audit-source-manifest.json",
+      "source_manifest_sha256": "ed5315a76aa2a59791b2c5b9abc679822134d4b862b95cd06744d0484a9ee309",
+      "start_diff_patch": "audit-start-diff.patch",
+      "start_diff_patch_sha256": "60ea1c8fa9cbc83fb85803fef9f323b8ae0d46aa3dde01556ddbd17baaf6aede",
+      "source_comparison": "source-comparison.json",
+      "source_comparison_sha256": "f6adb0788ac461cdce3930b172b763cd6672a29a67de2217b2ed1867c4ffb446",
+      "macos_release": {
+        "json": "codex-macos-release.json",
+        "json_sha256": "067797298fc0957e32e68ea49409cfbf86158470b961757efe9cfee16a779cfd",
+        "log": "codex-macos-release.log",
+        "log_sha256": "826aade75d4fb836b6978c3684c9914975906cf9b6df8fa9883359020be11ede",
+        "test_count": 355,
+        "suite_count": 50
+      },
+      "ios26_simulator": {
+        "json": "codex-ios26.json",
+        "json_sha256": "930222bfa9d8479dbf46777c15ad39254dbffc33970dde007e25e0b2cbb4999e",
+        "log": "codex-ios26.log",
+        "log_sha256": "8016bf4444b9bc3ee6682eba1b530f9607d82d63e2d3454db2d4f315f36d8486",
+        "test_count": 355,
+        "suite_count": 50
+      },
+      "valid_jpeg_oracle": {
+        "json": "codex-valid-jpeg.json",
+        "json_sha256": "fe2512ec3b100de5e24459d5d11ac6f681d17c938d22a8983425df0896b5746e",
+        "log": "codex-valid-jpeg.log",
+        "log_sha256": "dbdc93bc2d19a30151bc8add86255ce14c702d1ed4d530be8bf2ef94979b4eb3",
+        "runner": "audit_valid_jpeg.py",
+        "runner_sha256": "5f83584dc8c40e1bd61ee06a725dc942f1fea0caf04fba1f8b58f71409dea0fe",
+        "report": "valid-jpeg-oracle/report.json",
+        "report_sha256": "32167e7f554b76c15d512c3cd6efe14f108a5ec18bf4688eed4d8839600b9828",
+        "cases": 6,
+        "commands": 38,
+        "max_observed_oracle_difference": 2
+      },
+      "icc_byte_identity": {
+        "runner": "icc-parity.swift",
+        "runner_sha256": "233b3e78ca1036d2e60a711e61ef05e88d88d0096b3e6b48bb481bf21c3cc191",
+        "inputs": "icc-inputs.json",
+        "inputs_sha256": "e2d339ac5d567443f57c6307f3d24fe38b8685804b86d94c00f348b0dd685e7a",
+        "log": "icc-parity.log",
+        "log_sha256": "4a5fcb79139f68793777190aa26d2e6bfabcb8993079fa1ee8b925ce756055b8",
+        "identical_bytes": 728
+      }
+    },
+    "common_contract_sha256_check": {
+      "command": "(cd Documentation && shasum -a 256 -c COMMON_CONTRACT_SHA256.txt)",
+      "exit_code": 0
+    }
+  }
+}
