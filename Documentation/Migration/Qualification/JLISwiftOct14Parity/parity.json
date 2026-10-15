@@ -20,8 +20,11 @@
   },
   "changed_files": {
     "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": {
-      "audited_snapshot_sha256": "a98bd2a3601b199155a916109c074307a4cdb22cac4424cfdbbc5715de140cb0",
-      "final_with_rationale_comment_sha256": "a9fc2a0878e13ffbef79450b6bd56197aa85f669e734a49bd40563561f33b20d"
+      "pre_comment_tested_snapshot_sha256": "a98bd2a3601b199155a916109c074307a4cdb22cac4424cfdbbc5715de140cb0",
+      "final_with_rationale_comment_sha256": "a9fc2a0878e13ffbef79450b6bd56197aa85f669e734a49bd40563561f33b20d",
+      "difference_kind": "two explanatory line comments only; executable code and tests unchanged",
+      "diff": "post-test-comment.diff",
+      "diff_sha256": "051f8f67c77722c5a5d669c2d0bb7c0a6c992df58a8a55f5b8b1ff27894676e9"
     },
     "Tests/SwiftJLITests/JPEGDecodeParityTests.swift": "d7f302d740dfed5569f0b842a74ff0dd0becd8994d3f86103d65fb1f3b0e742f"
   },
@@ -117,50 +120,37 @@
   ],
   "validation": {
     "scope": "native macOS ARM64 and iOS 26.0 Simulator (iPhone 17 Pro)",
-    "implementer_macos_release_tests": {
-      "command": "swift test --scratch-path /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build --build-system native -c release -j 2",
-      "exit_code": 0,
-      "test_count": 355,
-      "suite_count": 50,
-      "log": "macos-release-tests.log",
-      "log_sha256": "c100397a79bca8159a035bc0ab8dccdfade607ca767f8b60a1f2981464f276f6"
-    },
-    "implementer_ios26_simulator_tests": {
-      "command": "xcodebuild test -scheme SwiftJLI-Package -destination 'platform=iOS Simulator,id=9021546C-CD90-4663-A01B-B4E92851C3DF' -destination-timeout 120 -parallel-testing-enabled NO -derivedDataPath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/ios26-derived -resultBundlePath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/ios26.xcresult CODE_SIGNING_ALLOWED=NO",
-      "exit_code": 0,
-      "test_count": 355,
-      "suite_count": 50,
-      "log": "ios26-tests.log",
-      "log_sha256": "5277ed87714df174814b0fbad5163b7309397b650ecb6ba78a98534b23600d9a",
-      "log_gz": "ios26-tests.log.gz",
-      "log_gz_sha256": "fbddde7bf318b52ae1239c82c9c1c64e6ec87bdbf0f98dad98c0b8de72462f84"
-    },
-    "implementer_macos_cli_checks": {
-      "command": "python3 Scripts/test-cli.py --binary /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/release/swiftjli-cli --output /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json",
-      "exit_code": 0,
-      "process_checks": 203,
-      "binary_sha256": "7c266a07f68cee68722c5e52a5d41172045151b3aad6934d7cefc983a4117b",
-      "report": "cli-report.json",
-      "report_sha256": "bdfac08990c9b7c79820364aadbf3fd5f857a6f571fb2f66f77cb4e052820be0"
-    },
-    "post_comment_focused_test": {
-      "command": "swift test -c release --filter sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT --scratch-path /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build --build-system native -j 2",
-      "exit_code": 0,
-      "test_count": 1,
-      "suite_count": 1,
-      "log": "focused-test-post-comment.log",
-      "log_sha256": "269a593bb8b2be78eb0145a22b8672b73bef5edc6a6c8f4c6716aa6912fd4e67"
-    },
-    "codex_independent_audit": {
-      "summary_json": "codex-audit-ready.json",
-      "summary_json_sha256": "07e2adf660ad9401329779ad95cb5cd276d665e1559893cba3efca52c066099d",
-      "source_manifest": "audit-source-manifest.json",
-      "source_manifest_sha256": "ed5315a76aa2a59791b2c5b9abc679822134d4b862b95cd06744d0484a9ee309",
-      "start_diff_patch": "audit-start-diff.patch",
-      "start_diff_patch_sha256": "60ea1c8fa9cbc83fb85803fef9f323b8ae0d46aa3dde01556ddbd17baaf6aede",
-      "source_comparison": "source-comparison.json",
-      "source_comparison_sha256": "f6adb0788ac461cdce3930b172b763cd6672a29a67de2217b2ed1867c4ffb446",
-      "macos_release": {
+    "pre_comment_full_suite_snapshot": {
+      "manifest": "audit-source-manifest.json",
+      "manifest_sha256": "ed5315a76aa2a59791b2c5b9abc679822134d4b862b95cd06744d0484a9ee309",
+      "jli_decoder_sha256": "a98bd2a3601b199155a916109c074307a4cdb22cac4424cfdbbc5715de140cb0",
+      "implementer_macos_release_tests": {
+        "command": "swift test --scratch-path /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build --build-system native -c release -j 2",
+        "exit_code": 0,
+        "test_count": 355,
+        "suite_count": 50,
+        "log": "macos-release-tests.log",
+        "log_sha256": "c100397a79bca8159a035bc0ab8dccdfade607ca767f8b60a1f2981464f276f6"
+      },
+      "implementer_ios26_simulator_tests": {
+        "command": "xcodebuild test -scheme SwiftJLI-Package -destination 'platform=iOS Simulator,id=9021546C-CD90-4663-A01B-B4E92851C3DF' -destination-timeout 120 -parallel-testing-enabled NO -derivedDataPath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/ios26-derived -resultBundlePath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/ios26.xcresult CODE_SIGNING_ALLOWED=NO",
+        "exit_code": 0,
+        "test_count": 355,
+        "suite_count": 50,
+        "log": "ios26-tests.log",
+        "log_sha256": "5277ed87714df174814b0fbad5163b7309397b650ecb6ba78a98534b23600d9a",
+        "log_gz": "ios26-tests.log.gz",
+        "log_gz_sha256": "fbddde7bf318b52ae1239c82c9c1c64e6ec87bdbf0f98dad98c0b8de72462f84"
+      },
+      "implementer_macos_cli_checks": {
+        "command": "python3 Scripts/test-cli.py --binary /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/release/swiftjli-cli --output /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json",
+        "exit_code": 0,
+        "process_checks": 203,
+        "binary_sha256": "7c266a07f68cee68722c5e52a5d41172045151b3aad6934d7cefc983a4117b",
+        "report": "cli-report.json",
+        "report_sha256": "bdfac08990c9b7c79820364aadbf3fd5f857a6f571fb2f66f77cb4e052820be0"
+      },
+      "codex_macos_release": {
         "json": "codex-macos-release.json",
         "json_sha256": "067797298fc0957e32e68ea49409cfbf86158470b961757efe9cfee16a779cfd",
         "log": "codex-macos-release.log",
@@ -168,7 +158,7 @@
         "test_count": 355,
         "suite_count": 50
       },
-      "ios26_simulator": {
+      "codex_ios26_simulator": {
         "json": "codex-ios26.json",
         "json_sha256": "930222bfa9d8479dbf46777c15ad39254dbffc33970dde007e25e0b2cbb4999e",
         "log": "codex-ios26.log",
@@ -176,7 +166,7 @@
         "test_count": 355,
         "suite_count": 50
       },
-      "valid_jpeg_oracle": {
+      "codex_valid_jpeg_oracle": {
         "json": "codex-valid-jpeg.json",
         "json_sha256": "fe2512ec3b100de5e24459d5d11ac6f681d17c938d22a8983425df0896b5746e",
         "log": "codex-valid-jpeg.log",
@@ -187,9 +177,19 @@
         "report_sha256": "32167e7f554b76c15d512c3cd6efe14f108a5ec18bf4688eed4d8839600b9828",
         "cases": 6,
         "commands": 38,
-        "max_observed_oracle_difference": 2
+        "max_observed_oracle_difference": 2,
+        "fixture_layout_note": "audit_valid_jpeg.py readsPath(__file__).resolve().parent / 'audit-source/Tests/SwiftJLITests/Fixtures/UpstreamJPEG'; symlink or export the repository's Tests/ directory under audit-source/Tests before running in a fresh scratch directory.",
+        "repository_input_fixtures": {
+          "Tests/SwiftJLITests/Fixtures/UpstreamJPEG/testorig-444-oracle.pnm": "9d7068ddb451de520bd1339b27ee7ea939eaf7ce7590cb1d96d198752ec38757",
+          "Tests/SwiftJLITests/Fixtures/UpstreamJPEG/testorig-444.jpg": "866a74e9fafc0253eb465b1f8f34f314d46b9df9d9d316e09b9186b52c23054d",
+          "Tests/SwiftJLITests/Fixtures/UpstreamJPEG/testorig-444-progressive.jpg": "a6daa70e9d081333e899381eeb932a307fc7f1651f311f6ea2a9327b0ab70773",
+          "Tests/SwiftJLITests/Fixtures/UpstreamJPEG/testimgint-444.jpg": "1deb929f0cf6c6b1228d6ff1e4a3d7b3e45a463f07a03fdf129a3cc2fdff6cd8",
+          "Tests/SwiftJLITests/Fixtures/UpstreamJPEG/testimgint-444-progressive.jpg": "41bc9e3cf62fb790669ff9070bb09a9f5508f08703f04abf207410862582a1ba",
+          "Tests/SwiftJLITests/Fixtures/UpstreamJPEG/monkey12-444.jpg": "d4773d122eced6e975a44a0c533bd843c60918c5bd1f3be6921673541b528d58",
+          "Tests/SwiftJLITests/Fixtures/UpstreamJPEG/monkey12-444-progressive.jpg": "6853655760ba2e42f5b47083e3ae0bf354fab0466cbef207b5bdbe589d19db36"
+        }
       },
-      "icc_byte_identity": {
+      "codex_icc_byte_identity": {
         "runner": "icc-parity.swift",
         "runner_sha256": "233b3e78ca1036d2e60a711e61ef05e88d88d0096b3e6b48bb481bf21c3cc191",
         "inputs": "icc-inputs.json",
@@ -197,6 +197,32 @@
         "log": "icc-parity.log",
         "log_sha256": "4a5fcb79139f68793777190aa26d2e6bfabcb8993079fa1ee8b925ce756055b8",
         "identical_bytes": 728
+      }
+    },
+    "post_comment_final_source_verification": {
+      "summary_json": "codex-audit-ready.json",
+      "summary_json_sha256": "ad8900980b0e11fcafb1d55e735010232b78f1bc7002365a4a877a7e61a8e8f0",
+      "verification_json": "final-source-verification.json",
+      "verification_json_sha256": "6064efbba39e2d10e0e8f3c43702b7e74d97ea89b807ebacbb4e0aefdbffd079",
+      "final_manifest": "final-source-manifest.json",
+      "final_manifest_sha256": "ce4dde0cf075862db8adbaf241a34ed3f92970c6c9921021b9f90427712688bc",
+      "comment_diff": "post-test-comment.diff",
+      "comment_diff_sha256": "051f8f67c77722c5a5d669c2d0bb7c0a6c992df58a8a55f5b8b1ff27894676e9",
+      "start_diff_patch": "audit-start-diff.patch",
+      "start_diff_patch_sha256": "60ea1c8fa9cbc83fb85803fef9f323b8ae0d46aa3dde01556ddbd17baaf6aede",
+      "source_comparison": "source-comparison.json",
+      "source_comparison_sha256": "f6adb0788ac461cdce3930b172b763cd6672a29a67de2217b2ed1867c4ffb446",
+      "files_checked": 132,
+      "byte_identical_to_test_snapshot": 131,
+      "comment_only_changed_files": 1,
+      "executable_code_and_tests_unchanged": true,
+      "focused_test": {
+        "command": "swift test -c release --filter sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT --scratch-path /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build --build-system native -j 2",
+        "exit_code": 0,
+        "test_count": 1,
+        "suite_count": 1,
+        "log": "focused-test-post-comment.log",
+        "log_sha256": "269a593bb8b2be78eb0145a22b8672b73bef5edc6a6c8f4c6716aa6912fd4e67"
       }
     },
     "common_contract_sha256_check": {
