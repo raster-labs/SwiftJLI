@@ -1,0 +1,24 @@
+Building for debugging...
+[Planning deferred tasks]
+[3 / 17] SwiftJLI
+[7 / 16] WatchQualificationTests-product
+[9 / 18] WatchQualificationTests-product
+[12 / 16] WatchQualificationTests-product
+[14 / 16] WatchQualificationTests-product
+Build complete! (1.36 secs)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite WatchQualificationTests started.
+◇ Test repeatedLosslessCallerStorage() started.
+✘ Test repeatedLosslessCallerStorage() recorded an issue at WatchQualificationTests.swift:26:17: Expectation failed: image.sampleUInt16(x: x, y: y) == (UInt16((x * 193 + y * 31957) & ((1 << bits) - 1)) ^ 1)
+↳ image.sampleUInt16(x: x, y: y) == (UInt16((x * 193 + y * 31957) & ((1 << bits) - 1)) ^ 1) → false
+↳   image.sampleUInt16(x: x, y: y) → 0
+↳   (UInt16((x * 193 + y * 31957) & ((1 << bits) - 1)) ^ 1) → 1
+✘ Test repeatedLosslessCallerStorage() failed after 0.023 seconds with 1 issue.
+✘ Suite WatchQualificationTests failed after 0.023 seconds with 1 issue.
+↳ // Separate from the shipping graph. Serial execution keeps resource observations
+↳ // attributable to one case. Desktop/simulator execution is harness validation only.
+✘ Test run with 1 test in 1 suite failed after 0.023 seconds with 1 issue.
+Note: Some test targets reported failures:
+  - WatchQualificationTests (Swift Testing)

@@ -82,6 +82,8 @@ jobs:
         run: swift test --scratch-path .build/asan --sanitize address
       - name: Thread sanitizer
         run: swift test --scratch-path .build/tsan --sanitize thread
+      - name: Validate Watch qualification harness on macOS (not device evidence)
+        run: swift test --package-path Examples/WatchQualification -c release --disable-xctest -j 2
 
   apple-sdk-builds:
     name: Apple device, simulator and Intel SDK compilation

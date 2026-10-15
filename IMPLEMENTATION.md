@@ -2,7 +2,7 @@
 
 Read AGENTS.md and every common contract document first. Milestone 1 implements API shapes and owning storage; see [executed evidence](Documentation/MILESTONE1.md). Later milestones require an owner-assigned implementation task. Follow the common contract when predecessor conventions differ. Maintain performance, reliability and security together.
 
-## Verified status — 13 October 2026
+## Verified status — 15 October 2026
 
 [PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged the codec migration
 and deadline-overflow correction into main as `a967d27`. The 13-job CI matrix
@@ -11,19 +11,22 @@ are unchanged in the merge commit. The milestones below remain the plan of recor
 not a claim that every release gate has passed. Main itself passed all 13 jobs in
 [CI 37903247015](https://github.com/raster-labs/SwiftJLI/actions/runs/37903247015).
 
-The three JPEG maintenance gaps are implemented separately in draft PR #21.
+The three JPEG maintenance gaps merged in PR #21 on 13 October 2026 as
+`e1ae85d`. Its post-merge [CI 38355780498](https://github.com/raster-labs/SwiftJLI/actions/runs/38355780498)
+passed all 13 jobs.
 The original migration pin remains intact; the two maintenance branch pins,
 independent regressions and measured performance cost are recorded in
-[JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md). Acceptance
-must include those changed decode paths before selecting a release candidate.
+[JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md). The refreshed non-Watch acceptance evidence includes those changed decode paths.
+
+On 15 October 2026, the owner assigned all Milestone 4 software work including the CLI payload commands (`encode`, `decode`, `inspect`, `validate`), reconciling the earlier `I3` deferral, and explicitly scoped platform validation for this task to **native macOS and the iOS Simulator**.
 
 | Scope | Current disposition |
 | --- | --- |
 | Milestones 1–2: API/storage foundation and native migration baseline | Implemented; source inventory, provenance, predecessor comparisons and independent JPEG oracle evidence retained. |
 | Milestone 3: caller storage and first suite pair | Implemented; refreshed sharing/copy/lifetime evidence covers all six available codec pairs in both directions, including the first SwiftJ2K ↔ SwiftJLS pair. |
-| Milestone 4: profiles and qualification | Supported profiles, all 13 CI jobs, full fuzz campaigns, independent oracles, memory controls and explicit performance dispositions qualified, including the AC rerun with 140 exact output comparisons and 43 assessed repeated above-threshold latency cases. Physical Watch resource testing is excluded here and remains unexecuted. Unsupported combinations reject explicitly. |
-| Milestone 5: release preparation | Consumer, documentation, provenance and supported-version policy refreshed. Private-reporting activation is deferred by the owner to a later task; an administrator must establish it before stable release. Physical Watch remains a release qualification limit. No stable tag or downstream cutover is established. |
-| Auxiliary products and CLI payload commands | Explicit I1–I3 dispositions below remain in force; deferred work is not claimed as implemented. |
+| Milestone 4: profiles, CLI and qualification | Supported codec profiles, CLI payload commands (`encode`, `decode`, `inspect`, `validate` with fidelity-preserving NRRD and binary Netpbm PGM/PPM/PNM I/O), and the owner-scoped native macOS + iOS Simulator validation gates are implemented and qualified: on native macOS ARM64, `swiftjli-cli` passes 203 process checks in `Scripts/test-cli.py`, 122 independent CLI interoperability/profile commands, 5 stream-lifecycle commands, and 6 codec deadline-category commands (`[5, 5, 5, 5, 5, 0]`); the unchanged `SwiftJLITests` library suite passes 354 tests on native macOS ARM64 release and 354 tests on the iOS 26.0 Simulator (`iPhone 17 Pro`). Historical 13-job CI, full fuzz campaigns, independent oracles, memory controls and explicit AC performance dispositions remain retained at their recorded source pins. Physical Watch, tvOS/visionOS/watchOS simulator reruns and fresh Linux qualification are outside the owner's task-specific macOS + iOS Simulator execution scope; physical Watch resource testing remains unexecuted for full stable-release completion. See the [Milestone 4 record](Documentation/Migration/Qualification/Milestone4/README.md). Unsupported combinations reject explicitly. |
+| Milestone 5: release preparation | Deferred by the owner to a later task. Consumer, documentation, provenance and supported-version policy already refreshed. Private-reporting activation is deferred by the owner to a later task; an administrator must establish it before stable release. Physical Watch remains a release qualification limit. No stable tag or downstream cutover is established. |
+| Auxiliary products and CLI payload commands | `I1` and `I2` product deferrals (`JLIDICOM` and `JLIBench`) remain in force. `I3` is reconciled: `swiftjli-cli` now implements `encode`, `decode`, `inspect` and `validate` per `CLI_CONTRACT.md` (v0.10.0). |
 
 The [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) is authoritative
 for current evidence and remaining gates. Historical measurements are not relabelled
@@ -98,7 +101,7 @@ POL-05 requires every product to be explicitly **retained** (migrates, stays a p
 
 **I2 — deferring `JLIBench` does not defer its fixtures.** Its `Regression/` corpus and `IdentityHashes.swift` are exactly the pinned predecessor corpus and bug reproducers TEST-04 requires to be carried forward. The fixtures migrate with the codec and keep their provenance records; only the executable is deferred.
 
-**I3 — `swiftjli-cli`'s payload verbs are new work, not a migration.** The predecessor ships no codec CLI, only the `JLIBench` benchmark executable, so CLI-01's required surface cannot be migrated from anywhere. The first stable 1.1.0 ships the diagnostic CLI already present — help, version and capabilities — and `encode`, `decode`, `inspect`, `validate` are budgeted as new implementation in the CLI milestone rather than treated as part of the codec move.
+**I3 — `swiftjli-cli`'s payload verbs are new work, not a migration (reconciled and implemented in Milestone 4).** The predecessor ships no codec CLI, only the `JLIBench` benchmark executable, so CLI-01's required surface could not be migrated from anywhere. Originally budgeted as separate CLI milestone work, the owner assigned completion of all Milestone 4 software work on 15 October 2026, including `encode`, `decode`, `inspect` and `validate` in `swiftjli-cli` with fidelity-preserving NRRD (`CLI-04`) and binary Netpbm (`pgm`/`ppm`/`pnm`) I/O. See [CLI.md](CLI.md) for current usage and qualification.
 
 ## Milestone 2 pinned predecessor revision
 
@@ -157,6 +160,6 @@ The duplication has a traceable cause. All eight predecessor contract files carr
 
 Update CHANGELOG.md and migration provenance. Provide the exact commands, commits, fixture hashes and outcomes; report tests not run and why, unsupported cases, allocation/copy evidence and performance impact. Map each advertised feature to a test and capability entry. Keep DICOMKit/Voxelia source changes outside this repository task unless the owner separately assigns them.
 
-## Owner-authorised CLI foundation
+## Owner-authorised CLI foundation and Milestone 4 payload verbs
 
-Before codec migration, the owner requested executable help, verbosity and UNIX manuals, and in the same contract revision (0.4.0) raised Apple floors to 27.0. The CLI authorisation stands; the floor raise does not. Contract 0.5.0 returned the Apple minima to 26.0 and the manifest minimum to Swift 6.2, and contract 0.9.0 confirmed 26.0. This bounded CLI foundation implements help/version/capabilities only; codec commands remain explicitly unavailable. See [CLI.md](CLI.md) and the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md), whose platform claims are superseded history and whose CLI content is current. The later codec/CLI milestones still govern real payload operations.
+Before codec migration, the owner requested executable help, verbosity and UNIX manuals, and in the same contract revision (0.4.0) raised Apple floors to 27.0. The CLI authorisation stands; the floor raise does not. Contract 0.5.0 returned the Apple minima to 26.0 and the manifest minimum to Swift 6.2, and contract 0.9.0 confirmed 26.0. In Milestone 4, the owner authorised completing the CLI payload verbs (`encode`, `decode`, `inspect`, `validate`) to the `CLI_CONTRACT.md` (v0.10.0) specification with fidelity-preserving NRRD and binary Netpbm I/O. See [CLI.md](CLI.md) and the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md), whose platform claims are superseded history and whose initial CLI foundation content is retained alongside the Milestone 4 payload implementation.

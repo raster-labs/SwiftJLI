@@ -42,7 +42,7 @@ This script covers local macOS validation of the existing Milestone 1 API/storag
 
 ## CLI checks
 
-Active packages and generated consumers require Apple OS 26.0. The owner-approved CLI foundation is a separate executable product, with no main entry point in library tests. After building its release binary, run `python3 Scripts/test-cli.py --binary /absolute/path/to/the/tool --output /new/evidence/directory` for process-level help/verbosity/stream and staged install/man-page checks. The check requires `man` and `mandoc`; missing manual tools fail explicitly. `install-cli.sh --help` describes install/update and DESTDIR staging. Read [CLI.md](../CLI.md) and the [OS 27/CLI record](../Documentation/Engineering/OS27CLI/README.md), whose CLI content is current and whose platform claims are superseded history.
+Active packages and generated consumers require Apple OS 26.0. The CLI is a separate executable product (`swiftjli-cli`), with no main entry point in library tests. After building its release binary, run `python3 Scripts/test-cli.py --binary /absolute/path/to/the/tool --output /new/evidence/directory` for 203 process-level checks covering help/verbosity/capabilities, `encode`/`decode`/`inspect`/`validate` payload operations (NRRD and binary Netpbm PGM/PPM/PNM), stream pipes, nonblocking timeout/cancellation, codec deadline-category duration sweep, resource admission, non-echoing NRRD rejection and staged install/man-page checks. Platform-dependent `--backend accelerated` checks adapt automatically between Darwin (Accelerate present) and Linux CI (scalar-only). The check requires `man` and `mandoc`; missing manual tools fail explicitly. `install-cli.sh --help` describes install/update and DESTDIR staging. Read [CLI.md](../CLI.md) and the [OS 27/CLI record](../Documentation/Engineering/OS27CLI/README.md), whose initial CLI foundation content is retained and whose platform claims are superseded history.
 
 ## Independent JPEG interoperability
 
@@ -71,3 +71,7 @@ codecs. `verify-suite-outputs.py` checks the 72 completed outputs with independe
 JPEG/JPEG 2000/JPEG-LS/JPEG XL decoders. `verify-cross-codec-heap.py --suite`
 requires 72 allocator cases and 72 deliberate-copy controls; omitting `--suite`
 retains the original two-codec checks. These are development-only tools.
+
+## Watch resource qualification
+
+The development-only [WatchQualification package](../Examples/WatchQualification/README.md) supplies focused Watch-budget tests and a physical-device run procedure. Its macOS CI check validates the harness only. Device execution and measured resource acceptance remain necessary before closing Milestone 4.
