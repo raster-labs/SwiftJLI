@@ -10,11 +10,11 @@ The common API now encodes, inspects and decodes unsigned SOF3 lossless and boun
 
 SwiftJLI is the standalone successor to [JLISwift](https://github.com/Raster-Lab/JLISwift). The successor provides a harmonised API, explicit memory ownership, high-precision sample preservation and efficient shared-storage integration. It has no mandatory dependency on another suite library or CompressionFamily. Apache-2.0 licensing applies to these documents and subsequent authorised in-house implementation; third-party material retains its own terms.
 
-Milestone 4 is qualified for its recorded non-Watch scope. The [Watch qualification harness](Examples/WatchQualification/README.md) prepares the remaining device checks; no physical Watch is connected to the current development host. [Milestone 4 status and evidence](Documentation/Migration/Qualification/Milestone4/README.md) keep that gate open. Milestone 5 remains deferred.
+Milestone 4 software — including `swiftjli-cli` payload commands (`encode`, `decode`, `inspect`, `validate`) and fidelity-preserving NRRD (`CLI-04`) and binary Netpbm (`pgm`/`ppm`/`pnm`) I/O — is implemented and qualified for the owner-scoped native macOS and iOS Simulator targets, alongside the retained historical non-Watch qualification. The [Watch qualification harness](Examples/WatchQualification/README.md) prepares the remaining device checks; no physical Watch is connected to the current development host. [Milestone 4 status and evidence](Documentation/Migration/Qualification/Milestone4/README.md) keep physical Watch testing open as a stable-release prerequisite. Milestone 5 remains deferred.
 
 ## Swift 6.4 development candidate
 
-Current development version: **1.1.0-dev.2** ([VERSION](VERSION)); shared suite policy **0.10.0**. This increments the earlier unreleased 1.0.0 target and creates no release/tag. See the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md) for adopted features, exact Xcode/Swift Build evidence and open platform gates; its platform claims are superseded history, since contract 0.5.0 returned the Apple floor to 26.0 and the compiler minimum to 6.2, while its CLI content remains current. The historical [Milestone 1 evidence](Documentation/MILESTONE1.md) remains unchanged.
+Current development version: **1.1.0-dev.2** ([VERSION](VERSION)); shared suite policy **0.10.0**. This increments the earlier unreleased 1.0.0 target and creates no release/tag. See the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md) for adopted features, exact Xcode/Swift Build evidence and open platform gates; its platform claims are superseded history, since contract 0.5.0 returned the Apple floor to 26.0 and the compiler minimum to 6.2, while its CLI foundation content remains retained alongside the Milestone 4 payload implementation. The historical [Milestone 1 evidence](Documentation/MILESTONE1.md) remains unchanged.
 
 ## Intended platform baseline
 
@@ -36,7 +36,7 @@ The merged codec builds on the completed API/storage foundation. Read the [curre
 
 The four independent libraries are SwiftJ2K, SwiftJLS, SwiftJXL and SwiftJLI, all intended to live under Raster-Lab. A future optional umbrella adapts them for codec selection and in-process transcoding. The codecs do not depend on that umbrella. SwiftCompressionFamily is not part of this successor plan. The common contract is mirrored documentation plus behavioural tests, not a shared runtime package.
 
-The main module is `SwiftJLI`; the diagnostic CLI is `swiftjli-cli`. Implemented coverage and explicit product deferrals are recorded in IMPLEMENTATION.md. Nothing here changes the predecessor repository's current maintenance configuration.
+The main module is `SwiftJLI`; the command-line executable is `swiftjli-cli`. Implemented coverage and explicit product deferrals are recorded in IMPLEMENTATION.md. Nothing here changes the predecessor repository's current maintenance configuration.
 
 ## Synthetic storage example
 
@@ -64,6 +64,6 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcrun swift test
 
 See the evidence for sandbox-compatible commands, sanitizer results and unexecuted platform gates. The merged baseline passes Linux Swift 6.2/6.4 ARM64/x86_64, macOS ARM/Intel runtime checks, separate macOS sanitizers, Apple SDK compilation and four Apple simulator suites. Performance is qualified for the recorded matrix; physical Watch resource validation remains open; simulator success does not establish device memory ceilings.
 
-## Command-line help and manual
+## Command-line tool and manual
 
-The diagnostic CLI now provides `-h` / `--help`, `help <command>`, version and truthful capability reporting. Codec commands remain unavailable. Verbosity has five levels: `-v`, `-vv`, `--verbose 1..5`, `--verbose=+++` and `-verbose: 3`; diagnostics use stderr and `--quiet` suppresses optional messages. See [CLI usage and installation](CLI.md). The installer updates both the executable and its UNIX man page together. The CLI authorisation recorded in the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md) stands; the OS 27 platform floor it was written against does not, having been reversed by contract 0.5.0 and confirmed at 26.0 by contract 0.9.0.
+`swiftjli-cli` provides `-h` / `--help`, `help <command>`, `--version`, `--capabilities` and the payload commands `encode`, `decode`, `inspect` and `validate` with fidelity-preserving NRRD (`CLI-04`) and binary Netpbm (`pgm`/`ppm`/`pnm`) I/O. Verbosity has five levels: `-v`, `-vv`, `--verbose 1..5`, `--verbose=+++` and `-verbose: 3`; diagnostics use stderr and `--quiet` suppresses optional messages. See [CLI usage and installation](CLI.md). The installer updates both the executable and its UNIX man page together. The CLI authorisation recorded in the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md) stands; the OS 27 platform floor it was written against does not, having been reversed by contract 0.5.0 and confirmed at 26.0 by contract 0.9.0.

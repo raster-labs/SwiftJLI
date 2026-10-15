@@ -1,0 +1,187 @@
+SWIFTJLI-CLI(1)          Swift Image Compression Suite         SWIFTJLI-CLI(1)
+
+NAME
+     swiftjli-cli - JPEG and lossless JPEG CLI for SwiftJLI
+
+SYNOPSIS
+     swiftjli-cli [options] command [options]
+
+DESCRIPTION
+     This command-line tool provides JPEG (SOF0/SOF1/SOF2/SOF3) encoding,
+     decoding, header inspection, full stream validation, version reporting
+     and library capability queries using the native SwiftJLI codec module.
+     Build with Swift 6.2 or later in Swift 6 language mode; Swift 6.4 is the
+     qualified primary toolchain. Apple OS minimum is 26.0.  CLI hosts are
+     macOS and Linux; consult qualification records for executed coverage.
+
+COMMANDS
+     capabilities [--json]
+            Report actual library encode/decode/inspect support. JSON is one
+            document on stdout.
+
+     encode -i path -o path [options]
+            Encode an uncompressed NRRD or binary Netpbm (PGM/PPM/PNM) image
+            into a JPEG stream. Use - for standard input or standard output
+            together with an explicit --input-format or --output-format.
+
+     decode -i path -o path [options]
+            Decode a JPEG stream into a fidelity-preserving uncompressed
+            container (NRRD for full-precision 16-bit 2D greyscale, or binary
+            Netpbm PGM/PPM/PNM for 2..16-bit greyscale and RGB). Fails with
+            exit status 4 before creating output if the target format cannot
+            preserve sample precision, component layout or embedded ICC/Exif
+            metadata.
+
+     inspect -i path [--json] [options]
+            Inspect JPEG container and frame headers without decoding entropy-
+            coded scan segments. Writes plain text or a single JSON object to
+            stdout.
+
+     validate -i path [--json] [options]
+            Validate the complete JPEG stream, including entropy scan decoding
+            and EOI verification, without writing decoded image output. Writes
+            plain text or a single JSON object to stdout.
+
+     help [command]
+            Show global or command-specific help. No arguments also show
+            global help.
+
+     version
+            Show the development version.
+
+OPTIONS
+     -h, --help
+            Show help, including after a command.
+
+     --version
+            Show the development version.
+
+     -v, -vv, -vvv, -vvvv, -vvvvv
+            Increase diagnostic verbosity, up to 5.
+
+     --verbose LEVEL, --verbose=LEVEL
+            Set level to 1 through 5, or + through +++++. Bare verbose
+            increments once.
+
+     -verbose: LEVEL, -verbose:LEVEL
+            Equivalent explicit verbosity spelling; bare -verbose increments
+            once.
+
+     -q, --quiet
+            Suppress optional diagnostics; errors remain visible. Conflicts
+            with verbosity.
+
+     -i, --input PATH
+            Input file path, or - for standard input.
+
+     -o, --output PATH
+            Output file path, or - for standard output (encode and decode
+            only).
+
+     --input-format FORMAT
+            Explicit input format: jpeg (or jpg), nrrd, pgm, ppm, pnm.
+            Required when reading from - or when the input path has no
+            recognised extension.
+
+     --output-format FORMAT
+            Explicit output format: jpeg (or jpg), nrrd, pgm, ppm, pnm.
+            Required when writing to - or when the output path has no
+            recognised extension.
+
+     --mode MODE
+            Compression mode for encode: lossless (default), near-lossless or
+            lossy.
+
+     --max-error N
+            Positive integer error bound for near-lossless point-transform
+            encoding.
+
+     --predictor N
+            Predictive JPEG predictor selection 1 through 7 (default 1).
+
+     --restart-interval N
+            Restart interval in MCUs from 0 through 65535 (default 0).
+
+     --quality N
+            Lossy DCT quality from 0 through 100 (default 90; requires --mode
+            lossy).
+
+     --subsampling MODE
+            Lossy chroma subsampling: 444, 422, 420 or greyscale (requires
+            --mode lossy).
+
+     --progressive MODE
+            Lossy scan progression: sequential, spectral-selection or
+            successive-approximation (requires --mode lossy).
+
+     --backend NAME
+            Execution policy: automatic (default), scalar, accelerated,
+            preferred-scalar or preferred-accelerated.
+
+     --copy-policy POLICY
+            Memory sharing policy: require-sharing (default) or allow-copy.
+
+     --threads N
+            Maximum worker count (positive integer).
+
+     --max-memory BYTES
+            Maximum operation memory ceiling in bytes.
+
+     --timeout SECONDS
+            Positive finite operation deadline in seconds.
+
+     --overwrite
+            Permit atomic replacement of an existing regular output file.
+
+     --json Emit structured JSON report. Written to stdout for capabilities,
+            inspect and validate; written to stderr for encode and decode so
+            binary stdout is never contaminated.
+
+DIAGNOSTIC LEVELS
+     Default 0 reports errors only. Levels are cumulative: 1 summary; 2
+     stages; 3 capability/descriptor details; 4 elapsed timing; 5 bounded
+     trace. Invalid levels or totals above 5 return 2.  Explicit levels set
+     and repeated flags increment in argument order.  Diagnostics use stderr.
+     Requested help/version/capability/inspect/validate data and -o - payload
+     streams use stdout.  No payload bytes, metadata, raw addresses or
+     input/output paths are logged.
+
+UNCOMPRESSED FORMATS
+     No private intermediate format or headerless raw sample file is used.
+     Attached raw NRRD (NRRD0001..NRRD0005 on input, NRRD0004 on output)
+     supports the 2D single-component full-precision UInt16 greyscale profile.
+     Detached headers, skip directives, URLs and external compression are
+     rejected.  Binary Netpbm PGM (P5) and PPM (P6) preserve 2..16-bit
+     greyscale and RGB precision via exact maxval ((1 << meaningfulBits) - 1).
+
+EXIT STATUS
+     0 success/help/version; 2 invalid usage or argument; 3 malformed or
+     truncated input; 4 unsupported format, feature, image layout or required
+     backend; 5 resource limit or deadline exceeded; 6 input/output failure,
+     existing destination without --overwrite or closed pipe; 7 internal
+     failure; 130 user cancellation.
+
+EXAMPLES
+     swiftjli-cli -h
+     swiftjli-cli capabilities --json -vv
+     swiftjli-cli inspect -i image.jpg --json
+     swiftjli-cli validate -i image.jpg
+     swiftjli-cli decode -i image.jpg -o image.nrrd
+     swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless
+
+INSTALLATION
+     Scripts/install-cli.sh installs or updates the executable and this page
+     together.  Use --prefix for an absolute prefix (default /usr/local),
+     --destdir or DESTDIR for staging, and --binary for a prebuilt binary
+     matching VERSION.  Files are PREFIX/bin/swiftjli-cli and
+     PREFIX/share/man/man1/swiftjli-cli.1.  For custom prefixes use man -M
+     PREFIX/share/man swiftjli-cli, or configure MANPATH.  No index refresh is
+     needed for direct lookup; no sudo runs automatically.
+
+SEE ALSO
+     man(1)
+
+     CLI.md and Documentation/Engineering/OS27CLI/README.md in the SwiftJLI
+     repository.
+
+1.1.0-dev.2                    October 15, 2026                SWIFTJLI-CLI(1)

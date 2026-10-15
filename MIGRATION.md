@@ -136,7 +136,7 @@ remain `nil`; admission reservations must not be presented as measured peaks.
 3. Verify padded storage, copy/allocation identity, malformed input, budgets, cancellation, concurrency and lifetime on the required platforms. Unknown report measurements do not mean zero.
 4. Enable only qualified profiles behind the application's rollback mechanism. Keep the old dependency lock and adapter until persisted-file compatibility and platform acceptance are complete.
 
-The diagnostic `swiftjli-cli` reports actual library capabilities. Its encode/decode/inspect/validate payload verbs remain unavailable under the separately budgeted CLI work. The repository implementation is merged; downstream application cutover, stable release and complete device qualification are separate steps and have not been established by that merge.
+`swiftjli-cli` reports actual library capabilities and implements `encode`, `decode`, `inspect` and `validate` with fidelity-preserving NRRD (`CLI-04`) and binary Netpbm (`pgm`/`ppm`/`pnm`) I/O; see [CLI.md](CLI.md). The repository implementation is merged; downstream application cutover, stable release and complete device qualification are separate steps and have not been established by that merge.
 
 ## Explicit DCT input conversions
 
