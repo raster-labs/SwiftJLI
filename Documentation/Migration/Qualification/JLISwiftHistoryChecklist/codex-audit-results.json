@@ -1,0 +1,82 @@
+{
+  "status": "code_and_tests_passed_documentation_review_pending",
+  "target_baseline": "44e3807bd32d45ceca74404297eded4fd30a746f",
+  "frozen_manifest": "audit-source-manifest.json",
+  "source_verification": {
+    "frozen_file_count": 132,
+    "changed_since_snapshot": [],
+    "common_contract_hash_checks": {
+      "CLI_CONTRACT.md": true,
+      "COMMON_API.md": true,
+      "MEMORY_CONTRACT.md": true,
+      "PERFORMANCE.md": true,
+      "PLATFORMS.md": true,
+      "SUITE_POLICY.md": true,
+      "TESTING.md": true
+    },
+    "shipping_code_changes_since_44e3807": []
+  },
+  "independent_tests": {
+    "codex-macos-release": {
+      "argv": [
+        "swift",
+        "test",
+        "--package-path",
+        "work/history-checklist/audit-source",
+        "--scratch-path",
+        "work/history-checklist/codex-build",
+        "--build-system",
+        "native",
+        "-c",
+        "release",
+        "-j",
+        "2"
+      ],
+      "cwd": "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20",
+      "exit_code": 0,
+      "duration_seconds": 51.915225982666016,
+      "log_sha256": "0340ca9af6ce8367ad906de645accbbce2e0256f51d80f8960287039ab797f36",
+      "tests": 359,
+      "suites": 50,
+      "failures": 0,
+      "audit_date": "2026-10-16"
+    },
+    "codex-ios26": {
+      "argv": [
+        "xcodebuild",
+        "test",
+        "-scheme",
+        "SwiftJLI-Package",
+        "-destination",
+        "platform=iOS Simulator,id=9021546C-CD90-4663-A01B-B4E92851C3DF",
+        "-destination-timeout",
+        "120",
+        "-parallel-testing-enabled",
+        "NO",
+        "-derivedDataPath",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/history-checklist/codex-ios26-derived",
+        "-resultBundlePath",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/history-checklist/codex-ios26.xcresult",
+        "CODE_SIGNING_ALLOWED=NO"
+      ],
+      "cwd": "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/history-checklist/audit-source",
+      "exit_code": 0,
+      "duration_seconds": 102.4511821269989,
+      "log_sha256": "24d54549392ea650dc1ff4ebd9536589030eb41921dab9ff94c7497fdb6057ba",
+      "tests": 359,
+      "suites": 50,
+      "failures": 0,
+      "audit_date": "2026-10-16"
+    }
+  },
+  "normal_value_oracle": {
+    "baseline_cases": 56,
+    "baseline_canonical_failures": 0,
+    "baseline_shifted_failures": 44,
+    "candidate_cases": 56,
+    "candidate_failures": 0
+  },
+  "new_shipping_code_changes": 0,
+  "new_test_support_changes": "HighBit shift before mask and sign extension; four added conformance tests",
+  "review_findings": "Code/test review clear. Correct documentation per codex-document-review.txt before final handoff."
+}

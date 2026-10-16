@@ -1,0 +1,23 @@
+Codex audit feedback, 16 October 2026. Code and four new tests reviewed; nested fixture correction accepted. Independent frozen-source macOS suite passed 359 tests/50 suites; independent iOS run still in progress when this note was written. Do not commit/push until the following evidence-report corrections and final audit clearance.
+
+Required report corrections:
+1. Incorrect full predecessor pins in README and JSON: git rev-parse gives 0a4ded0b0b2e8e38127f4f302b286e74ee352474 and 981da4efb7d62e4370c5d6de706d56a729b9552e. Replace fabricated suffixes everywhere in new deliverables (repo/work/outputs copies).
+2. CLI product is swiftjli-cli, not swiftjli. Correct new owner-scope statements including ACCEPTANCE.md and matrix.
+3. Matrix has 17 rows. README says15. Use actual count consistently.
+4. Several named test methods do not exist. Replace with actual verified function names and check every citation against source. Examples:
+ DICOMColorTests.ybrFullIsConvertedToRGB -> ybrFullToRGB
+ DICOMColorTests.rgbPhotometricUnchanged -> rgbPassthrough
+ DICOMColorTests.monochrome1InvertsPolarity -> monochrome1Inversion
+ ConformanceEvidenceTests.encapsulatedDICOMRoundTrip -> c5Encapsulation
+ ConformanceEvidenceTests.losslessRoundTripMatrix -> c1LosslessBitExact
+ ConformanceEvidenceTests.losslessCrossCodecDecode -> c2CrossValidation
+ ConformanceEvidenceTests.nearLosslessErrorBound -> c3NearLosslessBound
+ DICOMFuzzTests.hostileGeometryHeadersNeverTrap, truncationAtEveryPrefixLengthNeverTraps, deeplyNestedOrUnterminatedSequencesNeverTrap are also absent: inspect the actual source methods before replacing. File-level references such as LimitTests are fine if explicitly labelled as file references, since those files have top-level functions rather than suite types.
+5. Line citations have drift or target wrong files. For example restartInterval validation lives in CodecAPI.swift, not Options.swift#120-135; sourceColourModel definition is in CodecAPI.swift as well. Verify exact ranges or prefer file + actual symbol names instead of fragile/incorrect anchors.
+6. Do not assert that the user's vague phrase "merge metadata-bearing JPEGs" refers to specific git merges. No codestream-merging API was found, which is supportable. The phrase's origin is unverified; a connection to git merges is inference only and unnecessary to claim. State metadata extraction/assembly/roundtrips are covered; arbitrary merging is not supported.
+7. Include public JPEG boundaries in the restart/SOF3 rows, not just a blanket covered status: per-scan DRI/DQT changes and multiple sequential scans explicitly reject; lossless colour requires RGB IDs; standalone signed JPEG unsupported; raw-caller workspace API equivalence not claimed.
+8. Distinguish frozen nine-case small synthetic corpus dimensions from larger identity-test fixture dimensions. Current note combines them misleadingly. Cite exact source and avoid implying real clinical dataset validation.
+9. Add actual source URLs for NEMA claims (in codex-source-findings.txt); modern canonical HighBit was already correct. The repaired layout is legacy compatibility. Current PS3.5 note3 points to 2014c; avoid saying 'prior to2014c' as though2014c is excluded without checking historical edition.
+10. Preserve precise execution metadata: dates separate Argon15Oct runs from Codex16Oct audit, exact commands and process exits, source SHA256 manifest, and prior-source evidence boundaries. My frozen132-file manifest is work/history-checklist/audit-source-manifest.json; all source/test/package files must match final checkout before handoff. Independent logs are codex-macos-release.{json,log} and codex-ios26.{json,log} when complete. Normal-value compile attempts (including sandbox cache error and successful retry), source copies and compare/repro scripts should be accessible from retained evidence if claimed reproducible. Do not claim full clinical qualification or universal malformed-DICOM safety.
+
+No further production or test implementation change is requested by this note; correct the documentation/evidence and reconcile copies. The current code delta beyond44e3807 is test support only, so shipping hot-path performance is unchanged by construction and no new full performance campaign is needed.

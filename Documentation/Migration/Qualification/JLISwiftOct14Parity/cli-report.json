@@ -1,0 +1,2782 @@
+{
+  "binary": "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+  "binary_sha256": "7c266a07f68cee68722c5e52a5d41172045151b3aad6934d7cefc983a414117b",
+  "installer_sha256": "0d8351878fe71207024aa9f698852537e88c46a9e8afa792bb2502c329dbba57",
+  "test_runner_sha256": "95bb0e7b99688af21f4ed6b528ece11799362ee09c7ac231b8b4be773597d815",
+  "version": "1.1.0-dev.2",
+  "manual_sha256": "92297642a865b901f1977abb730ed1368b27f75cc4f904ef3db41de93c1cb30e",
+  "commands": [
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "-h"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli capabilities [--json] [OPTIONS]\n\nReport this library's current encode/decode/inspect support without reading files.\n--json writes one JSON document to stdout; diagnostics stay on stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli capabilities --json\n  swiftjli-cli capabilities --verbose=+++\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "help",
+        "capabilities"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli capabilities [--json] [OPTIONS]\n\nReport this library's current encode/decode/inspect support without reading files.\n--json writes one JSON document to stdout; diagnostics stay on stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli capabilities --json\n  swiftjli-cli capabilities --verbose=+++\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "-h"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli capabilities [--json] [OPTIONS]\n\nReport this library's current encode/decode/inspect support without reading files.\n--json writes one JSON document to stdout; diagnostics stay on stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli capabilities --json\n  swiftjli-cli capabilities --verbose=+++\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli encode -i <path|-> -o <path|-> [OPTIONS]\n\nEncode an uncompressed image (NRRD or binary Netpbm PGM/PPM/PNM) to a JPEG stream.\nWhen reading from '-' or writing to '-', or when a path lacks a recognised extension\n(.nrrd, .pgm, .ppm, .pnm, .jpg, .jpeg), --input-format or --output-format is required.\nBinary output written to '-' goes exclusively to stdout; --json writes the operation\nreport to stderr so binary stdout is never contaminated.\n\nCODEC OPTIONS\n  -i, --input PATH           Source file or '-' for standard input.\n  -o, --output PATH          Target JPEG file or '-' for standard output.\n  --input-format FORMAT      Explicit source format: nrrd, pgm, ppm, pnm.\n  --output-format FORMAT     Explicit target format: jpeg (or jpg).\n  --mode MODE                lossless (default), near-lossless or lossy.\n  --max-error N              Maximum absolute error for near-lossless point transform.\n  --predictor N              Lossless predictor 1..7 (default 1).\n  --restart-interval N       Restart interval in MCUs 0..65535 (default 0).\n  --quality N                Lossy DCT quality 0..100 (default 90; requires --mode lossy).\n  --subsampling MODE         Lossy chroma subsampling: 444, 422, 420, greyscale.\n  --progressive MODE         Lossy scan mode: sequential, spectral-selection,\n                             or successive-approximation.\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --overwrite                Permit atomic replacement of an existing output file.\n  --json                     Write structured JSON operation report to stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "help",
+        "encode"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli encode -i <path|-> -o <path|-> [OPTIONS]\n\nEncode an uncompressed image (NRRD or binary Netpbm PGM/PPM/PNM) to a JPEG stream.\nWhen reading from '-' or writing to '-', or when a path lacks a recognised extension\n(.nrrd, .pgm, .ppm, .pnm, .jpg, .jpeg), --input-format or --output-format is required.\nBinary output written to '-' goes exclusively to stdout; --json writes the operation\nreport to stderr so binary stdout is never contaminated.\n\nCODEC OPTIONS\n  -i, --input PATH           Source file or '-' for standard input.\n  -o, --output PATH          Target JPEG file or '-' for standard output.\n  --input-format FORMAT      Explicit source format: nrrd, pgm, ppm, pnm.\n  --output-format FORMAT     Explicit target format: jpeg (or jpg).\n  --mode MODE                lossless (default), near-lossless or lossy.\n  --max-error N              Maximum absolute error for near-lossless point transform.\n  --predictor N              Lossless predictor 1..7 (default 1).\n  --restart-interval N       Restart interval in MCUs 0..65535 (default 0).\n  --quality N                Lossy DCT quality 0..100 (default 90; requires --mode lossy).\n  --subsampling MODE         Lossy chroma subsampling: 444, 422, 420, greyscale.\n  --progressive MODE         Lossy scan mode: sequential, spectral-selection,\n                             or successive-approximation.\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --overwrite                Permit atomic replacement of an existing output file.\n  --json                     Write structured JSON operation report to stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli decode -i <path|-> -o <path|-> [OPTIONS]\n\nDecode a JPEG stream into a fidelity-preserving uncompressed container:\n  - nrrd: 2D greyscale UInt16 with full 16-bit precision (NRRD0004 raw).\n  - pgm:  Binary Netpbm P5 greyscale with exact maxval (1 << bits) - 1 (2..16 bits).\n  - ppm:  Binary Netpbm P6 RGB with exact maxval (1 << bits) - 1 (2..16 bits).\n  - pnm:  Binary Netpbm P5 (greyscale) or P6 (RGB) matching source components.\nDecoding fails with exit status 4 before creating output if the target format cannot\npreserve the decoded precision, component layout, or embedded ICC/Exif metadata.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  -o, --output PATH          Target file or '-' for standard output.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --output-format FORMAT     Explicit target format: nrrd, pgm, ppm, pnm.\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --overwrite                Permit atomic replacement of an existing output file.\n  --json                     Write structured JSON operation report to stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "help",
+        "decode"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli decode -i <path|-> -o <path|-> [OPTIONS]\n\nDecode a JPEG stream into a fidelity-preserving uncompressed container:\n  - nrrd: 2D greyscale UInt16 with full 16-bit precision (NRRD0004 raw).\n  - pgm:  Binary Netpbm P5 greyscale with exact maxval (1 << bits) - 1 (2..16 bits).\n  - ppm:  Binary Netpbm P6 RGB with exact maxval (1 << bits) - 1 (2..16 bits).\n  - pnm:  Binary Netpbm P5 (greyscale) or P6 (RGB) matching source components.\nDecoding fails with exit status 4 before creating output if the target format cannot\npreserve the decoded precision, component layout, or embedded ICC/Exif metadata.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  -o, --output PATH          Target file or '-' for standard output.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --output-format FORMAT     Explicit target format: nrrd, pgm, ppm, pnm.\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --overwrite                Permit atomic replacement of an existing output file.\n  --json                     Write structured JSON operation report to stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli inspect -i <path|-> [--json] [OPTIONS]\n\nInspect JPEG container and frame headers without decoding entropy scans.\nWhen reading from '-' or a path without a .jpg/.jpeg extension, pass --input-format jpeg.\n--json writes one structured JSON object to stdout; diagnostics stay on stderr.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --json                     Write structured JSON report to stdout.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "help",
+        "inspect"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli inspect -i <path|-> [--json] [OPTIONS]\n\nInspect JPEG container and frame headers without decoding entropy scans.\nWhen reading from '-' or a path without a .jpg/.jpeg extension, pass --input-format jpeg.\n--json writes one structured JSON object to stdout; diagnostics stay on stderr.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --json                     Write structured JSON report to stdout.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli validate -i <path|-> [--json] [OPTIONS]\n\nValidate the full JPEG stream and entropy-coded scan data without writing image output.\nWhen reading from '-' or a path without a .jpg/.jpeg extension, pass --input-format jpeg.\n--json writes one structured JSON object to stdout; diagnostics stay on stderr.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --json                     Write structured JSON report to stdout.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "help",
+        "validate"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli validate -i <path|-> [--json] [OPTIONS]\n\nValidate the full JPEG stream and entropy-coded scan data without writing image output.\nWhen reading from '-' or a path without a .jpg/.jpeg extension, pass --input-format jpeg.\n--json writes one structured JSON object to stdout; diagnostics stay on stderr.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --json                     Write structured JSON report to stdout.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--version"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "version"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--version",
+        "--quiet"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "+"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=+"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-vv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "2"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=2"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "2"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:2"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-vvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v",
+        "-v",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "3"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=3"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "3"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:3"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "+++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=+++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-vvvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.001962416630703956\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v",
+        "-v",
+        "-v",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002302791632246226\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "4"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.0026623333687894046\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=4"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002395458344835788\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "4"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002289083320647478\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:4"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.0019992082961834967\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "++++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002094333351124078\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=++++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002310666663106531\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-vvvvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002335999975912273\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v",
+        "-v",
+        "-v",
+        "-v",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002314375014975667\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "5"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002456916670780629\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=5"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.0023189999628812075\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "5"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002141916658729315\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:5"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002153749985154718\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "+++++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.0024079583236016333\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=+++++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.0021981666795909405\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--verbose",
+        "capabilities",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "-verbose",
+        "capabilities",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "-v",
+        "--verbose",
+        "2",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\nencode: true\ndecode: true\ninspect: true\nformats: JPEG (SOF0/SOF1/SOF2/SOF3)\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "-vv",
+        "-vvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\nencode: true\ndecode: true\ninspect: true\nformats: JPEG (SOF0/SOF1/SOF2/SOF3)\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 7.016665767878294e-05\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--quiet"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--help",
+        "--quiet"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--verbose=0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--verbose=6"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--verbose=10"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--verbose=99999999999999999999999999999"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--verbose=abc"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--verbose=++++++"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--verbose=+2"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--verbose=\u0661"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--verbose="
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: An option is missing its value. Use --help for syntax.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--verbose=5",
+        "-v"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity exceeds the maximum level 5.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "-vvvvvv"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity exceeds the maximum level 5.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "-v",
+        "--quiet"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --quiet and verbosity cannot be combined.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--quiet",
+        "--verbose=1"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --quiet and verbosity cannot be combined.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--quiet",
+        "--verbose=0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--unknown"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unknown option. Use swiftjli-cli --help.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "bogus"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unknown command. Use swiftjli-cli --help.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "help",
+        "bogus"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unknown command. Use swiftjli-cli --help.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "extra"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unexpected positional argument. Use --input or --output for codec commands.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--verbose:"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: An option is missing its value. Use --help for syntax.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--json"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --json requires capabilities or a codec command.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--input",
+        "some-path"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Input/output and codec options require a codec command.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--output",
+        "x"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Input/output and codec options require a codec command.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "capabilities",
+        "--version"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --version cannot be combined with a command or command options.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--input"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: An option is missing its value. Use --help for syntax.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "transcode"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unknown command. Use swiftjli-cli --help.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --input is required for encode.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "in.jpg"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --output is required for decode.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "in.jpg",
+        "-o",
+        "out.pgm"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --output, --output-format, and --overwrite are not valid with inspect.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "in.jpg",
+        "--overwrite"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --output, --output-format, and --overwrite are not valid with validate.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "in.jpg",
+        "-o",
+        "out.pgm",
+        "--mode",
+        "lossless"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Encoder options are not valid with decode.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--threads",
+        "0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --threads must be a positive integer.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--max-memory",
+        "0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --max-memory must be a positive integer byte count.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--timeout",
+        "0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --timeout must be a positive finite number of seconds.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--backend",
+        "bogus"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Invalid --backend value. Use automatic, scalar, accelerated, preferred-scalar, or preferred-accelerated.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--copy-policy",
+        "bogus"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Invalid --copy-policy value. Use require-sharing or allow-copy.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "-",
+        "-o",
+        "out.jpg"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --input-format is required when reading from '-' or a path without a recognised extension.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "-"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --output-format is required when writing to '-' or a path without a recognised extension.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.pgm",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Declared --output-format conflicts with output file extension.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "--input",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/private image \u03bb.raw",
+        "--output",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/must-not-exist.jpg",
+        "-vvvvv"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported file format extension.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "--input",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/private image \u03bb.raw",
+        "--output",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/must-not-exist.nrrd",
+        "-vvvvv"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported file format extension.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "--input",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/private image \u03bb.raw",
+        "-vvvvv"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported file format extension.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "--input",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/private image \u03bb.raw",
+        "-vvvvv"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported file format extension.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/source_le.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "--json",
+        "-vvvvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2; command encode\n[2] swiftjli-cli: stage input admission and format resolution (nrrd)\n[3] swiftjli-cli: encoded 17x13 bits=16 mode=lossless (329 bytes) backend=scalarCPU\n[4] swiftjli-cli: elapsed seconds: 0.0017298749880865216\n[5] swiftjli-cli: encode committed atomically; copyEvents=0\n{\"backend\":\"scalarCPU\",\"command\":\"encode\",\"componentCount\":1,\"copyEventCount\":0,\"encodedBytes\":329,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":13,\"inputFormat\":\"nrrd\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"mode\":\"lossless\",\"outputFormat\":\"jpeg\",\"peakPixelBytes\":0,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":0,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/source_be.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16_be.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "format: jpeg\ncodingProcess: predictive\nfidelity: exactSamples\nwidth: 17\nheight: 13\ncomponents: 1\ncolour: greyscale\nbitsPerComponent: 16\nstorageBits: 16\nchromaSubsampling: greyscale\nlossless: true\nprogressive: false\nrestartInterval: 0\nscanCount: 1\npredictor: 1\npointTransform: 0\nmaximumAbsoluteError: 0\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":16,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":13,\"isLossless\":true,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"pointTransform\":0,\"predictor\":1,\"restartInterval\":0,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "valid: true\nformat: jpeg\ncodingProcess: predictive\nfidelity: exactSamples\nwidth: 17\nheight: 13\ncomponents: 1\nbitsPerComponent: 16\nbackend: scalarCPU\npixelAllocationCount: 1\npeakPixelBytes: 442\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"backend\":\"scalarCPU\",\"bitsPerComponent\":16,\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"height\":13,\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"peakPixelBytes\":442,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"valid\":true,\"version\":\"1.1.0-dev.2\",\"width\":17}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/decoded16.nrrd",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":13,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"outputBytes\":520,\"outputFormat\":\"nrrd\",\"peakPixelBytes\":442,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/decoded16.nrrd"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout": "",
+      "stderr": "swiftjli-cli: output I/O failure: destination already exists (pass --overwrite to replace).\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/decoded16.nrrd",
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/symlink_out.nrrd",
+        "--overwrite"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout": "",
+      "stderr": "swiftjli-cli: output I/O failure: refusing to write to non-regular file or symbolic link.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_1c_2b.pgm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_2b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_2b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_2b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_3c_2b.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_2b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_2b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_2b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_1c_8b.pgm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_8b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_8b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_8b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_3c_8b.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_8b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_8b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_8b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_1c_10b.pgm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_10b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_10b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_10b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_3c_10b.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_10b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_10b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_10b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_1c_12b.pgm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_12b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_12b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_12b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_3c_12b.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_12b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_12b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_12b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_1c_16b.pgm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_16b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_16b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_1c_16b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/src_3c_16b.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_16b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_16b.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rt_3c_16b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/in12.pgm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless12.jpg",
+        "--predictor",
+        "2",
+        "--restart-interval",
+        "19"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless12.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":12,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":15,\"isLossless\":true,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":0,\"meaningfulBits\":12,\"pointTransform\":0,\"predictor\":2,\"restartInterval\":19,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":19}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless12.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/must_not_exist_12.nrrd"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: NRRD output requires full 16-bit precision (meaningfulBits == 16); use PGM/PNM to preserve sub-16-bit precision.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/in12.pgm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/near12.jpg",
+        "--mode",
+        "near-lossless",
+        "--max-error",
+        "3",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"command\":\"encode\",\"componentCount\":1,\"copyEventCount\":0,\"encodedBytes\":290,\"fallbackReason\":null,\"fidelity\":\"boundedError\",\"height\":15,\"inputFormat\":\"pgm\",\"maximumAbsoluteError\":3,\"meaningfulBits\":12,\"mode\":\"near-lossless(3)\",\"outputFormat\":\"jpeg\",\"peakPixelBytes\":0,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":0,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":19}\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/near12.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":12,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"boundedError\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":15,\"isLossless\":false,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":3,\"meaningfulBits\":12,\"pointTransform\":2,\"predictor\":1,\"restartInterval\":0,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":19}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/near12.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/out_near12.pgm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/in8.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_lossless.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_lossless.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/out_rgb_lossless.ppm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_lossless.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/must_not_exist_rgb.pgm"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: incompatibleImageLayout: PGM output requires a 1-component greyscale image.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/in8.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_scalar.jpg",
+        "--mode",
+        "lossy",
+        "--quality",
+        "90",
+        "--subsampling",
+        "444",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_scalar.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":8,\"chromaSubsampling\":\"4:4:4\",\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":24,\"isLossless\":false,\"isProgressive\":true,\"isXYB\":false,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"pointTransform\":null,\"predictor\":null,\"restartInterval\":0,\"scanCount\":10,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_scalar.jpg",
+        "--backend",
+        "scalar",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"backend\":\"scalarCPU\",\"bitsPerComponent\":8,\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"height\":24,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"peakPixelBytes\":2304,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"valid\":true,\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_scalar.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/out_dct_scalar.pnm",
+        "--backend",
+        "scalar"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/in8.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_preferred-accelerated.jpg",
+        "--mode",
+        "lossy",
+        "--quality",
+        "90",
+        "--subsampling",
+        "444",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "preferred-accelerated"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_preferred-accelerated.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":8,\"chromaSubsampling\":\"4:4:4\",\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":24,\"isLossless\":false,\"isProgressive\":true,\"isXYB\":false,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"pointTransform\":null,\"predictor\":null,\"restartInterval\":0,\"scanCount\":10,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_preferred-accelerated.jpg",
+        "--backend",
+        "preferred-accelerated",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"backend\":\"accelerated\",\"bitsPerComponent\":8,\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"height\":24,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"peakPixelBytes\":2304,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"valid\":true,\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_preferred-accelerated.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/out_dct_preferred-accelerated.pnm",
+        "--backend",
+        "preferred-accelerated"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/in8.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_accelerated.jpg",
+        "--mode",
+        "lossy",
+        "--quality",
+        "90",
+        "--subsampling",
+        "444",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "accelerated"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_accelerated.jpg",
+        "--backend",
+        "accelerated",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"backend\":\"accelerated\",\"bitsPerComponent\":8,\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"height\":24,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"peakPixelBytes\":2304,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"valid\":true,\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/rgb_dct_accelerated.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/out_dct_accelerated.pnm",
+        "--backend",
+        "accelerated"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "nrrd",
+        "--json",
+        "-vvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 520,
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2; command decode\n[2] swiftjli-cli: stage input admission and format resolution (jpeg)\n[3] swiftjli-cli: decoded 17x13 bits=16 to nrrd (520 bytes) backend=scalarCPU\n{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":13,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"outputBytes\":520,\"outputFormat\":\"nrrd\",\"peakPixelBytes\":442,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "-",
+        "--input-format",
+        "nrrd",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg",
+        "--json",
+        "-vv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 329,
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2; command encode\n[2] swiftjli-cli: stage input admission and format resolution (nrrd)\n{\"backend\":\"scalarCPU\",\"command\":\"encode\",\"componentCount\":1,\"copyEventCount\":0,\"encodedBytes\":329,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":13,\"inputFormat\":\"nrrd\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"mode\":\"lossless\",\"outputFormat\":\"jpeg\",\"peakPixelBytes\":0,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":0,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 414,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/trunc.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no1.jpg"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: NRRD payload length does not match header dimensions.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/detached.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no2.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported NRRD header field.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/kv.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no_kv.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: NRRD key-value metadata (:=) is not supported under strict preservation.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/unknown_field.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no_uf.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported NRRD header field.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/bad_kinds.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no_bk.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: incompatibleImageLayout: NRRD kinds must be two spatial domain axes for 2D greyscale.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/bad_maxval.pgm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no3.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Netpbm maxval does not match an exact 2..16-bit precision ((1 << bits) - 1).\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/over_maxval.pgm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no4.jpg"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: Sample value exceeds declared Netpbm maxval.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/huge_dim.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no_huge.jpg"
+      ],
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: Netpbm dimensions exceed operation limits.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/trunc.jpg"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: Invalid JPEG marker envelope.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/trunc.jpg"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: Invalid JPEG marker envelope.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/trunc.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no5.nrrd"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: Invalid JPEG marker envelope.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no6.nrrd",
+        "--backend",
+        "metal"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: backendUnavailable: Requested backend is unavailable in SwiftJLI.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no7.nrrd",
+        "--backend",
+        "accelerated"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: backendUnavailable: Requested JPEG backend is unavailable for this operation.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/source_le.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no8.jpg",
+        "--max-memory",
+        "256"
+      ],
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: Input file size exceeds the configured memory budget.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/lossless16.jpg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no9.nrrd",
+        "--max-memory",
+        "256"
+      ],
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: Input file size exceeds the configured memory budget.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/nrrd64.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/no_comb.jpg",
+        "--max-memory",
+        "12000"
+      ],
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: NRRD decoded buffer exceeds --max-memory.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/timeout_out.nrrd",
+        "--timeout",
+        "0.05"
+      ],
+      "condition": "timeout during blocking pipe read",
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/big_nrrd.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/big.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/big.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "nrrd",
+        "--timeout",
+        "0.05"
+      ],
+      "condition": "timeout during stalled pipe write",
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/deadline_dct_0.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.005"
+      ],
+      "condition": "codec deadline sweep (0.005s)",
+      "exit_code": 5,
+      "allowed_exit_codes": [
+        0,
+        5
+      ],
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/deadline_dct_1.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.01"
+      ],
+      "condition": "codec deadline sweep (0.01s)",
+      "exit_code": 5,
+      "allowed_exit_codes": [
+        0,
+        5
+      ],
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/deadline_dct_2.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.015"
+      ],
+      "condition": "codec deadline sweep (0.015s)",
+      "exit_code": 5,
+      "allowed_exit_codes": [
+        0,
+        5
+      ],
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/deadline_dct_3.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.005"
+      ],
+      "condition": "codec deadline sweep (0.005s)",
+      "exit_code": 5,
+      "allowed_exit_codes": [
+        0,
+        5
+      ],
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/deadline_dct_4.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.01"
+      ],
+      "condition": "codec deadline sweep (0.01s)",
+      "exit_code": 5,
+      "allowed_exit_codes": [
+        0,
+        5
+      ],
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/deadline_dct_5.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.015"
+      ],
+      "condition": "codec deadline sweep (0.015s)",
+      "exit_code": 5,
+      "allowed_exit_codes": [
+        0,
+        5
+      ],
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/does_not_exist.jpg"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout": "",
+      "stderr": "swiftjli-cli: input I/O failure: unable to open input file.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_",
+        "--input-format",
+        "jpeg"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout": "",
+      "stderr": "swiftjli-cli: input I/O failure: input path is a directory.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/named_fifo.jpg",
+        "--input-format",
+        "jpeg"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout": "",
+      "stderr": "swiftjli-cli: input I/O failure: named non-regular inputs are unsupported (use '-' for standard input).\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/cancelled_out.nrrd"
+      ],
+      "condition": "SIGINT during pipe read",
+      "exit_code": 130,
+      "expected_exit_code": 130,
+      "stderr": "swiftjli-cli: operation cancelled.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg"
+      ],
+      "condition": "SIGINT during pipe read",
+      "exit_code": 130,
+      "expected_exit_code": 130,
+      "stderr": "swiftjli-cli: operation cancelled.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--help"
+      ],
+      "condition": "stdout pipe with no readers",
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stderr": "swiftjli-cli: output I/O failure.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-13/check-which-milestones-are-completed-and/work/SwiftJLI/Scripts/install-cli.sh",
+        "--binary",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--prefix",
+        "/opt/suite tools",
+        "--destdir",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "Installed /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/bin/swiftjli-cli\nManual: /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man/man1/swiftjli-cli.1\nRead with: man -M \"/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man\" swiftjli-cli\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-13/check-which-milestones-are-completed-and/work/SwiftJLI/Scripts/install-cli.sh",
+        "--binary",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--prefix",
+        "/opt/suite tools",
+        "--destdir",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "Installed /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/bin/swiftjli-cli\nManual: /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man/man1/swiftjli-cli.1\nRead with: man -M \"/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man\" swiftjli-cli\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/bin/swiftjli-cli",
+        "--version"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/man",
+        "-M",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man",
+        "-w",
+        "swiftjli-cli"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man/man1/swiftjli-cli.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/mandoc",
+        "-T",
+        "lint",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man/man1/swiftjli-cli.1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/mandoc",
+        "-T",
+        "ascii",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man/man1/swiftjli-cli.1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "SWIFTJLI-CLI(1)          Swift Image Compression Suite         SWIFTJLI-CLI(1)\n\nN\bNA\bAM\bME\bE\n     swiftjli-cli - JPEG and lossless JPEG CLI for SwiftJLI\n\nS\bSY\bYN\bNO\bOP\bPS\bSI\bIS\bS\n     s\bsw\bwi\bif\bft\btj\bjl\bli\bi-\b-c\bcl\bli\bi [_\bo_\bp_\bt_\bi_\bo_\bn_\bs] _\bc_\bo_\bm_\bm_\ba_\bn_\bd [_\bo_\bp_\bt_\bi_\bo_\bn_\bs]\n\nD\bDE\bES\bSC\bCR\bRI\bIP\bPT\bTI\bIO\bON\bN\n     This command-line tool provides JPEG (SOF0/SOF1/SOF2/SOF3) encoding,\n     decoding, header inspection, full stream validation, version reporting\n     and library capability queries using the native SwiftJLI codec module.\n     Build with Swift 6.2 or later in Swift 6 language mode; Swift 6.4 is the\n     qualified primary toolchain. Apple OS minimum is 26.0.  CLI hosts are\n     macOS and Linux; consult qualification records for executed coverage.\n\nC\bCO\bOM\bMM\bMA\bAN\bND\bDS\bS\n     c\bca\bap\bpa\bab\bbi\bil\bli\bit\bti\bie\bes\bs [\b[-\b--\b-j\bjs\bso\bon\bn]\b]\n            Report actual library encode/decode/inspect support. JSON is one\n            document on stdout.\n\n     e\ben\bnc\bco\bod\bde\be -\b-i\bi _\bp_\ba_\bt_\bh -o _\bp_\ba_\bt_\bh [_\bo_\bp_\bt_\bi_\bo_\bn_\bs]\n            Encode an uncompressed NRRD or binary Netpbm (PGM/PPM/PNM) image\n            into a JPEG stream. Use - for standard input or standard output\n            together with an explicit --input-format or --output-format.\n\n     d\bde\bec\bco\bod\bde\be -\b-i\bi _\bp_\ba_\bt_\bh -o _\bp_\ba_\bt_\bh [_\bo_\bp_\bt_\bi_\bo_\bn_\bs]\n            Decode a JPEG stream into a fidelity-preserving uncompressed\n            container (NRRD for full-precision 16-bit 2D greyscale, or binary\n            Netpbm PGM/PPM/PNM for 2..16-bit greyscale and RGB). Fails with\n            exit status 4 before creating output if the target format cannot\n            preserve sample precision, component layout or embedded ICC/Exif\n            metadata.\n\n     i\bin\bns\bsp\bpe\bec\bct\bt -\b-i\bi _\bp_\ba_\bt_\bh [--json] [_\bo_\bp_\bt_\bi_\bo_\bn_\bs]\n            Inspect JPEG container and frame headers without decoding entropy-\n            coded scan segments. Writes plain text or a single JSON object to\n            stdout.\n\n     v\bva\bal\bli\bid\bda\bat\bte\be -\b-i\bi _\bp_\ba_\bt_\bh [--json] [_\bo_\bp_\bt_\bi_\bo_\bn_\bs]\n            Validate the complete JPEG stream, including entropy scan decoding\n            and EOI verification, without writing decoded image output. Writes\n            plain text or a single JSON object to stdout.\n\n     h\bhe\bel\blp\bp [\b[c\bco\bom\bmm\bma\ban\bnd\bd]\b]\n            Show global or command-specific help. No arguments also show\n            global help.\n\n     v\bve\ber\brs\bsi\bio\bon\bn\n            Show the development version.\n\nO\bOP\bPT\bTI\bIO\bON\bNS\bS\n     -\b-h\bh,\b, -\b--\b-h\bhe\bel\blp\bp\n            Show help, including after a command.\n\n     -\b--\b-v\bve\ber\brs\bsi\bio\bon\bn\n            Show the development version.\n\n     -\b-v\bv,\b, -\b-v\bvv\bv,\b, -\b-v\bvv\bvv\bv,\b, -\b-v\bvv\bvv\bvv\bv,\b, -\b-v\bvv\bvv\bvv\bvv\bv\n            Increase diagnostic verbosity, up to 5.\n\n     -\b--\b-v\bve\ber\brb\bbo\bos\bse\be L\bLE\bEV\bVE\bEL\bL,\b, -\b--\b-v\bve\ber\brb\bbo\bos\bse\be=\b=L\bLE\bEV\bVE\bEL\bL\n            Set level to 1 through 5, or + through +++++. Bare verbose\n            increments once.\n\n     -\b-v\bve\ber\brb\bbo\bos\bse\be:\b: L\bLE\bEV\bVE\bEL\bL,\b, -\b-v\bve\ber\brb\bbo\bos\bse\be:\b:L\bLE\bEV\bVE\bEL\bL\n            Equivalent explicit verbosity spelling; bare -verbose increments\n            once.\n\n     -\b-q\bq,\b, -\b--\b-q\bqu\bui\bie\bet\bt\n            Suppress optional diagnostics; errors remain visible. Conflicts\n            with verbosity.\n\n     -\b-i\bi,\b, -\b--\b-i\bin\bnp\bpu\but\bt P\bPA\bAT\bTH\bH\n            Input file path, or - for standard input.\n\n     -\b-o\bo,\b, -\b--\b-o\bou\but\btp\bpu\but\bt P\bPA\bAT\bTH\bH\n            Output file path, or - for standard output (encode and decode\n            only).\n\n     -\b--\b-i\bin\bnp\bpu\but\bt-\b-f\bfo\bor\brm\bma\bat\bt F\bFO\bOR\bRM\bMA\bAT\bT\n            Explicit input format: jpeg (or jpg), nrrd, pgm, ppm, pnm.\n            Required when reading from - or when the input path has no\n            recognised extension.\n\n     -\b--\b-o\bou\but\btp\bpu\but\bt-\b-f\bfo\bor\brm\bma\bat\bt F\bFO\bOR\bRM\bMA\bAT\bT\n            Explicit output format: jpeg (or jpg), nrrd, pgm, ppm, pnm.\n            Required when writing to - or when the output path has no\n            recognised extension.\n\n     -\b--\b-m\bmo\bod\bde\be M\bMO\bOD\bDE\bE\n            Compression mode for encode: lossless (default), near-lossless or\n            lossy.\n\n     -\b--\b-m\bma\bax\bx-\b-e\ber\brr\bro\bor\br N\bN\n            Positive integer error bound for near-lossless point-transform\n            encoding.\n\n     -\b--\b-p\bpr\bre\bed\bdi\bic\bct\bto\bor\br N\bN\n            Predictive JPEG predictor selection 1 through 7 (default 1).\n\n     -\b--\b-r\bre\bes\bst\bta\bar\brt\bt-\b-i\bin\bnt\bte\ber\brv\bva\bal\bl N\bN\n            Restart interval in MCUs from 0 through 65535 (default 0).\n\n     -\b--\b-q\bqu\bua\bal\bli\bit\bty\by N\bN\n            Lossy DCT quality from 0 through 100 (default 90; requires --mode\n            lossy).\n\n     -\b--\b-s\bsu\bub\bbs\bsa\bam\bmp\bpl\bli\bin\bng\bg M\bMO\bOD\bDE\bE\n            Lossy chroma subsampling: 444, 422, 420 or greyscale (requires\n            --mode lossy).\n\n     -\b--\b-p\bpr\bro\bog\bgr\bre\bes\bss\bsi\biv\bve\be M\bMO\bOD\bDE\bE\n            Lossy scan progression: sequential, spectral-selection or\n            successive-approximation (requires --mode lossy).\n\n     -\b--\b-b\bba\bac\bck\bke\ben\bnd\bd N\bNA\bAM\bME\bE\n            Execution policy: automatic (default), scalar, accelerated,\n            preferred-scalar or preferred-accelerated.\n\n     -\b--\b-c\bco\bop\bpy\by-\b-p\bpo\bol\bli\bic\bcy\by P\bPO\bOL\bLI\bIC\bCY\bY\n            Memory sharing policy: require-sharing (default) or allow-copy.\n\n     -\b--\b-t\bth\bhr\bre\bea\bad\bds\bs N\bN\n            Maximum worker count (positive integer).\n\n     -\b--\b-m\bma\bax\bx-\b-m\bme\bem\bmo\bor\bry\by B\bBY\bYT\bTE\bES\bS\n            Maximum operation memory ceiling in bytes.\n\n     -\b--\b-t\bti\bim\bme\beo\bou\but\bt S\bSE\bEC\bCO\bON\bND\bDS\bS\n            Positive finite operation deadline in seconds.\n\n     -\b--\b-o\bov\bve\ber\brw\bwr\bri\bit\bte\be\n            Permit atomic replacement of an existing regular output file.\n\n     -\b--\b-j\bjs\bso\bon\bn Emit structured JSON report. Written to stdout for capabilities,\n            inspect and validate; written to stderr for encode and decode so\n            binary stdout is never contaminated.\n\nD\bDI\bIA\bAG\bGN\bNO\bOS\bST\bTI\bIC\bC L\bLE\bEV\bVE\bEL\bLS\bS\n     Default 0 reports errors only. Levels are cumulative: 1 summary; 2\n     stages; 3 capability/descriptor details; 4 elapsed timing; 5 bounded\n     trace. Invalid levels or totals above 5 return 2.  Explicit levels set\n     and repeated flags increment in argument order.  Diagnostics use stderr.\n     Requested help/version/capability/inspect/validate data and -o - payload\n     streams use stdout.  No payload bytes, metadata, raw addresses or\n     input/output paths are logged.\n\nU\bUN\bNC\bCO\bOM\bMP\bPR\bRE\bES\bSS\bSE\bED\bD F\bFO\bOR\bRM\bMA\bAT\bTS\bS\n     No private intermediate format or headerless raw sample file is used.\n     Attached raw NRRD (NRRD0001..NRRD0005 on input, NRRD0004 on output)\n     supports the 2D single-component full-precision UInt16 greyscale profile.\n     Detached headers, skip directives, URLs and external compression are\n     rejected.  Binary Netpbm PGM (P5) and PPM (P6) preserve 2..16-bit\n     greyscale and RGB precision via exact maxval ((1 << meaningfulBits) - 1).\n\nE\bEX\bXI\bIT\bT S\bST\bTA\bAT\bTU\bUS\bS\n     0 success/help/version; 2 invalid usage or argument; 3 malformed or\n     truncated input; 4 unsupported format, feature, image layout or required\n     backend; 5 resource limit or deadline exceeded; 6 input/output failure,\n     existing destination without --overwrite or closed pipe; 7 internal\n     failure; 130 user cancellation.\n\nE\bEX\bXA\bAM\bMP\bPL\bLE\bES\bS\n     swiftjli-cli -h\n     swiftjli-cli capabilities --json -vv\n     swiftjli-cli inspect -i image.jpg --json\n     swiftjli-cli validate -i image.jpg\n     swiftjli-cli decode -i image.jpg -o image.nrrd\n     swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n\nI\bIN\bNS\bST\bTA\bAL\bLL\bLA\bAT\bTI\bIO\bON\bN\n     Scripts/install-cli.sh installs or updates the executable and this page\n     together.  Use --prefix for an absolute prefix (default /usr/local),\n     --destdir or DESTDIR for staging, and --binary for a prebuilt binary\n     matching VERSION.  Files are PREFIX/bin/swiftjli-cli and\n     PREFIX/share/man/man1/swiftjli-cli.1.  For custom prefixes use man -M\n     PREFIX/share/man swiftjli-cli, or configure MANPATH.  No index refresh is\n     needed for direct lookup; no sudo runs automatically.\n\nS\bSE\bEE\bE A\bAL\bLS\bSO\bO\n     m\bma\ban\bn(1)\n\n     CLI.md and Documentation/Engineering/OS27CLI/README.md in the SwiftJLI\n     repository.\n\n1.1.0-dev.2                    October 15, 2026                SWIFTJLI-CLI(1)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-13/check-which-milestones-are-completed-and/work/SwiftJLI/Scripts/install-cli.sh",
+        "--prefix",
+        "relative",
+        "--binary",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "Prefix and nonempty staging root must be absolute.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-13/check-which-milestones-are-completed-and/work/SwiftJLI/Scripts/install-cli.sh",
+        "--binary"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "Missing option value.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-13/check-which-milestones-are-completed-and/work/SwiftJLI/Scripts/install-cli.sh",
+        "--binary",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/wrong version",
+        "--prefix",
+        "/opt/suite tools",
+        "--destdir",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "Binary version does not match this source and manual.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-13/check-which-milestones-are-completed-and/work/SwiftJLI/Scripts/install-cli.sh",
+        "--binary",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--prefix",
+        "/opt/suite tools"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "Installed /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/bin/swiftjli-cli\nManual: /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man/man1/swiftjli-cli.1\nRead with: man -M \"/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces/opt/suite tools/share/man\" swiftjli-cli\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stale source/Scripts/install-cli.sh",
+        "--binary",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--prefix",
+        "/opt/suite tools",
+        "--destdir",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "Manual version does not match VERSION.\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-13/check-which-milestones-are-completed-and/work/SwiftJLI/Scripts/install-cli.sh",
+        "--binary",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/macos-release-build/arm64-apple-macosx/release/swiftjli-cli",
+        "--prefix",
+        "/opt/suite tools",
+        "--destdir",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/jliswift-oct14-parity/cli-report.json/cli stage spaces e9fweds_/stage with spaces"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout": "",
+      "stderr": "Refusing to replace a symlink or directory; choose a separate prefix.\n"
+    }
+  ],
+  "status": "passed",
+  "checks": 203
+}

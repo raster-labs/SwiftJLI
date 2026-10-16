@@ -102,11 +102,7 @@ struct JLIDecoder: Sendable {
             throw JLIError.unsupportedJPEGFeature("decode scale \(scale) (only 1, 2, 4, 8 supported)")
         }
 
-        // Step 3: Prepare Huffman tables (use standard tables as fallback)
-        let dcTables = prepareDCTables(parsed.huffmanDCTables)
-        let acTables = prepareACTables(parsed.huffmanACTables)
-
-        // Step 4: Determine MCU structure
+        // Step 3: Determine MCU structure
         let components = frame.components
         let numComponents = components.count
         let hMaxSampling = components.map(\.horizontalSampling).max() ?? 1
@@ -116,7 +112,7 @@ struct JLIDecoder: Sendable {
         let mcuCountH = (frame.width + mcuW - 1) / mcuW
         let mcuCountV = (frame.height + mcuH - 1) / mcuH
 
-        // Step 5: Allocate one flat zigzag-coefficient buffer per component.
+        // Step 4: Allocate one flat zigzag-coefficient buffer per component.
         // Block `b` of component `c` lives at `componentZigzag[c][b*64 ..< (b+1)*64]`.
         var componentZigzag = [[Int32]]()
         var componentBlocksPerRow = [Int]()
@@ -129,7 +125,7 @@ struct JLIDecoder: Sendable {
             componentZigzag.append([Int32](repeating: 0, count: blocksH * blocksV * 64))
         }
 
-        // Step 6: Decode entropy data into the flat per-component buffers.
+        // Step 5: Decode entropy data into the flat per-component buffers.
         // Progressive (SOF2) uses multiple scans with spectral selection and
         // successive approximation; baseline/extended-sequential uses one scan.
         if frame.isProgressive {
@@ -157,6 +153,10 @@ struct JLIDecoder: Sendable {
             componentZigzag = prog.coeffs
         } else {
             let scan = parsed.scans[0]
+            // Use the Huffman table snapshot active at SOS rather than the final merged
+            // parser dictionaries, matching JPEGCodec.validateDCT when later DHT segments follow.
+            let dcTables = prepareDCTables(scan.dcTables)
+            let acTables = prepareACTables(scan.acTables)
             var bitReader = BitReader(data: scan.entropyData)
             var prevDC = [Int32](repeating: 0, count: numComponents)
             var acBuf = [Int32](repeating: 0, count: 64)
