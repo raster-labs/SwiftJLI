@@ -1,0 +1,354 @@
+diff --git a/Tests/SwiftJLITests/Native/DICOMReaderTests.swift b/Tests/SwiftJLITests/Native/DICOMReaderTests.swift
+index 88e35b0..bf45251 100644
+--- a/Tests/SwiftJLITests/Native/DICOMReaderTests.swift
++++ b/Tests/SwiftJLITests/Native/DICOMReaderTests.swift
+@@ -240,6 +240,51 @@ struct DICOMReaderTests {
+         #expect(img.width == 2 && img.height == 2)   // not 999 — sequence was skipped
+     }
+ 
++    @Test("Nested undefined-length sequences inside undefined-length items are skipped recursively")
++    func nestedUndefinedLengthSequenceIsSkipped() throws {
++        // Place the real group-0028 pixel-module attributes FIRST, then an outer
++        // undefined-length sequence (0028,3010 VOI LUT Sequence) containing an
++        // inner undefined-length sequence (0040,0555) and a post-inner sibling item
++        // payload BEFORE PixelData (7FE0,0010). Because the parser processes
++        // elements sequentially until PixelData, any leak from either the inner
++        // sequence or the outer item's sibling tags after the inner E0DD delimiter
++        // would overwrite the earlier real 2×2 geometry and rescale parameters.
++        var leaf = DICOMBuilder()
++        leaf.us(0x0028, 0x0010, 1)                 // decoy Rows = 1 inside inner SQ
++        leaf.us(0x0028, 0x0011, 2)                 // decoy Columns = 2 inside inner SQ
++        leaf.str(0x0028, 0x1052, "DS", "-500")     // decoy RescaleIntercept inside inner SQ
++        leaf.str(0x0028, 0x1053, "DS", "10")       // decoy RescaleSlope inside inner SQ
++
++        var outerItem = DICOMBuilder()
++        outerItem.undefinedLengthSQ(0x0040, 0x0555, inner: leaf.elements)
++        outerItem.us(0x0028, 0x0010, 2)            // sibling decoy Rows = 2 after inner E0DD
++        outerItem.us(0x0028, 0x0011, 1)            // sibling decoy Columns = 1 after inner E0DD
++        outerItem.str(0x0028, 0x1052, "DS", "-999")
++        outerItem.str(0x0028, 0x1053, "DS", "5")
++
++        var b = DICOMBuilder()
++        b.us(0x0028, 0x0002, 1)
++        b.str(0x0028, 0x0004, "CS", "MONOCHROME2")
++        b.us(0x0028, 0x0010, 2)                    // real Rows = 2
++        b.us(0x0028, 0x0011, 2)                    // real Columns = 2
++        b.us(0x0028, 0x0100, 16)
++        b.us(0x0028, 0x0101, 16)
++        b.us(0x0028, 0x0102, 15)
++        b.us(0x0028, 0x0103, 0)
++        b.str(0x0028, 0x1052, "DS", "-10")         // real RescaleIntercept = -10
++        b.str(0x0028, 0x1053, "DS", "2")           // real RescaleSlope = 2
++        b.undefinedLengthSQ(0x0028, 0x3010, inner: outerItem.elements)
++        b.ow(0x7FE0, 0x0010, [10, 20, 30, 40])
++
++        let img = try DICOMReader.read(b.bytes())
++        #expect(img.width == 2 && img.height == 2)
++        #expect(img.rescaleSlope == 2.0 && img.rescaleIntercept == -10.0)
++        #expect(img.pixelData == [10, 0, 20, 0, 30, 0, 40, 0])
++        #expect(img.decodeIntensitiesForRenderer() == [10.0, 30.0, 50.0, 70.0])
++        let (lo, hi) = img.intensityRange()
++        #expect(lo == 10 && hi == 70)
++    }
++
+     @Test("Signed 12-bit-in-16 data is sign-extended from the stored sign bit")
+     func signed12BitInerSignExtension() throws {
+         // CT-like: 16-bit container, only 12 bits stored, signed. A stored value
+@@ -283,6 +328,71 @@ struct DICOMReaderTests {
+         #expect(hi == 4095)
+     }
+ 
++    @Test("Shifted HighBit (highBit > bitsStored - 1) aligns unsigned and signed samples to canonical intensities")
++    func highBitShiftedUnsignedAndSigned12BitIn16() throws {
++        // 1) Unsigned 12-bit stored in bits 4...15 (HighBit = 15, shift = 4) with
++        // non-significant low padding bits 0...3 set, compared against canonical
++        // HighBit = 11 (bits 0...11).
++        let canonicalUnsignedWords: [UInt16] = [1, 1024, 2048, 4095]
++        let shiftedUnsignedWords: [UInt16] = [
++            (1 << 4) | 0x000F,
++            (1024 << 4) | 0x000A,
++            (2048 << 4) | 0x0005,
++            (4095 << 4) | 0x0003
++        ]
++        func makeUnsigned(highBit: UInt16, words: [UInt16]) throws -> DICOMImage {
++            var b = DICOMBuilder()
++            b.us(0x0028, 0x0002, 1)
++            b.str(0x0028, 0x0004, "CS", "MONOCHROME2")
++            b.us(0x0028, 0x0010, 2)
++            b.us(0x0028, 0x0011, 2)
++            b.us(0x0028, 0x0100, 16)
++            b.us(0x0028, 0x0101, 12)
++            b.us(0x0028, 0x0102, highBit)
++            b.us(0x0028, 0x0103, 0)
++            b.ow(0x7FE0, 0x0010, words)
++            return try DICOMReader.read(b.bytes())
++        }
++        let canonicalU = try makeUnsigned(highBit: 11, words: canonicalUnsignedWords)
++        let shiftedU = try makeUnsigned(highBit: 15, words: shiftedUnsignedWords)
++        #expect(shiftedU.highBit == 15)
++        #expect(shiftedU.intensityRange() == (1, 4095))
++        #expect(shiftedU.toRGB8() == canonicalU.toRGB8())
++        #expect(shiftedU.render8bit(windowCenter: 2048, windowWidth: 4095)
++                == canonicalU.render8bit(windowCenter: 2048, windowWidth: 4095))
++        #expect(shiftedU.render12bit(windowCenter: 2048, windowWidth: 4095)
++                == canonicalU.render12bit(windowCenter: 2048, windowWidth: 4095))
++        #if canImport(Accelerate)
++        #expect(DICOMWindowRenderer(shiftedU).render8bit(windowCenter: 2048, windowWidth: 4095)
++                == DICOMWindowRenderer(canonicalU).render8bit(windowCenter: 2048, windowWidth: 4095))
++        #endif
++
++        // 2) Signed 12-bit stored in bits 2...13 (HighBit = 13, shift = 2) with
++        // both low padding bits (0...1) and high overlay bits (14...15) dirty.
++        // Stored 12-bit two's-complement values: -1024 (0x0C00), -1 (0x0FFF), 0, +2047 (0x07FF).
++        let canonicalSignedWords: [UInt16] = [0x0C00, 0x0FFF, 0x0000, 0x07FF]
++        let shiftedSignedWords: [UInt16] = canonicalSignedWords.map { ($0 << 2) | 0xC003 }
++        func makeSigned(highBit: UInt16, words: [UInt16]) throws -> DICOMImage {
++            var b = DICOMBuilder()
++            b.us(0x0028, 0x0002, 1)
++            b.str(0x0028, 0x0004, "CS", "MONOCHROME2")
++            b.us(0x0028, 0x0010, 2)
++            b.us(0x0028, 0x0011, 2)
++            b.us(0x0028, 0x0100, 16)
++            b.us(0x0028, 0x0101, 12)
++            b.us(0x0028, 0x0102, highBit)
++            b.us(0x0028, 0x0103, 1)
++            b.ow(0x7FE0, 0x0010, words)
++            return try DICOMReader.read(b.bytes())
++        }
++        let canonicalS = try makeSigned(highBit: 11, words: canonicalSignedWords)
++        let shiftedS = try makeSigned(highBit: 13, words: shiftedSignedWords)
++        #expect(shiftedS.intensityRange() == (-1024, 2047))
++        #expect(shiftedS.toRGB8() == canonicalS.toRGB8())
++        #expect(shiftedS.render12bit(windowCenter: 500, windowWidth: 3000)
++                == canonicalS.render12bit(windowCenter: 500, windowWidth: 3000))
++    }
++
+     @Test("Plane-interleaved RGB (PlanarConfiguration 1) is reassembled correctly")
+     func planarConfigurationReassembly() throws {
+         // 2×1 RGB, plane-interleaved: R-plane [10,11], G-plane [20,21],
+diff --git a/Tests/SwiftJLITests/Native/DICOMWriterTests.swift b/Tests/SwiftJLITests/Native/DICOMWriterTests.swift
+index 6050ed6..e2455b7 100644
+--- a/Tests/SwiftJLITests/Native/DICOMWriterTests.swift
++++ b/Tests/SwiftJLITests/Native/DICOMWriterTests.swift
+@@ -317,4 +317,193 @@ struct DICOMWriterTests {
+             _ = try dicom.decodeFramesConcurrently { _ -> [UInt8] in throw DICOMError.invalidPixelData }
+         }
+     }
++
++    @Test("Multi-frame encapsulated DICOM with multiple fragments per frame groups via the Basic Offset Table")
++    func encapsulatedMultiFrameMultiFragmentBOTGrouping() throws {
++        // 3 frames, each split into 2 even-length fragments (6 fragments total).
++        // Because fragmentRanges.count (6) != numberOfFrames (3), the reader must
++        // execute the Basic Offset Table grouping loop (enc.basicOffsetTable.count == n).
++        let w = 8, h = 8, frameCount = 3
++        var sources = [[UInt8]]()
++        var jpegs = [[UInt8]]()
++        var fragments = [[UInt8]]()
++        var botOffsets = [UInt32]()
++        var runningOffset: UInt32 = 0
++
++        for f in 0..<frameCount {
++            let src = framePixels(w, h, frame: f)
++            sources.append(src)
++            let img = try JLIImage(width: w, height: h, pixelFormat: .uint16,
++                                   colorModel: .grayscale, data: src)
++            var cfg = JLIEncoderConfiguration(lossless: true); cfg.losslessPrecision = 12
++            var jpeg = try JLIEncoder().encode(img, configuration: cfg)
++            if jpeg.count % 2 != 0 { jpeg.append(0) }
++            jpegs.append(jpeg)
++
++            let split = (jpeg.count / 2) & ~1
++            let frag0 = Array(jpeg[0..<split])
++            let frag1 = Array(jpeg[split...])
++            #expect(frag0.count % 2 == 0 && frag1.count % 2 == 0)
++
++            botOffsets.append(runningOffset)
++            fragments.append(frag0)
++            runningOffset += UInt32(8 + frag0.count)
++            fragments.append(frag1)
++            runningOffset += UInt32(8 + frag1.count)
++        }
++        #expect(fragments.count == frameCount * 2)
++
++        func mtag(_ b: inout [UInt8], _ g: UInt16, _ e: UInt16) {
++            b += [UInt8(g & 0xFF), UInt8(g >> 8), UInt8(e & 0xFF), UInt8(e >> 8)]
++        }
++        func u32(_ b: inout [UInt8], _ v: UInt32) {
++            b += [UInt8(v & 0xFF), UInt8((v >> 8) & 0xFF), UInt8((v >> 16) & 0xFF), UInt8((v >> 24) & 0xFF)]
++        }
++        func us(_ b: inout [UInt8], _ g: UInt16, _ e: UInt16, _ v: UInt16) {
++            mtag(&b, g, e); b += Array("US".utf8); b += [2, 0, UInt8(v & 0xFF), UInt8(v >> 8)]
++        }
++        func cs(_ b: inout [UInt8], _ g: UInt16, _ e: UInt16, _ s: String, vr: String = "CS") {
++            var v = Array(s.utf8); if v.count % 2 != 0 { v.append(0x20) }
++            mtag(&b, g, e); b += Array(vr.utf8); b += [UInt8(v.count & 0xFF), UInt8(v.count >> 8)]; b += v
++        }
++
++        var meta = [UInt8]()
++        var ts = Array(DICOMWriter.jpegLosslessSV1.utf8); if ts.count % 2 != 0 { ts.append(0) }
++        mtag(&meta, 0x0002, 0x0010); meta += Array("UI".utf8)
++        meta += [UInt8(ts.count & 0xFF), UInt8(ts.count >> 8)] + ts
++
++        var ds = [UInt8]()
++        us(&ds, 0x0028, 0x0002, 1)
++        cs(&ds, 0x0028, 0x0004, "MONOCHROME2")
++        cs(&ds, 0x0028, 0x0008, "\(frameCount)", vr: "IS")
++        us(&ds, 0x0028, 0x0010, UInt16(h))
++        us(&ds, 0x0028, 0x0011, UInt16(w))
++        us(&ds, 0x0028, 0x0100, 16)
++        us(&ds, 0x0028, 0x0101, 12)
++        us(&ds, 0x0028, 0x0102, 11)
++        us(&ds, 0x0028, 0x0103, 0)
++
++        mtag(&ds, 0x7FE0, 0x0010); ds += Array("OB".utf8); ds += [0, 0]; u32(&ds, 0xFFFF_FFFF)
++        mtag(&ds, 0xFFFE, 0xE000); u32(&ds, UInt32(botOffsets.count * 4))
++        for off in botOffsets { u32(&ds, off) }
++        for frag in fragments {
++            mtag(&ds, 0xFFFE, 0xE000); u32(&ds, UInt32(frag.count))
++            ds += frag
++        }
++        mtag(&ds, 0xFFFE, 0xE0DD); u32(&ds, 0)
++
++        var file = [UInt8](repeating: 0, count: 128) + Array("DICM".utf8)
++        mtag(&file, 0x0002, 0x0000); file += Array("UL".utf8); file += [4, 0]; u32(&file, UInt32(meta.count))
++        file += meta + ds
++
++        let dicom = try DICOMReader.read(file)
++        #expect(dicom.isEncapsulated)
++        #expect(dicom.numberOfFrames == frameCount)
++        #expect(dicom.encapsulatedFrameStreams.count == frameCount)
++        for f in 0..<frameCount {
++            let stream = try #require(dicom.frame(f))
++            #expect(stream == jpegs[f])
++            let decoded = try JLIDecoder().decode(from: stream)
++            #expect(decoded.data == sources[f])
++        }
++    }
++
++    @Test("Public SwiftJLI Encoder and Decoder round-trip encapsulated DICOM lossless and colour streams with bounded limits")
++    func publicSwiftJLICodecEncapsulatedDICOMIntegration() async throws {
++        // 1) 12-bit greyscale lossless (SOF3) encoded and decoded through the
++        // shipping public SwiftJLI API, wrapped in an encapsulated DICOM container.
++        let w = 8, h = 8
++        let grey12Desc = try ImageDescriptor.greyscale16(width: w, height: h, meaningfulBits: 12)
++        let grey12Image = try ImageDestination.allocate(descriptor: grey12Desc).writeUInt16 { x, y in
++            UInt16((x * 197 + y * 311) & 0x0FFF)
++        }
++        let expectedGreyBytes = try grey12Image.storage.withUnsafeBytes { Array($0) }
++        let encodedLossless = try await Encoder(configuration: .init(mode: .lossless,
++            codecOptions: .init(predictor: 1))).encode(grey12Image)
++
++        let losslessModule = DICOMWriter.PixelModule(
++            rows: h, columns: w, bitsAllocated: 16, bitsStored: 12, highBit: 11,
++            photometricInterpretation: "MONOCHROME2", modality: "CT")
++        let losslessDICOM = try DICOMWriter.writeEncapsulatedJPEG(
++            jpegStream: Array(encodedLossless.data), module: losslessModule,
++            transferSyntax: DICOMWriter.jpegLosslessSV1)
++        let readLossless = try DICOMReader.read(losslessDICOM)
++        let publicDecoder = try Decoder()
++        let decodedLossless = try await publicDecoder.decode(Data(readLossless.pixelData))
++        #expect(decodedLossless.image.descriptor.meaningfulBits == 12)
++        #expect(decodedLossless.image.descriptor.colour == .greyscale)
++        #expect(try decodedLossless.image.storage.withUnsafeBytes { Array($0) } == expectedGreyBytes)
++
++        // Verify public ResourceLimits reject oversized encapsulated frames before sample allocation.
++        do {
++            _ = try await publicDecoder.decode(Data(readLossless.pixelData),
++                options: .init(resourceLimits: try ResourceLimits(maximumPixels: w * h - 1)))
++            Issue.record("Expected resourceLimitExceeded for encapsulated frame exceeding maximumPixels")
++        } catch let error as CodecError {
++            #expect(error.category == .resourceLimitExceeded)
++        }
++
++        // 2) 8-bit colour DCT (SOF0) encapsulated in DICOM (both standard YCbCr
++        // and unmarked direct-RGB interpreted via sourceColourModel: .rgb).
++        let rgbPlane = try PlaneDescriptor(width: w, height: h, components: [0, 1, 2],
++            sampleStride: 1, pixelStride: 3, rowBytes: w * 3, byteCount: w * h * 3)
++        let rgbDesc = try ImageDescriptor(width: w, height: h, storageBits: 8, meaningfulBits: 8,
++            components: [.red, .green, .blue], colour: .rgb, planes: [rgbPlane])
++        let rgbImage = try ImageDestination.allocate(descriptor: rgbDesc).write { raw in
++            for i in 0..<(w * h) {
++                raw[i * 3] = 200
++                raw[i * 3 + 1] = 80
++                raw[i * 3 + 2] = 40
++            }
++        }
++        let encodedLossy = try await Encoder(configuration: .init(mode: .lossy,
++            codecOptions: .init(dct: .init(quality: 100, chromaSubsampling: .yuv444)))).encode(rgbImage)
++        let rgbModule = DICOMWriter.PixelModule(
++            rows: h, columns: w, bitsAllocated: 8, bitsStored: 8, highBit: 7,
++            samplesPerPixel: 3, photometricInterpretation: "YBR_FULL_422", modality: "US")
++        let lossyDICOM = try DICOMWriter.writeEncapsulatedJPEG(
++            jpegStream: Array(encodedLossy.data), module: rgbModule,
++            transferSyntax: DICOMWriter.jpegBaseline)
++        let readLossy = try DICOMReader.read(lossyDICOM)
++        let decodedLossy = try await publicDecoder.decode(Data(readLossy.pixelData))
++        #expect(decodedLossy.image.descriptor.colour == .rgb)
++        #expect(decodedLossy.image.descriptor.components == [.red, .green, .blue])
++        let decodedRGBBytes = try decodedLossy.image.storage.withUnsafeBytes { Array($0) }
++        for i in 0..<(w * h) {
++            #expect(abs(Int(decodedRGBBytes[i * 3]) - 200) <= 2)
++            #expect(abs(Int(decodedRGBBytes[i * 3 + 1]) - 80) <= 2)
++            #expect(abs(Int(decodedRGBBytes[i * 3 + 2]) - 40) <= 2)
++        }
++
++        // Unmarked direct-RGB encapsulated stream (DICOM PhotometricInterpretation = "RGB"
++        // with pretransformed RGB DCT planes) decoded via explicit sourceColourModel: .rgb.
++        let preconvertedDesc = try ImageDescriptor(width: w, height: h, storageBits: 8, meaningfulBits: 8,
++            components: [.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")],
++            colour: .unknown, planes: [rgbPlane])
++        let preconvertedImg = try ImageDestination.allocate(descriptor: preconvertedDesc).write { raw in
++            for i in 0..<(w * h) {
++                raw[i * 3] = 210
++                raw[i * 3 + 1] = 70
++                raw[i * 3 + 2] = 25
++            }
++        }
++        let unmarkedRGBStream = try await Encoder(configuration: .init(mode: .lossy,
++            codecOptions: .init(dct: .init(quality: 100, chromaSubsampling: .yuv444, sourceColourSpace: .yCbCr)))).encode(preconvertedImg)
++        let directRGBModule = DICOMWriter.PixelModule(
++            rows: h, columns: w, bitsAllocated: 8, bitsStored: 8, highBit: 7,
++            samplesPerPixel: 3, photometricInterpretation: "RGB", modality: "XC")
++        let directRGBDICOM = try DICOMWriter.writeEncapsulatedJPEG(
++            jpegStream: Array(unmarkedRGBStream.data), module: directRGBModule,
++            transferSyntax: DICOMWriter.jpegBaseline)
++        let readDirectRGB = try DICOMReader.read(directRGBDICOM)
++        let rgbOverrideDecoder = try Decoder(configuration: .init(sourceColourModel: .rgb))
++        let decodedDirectRGB = try await rgbOverrideDecoder.decode(Data(readDirectRGB.pixelData))
++        #expect(decodedDirectRGB.image.descriptor.colour == .rgb)
++        let directBytes = try decodedDirectRGB.image.storage.withUnsafeBytes { Array($0) }
++        for i in 0..<(w * h) {
++            #expect(abs(Int(directBytes[i * 3]) - 210) <= 1)
++            #expect(abs(Int(directBytes[i * 3 + 1]) - 70) <= 1)
++            #expect(abs(Int(directBytes[i * 3 + 2]) - 25) <= 1)
++        }
++    }
+ }
+diff --git a/Tests/SwiftJLITests/Support/DICOMReader.swift b/Tests/SwiftJLITests/Support/DICOMReader.swift
+index aaa312b..0f46e43 100644
+--- a/Tests/SwiftJLITests/Support/DICOMReader.swift
++++ b/Tests/SwiftJLITests/Support/DICOMReader.swift
+@@ -214,6 +214,14 @@ struct DICOMImage: Sendable {
+         let signed = pixelRepresentation == 1
+         // Effective stored width: bitsStored if sane, else the full container.
+         let stored = (bitsStored >= 1 && bitsStored <= bitsAllocated) ? bitsStored : bitsAllocated
++        // DICOM HighBit (0028,0102) gives the 0-indexed most-significant bit of the
++        // stored sample within the bitsAllocated container (canonical: stored - 1,
++        // shift 0). When a legacy/shifted dataset places the stored sample higher
++        // in the container (stored - 1 <= highBit < bitsAllocated), right-shift
++        // to align the stored low bit before masking and sign-extending.
++        let shift: UInt32 = (highBit >= stored - 1 && highBit < bitsAllocated)
++            ? UInt32(highBit - (stored - 1))
++            : 0
+         let mask: UInt32 = stored >= 32 ? 0xFFFF_FFFF : (UInt32(1) << UInt32(stored)) - 1
+         let signBit: UInt32 = UInt32(1) << UInt32(stored - 1)
+         // Two's-complement extension term applied when the sign bit is set.
+@@ -221,7 +229,7 @@ struct DICOMImage: Sendable {
+ 
+         @inline(__always)
+         func value(_ raw: UInt32) -> Double {
+-            let m = raw & mask
++            let m = (raw >> shift) & mask
+             if signed && (m & signBit) != 0 {
+                 return Double(Int32(bitPattern: m | signExtend))
+             }

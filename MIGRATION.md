@@ -57,7 +57,7 @@ A single zero byte following EOI is accepted only when the JPEG length excluding
 
 Sequential DCT, progressive DCT and lossless SOF3 decoding all select the Huffman table snapshot active at each `SOS` marker (`scan.dcTables` and `scan.acTables`), so valid trailing `DHT` segments after `SOS` do not overwrite the tables used by an earlier scan. `JLISwift` `0.6.0`'s raw-pointer caller-workspace entry points (`inspectBaselineRGBCore`, `decodeBaselineRGBCore`, `inspectLosslessMonochromeCore`, `decodeLosslessMonochromeCore` and `JLICoreOutcome`) are predecessor-specific APIs; in `SwiftJLI`, use `Decoder.inspect`, `Decoder.inspectJPEG`, `Decoder.decode(_:into:options:)` with `ImageDestination`, and `CodecError`.
 
-Source pins, fixture provenance, verification and remaining platform limits are in [JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md) and [JLISwift 14 October parity](Documentation/Migration/Qualification/JLISwiftOct14Parity/README.md).
+Source pins, fixture provenance, verification and remaining platform limits are in [JPEG decode parity](Documentation/Migration/JPEGDecodeParity.md), [JLISwift 14 October parity](Documentation/Migration/Qualification/JLISwiftOct14Parity/README.md), and the [full historical-fix checklist](Documentation/Migration/Qualification/JLISwiftHistoryChecklist/README.md).
 
 ## Decoder output and adaptive profiles
 
