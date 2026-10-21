@@ -214,6 +214,14 @@ struct DICOMImage: Sendable {
         let signed = pixelRepresentation == 1
         // Effective stored width: bitsStored if sane, else the full container.
         let stored = (bitsStored >= 1 && bitsStored <= bitsAllocated) ? bitsStored : bitsAllocated
+        // DICOM HighBit (0028,0102) gives the 0-indexed most-significant bit of the
+        // stored sample within the bitsAllocated container (canonical: stored - 1,
+        // shift 0). When a legacy/shifted dataset places the stored sample higher
+        // in the container (stored - 1 <= highBit < bitsAllocated), right-shift
+        // to align the stored low bit before masking and sign-extending.
+        let shift: UInt32 = (highBit >= stored - 1 && highBit < bitsAllocated)
+            ? UInt32(highBit - (stored - 1))
+            : 0
         let mask: UInt32 = stored >= 32 ? 0xFFFF_FFFF : (UInt32(1) << UInt32(stored)) - 1
         let signBit: UInt32 = UInt32(1) << UInt32(stored - 1)
         // Two's-complement extension term applied when the sign bit is set.
@@ -221,7 +229,7 @@ struct DICOMImage: Sendable {
 
         @inline(__always)
         func value(_ raw: UInt32) -> Double {
-            let m = raw & mask
+            let m = (raw >> shift) & mask
             if signed && (m & signBit) != 0 {
                 return Double(Int32(bitPattern: m | signExtend))
             }

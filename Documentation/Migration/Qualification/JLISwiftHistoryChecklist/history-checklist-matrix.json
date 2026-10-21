@@ -1,0 +1,763 @@
+{
+  "task": "SwiftJLI full historical JLISwift fix checklist audit",
+  "implementation_run_date": "2026-10-15",
+  "independent_audit_date": "2026-10-16",
+  "model": "Gemini 4 Argon High (independently audited by Codex)",
+  "baseline_swiftjli_commit": "44e3807bd32d45ceca74404297eded4fd30a746f",
+  "predecessor_jliswift_commit": "fb1e188b4b1bad73febccf3b7c7595a78ae7a4c2",
+  "earlier_jliswift_pins": [
+    "0a4ded0b0b2e8e38127f4f302b286e74ee352474",
+    "981da4efb7d62e4370c5d6de706d56a729b9552e"
+  ],
+  "owner_boundary_decision": "Preserve shipping public JPEG API (SwiftJLI library and swiftjli-cli executable) and test-only DICOM support (Tests/SwiftJLITests/Support/). Do not add a public DICOM product.",
+  "summary": {
+    "total_categories": 10,
+    "total_checklist_items": 17,
+    "shipping_library_code_changes": 0,
+    "test_support_code_changes": 1,
+    "new_conformance_tests_added": 4,
+    "frozen_source_verification": {
+      "manifest_file": "audit-source-manifest.json",
+      "manifest_sha256": "8712e446d93b4a9c18872ff049592458df8b63d9790e6034c82d0973397aa139",
+      "frozen_file_count": 132,
+      "changed_since_snapshot": []
+    },
+    "argon_macos_release_tests": {
+      "date": "2026-10-15",
+      "command": "swift test -c release",
+      "exit_code": 0,
+      "tests": 359,
+      "suites": 50,
+      "failures": 0,
+      "log_file": "macos-release-test.log",
+      "log_sha256": "e836c0d305258dca47bedd7221d020daffdfddcd9b7d3596b22e0a9b8172a02a"
+    },
+    "argon_ios_simulator_tests": {
+      "date": "2026-10-15",
+      "command": "xcodebuild test -scheme SwiftJLI-Package -destination 'platform=iOS Simulator,id=9021546C-CD90-4663-A01B-B4E92851C3DF'",
+      "device": "iPhone 17 Pro (iOS 26.0 Simulator, 9021546C-CD90-4663-A01B-B4E92851C3DF)",
+      "exit_code": 0,
+      "tests": 359,
+      "suites": 50,
+      "failures": 0,
+      "log_file": "ios-simulator-test.log",
+      "log_sha256": "d159f40ffa0eff095db57e61f0f01a34097836ad93cd1eaf3a669812f882130b"
+    },
+    "codex_independent_macos_release_tests": {
+      "date": "2026-10-16",
+      "command": "swift test --package-path work/history-checklist/audit-source --scratch-path work/history-checklist/codex-build --build-system native -c release -j 2",
+      "exit_code": 0,
+      "duration_seconds": 51.915225982666016,
+      "tests": 359,
+      "suites": 50,
+      "failures": 0,
+      "json_file": "codex-macos-release.json",
+      "log_file": "codex-macos-release.log",
+      "log_sha256": "0340ca9af6ce8367ad906de645accbbce2e0256f51d80f8960287039ab797f36"
+    },
+    "codex_independent_ios_simulator_tests": {
+      "date": "2026-10-16",
+      "command": "xcodebuild test -scheme SwiftJLI-Package -destination 'platform=iOS Simulator,id=9021546C-CD90-4663-A01B-B4E92851C3DF' -destination-timeout 120 -parallel-testing-enabled NO -derivedDataPath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/history-checklist/codex-ios26-derived -resultBundlePath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/history-checklist/codex-ios26.xcresult CODE_SIGNING_ALLOWED=NO",
+      "device": "iPhone 17 Pro (iOS 26.0 Simulator, 9021546C-CD90-4663-A01B-B4E92851C3DF)",
+      "exit_code": 0,
+      "duration_seconds": 102.4511821269989,
+      "tests": 359,
+      "suites": 50,
+      "failures": 0,
+      "json_file": "codex-ios26.json",
+      "log_file": "codex-ios26.log",
+      "log_sha256": "24d54549392ea650dc1ff4ebd9536589030eb41921dab9ff94c7497fdb6057ba"
+    },
+    "codex_independent_dicom_normal_value_oracle": {
+      "date": "2026-10-15",
+      "harness": "dicom-normal-value-oracle.swift",
+      "harness_sha256": "8954004ec2fa30f06ad9993193142094bdd68a009a3816c9f63e5a98a373bf1c",
+      "baseline_build_initial_attempt": "codex-normal-values-baseline-build.json (exit 1, sandbox default module-cache permission error)",
+      "baseline_build_retry": "codex-normal-values-baseline-build-retry.json (exit 0, with -module-cache-path)",
+      "baseline_run": "codex-normal-values-baseline.json (exit 1: 56 cases, 12 canonical passed, 44 shifted-layout mismatches)",
+      "candidate_build": "codex-normal-values-candidate-build.json (exit 0)",
+      "candidate_run": "codex-normal-values-candidate.json (exit 0: 56 cases, 56 passed, 0 failures)",
+      "baseline_cases": 56,
+      "baseline_canonical_passed": 12,
+      "baseline_shifted_mismatches": 44,
+      "candidate_cases": 56,
+      "candidate_passed": 56,
+      "candidate_failures": 0
+    }
+  },
+  "files_recorded": {
+    "Sources/SwiftJLI/CodecAPI.swift": {
+      "sha256": "5d7deea6d873281217954083138d04ec7453b9c3c4a7037455b958c4b4948026",
+      "bytes": 14608,
+      "lines": 268
+    },
+    "Sources/SwiftJLI/Options.swift": {
+      "sha256": "dd43c63592bf4d74c53626374fb4494b0815315f0f64bc1a2831f9c066b5d787",
+      "bytes": 5921,
+      "lines": 112
+    },
+    "Sources/SwiftJLI/JPEGCodec.swift": {
+      "sha256": "460ed18ff02fd75522c91e9faa57867dfdd8a23ffd50c0b38e8d84965ea1022b",
+      "bytes": 28085,
+      "lines": 398
+    },
+    "Sources/SwiftJLI/JPEGEnvelope.swift": {
+      "sha256": "ffdf18b055deb6d19530a39266d73d6d107a504eb75dbdd768e45f8f6205554a",
+      "bytes": 7856,
+      "lines": 138
+    },
+    "Sources/SwiftJLI/JPEGDCTValidation.swift": {
+      "sha256": "8092526c26f18de0ac0ef64c8a1f1397aad7e3909990994caadde10b9bafff13",
+      "bytes": 4097,
+      "lines": 66
+    },
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": {
+      "sha256": "a9fc2a0878e13ffbef79450b6bd56197aa85f669e734a49bd40563561f33b20d",
+      "bytes": 64263,
+      "lines": 1219
+    },
+    "Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift": {
+      "sha256": "9c1eee6ca5f3d9c774cc2902ed30fe1cae6c0f53a387d4d080e514ced2f54998",
+      "bytes": 86955,
+      "lines": 1703
+    },
+    "Sources/SwiftJLI/Native/ColorSpace/JLIChromaSampling.swift": {
+      "sha256": "e1cc179fa5222797d585505cc9725e5097f87ae00ac9707ea03aedad5ed0121b",
+      "bytes": 15140,
+      "lines": 297
+    },
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift": {
+      "sha256": "4225c13e9132530e58691919d019467eb6563711570f66d6a0a0968204b27253",
+      "bytes": 19417,
+      "lines": 520
+    },
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerWriter.swift": {
+      "sha256": "b16d4fcde67541c67cda5078b6c1fa382ec1bd4433b76dbe70047d85fc00ab8d",
+      "bytes": 10316,
+      "lines": 276
+    },
+    "Tests/SwiftJLITests/Support/DICOMReader.swift": {
+      "sha256": "227a4f1b3f42c527c5bd7fcf457be0483fe8e6cf9aaf07397adf2bc9edd8cc74",
+      "bytes": 44116,
+      "lines": 848
+    },
+    "Tests/SwiftJLITests/Support/DICOMWriter.swift": {
+      "sha256": "5634c69453e016f9a36ddb2a72f0c2b4f0c018db8b061b94bd05e6e1f8bdf5f7",
+      "bytes": 15876,
+      "lines": 314
+    },
+    "Tests/SwiftJLITests/Support/DICOMWindowRenderer.swift": {
+      "sha256": "50d79a71adb1c6a4497fb80e0c8e083d5a77f8b22d1bbad1ca5915495390a6c1",
+      "bytes": 7520,
+      "lines": 154
+    },
+    "Tests/SwiftJLITests/Support/CorpusSHA256.swift": {
+      "sha256": "e67394bce93e8a7a490c2c17b1ea94a10ac1338ea76672c905faeec6ec4f74c1",
+      "bytes": 2938,
+      "lines": 51
+    },
+    "Tests/SwiftJLITests/Support/IdentityHashes.swift": {
+      "sha256": "01efcb08d5f4c731d6ab78c5ac9258d7dd35044f0f024363ed5d86b2f0f76707",
+      "bytes": 11844,
+      "lines": 233
+    },
+    "Tests/SwiftJLITests/Native/DICOMReaderTests.swift": {
+      "sha256": "32e3766c0e307bee2826ce6b296117d498307742eb361915b5451a4aa90ef428",
+      "bytes": 25896,
+      "lines": 528
+    },
+    "Tests/SwiftJLITests/Native/DICOMWriterTests.swift": {
+      "sha256": "dd86cf432ddcc4f349797f75a80103daaacc267ebe6154c58c44d043478a131a",
+      "bytes": 26930,
+      "lines": 509
+    },
+    "Tests/SwiftJLITests/Native/DICOMColorTests.swift": {
+      "sha256": "f97590ab0fbb03f99d776b7732d8533316a5e3016f7e961da2f710befa29bb71",
+      "bytes": 4590,
+      "lines": 87
+    },
+    "Tests/SwiftJLITests/Native/DICOMFuzzTests.swift": {
+      "sha256": "94d118d6898fbf72753531f21579e908da9fc267a838cf5448f2bbf0cff9a220",
+      "bytes": 11712,
+      "lines": 258
+    },
+    "Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift": {
+      "sha256": "fb9cb37197cf27be9966aa6a3594e23fcc570d2536e65041933906f6f02465e3",
+      "bytes": 8922,
+      "lines": 150
+    },
+    "Tests/SwiftJLITests/Native/RegressionCorpusTests.swift": {
+      "sha256": "2e892d57c2308fa094b738057bc93a220c7c2baf2586e21c32abafa22e27f58a",
+      "bytes": 11270,
+      "lines": 194
+    },
+    "Tests/SwiftJLITests/JPEGDecodeParityTests.swift": {
+      "sha256": "d7f302d740dfed5569f0b842a74ff0dd0becd8994d3f86103d65fb1f3b0e742f",
+      "bytes": 17510,
+      "lines": 282
+    },
+    "Tests/SwiftJLITests/LimitTests.swift": {
+      "sha256": "4375c5d32b991ad7d2750cf53d428b1891a0d168cb7d71950bdaa09d99b13d1a",
+      "bytes": 2477,
+      "lines": 49
+    },
+    "Tests/SwiftJLITests/DescriptorTests.swift": {
+      "sha256": "6cd219630d63ebdeb4b084a61fb39af6757eef5ff6c3a8acecfa44812b64e197",
+      "bytes": 5063,
+      "lines": 112
+    }
+  },
+  "checklist": [
+    {
+      "category_id": 1,
+      "category": "Allocation and malformed input",
+      "item_id": "1.1",
+      "title": "Public resource admission before decoded sample/workspace allocation",
+      "predecessor_commits": [
+        "196a852",
+        "32ee8ef",
+        "e162faf",
+        "616c51e",
+        "fb1e188"
+      ],
+      "predecessor_files": [
+        "Sources/JLISwift/Decoder/JLIDecoder.swift",
+        "Sources/JLISwift/Core/JLIConfiguration.swift"
+      ],
+      "swiftjli_boundary": "shipping_library",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/JPEGCodec.swift#L98-L105 (JPEGCodec.admit)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L242-L250 (JPEGCodec.parse)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L356-L365 (JPEGCodec.decode)",
+        "Sources/SwiftJLI/JPEGEnvelope.swift#L48-L51 (JPEGEnvelope.validate)"
+      ],
+      "status": "already_covered_shipping_library",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "JPEGDecodeParityTests.boundedCompleteCodestreamAndPadding (Tests/SwiftJLITests/JPEGDecodeParityTests.swift#L64)",
+        "pixelAndDimensionLimitsRejectBeforeAllocation (Tests/SwiftJLITests/LimitTests.swift#L24)",
+        "independentAllocationAndMemoryCeilingsAreEnforced (Tests/SwiftJLITests/LimitTests.swift#L6)",
+        "DICOMWriterTests.publicSwiftJLICodecEncapsulatedDICOMIntegration (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L412)"
+      ],
+      "notes": "JPEGCodec.parse admits parser workspace and compressed bytes before Array(data); JPEGEnvelope.validate checks width/height/maximumPixels before table parsing; JPEGCodec.decode admits full-frame coefficient workspace + decoded pixel bytes + metadata before ImageDestination.allocate or native decode kernels run."
+    },
+    {
+      "category_id": 1,
+      "category": "Allocation and malformed input",
+      "item_id": "1.2",
+      "title": "Checked dimension, sample, and byte products (no overflow traps)",
+      "predecessor_commits": [
+        "196a852",
+        "89999a4",
+        "32ee8ef",
+        "e162faf"
+      ],
+      "predecessor_files": [
+        "Sources/JLISwift/Decoder/JLIDecoder.swift",
+        "Sources/JLIDICOM/DICOMReader.swift"
+      ],
+      "swiftjli_boundary": "shipping_library_and_test_support",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/ImageDescriptor.swift (checkedAdd / checkedMultiply)",
+        "Sources/SwiftJLI/JPEGEnvelope.swift#L45-L51 (JPEGEnvelope.validate)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L164-L168 (JPEGCodec.encode)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L308-L323 (JPEGCodec.info)",
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L539-L559 (DICOMReader.read)"
+      ],
+      "status": "already_covered_shipping_and_test_support",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "extremeIntegerInputsThrowWithoutOverflowTraps (Tests/SwiftJLITests/DescriptorTests.swift#L61)",
+        "shortCapacityAndInvalidStrideAreRejected (Tests/SwiftJLITests/DescriptorTests.swift#L41)",
+        "pixelAndDimensionLimitsRejectBeforeAllocation (Tests/SwiftJLITests/LimitTests.swift#L24)",
+        "DICOMReaderTests.imageTooLargeIsRejected (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L194)",
+        "DICOMFuzzTests.hostileGeometry (Tests/SwiftJLITests/Native/DICOMFuzzTests.swift#L121)"
+      ],
+      "notes": "All public SwiftJLI descriptor/envelope/codec calculations use checkedAdd/checkedMultiply; DICOMReader bounds rows/cols to 1...65535 and caps rows*cols*samplesPerPixel against maxDecodablePixels (268,435,456) before allocating buffers."
+    },
+    {
+      "category_id": 1,
+      "category": "Allocation and malformed input",
+      "item_id": "1.3",
+      "title": "Lossless point-transform (Pt < precision) validation before bit shifts",
+      "predecessor_commits": [
+        "196a852",
+        "d804c16"
+      ],
+      "predecessor_files": [
+        "Sources/JLISwift/Decoder/JLIDecoder.swift"
+      ],
+      "swiftjli_boundary": "shipping_library",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/JPEGCodec.swift#L272-L279 (JPEGCodec.parse)",
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift#L664-L670 (JLIDecoder.decodeLossless)",
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift#L901-L905 (JLIDecoder.decodeSharedLossless)"
+      ],
+      "status": "already_covered_shipping_library",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "NearLosslessAPITests (Tests/SwiftJLITests/NearLosslessAPITests.swift)",
+        "LosslessTests (Tests/SwiftJLITests/Native/LosslessTests.swift)",
+        "FuzzTests (Tests/SwiftJLITests/Native/FuzzTests.swift)"
+      ],
+      "notes": "Both public JPEGCodec.parse (scan.header.successiveApproxLow < f.precision) and internal JLIDecoder (pt >= 0, pt < precision) validate the point transform before computing 1 << (precision - 1 - pt)."
+    },
+    {
+      "category_id": 1,
+      "category": "Allocation and malformed input",
+      "item_id": "1.4",
+      "title": "Truncated PixelData handling, sub-8-bit lossless bps heap over-read guard, and parallel lossless restart segment boundary check",
+      "predecessor_commits": [
+        "db3bf46",
+        "08e15a0",
+        "89999a4",
+        "32ee8ef"
+      ],
+      "predecessor_files": [
+        "Sources/JLIDICOM/DICOMReader.swift",
+        "Sources/JLISwift/Encoder/JLIEncoder.swift",
+        "Sources/JLISwift/Decoder/JLIDecoder.swift"
+      ],
+      "swiftjli_boundary": "shipping_library_and_test_support",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/JPEGEnvelope.swift#L25-L38 (JPEGEnvelope.validate)",
+        "Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift#L623-L630 (JLIEncoder.encodeLossless)",
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift#L735-L751 (JLIDecoder.decodeLossless)",
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L553-L574 (DICOMReader.read)"
+      ],
+      "status": "already_covered_with_documented_predecessor_limit",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "JPEGDecodeParityTests.boundedCompleteCodestreamAndPadding (Tests/SwiftJLITests/JPEGDecodeParityTests.swift#L64)",
+        "LosslessTests (Tests/SwiftJLITests/Native/LosslessTests.swift)",
+        "LosslessRestartTests (Tests/SwiftJLITests/Native/LosslessRestartTests.swift)",
+        "DICOMReaderTests.truncatedPixelDataIsRejected (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L202)",
+        "DICOMWriterTests.lyingFrameCountClamped (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L243)",
+        "DICOMFuzzTests.truncations (Tests/SwiftJLITests/Native/DICOMFuzzTests.swift#L64)"
+      ],
+      "notes": "Public JPEGEnvelope rejects truncated codestreams, missing EOI, and trailing bytes beyond a single odd-length 0x00 pad. Native JLIEncoder derives bytes-per-sample from actual storage (89999a4 heap over-read fix), and parallel lossless restart decode verifies segment end against RST markers (89999a4). Limitation documented: in DICOMReader test support, single-frame truncated PixelData throws DICOMError.truncatedPixelData, whereas native multi-frame data with >= 1 complete frame clamps numberOfFrames to nativeAllFrames.count / frameBytes (lyingFrameCountClamped) rather than rejecting every multi-frame dataset with trailing truncation."
+    },
+    {
+      "category_id": 2,
+      "category": "DICOM parsing",
+      "item_id": "2.1",
+      "title": "Undefined-length SQ and nested undefined-length SQ/Item skipping before PixelData",
+      "predecessor_commits": [
+        "db3bf46"
+      ],
+      "predecessor_files": [
+        "Sources/JLIDICOM/DICOMReader.swift",
+        "Tests/JLISwiftTests/DICOMReaderTests.swift"
+      ],
+      "swiftjli_boundary": "test_support",
+      "swiftjli_files": [
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L491-L501 (DICOMReader.read)",
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L683-L718 (DICOMReader.skipUntilDelimiter)",
+        "Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L219-L286"
+      ],
+      "status": "covered_and_expanded_conformance_test_added",
+      "code_change_in_this_pass": true,
+      "verification_tests": [
+        "DICOMReaderTests.undefinedLengthSequenceIsSkipped (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L220)",
+        "DICOMReaderTests.nestedUndefinedLengthSequenceIsSkipped (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L244)",
+        "DICOMFuzzTests.sequenceFuzz (Tests/SwiftJLITests/Native/DICOMFuzzTests.swift#L192)"
+      ],
+      "notes": "DICOMReader.skipUntilDelimiter recursively skips undefined-length items (FFFE,E00D) and nested undefined-length sequences (FFFE,E0DD). Added nestedUndefinedLengthSequenceIsSkipped with real group-0028 geometry/rescale tags placed BEFORE the outer/inner nested undefined-length SQ (0028,3010) and PixelData (7FE0,0010) placed AFTER it so any leaked inner or sibling tags would overwrite real geometry/intensities."
+    },
+    {
+      "category_id": 2,
+      "category": "DICOM parsing",
+      "item_id": "2.2",
+      "title": "bitsStored and HighBit masking, bit-shift alignment, and two's-complement sign extension",
+      "predecessor_commits": [
+        "db3bf46",
+        "89999a4"
+      ],
+      "predecessor_files": [
+        "Sources/JLIDICOM/DICOMReader.swift",
+        "Tests/JLISwiftTests/DICOMReaderTests.swift"
+      ],
+      "swiftjli_boundary": "test_support",
+      "swiftjli_files": [
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L211-L258 (DICOMImage.decodeIntensities)",
+        "Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L288-L394"
+      ],
+      "status": "fixed_in_this_pass_test_support",
+      "code_change_in_this_pass": true,
+      "verification_tests": [
+        "DICOMReaderTests.signed12BitInerSignExtension (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L289)",
+        "DICOMReaderTests.unsigned12BitMasking (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L311)",
+        "DICOMReaderTests.highBitShiftedUnsignedAndSigned12BitIn16 (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L332)",
+        "dicom-normal-value-oracle.swift (56/56 passed)"
+      ],
+      "notes": "Predecessor fb1e188 parsed HighBit (0028,0102) and documented honouring bitsStored/highBit in decodeIntensities(), but only masked low bits (raw & mask). Current NEMA PS3.5 \u00a78.1.1 (https://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_8.html) requires canonical HighBit == BitsStored - 1 (which already passed 12/12 canonical cases in dicom-normal-value-oracle.swift), while Note 3 references PS3.5 2014c for the former general-case rule allowing other HighBit positions. Repaired legacy shifted-sample compatibility in Tests/SwiftJLITests/Support/DICOMReader.swift by shifting (raw >> shift) & mask where shift = highBit - (stored - 1) when stored - 1 <= highBit < bitsAllocated. Verified by Codex's 56-case normal-value oracle (56/56 passed, 0 failures vs 44 baseline shifted-layout mismatches) and highBitShiftedUnsignedAndSigned12BitIn16."
+    },
+    {
+      "category_id": 2,
+      "category": "DICOM parsing",
+      "item_id": "2.3",
+      "title": "PlanarConfiguration=1 RGB reconstruction, non-finite DS sanitization, and JPEG APP/restart validation",
+      "predecessor_commits": [
+        "db3bf46",
+        "89999a4"
+      ],
+      "predecessor_files": [
+        "Sources/JLIDICOM/DICOMReader.swift",
+        "Sources/JLISwift/Markers/JLIMarkerReader.swift"
+      ],
+      "swiftjli_boundary": "shipping_library_and_test_support",
+      "swiftjli_files": [
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L120-L152 (DICOMImage.render8bit)",
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L595-L603 (DICOMReader.read)",
+        "Sources/SwiftJLI/JPEGEnvelope.swift#L67-L127 (JPEGEnvelope.validate)",
+        "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift#L325-L365 (MarkerReader.readSegmentBytes)"
+      ],
+      "status": "already_covered_shipping_and_test_support",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "DICOMReaderTests.planarConfigurationReassembly (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L397)",
+        "DICOMReaderTests.nonFiniteRescaleSanitized (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L462)",
+        "MarkerTests (Tests/SwiftJLITests/Native/MarkerTests.swift)",
+        "FuzzTests (Tests/SwiftJLITests/Native/FuzzTests.swift)"
+      ],
+      "notes": "DICOMReader reassembles planar R/G/B planes (PlanarConfiguration == 1) and sanitizes non-finite DS strings (nan/inf) to nil or identity 1.0/0.0. JPEGEnvelope and MarkerReader validate segment lengths and bounds before reading APP1/APP2/APP14/DRI payloads."
+    },
+    {
+      "category_id": 3,
+      "category": "Colour",
+      "item_id": "3.1",
+      "title": "DICOM YBR_FULL and YBR_FULL_422 conversion to RGB on render",
+      "predecessor_commits": [
+        "ed4479d"
+      ],
+      "predecessor_files": [
+        "Sources/JLIDICOM/DICOMReader.swift",
+        "Tests/JLISwiftTests/DICOMColorTests.swift"
+      ],
+      "swiftjli_boundary": "test_support",
+      "swiftjli_files": [
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L120-L162 (DICOMImage.render8bit)",
+        "Tests/SwiftJLITests/Native/DICOMColorTests.swift#L11-L87"
+      ],
+      "status": "already_covered_with_documented_predecessor_limit",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "DICOMColorTests.ybrFullToRGB (Tests/SwiftJLITests/Native/DICOMColorTests.swift#L25)",
+        "DICOMColorTests.ybr422IsConverted (Tests/SwiftJLITests/Native/DICOMColorTests.swift#L43)",
+        "DICOMColorTests.rgbPassthrough (Tests/SwiftJLITests/Native/DICOMColorTests.swift#L56)",
+        "DICOMColorTests.monochrome1Inversion (Tests/SwiftJLITests/Native/DICOMColorTests.swift#L66)"
+      ],
+      "notes": "DICOMImage.render8bit converts YBR_FULL and YBR_FULL_422 triplets to RGB via ITU-R BT.601 full-range math. Predecessor limitation documented: DICOMReader's native buffer check assumes 3 bytes/pixel (already-upsampled Y,Cb,Cr triplets per pixel), not packed 2-bytes/pixel uncompressed native YBR_FULL_422 (NEMA PS3.3 \u00a7C.7.6.3, https://dicom.nema.org/medical/DICOM/current/output/chtml/part03/sect_C.7.6.3.html)."
+    },
+    {
+      "category_id": 3,
+      "category": "Colour",
+      "item_id": "3.2",
+      "title": "Actual decoded JPEG colour interpretation (Adobe APP14, RGB IDs, sourceColourModel override, no silent relabelling)",
+      "predecessor_commits": [
+        "32ee8ef",
+        "e162faf"
+      ],
+      "predecessor_files": [
+        "Sources/JLISwift/Decoder/JLIDecoder.swift",
+        "Sources/JLISwift/Markers/JLIMarkerReader.swift",
+        "Tests/JLISwiftTests/BoundedDecodingTests.swift"
+      ],
+      "swiftjli_boundary": "shipping_library",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/CodecAPI.swift#L135-L151 (JPEGSourceColourModel / DecoderConfiguration)",
+        "Sources/SwiftJLI/JPEGEnvelope.swift#L118-L125 (JPEGEnvelope.validate)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L252-L270 (JPEGCodec.parse)",
+        "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift#L66-L75 (ParsedJPEG.isRawRGB)",
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift#L441-L515 (JLIDecoder.decodeParsed)"
+      ],
+      "status": "already_covered_shipping_library",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "JPEGDecodeParityTests.rawRGBAdobe (Tests/SwiftJLITests/JPEGDecodeParityTests.swift#L92)",
+        "JPEGDecodeParityTests.rawRGBIdentifiersAndSourceOverride (Tests/SwiftJLITests/JPEGDecodeParityTests.swift#L141)",
+        "DICOMWriterTests.publicSwiftJLICodecEncapsulatedDICOMIntegration (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L412)"
+      ],
+      "notes": "Migrated in PR #21 (maintenance pin 981da4efb7d62e4370c5d6de706d56a729b9552e). Public Decoder recognizes Adobe APP14 transform 0, ASCII 'RGB' component IDs [82,71,66], and explicit DecoderConfiguration(sourceColourModel: .rgb / .yCbCr) on unmarked 3-component DCT streams, while rejecting conflicting colour markers or unsupported overrides."
+    },
+    {
+      "category_id": 3,
+      "category": "Colour",
+      "item_id": "3.3",
+      "title": "Centred JPEG chroma reconstruction (4:2:0 / 4:2:2 / odd dimensions / worker parity / caller-storage row padding)",
+      "predecessor_commits": [
+        "a250354",
+        "6ba2c00",
+        "fb1e188"
+      ],
+      "predecessor_files": [
+        "Sources/JLISwift/ColorSpace/JLIChromaSampling.swift",
+        "Sources/JLISwift/Decoder/JLIDecoder.swift",
+        "Tests/JLISwiftTests/ChromaReferenceTests.swift",
+        "Tests/JLISwiftTests/InPlaceChromaTests.swift"
+      ],
+      "swiftjli_boundary": "shipping_library",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/Native/ColorSpace/JLIChromaSampling.swift#L131-L297 (ChromaSampling.upsampleJPEG)",
+        "Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift#L55-L120 (SharedDCTStorage.write)",
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift#L441-L472 (JLIDecoder.decodeParsed)",
+        "Tests/SwiftJLITests/JPEGDecodeParityTests.swift#L8-L57"
+      ],
+      "status": "already_covered_shipping_library",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "JPEGDecodeParityTests.centredChromaAgreesAcrossWorkerLimits (Tests/SwiftJLITests/JPEGDecodeParityTests.swift#L8)",
+        "JPEGDecodeParityTests.independentChroma (Tests/SwiftJLITests/JPEGDecodeParityTests.swift#L24)",
+        "SharedDCTStorageTests (Tests/SwiftJLITests/Native/SharedDCTStorageTests.swift)",
+        "RGBOutputBatchTests (Tests/SwiftJLITests/RGBOutputBatchTests.swift)"
+      ],
+      "notes": "ChromaSampling.upsampleJPEG implements centred triangle-filter upsampling across 4:2:0 and 4:2:2 (including odd dimensions 17x15, 19x14, 257x129), verified against independent libjpeg-turbo/Pillow reference fixtures (max channel diff <= 3) and padded caller-owned ImageDestination buffers with zero-copy allocation reports."
+    },
+    {
+      "category_id": 4,
+      "category": "Encapsulated JPEG in DICOM",
+      "item_id": "4.1",
+      "title": "Bounded JPEG decode in encapsulated DICOM and preservation of actual colour/photometric interpretation",
+      "predecessor_commits": [
+        "eefbc54",
+        "32ee8ef",
+        "e162faf"
+      ],
+      "predecessor_files": [
+        "Sources/JLIDICOM/DICOMWriter.swift",
+        "Sources/JLIDICOM/DICOMReader.swift",
+        "Tests/JLISwiftTests/DICOMWriterTests.swift",
+        "Tests/JLISwiftTests/BoundedDecodingTests.swift"
+      ],
+      "swiftjli_boundary": "shipping_library_and_test_support",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/JPEGCodec.swift#L242-L397 (JPEGCodec.parse / decode)",
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L736-L813 (DICOMReader.readEncapsulated / encapsulatedFrames)",
+        "Tests/SwiftJLITests/Support/DICOMWriter.swift#L118-L156 (DICOMWriter.writeEncapsulatedJPEG / writeEncapsulatedFrames)",
+        "Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L83-L180",
+        "Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L411-L509"
+      ],
+      "status": "covered_and_expanded_conformance_test_added",
+      "code_change_in_this_pass": true,
+      "verification_tests": [
+        "DICOMWriterTests.encapsulatedLosslessRoundTrip (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L84)",
+        "DICOMWriterTests.multiFragmentConcatenation (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L118)",
+        "DICOMWriterTests.publicSwiftJLICodecEncapsulatedDICOMIntegration (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L412)",
+        "ConformanceEvidenceTests.c5Encapsulation (Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift#L126)"
+      ],
+      "notes": "Owner confirmed retaining the shipping JPEG API + test-only DICOM support boundary. Added publicSwiftJLICodecEncapsulatedDICOMIntegration to exercise public SwiftJLI.Encoder and SwiftJLI.Decoder directly on encapsulated DICOM lossless (12-bit SOF3) and lossy colour (YBR_FULL_422 and unmarked RGB via sourceColourModel: .rgb) frames with ResourceLimits enforcement."
+    },
+    {
+      "category_id": 5,
+      "category": "Lossless / near-lossless SOF3",
+      "item_id": "5.1",
+      "title": "SOF3 greyscale and RGB, predictors 1-7, 8/12/16-bit precision, near-lossless error bound 2^Pt - 1, and shifted-domain reconstruction",
+      "predecessor_commits": [
+        "8543a27",
+        "7d12905",
+        "d804c16"
+      ],
+      "predecessor_files": [
+        "Sources/JLISwift/Encoder/JLIEncoder.swift",
+        "Sources/JLISwift/Decoder/JLIDecoder.swift",
+        "Tests/JLISwiftTests/LosslessTests.swift"
+      ],
+      "swiftjli_boundary": "shipping_library_with_explicit_boundaries",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/JPEGCodec.swift#L6-L20 (JPEGCodec.capabilities)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L67-L82 (JPEGCodec.layout)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L218-L238 (JPEGCodec.encode)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L272-L296 (JPEGCodec.parse / info)",
+        "Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift#L610-L820 (JLIEncoder.encodeLossless)",
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift#L624-L980 (JLIDecoder.decodeLossless / decodeSharedLossless)"
+      ],
+      "status": "covered_with_explicit_public_jpeg_boundaries",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "LosslessTests (Tests/SwiftJLITests/Native/LosslessTests.swift)",
+        "NearLosslessAPITests (Tests/SwiftJLITests/NearLosslessAPITests.swift)",
+        "ConformanceEvidenceTests.c1LosslessBitExact (Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift#L34)",
+        "ConformanceEvidenceTests.c2CrossValidation (Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift#L69)",
+        "ConformanceEvidenceTests.c3NearLosslessBound (Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift#L85)"
+      ],
+      "notes": "Both internal JLIEncoder/JLIDecoder and public SwiftJLI.Encoder/Decoder support unsigned 2...16-bit lossless and near-lossless SOF3 across predictors 1...7, reconstructing in the shifted domain and scaling by 1 << pt on final emit so max absolute error is bounded by (1 << Pt) - 1. Explicit public JPEG boundaries: (a) 3-component lossless colour requires ASCII 'RGB' component IDs [0x52, 0x47, 0x42] and rejects ambiguous [1, 2, 3] lossless colour IDs (JPEGCodec.info); (b) non-interleaved or subsampled lossless scans are rejected; (c) standalone public JPEG rejects signed ImageDescriptors (JPEGCodec.layout)."
+    },
+    {
+      "category_id": 6,
+      "category": "Restart markers and progressive scans",
+      "item_id": "6.1",
+      "title": "Lossless and progressive restart state, 16-bit DRI range validation, parallel segment boundary verification, and per-scan SOS Huffman snapshots",
+      "predecessor_commits": [
+        "93aa5b0",
+        "897ac18",
+        "22da0ac",
+        "89999a4",
+        "7720310"
+      ],
+      "predecessor_files": [
+        "Sources/JLISwift/Encoder/JLIEncoder.swift",
+        "Sources/JLISwift/Encoder/JLIProgressiveEncoder.swift",
+        "Sources/JLISwift/Decoder/JLIDecoder.swift",
+        "Sources/JLISwift/Decoder/JLIProgressiveDecoder.swift",
+        "Tests/JLISwiftTests/LosslessRestartTests.swift",
+        "Tests/JLISwiftTests/ProgressiveTests.swift",
+        "Tests/JLISwiftTests/EdgeCaseTests.swift"
+      ],
+      "swiftjli_boundary": "shipping_library_with_explicit_boundaries",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/CodecAPI.swift#L72-L86 (CodecOptions.restartInterval / EncoderConfiguration.init)",
+        "Sources/SwiftJLI/JPEGEnvelope.swift#L57-L78 (JPEGEnvelope.validate SOS/DRI/DQT rules)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L173-L176 (JPEGCodec.encode lossless row multiple check)",
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift#L165-L185 (JLIDecoder.decodeParsed sequential SOS DHT snapshot)",
+        "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift#L720-L765 (JLIDecoder.decodeLossless segment boundary check)",
+        "Sources/SwiftJLI/Native/Decoder/JLIProgressiveDecoder.swift",
+        "Sources/SwiftJLI/Native/Encoder/JLIProgressiveEncoder.swift"
+      ],
+      "status": "covered_including_pr24_sos_huffman_snapshot_fix_and_explicit_boundaries",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "LosslessRestartTests (Tests/SwiftJLITests/Native/LosslessRestartTests.swift)",
+        "ProgressiveTests (Tests/SwiftJLITests/Native/ProgressiveTests.swift)",
+        "EdgeCaseTests (Tests/SwiftJLITests/Native/EdgeCaseTests.swift)",
+        "JPEGDecodeParityTests.sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT (Tests/SwiftJLITests/JPEGDecodeParityTests.swift#L185)"
+      ],
+      "notes": "DRI is validated in 0...65535 (CodecAPI.swift#L84 and JLIEncoder); lossless restart intervals require whole-row multiples; progressive and lossless scans reset predictors and bitstreams at each RSTm marker; and PR #24 (commit 44e3807) aligned sequential DCT in JLIDecoder.decodeParsed to use scan.dcTables/scan.acTables captured at SOS. Explicit public JPEG boundaries: (a) post-scan DRI (0xDD) or DQT (0xDB) redefinitions and multiple sequential scans are explicitly rejected with CodecError(.unsupportedFeature) in JPEGEnvelope.validate; (b) JLISwift 0.6.0's raw caller-workspace APIs (decodeBaselineRGBCore, decodeLosslessMonochromeCore, JLICoreOutcome from 616c51e/7720310) are predecessor-specific and not claimed in SwiftJLI."
+    },
+    {
+      "category_id": 7,
+      "category": "Metadata",
+      "item_id": "7.1",
+      "title": "APP1 Exif and APP2 ICC profile embedding, multi-chunk reassembly, round-trips, and codestream-merge boundary",
+      "predecessor_commits": [
+        "e5a5a58"
+      ],
+      "predecessor_files": [
+        "Sources/JLISwift/Markers/JLIMarkerReader.swift",
+        "Sources/JLISwift/Markers/JLIMarkerWriter.swift",
+        "Tests/JLISwiftTests/MetadataTests.swift"
+      ],
+      "swiftjli_boundary": "shipping_library",
+      "swiftjli_files": [
+        "Sources/SwiftJLI/JPEGEnvelope.swift#L96-L127 (JPEGEnvelope.validate)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L151-L163 (JPEGCodec.encode)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L318-L323 (JPEGCodec.info)",
+        "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift#L203-L243 (MarkerReader.parse)",
+        "Sources/SwiftJLI/Native/Markers/JLIMarkerWriter.swift#L80-L120 (MarkerWriter)"
+      ],
+      "status": "already_covered_shipping_library_no_codestream_merge_api",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "MetadataTests (Tests/SwiftJLITests/Native/MetadataTests.swift)",
+        "APITests (Tests/SwiftJLITests/APITests.swift)",
+        "XYBAPITests (Tests/SwiftJLITests/XYBAPITests.swift)",
+        "JPEGInspectionTests (Tests/SwiftJLITests/JPEGInspectionTests.swift)"
+      ],
+      "notes": "APP1 Exif and multi-chunk APP2 ICC_PROFILE segments are validated, reassembled in contiguous 1...count sequence order, and preserved on encode/decode round-trips according to MetadataPolicy. No API for merging multiple metadata-bearing JPEG codestreams exists in either JLISwift or SwiftJLI, and JPEGEnvelope.validate explicitly rejects concatenated JPEG codestreams or trailing non-pad bytes after EOI."
+    },
+    {
+      "category_id": 8,
+      "category": "Rendering and layout",
+      "item_id": "8.1",
+      "title": "CT Modality LUT (slope/intercept) before windowing, vDSP window renderer parity, row stride/alpha layout vs JLILab GUI rendering",
+      "predecessor_commits": [
+        "abc040f",
+        "00577eb",
+        "89999a4"
+      ],
+      "predecessor_files": [
+        "Sources/JLIDICOM/DICOMReader.swift",
+        "Sources/JLIDICOM/DICOMWindowRenderer.swift",
+        "JLILab/Sources/Render.swift",
+        "JLILab/Sources/ImageLoading.swift"
+      ],
+      "swiftjli_boundary": "shipping_library_and_test_support_vs_app_only",
+      "swiftjli_files": [
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L252-L258 (DICOMImage.decodeIntensities)",
+        "Tests/SwiftJLITests/Support/DICOMWindowRenderer.swift#L1-L154 (DICOMWindowRenderer)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L67-L94 (JPEGCodec.layout)",
+        "Sources/SwiftJLI/JPEGCodec.swift#L116-L125 (JPEGCodec.encode)",
+        "Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift"
+      ],
+      "status": "covered_with_app_boundary_distinguished",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "DICOMReaderTests.rescaleApplied (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L70)",
+        "DICOMReaderTests.windowRendererMatchesImageRender (Tests/SwiftJLITests/Native/DICOMReaderTests.swift#L421)",
+        "ColourInputTests.rgbaUsesSourceStrideAndDiscardsOnlyExplicitAlpha (Tests/SwiftJLITests/ColourInputTests.swift)",
+        "JPEGDecodeParityTests.independentChroma (Tests/SwiftJLITests/JPEGDecodeParityTests.swift#L24)",
+        "JPEGMigrationTests (Tests/SwiftJLITests/JPEGMigrationTests.swift)"
+      ],
+      "notes": "DICOMReader applies rescaleSlope and rescaleIntercept before windowing and DICOMWindowRenderer matches scalar rendering byte-for-byte. JLILab/Sources/Render.swift (CGImage noneSkipLast RGBA packing and CFData backing retention) was an app-only macOS GUI target in JLISwift and is not part of SwiftJLI; shipping SwiftJLI handles arbitrary PlaneDescriptor rowBytes/offset padding and explicit .discardStraightAlpha on RGBA inputs."
+    },
+    {
+      "category_id": 9,
+      "category": "DICOM compatibility and multi-frame / BOT",
+      "item_id": "9.1",
+      "title": "Signed/12-bit values, rescale, encapsulated JPEG transfer syntaxes, multi-frame extraction, and multi-fragment Basic Offset Table (BOT) grouping",
+      "predecessor_commits": [
+        "eefbc54",
+        "08e15a0",
+        "9218a16"
+      ],
+      "predecessor_files": [
+        "Sources/JLIDICOM/DICOMReader.swift",
+        "Sources/JLIDICOM/DICOMWriter.swift",
+        "Tests/JLISwiftTests/DICOMWriterTests.swift",
+        "Tests/JLISwiftTests/MedicalSafetyTests.swift"
+      ],
+      "swiftjli_boundary": "test_support_and_native_tests",
+      "swiftjli_files": [
+        "Tests/SwiftJLITests/Support/DICOMReader.swift#L736-L813 (DICOMReader.readEncapsulated / encapsulatedFrames)",
+        "Tests/SwiftJLITests/Support/DICOMWriter.swift#L118-L156 (DICOMWriter.writeEncapsulatedJPEG / writeEncapsulatedFrames)",
+        "Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L191-L409",
+        "Tests/SwiftJLITests/Native/MedicalSafetyTests.swift"
+      ],
+      "status": "covered_and_multi_fragment_bot_test_added",
+      "code_change_in_this_pass": true,
+      "verification_tests": [
+        "DICOMWriterTests.encapsulatedMultiFrame (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L192)",
+        "DICOMWriterTests.encapsulatedMultiFrameMultiFragmentBOTGrouping (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L322)",
+        "DICOMWriterTests.nativeMultiFrame (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L222)",
+        "DICOMWriterTests.concurrentFrameDecodeMatchesSerial (Tests/SwiftJLITests/Native/DICOMWriterTests.swift#L275)",
+        "MedicalSafetyTests (Tests/SwiftJLITests/Native/MedicalSafetyTests.swift)",
+        "ConformanceEvidenceTests.c4Signed (Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift#L108)"
+      ],
+      "notes": "Existing encapsulatedMultiFrame had 1 fragment/frame and hit the early shortcut at DICOMReader.swift:788. Added encapsulatedMultiFrameMultiFragmentBOTGrouping (3 frames x 2 fragments = 6 fragments with a 3-entry Basic Offset Table) to directly execute and verify the BOT offset-rebasing and fragment-grouping branch at DICOMReader.swift:792-810. Distinguished internal JLIImage signed 16-bit bit-pattern round-trip (MedicalSafetyTests, ConformanceEvidenceTests.c4Signed) from public standalone JPEG (which rejects signed ImageDescriptors in JPEGCodec.layout)."
+    },
+    {
+      "category_id": 10,
+      "category": "Regression corpus and fixture provenance",
+      "item_id": "10.1",
+      "title": "Frozen 9-case synthetic regression corpus, 71-record identity matrix, and synthetic vs real clinical dataset provenance",
+      "predecessor_commits": [
+        "8111ecb",
+        "061b6a5",
+        "8f38fb4",
+        "89999a4"
+      ],
+      "predecessor_files": [
+        "Tests/JLISwiftTests/RegressionCorpusTests.swift",
+        "Tests/JLISwiftTests/ConformanceEvidenceTests.swift",
+        "Sources/JLIBench/IdentityHashes.swift"
+      ],
+      "swiftjli_boundary": "test_support_and_regression_suites",
+      "swiftjli_files": [
+        "Tests/SwiftJLITests/Native/RegressionCorpusTests.swift#L86-L189 (RegressionCorpusTests.cases / runCorpus)",
+        "Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift#L25-L150",
+        "Tests/SwiftJLITests/IdentityRegressionTests.swift#L1-L39 (predecessorIdentityMatrixIsRetained)",
+        "Tests/SwiftJLITests/Support/CorpusSHA256.swift",
+        "Tests/SwiftJLITests/Support/IdentityHashes.swift#L38-L158 (identityHashRecords)"
+      ],
+      "status": "already_covered_with_provenance_distinguished",
+      "code_change_in_this_pass": false,
+      "verification_tests": [
+        "RegressionCorpusTests.runCorpus (Tests/SwiftJLITests/Native/RegressionCorpusTests.swift#L126)",
+        "RegressionCorpusTests.corpusManifest (Tests/SwiftJLITests/Native/RegressionCorpusTests.swift#L185)",
+        "ConformanceEvidenceTests (Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift)",
+        "predecessorIdentityMatrixIsRetained (Tests/SwiftJLITests/IdentityRegressionTests.swift)",
+        "CorpusDigestTests (Tests/SwiftJLITests/CorpusDigestTests.swift)"
+      ],
+      "notes": "RegressionCorpusTests.cases defines nine small deterministic synthetic cases: ct-16s (24x24), ct-12s (20x28), dx-12u (32x16), mg-12u (30x30), mr-12u (16x16), us-8rgb (12x16), xa-12u (28x20), sc-8u (8x8), and ct-16s-lossy-reject (8x8); dimensions here are rows x columns. Their source SHA-256 values are frozen in the same file. The separate 71-record identity matrix in IdentityHashes.swift uses 256x256 RGB/greyscale images, a 67x61 RGB image, 256x256 and 512x512 12/16-bit greyscale images, and 64x64 12-bit colour input, with additional scaled-decode outputs. predecessorIdentityMatrixIsRetained checks the 71-record baseline and seven explicit centred-chroma corrections. Both sets are deterministic synthetic generators with zero real patient data (no PHI); historical JLISwift clinical/bench notes are not claimed as real-patient validation."
+    }
+  ]
+}

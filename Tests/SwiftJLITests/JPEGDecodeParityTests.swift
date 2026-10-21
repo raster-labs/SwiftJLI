@@ -181,6 +181,100 @@ import Testing
         let conflict = Data(Array(ids.prefix(2)) + conflicting + Array(ids.dropFirst(2)))
         #expect(throws: CodecError.self) { try Decoder().inspect(conflict) }
     }
+
+    @Test func sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() async throws {
+        // Valid post-scan DHT redefining DC/AC tables 0 and 1 to 1-bit single-symbol
+        // tables after the completed scan's entropy data (before EOI).
+        var trailingDHT: [UInt8] = []
+        for tableSpec: (UInt8, UInt8) in [(0x00, 0x00), (0x01, 0x00), (0x10, 0x00), (0x11, 0x00)] {
+            trailingDHT += [0xFF, 0xC4, 0x00, 0x14, tableSpec.0, 0x01]
+            trailingDHT += [UInt8](repeating: 0, count: 15)
+            trailingDHT.append(tableSpec.1)
+        }
+
+        let w = 16, h = 16
+        let rgb8Plane = try PlaneDescriptor(width: w, height: h, components: [0, 1, 2],
+            sampleStride: 1, pixelStride: 3, rowBytes: w * 3, byteCount: w * h * 3)
+        let rgb8Desc = try ImageDescriptor(width: w, height: h, storageBits: 8, meaningfulBits: 8,
+            components: [.red, .green, .blue], colour: .rgb, planes: [rgb8Plane])
+        let rgb8Image = try ImageDestination.allocate(descriptor: rgb8Desc).write { raw in
+            for i in 0..<(w * h * 3) { raw[i] = UInt8((i * 53 + i / 3 * 19) & 0xFF) }
+        }
+        let grey12Desc = try ImageDescriptor.greyscale16(width: w, height: h, meaningfulBits: 12)
+        let grey12Image = try ImageDestination.allocate(descriptor: grey12Desc).writeUInt16 { x, y in
+            UInt16((x * 173 + y * 251) & 0x0FFF)
+        }
+
+        let optRGB = Array(try await Encoder(configuration: .init(mode: .lossy,
+            codecOptions: .init(dct: .init(quality: 90, chromaSubsampling: .yuv420, optimiseHuffman: true)))).encode(rgb8Image).data)
+        let stdRGB = Array(try await Encoder(configuration: .init(mode: .lossy,
+            codecOptions: .init(dct: .init(quality: 90, chromaSubsampling: .yuv444, optimiseHuffman: false)))).encode(rgb8Image).data)
+        let optGrey12 = Array(try await Encoder(configuration: .init(mode: .lossy,
+            codecOptions: .init(dct: .init(quality: 92, optimiseHuffman: true)))).encode(grey12Image).data)
+        let losslessGrey12 = Array(try await Encoder(configuration: .init(mode: .lossless,
+            codecOptions: .init(predictor: 4, restartInterval: w * 2))).encode(grey12Image).data)
+
+        for baseStream in [optRGB, stdRGB, optGrey12, losslessGrey12] {
+            var withTrailingDHT = Array(baseStream.dropLast(2))
+            withTrailingDHT.append(contentsOf: trailingDHT)
+            withTrailingDHT.append(contentsOf: [0xFF, 0xD9])
+
+            for policy: ExecutionPolicy in [.scalarCPU, .automatic] {
+                let decoder = try Decoder()
+                let expectedInfo = try decoder.inspect(Data(baseStream))
+                let actualInfo = try decoder.inspect(Data(withTrailingDHT))
+                #expect(actualInfo.descriptor == expectedInfo.descriptor)
+
+                let expected = try await decoder.decode(Data(baseStream), options: .init(executionPolicy: policy))
+                let actual = try await decoder.decode(Data(withTrailingDHT), options: .init(executionPolicy: policy))
+                let expectedBytes = try expected.image.storage.withUnsafeBytes { Array($0) }
+                let actualBytes = try actual.image.storage.withUnsafeBytes { Array($0) }
+                #expect(actualBytes == expectedBytes)
+
+                let d = expected.image.descriptor
+                let bps = d.storageBits / 8, nc = d.components.count
+                let row = d.width * nc * bps + 8, offset = 4
+                let plane = try PlaneDescriptor(width: d.width, height: d.height, components: Array(0..<nc),
+                    offset: offset, sampleStride: bps, pixelStride: nc * bps, rowBytes: row, byteCount: offset + row * d.height)
+                let padded = try ImageDescriptor(width: d.width, height: d.height, storageBits: d.storageBits,
+                    meaningfulBits: d.meaningfulBits, components: d.components, colour: d.colour, planes: [plane],
+                    iccProfile: d.iccProfile)
+                let storage = try OwnedImageStorage(byteCount: padded.requiredByteCount)
+                let direct = try await decoder.decode(Data(withTrailingDHT),
+                    into: .init(descriptor: padded, storage: storage), options: .init(executionPolicy: policy))
+                #expect(direct.image.storage.allocationID == storage.allocationID)
+                #expect(direct.report.pixelAllocationCount == 0 && direct.report.copyEvents.isEmpty)
+                try direct.image.storage.withUnsafeBytes { raw in
+                    let payload = d.width * nc * bps
+                    for y in 0..<d.height {
+                        let start = offset + y * row
+                        #expect(raw[start..<(start + payload)].elementsEqual(expectedBytes[(y * payload)..<((y + 1) * payload)]))
+                    }
+                }
+            }
+        }
+
+        // Post-scan DRI, post-scan DQT and multiple sequential scans remain
+        // explicitly unsupported on the public surface.
+        let trailingDRI = Array(optRGB.dropLast(2)) + [0xFF, 0xDD, 0x00, 0x04, 0x00, 0x01, 0xFF, 0xD9]
+        let trailingDQT = Array(optRGB.dropLast(2)) + [0xFF, 0xDB, 0x00, 0x43, 0x00] + [UInt8](repeating: 1, count: 64) + [0xFF, 0xD9]
+        let secondSequentialSOS = Array(optRGB.dropLast(2)) + [0xFF, 0xDA, 0x00, 0x0C, 0x03, 0x01, 0x00, 0x02, 0x11, 0x03, 0x11, 0x00, 0x3F, 0x00, 0x00, 0xFF, 0xD9]
+        for unsupported in [trailingDRI, trailingDQT, secondSequentialSOS] {
+            let decoder = try Decoder()
+            do {
+                _ = try decoder.inspect(Data(unsupported))
+                Issue.record("Expected unsupportedFeature for post-scan DRI/DQT or multi-scan sequential")
+            } catch let error as CodecError {
+                #expect(error.category == .unsupportedFeature)
+            }
+            do {
+                _ = try await decoder.decode(Data(unsupported))
+                Issue.record("Expected unsupportedFeature for post-scan DRI/DQT or multi-scan sequential")
+            } catch let error as CodecError {
+                #expect(error.category == .unsupportedFeature)
+            }
+        }
+    }
 }
 
 extension ChromaReferenceFixtures.Fixture: CustomTestStringConvertible {
