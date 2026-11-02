@@ -811,38 +811,55 @@ private func readBoundedInput(from path: String, maximumBytes: Int, context: Com
 }
 
 private func writeAllDescriptor(_ fd: Int32, data: Data, isStream: Bool, context: CommandExecutionContext) throws {
+    try data.withUnsafeBytes { raw in
+        try writeAllDescriptor(fd, bytes: raw, isStream: isStream, context: context)
+    }
+}
+
+// The borrowed bytes remain owned by the caller until every synchronous write completes.
+private func writeAllDescriptor(
+    _ fd: Int32, bytes raw: UnsafeRawBufferPointer, isStream: Bool, context: CommandExecutionContext
+) throws {
     try withNonBlockingDescriptor(fd, enabled: isStream) {
-        try data.withUnsafeBytes { raw in
-            var offset = 0
-            while offset < raw.count {
+        guard let baseAddress = raw.baseAddress else { return }
+        var offset = 0
+        while offset < raw.count {
+            try context.check()
+            let chunkLength = min(64 * 1024, raw.count - offset)
+            let written: Int
+            #if canImport(Darwin)
+            written = Darwin.write(fd, baseAddress.advanced(by: offset), chunkLength)
+            #else
+            written = Glibc.write(fd, baseAddress.advanced(by: offset), chunkLength)
+            #endif
+            if written > 0 {
+                offset += written
+            } else if written < 0 && errno == EINTR {
                 try context.check()
-                let chunkLength = min(64 * 1024, raw.count - offset)
-                let written: Int
-                #if canImport(Darwin)
-                written = Darwin.write(fd, raw.baseAddress!.advanced(by: offset), chunkLength)
-                #else
-                written = Glibc.write(fd, raw.baseAddress!.advanced(by: offset), chunkLength)
-                #endif
-                if written > 0 {
-                    offset += written
-                } else if written < 0 && errno == EINTR {
-                    try context.check()
-                    continue
-                } else if written < 0 && isStream && (errno == EAGAIN || errno == EWOULDBLOCK) {
-                    try waitForDescriptor(fd, event: Int16(POLLOUT), context: context)
-                    continue
-                } else {
-                    throw FileIOError(message: "output I/O failure: failed writing output stream.")
-                }
+                continue
+            } else if written < 0 && isStream && (errno == EAGAIN || errno == EWOULDBLOCK) {
+                try waitForDescriptor(fd, event: Int16(POLLOUT), context: context)
+                continue
+            } else {
+                throw FileIOError(message: "output I/O failure: failed writing output stream.")
             }
         }
     }
 }
 
 private func writeOutputAtomically(_ data: Data, to path: String, overwrite: Bool, context: CommandExecutionContext) throws {
+    try writeOutputAtomically(to: path, overwrite: overwrite, context: context) { fd, isStream in
+        try writeAllDescriptor(fd, data: data, isStream: isStream, context: context)
+    }
+}
+
+private func writeOutputAtomically(
+    to path: String, overwrite: Bool, context: CommandExecutionContext,
+    writeBody: (Int32, Bool) throws -> Void
+) throws {
     try context.check()
     if path == "-" {
-        try writeAllDescriptor(STDOUT_FILENO, data: data, isStream: true, context: context)
+        try writeBody(STDOUT_FILENO, true)
         return
     }
     try preflightOutputDestination(path, overwrite: overwrite, context: context)
@@ -859,7 +876,7 @@ private func writeOutputAtomically(_ data: Data, to path: String, overwrite: Boo
         if fd >= 0 { _ = close(fd) }
         if !committed { _ = unlink(tempPath) }
     }
-    try writeAllDescriptor(fd, data: data, isStream: false, context: context)
+    try writeBody(fd, false)
     guard fsync(fd) == 0 else {
         throw FileIOError(message: "output I/O failure: failed synchronising temporary file.")
     }
@@ -1294,8 +1311,9 @@ private func readNetpbm(
 }
 
 private func writeNetpbm(
-    _ image: Image, format: CanonicalFormat, reservedBytes: Int, context: CommandExecutionContext
-) throws -> Data {
+    _ image: Image, format: CanonicalFormat, to path: String, overwrite: Bool,
+    reservedBytes: Int, context: CommandExecutionContext
+) throws -> Int {
     try context.check()
     let limits = try context.scopedLimits(reservedBytes: reservedBytes)
     let d = image.descriptor
@@ -1327,40 +1345,91 @@ private func writeNetpbm(
     let samples = try cliCheckedMultiply(pixels, components, limitError: true)
     let payloadBytes = try cliCheckedMultiply(samples, outBps, limitError: true)
     let totalBytes = try cliCheckedAdd(headerData.count, payloadBytes, limitError: true)
-    guard payloadBytes <= limits.maximumDecodedBytes, totalBytes <= limits.maximumMemoryBytes else {
+    let plane = d.planes[0]
+    let rowSamples = try cliCheckedMultiply(d.width, components, limitError: true)
+    let outputRowBytes = try cliCheckedMultiply(rowSamples, outBps, limitError: true)
+    // The complete payload remains bounded by the command's decoded-size limit;
+    // only the scratch allocation must fit beside the retained decoded image.
+    guard payloadBytes <= context.baseLimits.maximumDecodedBytes,
+          headerData.count < limits.maximumMemoryBytes,
+          outputRowBytes <= limits.maximumMemoryBytes - headerData.count else {
         throw CodecError(.resourceLimitExceeded, "Serialised Netpbm output exceeds --max-memory.")
     }
-    var output = Data()
-    output.reserveCapacity(totalBytes)
-    output.append(headerData)
-    let plane = d.planes[0]
-    try image.storage.withUnsafeBytes { raw in
-        for y in 0..<d.height {
-            try context.check()
-            for x in 0..<d.width {
-                let pixelOff = plane.offset + y * plane.rowBytes + x * plane.pixelStride
-                for c in 0..<components {
-                    let sOff = pixelOff + c * plane.sampleStride
-                    let sample: UInt16
-                    if srcBps == 1 {
-                        sample = UInt16(raw[sOff])
-                    } else if d.byteOrder == .littleEndian {
-                        sample = UInt16(raw[sOff]) | (UInt16(raw[sOff + 1]) << 8)
-                    } else {
-                        sample = (UInt16(raw[sOff]) << 8) | UInt16(raw[sOff + 1])
+    // Keep only a bounded group of rows beside the decoded image. An unusually
+    // wide image needs one complete row; ordinary images use at most 64 KiB.
+    let scratchBudget = min(limits.maximumMemoryBytes - headerData.count, max(64 * 1024, outputRowBytes))
+    let rowsPerBatch = min(d.height, scratchBudget / outputRowBytes)
+    let scratchBytes = try cliCheckedMultiply(rowsPerBatch, outputRowBytes, limitError: true)
+    var scratch = Data(count: scratchBytes)
+    let packed = plane.sampleStride == srcBps && plane.pixelStride == components * srcBps
+    try writeOutputAtomically(to: path, overwrite: overwrite, context: context) { fd, isStream in
+        try writeAllDescriptor(fd, data: headerData, isStream: isStream, context: context)
+        // Both borrows are synchronous and remain alive until all writes finish.
+        try scratch.withUnsafeMutableBytes { (destination: UnsafeMutableRawBufferPointer) in
+            try image.storage.withUnsafeBytes { raw in
+                var firstRow = 0
+                while firstRow < d.height {
+                    let rowCount = min(rowsPerBatch, d.height - firstRow)
+                    for batchRow in 0..<rowCount {
+                        try context.check()
+                        let sourceRow = plane.offset + (firstRow + batchRow) * plane.rowBytes
+                        let destinationRow = batchRow * outputRowBytes
+                        if packed && srcBps == outBps && (srcBps == 1 || d.byteOrder == .bigEndian) {
+                            // Copy only active samples; source row padding is never emitted.
+                            UnsafeMutableRawBufferPointer(rebasing: destination[destinationRow..<(destinationRow + outputRowBytes)])
+                                .copyMemory(from: UnsafeRawBufferPointer(rebasing: raw[sourceRow..<(sourceRow + outputRowBytes)]))
+                        } else if packed && srcBps == 2 && outBps == 2 && d.byteOrder == .littleEndian {
+                            // Netpbm stores wider samples most-significant byte first.
+                            // Every complete word is contained in the validated active
+                            // row; raw loads/stores also support unaligned row starts.
+                            // Exchange adjacent bytes without changing sample order.
+                            let wordBytes = outputRowBytes - outputRowBytes % MemoryLayout<UInt64>.size
+                            for offset in stride(from: 0, to: wordBytes, by: MemoryLayout<UInt64>.size) {
+                                let word = raw.loadUnaligned(fromByteOffset: sourceRow + offset, as: UInt64.self)
+                                let swapped = ((word & 0x00FF00FF00FF00FF) << 8)
+                                    | ((word >> 8) & 0x00FF00FF00FF00FF)
+                                destination.storeBytes(of: swapped, toByteOffset: destinationRow + offset, as: UInt64.self)
+                            }
+                            for offset in stride(from: wordBytes, to: outputRowBytes, by: 2) {
+                                destination[destinationRow + offset] = raw[sourceRow + offset + 1]
+                                destination[destinationRow + offset + 1] = raw[sourceRow + offset]
+                            }
+                        } else {
+                            var destinationOffset = destinationRow
+                            for x in 0..<d.width {
+                                let pixelOff = sourceRow + x * plane.pixelStride
+                                for c in 0..<components {
+                                    let sOff = pixelOff + c * plane.sampleStride
+                                    let sample: UInt16
+                                    if srcBps == 1 {
+                                        sample = UInt16(raw[sOff])
+                                    } else if d.byteOrder == .littleEndian {
+                                        sample = UInt16(raw[sOff]) | (UInt16(raw[sOff + 1]) << 8)
+                                    } else {
+                                        sample = (UInt16(raw[sOff]) << 8) | UInt16(raw[sOff + 1])
+                                    }
+                                    if outBps == 1 {
+                                        destination[destinationOffset] = UInt8(truncatingIfNeeded: sample)
+                                    } else {
+                                        destination[destinationOffset] = UInt8(sample >> 8)
+                                        destination[destinationOffset + 1] = UInt8(truncatingIfNeeded: sample)
+                                    }
+                                    destinationOffset += outBps
+                                }
+                            }
+                        }
                     }
-                    if outBps == 1 {
-                        output.append(UInt8(truncatingIfNeeded: sample))
-                    } else {
-                        output.append(UInt8(sample >> 8))
-                        output.append(UInt8(truncatingIfNeeded: sample))
-                    }
+                    let batchBytes = rowCount * outputRowBytes
+                    try writeAllDescriptor(
+                        fd, bytes: UnsafeRawBufferPointer(rebasing: destination[..<batchBytes]),
+                        isStream: isStream, context: context
+                    )
+                    firstRow += rowCount
                 }
             }
         }
     }
-    try context.check()
-    return output
+    return totalBytes
 }
 
 // MARK: - Asynchronous Codec Bridge
@@ -1711,12 +1780,16 @@ private func run() throws -> Int32 {
                 copyPolicy: copyPolicy, metadataPolicy: .preserve, progress: progressCallback
             )
             let decoder = try SwiftJLI.Decoder()
-            let info: JPEGInspection
+            let info: JPEGInspection?
             let decoded: DecodedImage
             do {
                 let inputCopy = data
-                info = try runAsync(context: context) {
-                    try decoder.inspectJPEG(inputCopy, options: decodeOptions)
+                if options.json {
+                    info = try runAsync(context: context) {
+                        try decoder.inspectJPEG(inputCopy, options: decodeOptions)
+                    }
+                } else {
+                    info = nil
                 }
                 decoded = try runAsync(context: context) {
                     try await decoder.decode(inputCopy, options: decodeOptions)
@@ -1727,21 +1800,25 @@ private func run() throws -> Int32 {
             let d = decoded.image.descriptor
             let report = decoded.report
             let retainedImageBytes = decoded.image.storage.byteCount
-            let outBytes: Data
+            let outputByteCount: Int
             switch targetFormat {
             case .nrrd:
-                outBytes = try writeNRRD(decoded.image, reservedBytes: retainedImageBytes, context: context)
+                let outBytes = try writeNRRD(decoded.image, reservedBytes: retainedImageBytes, context: context)
+                try writeOutputAtomically(outBytes, to: outputPath, overwrite: options.overwrite, context: context)
+                outputByteCount = outBytes.count
             case .pgm, .ppm, .pnm:
-                outBytes = try writeNetpbm(decoded.image, format: targetFormat, reservedBytes: retainedImageBytes, context: context)
+                outputByteCount = try writeNetpbm(
+                    decoded.image, format: targetFormat, to: outputPath, overwrite: options.overwrite,
+                    reservedBytes: retainedImageBytes, context: context
+                )
             case .jpeg:
                 throw CodecError(.unsupportedFormat, "decode requires an uncompressed output format.")
             }
-            try writeOutputAtomically(outBytes, to: outputPath, overwrite: options.overwrite, context: context)
             let fid = describeFidelity(report.fidelity)
-            try diagnostic(3, "decoded \(d.width)x\(d.height) bits=\(d.meaningfulBits) to \(targetFormat.rawValue) (\(outBytes.count) bytes) backend=\(describeBackend(report.backend))")
+            try diagnostic(3, "decoded \(d.width)x\(d.height) bits=\(d.meaningfulBits) to \(targetFormat.rawValue) (\(outputByteCount) bytes) backend=\(describeBackend(report.backend))")
             try diagnostic(4, "elapsed seconds: \(ProcessInfo.processInfo.systemUptime - start)")
             try diagnostic(5, "decode committed atomically; copyEvents=\(report.copyEvents.count)")
-            if options.json {
+            if let info {
                 let jsonReport: [String: Any] = [
                     "tool": tool,
                     "version": version,
@@ -1758,7 +1835,7 @@ private func run() throws -> Int32 {
                     "storageBits": d.storageBits,
                     "backend": describeBackend(report.backend),
                     "fallbackReason": report.fallbackReason ?? NSNull(),
-                    "outputBytes": outBytes.count,
+                    "outputBytes": outputByteCount,
                     "copyEventCount": report.copyEvents.count,
                     "pixelAllocationCount": report.pixelAllocationCount ?? NSNull(),
                     "peakPixelBytes": report.peakPixelBytes ?? NSNull(),

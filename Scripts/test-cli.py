@@ -241,6 +241,42 @@ def main():
                     m_rt, w_rt, h_rt, mv_rt, samples_rt = parse_netpbm(rt_pnm.read_bytes())
                     assert m_rt == ('P5' if comps == 1 else 'P6')
                     assert (w_rt, h_rt, mv_rt) == (11, 9, orig_mv) and samples_rt == orig_samples
+                    # Exact container bytes catch endian, row-boundary and header/payload errors.
+                    assert rt_pnm.read_bytes() == src_pnm.read_bytes()
+                    # The JSON path performs a separate inspection for codingProcess;
+                    # ordinary decoding must produce the same samples without that pass.
+                    rt_json_pnm = temp/f'rt_json_{comps}c_{bits}b.pnm'
+                    rt_json = json.loads(cli('decode','-i',str(rt_jpg),'-o',str(rt_json_pnm),'--json').stderr)
+                    assert rt_json['codingProcess'] == 'predictive'
+                    assert rt_json['outputBytes'] == len(src_pnm.read_bytes())
+                    assert rt_json_pnm.read_bytes() == rt_pnm.read_bytes()
+
+            # Streaming Netpbm output crosses 64 KiB batches, ends on a partial
+            # batch and supports a row wider than the ordinary scratch buffer.
+            for comps, bits, width, height in [
+                (1, 8, 257, 259), (1, 12, 257, 259), (1, 16, 257, 259),
+                (3, 8, 129, 173), (3, 12, 129, 173), (3, 16, 129, 173),
+                (1, 16, 32769, 3)
+            ]:
+                source_bytes = make_netpbm(width, height, comps, bits)
+                # Leading whitespace-valued samples remain payload, never header.
+                header_end = source_bytes.index(b'\n', source_bytes.index(b'\n') + 1)
+                header_end = source_bytes.index(b'\n', header_end + 1) + 1
+                payload_prefix = b'\x09\x0a\x20\xff\x00\x0d' if bits == 8 else b'\x09\x01\x0a\x02\x00\x20'
+                source_bytes = source_bytes[:header_end] + payload_prefix + source_bytes[header_end + 6:]
+                stream_src = temp/f'stream_{comps}c_{bits}b_{width}.pnm'
+                stream_jpg = stream_src.with_suffix('.jpg')
+                stream_out = temp/f'stream_out_{comps}c_{bits}b_{width}.pnm'
+                stream_src.write_bytes(source_bytes)
+                cli('encode','-i',str(stream_src),'-o',str(stream_jpg))
+                cli('decode','-i',str(stream_jpg),'-o',str(stream_out))
+                assert stream_out.read_bytes() == source_bytes
+                streamed = run_bytes([binary,'decode','-i',stream_jpg,'-o','-','--output-format','pnm'])
+                assert streamed.stdout == source_bytes and not streamed.stderr
+            cli('decode','-i',str(stream_jpg),'-o',str(stream_out),expected=6)
+            assert stream_out.read_bytes() == source_bytes
+            cli('decode','-i',str(stream_jpg),'-o',str(stream_out),'--overwrite')
+            assert stream_out.read_bytes() == source_bytes
 
             pgm_12 = temp/'in12.pgm'
             pgm_12.write_bytes(make_netpbm(19, 15, 1, 12))
@@ -411,22 +447,22 @@ def main():
             big_nrrd.write_bytes(make_nrrd_u16(512, 512, 'little')) # 512 KiB > OS pipe capacity (16-64 KiB)
             big_jpg = temp/'big.jpg'
             cli('encode','-i',str(big_nrrd),'-o',str(big_jpg))
-            wr_fd, ww_fd = os.pipe()
-            try:
-                w_proc = subprocess.Popen(
-                    [str(binary),'decode','-i',str(big_jpg),'-o','-','--output-format','nrrd','--timeout','0.05'],
-                     stdout=ww_fd, stderr=subprocess.PIPE, text=True
-                )
-                os.close(ww_fd); ww_fd = -1
-                w_rc = w_proc.wait(timeout=5)
-                w_err = w_proc.stderr.read() if w_proc.stderr else ''
-            finally:
-                if ww_fd >= 0: os.close(ww_fd)
-                os.close(wr_fd)
-            report['commands'].append({'argv':[str(binary),'decode','-i',str(big_jpg),'-o','-','--output-format','nrrd','--timeout','0.05'],
-                                       'condition':'timeout during stalled pipe write','exit_code':w_rc,
-                                       'expected_exit_code':5,'stderr':w_err});save()
-            assert w_rc == 5, (w_rc, w_err)
+            for stalled_format in ['nrrd', 'pgm']:
+                stalled_argv = [str(binary),'decode','-i',str(big_jpg),'-o','-',
+                                '--output-format',stalled_format,'--timeout','0.05']
+                wr_fd, ww_fd = os.pipe()
+                try:
+                    w_proc = subprocess.Popen(stalled_argv, stdout=ww_fd, stderr=subprocess.PIPE, text=True)
+                    os.close(ww_fd); ww_fd = -1
+                    w_rc = w_proc.wait(timeout=5)
+                    w_err = w_proc.stderr.read() if w_proc.stderr else ''
+                finally:
+                    if ww_fd >= 0: os.close(ww_fd)
+                    os.close(wr_fd)
+                report['commands'].append({'argv':stalled_argv,
+                                           'condition':'timeout during stalled pipe write','exit_code':w_rc,
+                                           'expected_exit_code':5,'stderr':w_err});save()
+                assert w_rc == 5, (w_rc, w_err)
 
             # Codec deadline sweep (5/10/15 ms twice) on normal 512x512 RGB progressive scalar encode:
             # allow completed-before-deadline exit 0 (with valid JPEG output) or deadline exit 5 (with no output),

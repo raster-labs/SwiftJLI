@@ -678,6 +678,26 @@ struct JLIDecoder: Sendable {
         let half = Int32(1 << (precision - 1 - pt))   // predictor for the very first sample
         let count = w * h
 
+        // The public greyscale destination is already the final allocation.
+        // Keep prediction history in one row instead of a second full image;
+        // the history stays in the point-transformed domain, before output
+        // clamping, so this also preserves malformed-stream arithmetic.
+        if nc == 1, let borrowed = borrowedDestination {
+            if restartInterval > 0, restartInterval % w != 0 {
+                throw JLIError.unsupportedJPEGFeature(
+                    "lossless restart interval \(restartInterval) not a multiple of "
+                    + "samples-per-row (\(w))")
+            }
+            try Self.losslessGrayInto(
+                borrowed, width: w, height: h, predictor: predictor, half: half,
+                table: tables[0], reader: &reader, pointTransform: pt,
+                segmentRows: restartInterval > 0 ? restartInterval / w : h)
+            let format = configuration.outputPixelFormat ?? (borrowed.bytesPerSample == 1 ? .uint8 : .uint16)
+            return try JLIImage(geometryOnlyWidth: w, height: h, pixelFormat: format,
+                colorModel: configuration.outputColorModel ?? .grayscale,
+                iccProfile: iccProfile, exif: exif)
+        }
+
         // One flat raw buffer holds all component planes (plane c at offset
         // c·w·h): the previous nested-array form paid a retain/release plus an
         // outer-array _modify and inner-buffer uniqueness check on EVERY sample
@@ -933,6 +953,95 @@ struct JLIDecoder: Sendable {
                        px + blockBase + y * 8,
                        runW * MemoryLayout<Float>.size)
             }
+        }
+    }
+
+    /// Synchronous borrowed-output scan. Only one row of predictor history is
+    /// live; `aboveLeft` saves the previous-row sample before its slot is reused.
+    /// Every slot is written on the first row of a restart segment before any
+    /// subsequent row reads it. Neither pointer escapes this call.
+    private static func losslessGrayInto(
+        _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
+        predictor: Int, half: Int32, table: HuffmanTable, reader: inout BitReader,
+        pointTransform pt: Int, segmentRows: Int
+    ) throws {
+        let bps = destination.bytesPerSample
+        guard bps == 1 || bps == 2, destination.rowBytes >= w * bps else {
+            throw JLIError.decodingFailed("invalid lossless destination layout")
+        }
+        let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: destination.rowBytes)
+        let (needed, overflow2) = rowOffset.addingReportingOverflow(w * bps)
+        guard !overflow1, !overflow2, needed <= destination.bytes.count,
+              let output = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+            throw JLIError.decodingFailed("lossless destination is too small")
+        }
+        let history = UnsafeMutableBufferPointer<Int32>.allocate(capacity: w)
+        defer { history.deallocate() }
+        // w >= 1 has already been validated by decodeLossless.
+        guard let row = history.baseAddress else { return }
+        for y in 0..<h {
+            try NativeOperation.check()
+            let segmentY = y % segmentRows
+            if y > 0, segmentY == 0 {
+                try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+            }
+            let outputRow = output + y * destination.rowBytes
+            if predictor == 1 {
+                // The left predictor only needs the preceding row's first
+                // sample. Avoid all other history loads/stores in this common
+                // scan mode, while retaining the identical entropy reader.
+                var value = segmentY == 0 ? half : row[0]
+                for x in 0..<w {
+                    value = (value + (try losslessDifference(table, &reader))) & 0xFFFF
+                    if x == 0 { row[0] = value }
+                    writeLosslessSample(value, outputRow, x, bps, pt)
+                }
+            } else {
+                var left = half, aboveLeft: Int32 = 0
+                for x in 0..<w {
+                    let above = segmentY == 0 ? half : row[x]
+                    let predicted: Int32
+                    if x == 0 { predicted = above }
+                    else if segmentY == 0 { predicted = left }
+                    else {
+                        switch predictor {
+                        case 2: predicted = above
+                        case 3: predicted = aboveLeft
+                        case 4: predicted = left + above - aboveLeft
+                        case 5: predicted = left + ((above - aboveLeft) >> 1)
+                        case 6: predicted = above + ((left - aboveLeft) >> 1)
+                        default: predicted = (left + above) >> 1
+                        }
+                    }
+                    let value = (predicted + (try losslessDifference(table, &reader))) & 0xFFFF
+                    row[x] = value
+                    left = value
+                    aboveLeft = above
+                    writeLosslessSample(value, outputRow, x, bps, pt)
+                }
+            }
+        }
+    }
+
+    @inline(__always)
+    private static func losslessDifference(_ table: HuffmanTable, _ reader: inout BitReader) throws -> Int32 {
+        if let difference = reader.fastDecodeLosslessDifference(table) { return difference }
+        let category = Int(try HuffmanDecoder.decodeSymbol(from: &reader, table: table))
+        if category == 0 { return 0 }
+        if category == 16 { return -32768 }
+        return try HuffmanDecoder.decodeValue(from: &reader, category: category)
+    }
+
+    @inline(__always)
+    private static func writeLosslessSample(
+        _ value: Int32, _ output: UnsafeMutablePointer<UInt8>, _ x: Int, _ bps: Int, _ pt: Int
+    ) {
+        if bps == 1 {
+            output[x] = UInt8(clamping: Int(value) << pt)
+        } else {
+            let shifted = UInt16(clamping: Int(value) << pt)
+            output[x * 2] = UInt8(truncatingIfNeeded: shifted)
+            output[x * 2 + 1] = UInt8(shifted >> 8)
         }
     }
 

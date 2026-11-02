@@ -237,7 +237,29 @@ struct BitReader {
         return table.lookaheadSymbol[peek]
     }
 
-    /// Best-effort buffer fill used only by ``fastDecodeSymbol(_:)``. Tries the
+    /// Resolves a lossless category and its magnitude together when both are
+    /// already buffered. This avoids a separate bit-reader call per sample.
+    /// A miss consumes no bits: the ordinary symbol/value path retains all
+    /// long-code, marker, truncated-input and invalid-category handling.
+    @inline(__always)
+    mutating func fastDecodeLosslessDifference(_ table: HuffmanTable) -> Int32? {
+        if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+        guard bitsAvailable >= 8 else { return nil }
+        let peek = Int((bitBuffer >> (bitsAvailable - 8)) & 0xFF)
+        let length = Int(table.lookaheadLength[peek])
+        guard length != 0 else { return nil }
+        let category = Int(table.lookaheadSymbol[peek])
+        if category == 0 || category == 16 {
+            bitsAvailable -= length
+            return category == 0 ? 0 : -32768
+        }
+        guard category < 16, bitsAvailable >= length + category else { return nil }
+        bitsAvailable -= length + category
+        let magnitude = Int32((bitBuffer >> bitsAvailable) & ((1 << category) - 1))
+        return magnitude < (1 << (category - 1)) ? magnitude - ((1 << category) - 1) : magnitude
+    }
+
+    /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,
     /// but **stops without throwing** when it reaches a marker (`0xFF` not
