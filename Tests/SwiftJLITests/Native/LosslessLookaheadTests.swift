@@ -104,4 +104,32 @@ import Testing
         } } }
         #expect(lookupScans > 0)
     }
+
+    @Test func lookupRejectsInvalidStorageBeforeWriting() throws {
+        let width = 129, height = 129
+        let source = (0..<(width * height)).map { index in
+            UInt8(truncatingIfNeeded: index * 17 + (index / width) * 31)
+        }
+        let image = try JLIImage(width: width, height: height,
+            pixelFormat: .uint8, colorModel: .grayscale, data: source)
+        let jpeg = try JLIEncoder().encode(image, configuration: .init(lossless: true))
+        var parser = MarkerReader(data: jpeg)
+        let parsed = try parser.parse()
+        let table = try #require(parsed.scans.first?.dcTables[0])
+        #expect(LosslessLookahead(table: table, sampleCount: width * height) != nil)
+        for (bps, stride, count) in [
+            (0, width, width * height), (3, width * 3, width * height * 3),
+            (1, width - 1, width * height), (2, width * 2 - 1, width * height * 2),
+            (1, width, width * height - 1), (2, width * 2, width * height * 2 - 1)
+        ] {
+            var storage = [UInt8](repeating: 0xA5, count: count)
+            #expect(throws: JLIError.self) {
+                try storage.withUnsafeMutableBytes { raw in
+                    try JLIDecoder().decodeSharedLossless(parsed, into: .init(
+                        bytes: raw, rowBytes: stride, bytesPerSample: bps))
+                }
+            }
+            #expect(storage.allSatisfy { $0 == 0xA5 })
+        }
+    }
 }

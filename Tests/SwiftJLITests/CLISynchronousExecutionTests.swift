@@ -62,6 +62,50 @@ import Testing
         try NativeOperation.$current.withValue(.init(seconds: 5)) { try NativeOperation.check() }
     }
 
+    @Test func nestedHostScopeRetainsTaskCancellationForJoinedWorkers() async throws {
+        let entered = DispatchSemaphore(value: 0)
+        let state = Mutex((active: 0, started: 0, noTask: false))
+        let task = Task.detached {
+            defer { entered.signal() }
+            try await NativeOperation.withCancellation {
+                try NativeOperation.withSynchronousCancellation({}) {
+                    let context = NativeOperation(seconds: 5, maximumWorkers: 2)
+                    let finished = DispatchSemaphore(value: 0)
+                    let result = Mutex<Result<Void, any Error>?>(nil)
+                    // Every worker runs outside a Swift task, so Task.checkCancellation
+                    // cannot conceal a lost inherited cancellation token.
+                    let host = Thread {
+                        let outcome = Result {
+                            try NativeOperation.$current.withValue(context) {
+                                try NativeOperation.perform(iterations: 2) { _ in
+                                    let noTask = withUnsafeCurrentTask { $0 == nil }
+                                    state.withLock { $0.active += 1; $0.started += 1; $0.noTask = $0.noTask || noTask }
+                                    defer { state.withLock { $0.active -= 1 } }
+                                    entered.signal()
+                                    while true { try NativeOperation.check(); Thread.sleep(forTimeInterval: 0.001) }
+                                }
+                            }
+                        }
+                        result.withLock { $0 = outcome }
+                        finished.signal()
+                    }
+                    host.start()
+                    try #require(finished.wait(timeout: .now() + 6) == .success)
+                    let outcome = try #require(result.withLock { $0 })
+                    try outcome.get()
+                }
+            }
+        }
+        // A dedicated thread avoids depending on a free cooperative-executor lane
+        // while the synchronous host waits for its explicitly joined workers.
+        let canceller = Thread { entered.wait(); task.cancel() }
+        canceller.qualityOfService = .userInitiated
+        canceller.start()
+        await #expect(throws: CancellationError.self) { try await task.value }
+        let observed = state.withLock { $0 }
+        #expect(observed.started > 0 && observed.noTask && observed.active == 0)
+    }
+
     @Test func hostDeadlineAndMalformedCategoriesRemainDistinct() throws {
         let decoder = try Decoder()
         #expect(throws: CancellationError.self) {
