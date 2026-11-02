@@ -1,6 +1,16 @@
 # Migration acceptance ledger — 15 October 2026
 
 **Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
+
+**2 November 2026 performance follow-up:** source `d1cd30ace21e9317402b54918b3fef55d880c4d5`
+reduces greyscale lossless predictor storage and streams bounded Netpbm output.
+Matched Swift 6.4.2 builds, exact-sample comparisons, 364 release/ASan tests,
+237 release/ASan CLI checks, 22 focused TSan tests and independent lossless
+interoperability are recorded in [DjpegPerformance20261102](Qualification/DjpegPerformance20261102/README.md).
+Two large ramp cases beat djpeg in both rounds; other latency and memory gaps
+remain. These are advisory measurements on one working host, not a universal
+speed claim or a replacement for the existing release/platform gates below.
+
 [PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged on 9 October 2026
 as `a967d27bc5756fab8b7fe9db6eb302ff0645c362`. Its tested source revision is
 `a1920c7f0ea0ec11009d3d312d680592ac9700e6`; source, tests, package, scripts and
