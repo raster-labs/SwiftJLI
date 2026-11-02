@@ -1,0 +1,74 @@
+{
+  "startedUTC": "2026-11-02T14:27:58.058864+00:00",
+  "commands": [
+    {
+      "name": "cli-original",
+      "command": [
+        "python3",
+        "Scripts/benchmark-djpeg.py",
+        "--baseline",
+        "/private/tmp/swiftjli-round2-final-baseline-build/out/Products/Release/swiftjli-cli",
+        "--candidate",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "--fixtures",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory",
+        "--output",
+        "/private/tmp/swiftjli-round2-evidence/cli-original.json"
+      ],
+      "startedUTC": "2026-11-02T14:27:58.059067+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:28:08.704853+00:00"
+    },
+    {
+      "name": "cli-patterns",
+      "command": [
+        "python3",
+        "Scripts/benchmark-djpeg.py",
+        "--baseline",
+        "/private/tmp/swiftjli-round2-final-baseline-build/out/Products/Release/swiftjli-cli",
+        "--candidate",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "--matrix",
+        "lossless-patterns",
+        "--fixtures",
+        "/private/tmp/swiftjli-native-matrix-fixtures",
+        "--output",
+        "/private/tmp/swiftjli-round2-evidence/cli-patterns.json"
+      ],
+      "startedUTC": "2026-11-02T14:28:08.858463+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:29:00.186168+00:00"
+    },
+    {
+      "name": "native-lossless",
+      "command": [
+        "python3",
+        "/private/tmp/swiftjli-round2-evidence/run-native-lossless.py"
+      ],
+      "startedUTC": "2026-11-02T14:29:00.380089+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:29:29.399539+00:00"
+    },
+    {
+      "name": "native-dct",
+      "command": [
+        "python3",
+        "/private/tmp/swiftjli-round2-final-dct-benchmark.py",
+        "--baseline-products",
+        "/private/tmp/swiftjli-round2-final-baseline-build/out/Products/Release",
+        "--candidate-products",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release",
+        "--output",
+        "/private/tmp/swiftjli-round2-evidence/native-dct.json"
+      ],
+      "startedUTC": "2026-11-02T14:29:29.549223+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:30:07.065269+00:00"
+    }
+  ],
+  "finishedUTC": "2026-11-02T14:30:07.212650+00:00"
+}

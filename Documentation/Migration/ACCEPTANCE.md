@@ -2,6 +2,22 @@
 
 **Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
 
+**2 November 2026 second performance follow-up:** production source
+`b31999bd4246507fc9c7f18cd770b411faea501d`, with additional regression tests at
+`7fe1c7394c3238441b2ef0f068698e766914cebe`, adds scoped DCT coefficient decoding,
+bounded entropy lookups and synchronous CLI host adapters. Final evidence records
+378 release/ASan tests, 242 release/ASan CLI checks, 35 focused TSan tests,
+210 lossless oracle cases per direction and 48 DCT oracle profiles in both
+directions. The release binary and library object are identical before and after
+the test-only follow-up. Four large lossless cases beat djpeg 3.2.1 by more than
+5% in both rounds; only the two ramp cases meet that criterion against the exact
+3.2.0 comparator from the earlier report. The original mixed case, small CLI
+inputs and memory use still favour djpeg; two tiny native cases regress by less
+than one microsecond. Full results, exclusions and source/compiler pins are in
+[DjpegPerformanceRound2_20261102](Qualification/DjpegPerformanceRound2_20261102/README.md).
+These local measurements do not establish a universal speed win or close the
+existing platform/stable-release gates.
+
 **2 November 2026 performance follow-up:** source `d1cd30ace21e9317402b54918b3fef55d880c4d5`
 reduces greyscale lossless predictor storage and streams bounded Netpbm output.
 Matched Swift 6.4.2 builds, exact-sample comparisons, 364 release/ASan tests,

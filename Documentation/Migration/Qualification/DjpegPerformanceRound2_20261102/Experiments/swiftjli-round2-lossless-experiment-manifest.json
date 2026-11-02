@@ -1,0 +1,816 @@
+{
+  "baselineRevision": "7f8c1499126c157871a309ffd519a6dc7b6e0c72",
+  "contractVersion": "0.10.0",
+  "compiler": "Apple Swift6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)",
+  "platform": "arm64-apple-macos26.0; macOS SDK27.2",
+  "ownedPaths": [
+    "Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift",
+    "Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift (LosslessLookahead overload only)",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift (borrowed lossless dispatch and separate lookup kernel only)"
+  ],
+  "experiments": [
+    {
+      "name": "optional_table",
+      "outcome": "Rejected: significant ramp/noise regressions despite stronger mixed gain.",
+      "resultPath": "/private/tmp/swiftjli-round2-lossless-first/swiftjli-round2-lossless-matrix-results.json",
+      "resultSHA256": "0cf52fd4cd03602ea1d57b30e95ea9c36fd92b207f840cccd9ff9257e3419b9b",
+      "caseSummary": {
+        "flat-19": {
+          "baselineMeanOfRoundMediansMS": 0.0085625,
+          "candidateMeanOfRoundMediansMS": 0.008906,
+          "changePercent": 4.011678832116794,
+          "roundChangePercent": [
+            -5.733432613551736,
+            14.144482163063522
+          ]
+        },
+        "flat-512": {
+          "baselineMeanOfRoundMediansMS": 0.5435414999999999,
+          "candidateMeanOfRoundMediansMS": 0.50522925,
+          "changePercent": -7.048633820968586,
+          "roundChangePercent": [
+            -6.9469869390261785,
+            -7.148557747121198
+          ]
+        },
+        "flat-2048": {
+          "baselineMeanOfRoundMediansMS": 8.07457275,
+          "candidateMeanOfRoundMediansMS": 7.39639575,
+          "changePercent": -8.398921168925,
+          "roundChangePercent": [
+            -8.373222988332607,
+            -8.424610002313637
+          ]
+        },
+        "flat-3072": {
+          "baselineMeanOfRoundMediansMS": 17.9856565,
+          "candidateMeanOfRoundMediansMS": 16.516448,
+          "changePercent": -8.168778826616641,
+          "roundChangePercent": [
+            -7.819667592059054,
+            -8.518458689687147
+          ]
+        },
+        "ramp-19": {
+          "baselineMeanOfRoundMediansMS": 0.0081665,
+          "candidateMeanOfRoundMediansMS": 0.008479500000000001,
+          "changePercent": 3.8327312802302282,
+          "roundChangePercent": [
+            3.282751949700735,
+            4.396899224806194
+          ]
+        },
+        "ramp-512": {
+          "baselineMeanOfRoundMediansMS": 0.70744775,
+          "candidateMeanOfRoundMediansMS": 1.0209584999999999,
+          "changePercent": 44.31574628656318,
+          "roundChangePercent": [
+            61.425847165599265,
+            27.384585747500758
+          ]
+        },
+        "ramp-2048": {
+          "baselineMeanOfRoundMediansMS": 10.810344,
+          "candidateMeanOfRoundMediansMS": 11.4183855,
+          "changePercent": 5.624626746382888,
+          "roundChangePercent": [
+            5.629632890423175,
+            5.619639063063087
+          ]
+        },
+        "ramp-3072": {
+          "baselineMeanOfRoundMediansMS": 22.91171875,
+          "candidateMeanOfRoundMediansMS": 31.135541999999997,
+          "changePercent": 35.89352391993725,
+          "roundChangePercent": [
+            35.93734030971461,
+            35.849730670791025
+          ]
+        },
+        "noise-19": {
+          "baselineMeanOfRoundMediansMS": 0.00851025,
+          "candidateMeanOfRoundMediansMS": 0.008812500000000001,
+          "changePercent": 3.5515995417291,
+          "roundChangePercent": [
+            4.154441966905287,
+            2.9472321901288456
+          ]
+        },
+        "noise-512": {
+          "baselineMeanOfRoundMediansMS": 2.38845875,
+          "candidateMeanOfRoundMediansMS": 2.60163525,
+          "changePercent": 8.925274510183613,
+          "roundChangePercent": [
+            9.56303417288833,
+            8.282219228376908
+          ]
+        },
+        "noise-2048": {
+          "baselineMeanOfRoundMediansMS": 37.17632325,
+          "candidateMeanOfRoundMediansMS": 40.536885749999996,
+          "changePercent": 9.039523562890238,
+          "roundChangePercent": [
+            10.048318766210196,
+            8.035919879705599
+          ]
+        },
+        "noise-3072": {
+          "baselineMeanOfRoundMediansMS": 83.787396,
+          "candidateMeanOfRoundMediansMS": 91.358531,
+          "changePercent": 9.03612638826965,
+          "roundChangePercent": [
+            9.07157948483588,
+            9.0005177325321
+          ]
+        },
+        "mixed-19": {
+          "baselineMeanOfRoundMediansMS": 0.0079585,
+          "candidateMeanOfRoundMediansMS": 0.00817725,
+          "changePercent": 2.748633536470435,
+          "roundChangePercent": [
+            2.6131094122070264,
+            2.8848576467624065
+          ]
+        },
+        "mixed-512": {
+          "baselineMeanOfRoundMediansMS": 1.99766675,
+          "candidateMeanOfRoundMediansMS": 0.96624975,
+          "changePercent": -51.631084113503924,
+          "roundChangePercent": [
+            -64.31541867962392,
+            -25.446220219548444
+          ]
+        },
+        "mixed-2048": {
+          "baselineMeanOfRoundMediansMS": 19.58359375,
+          "candidateMeanOfRoundMediansMS": 14.58321875,
+          "changePercent": -25.53349024614033,
+          "roundChangePercent": [
+            -26.173936544311015,
+            -24.886146840792843
+          ]
+        },
+        "mixed-3072": {
+          "baselineMeanOfRoundMediansMS": 42.93427075,
+          "candidateMeanOfRoundMediansMS": 32.644896,
+          "changePercent": -23.965411710177932,
+          "roundChangePercent": [
+            -24.328236171097185,
+            -23.603698926975735
+          ]
+        }
+      }
+    },
+    {
+      "name": "generic_strategy",
+      "outcome": "Rejected: generic row-loop strategy regressed scalar cases.",
+      "resultPath": "/private/tmp/swiftjli-round2-lossless-generic/swiftjli-round2-lossless-matrix-results.json",
+      "resultSHA256": "1efce95c91116f8a628a2d9a1b8cfb3eeb26e89c719bf642259e22f0614d0017",
+      "caseSummary": {
+        "flat-19": {
+          "baselineMeanOfRoundMediansMS": 0.00832275,
+          "candidateMeanOfRoundMediansMS": 0.00812475,
+          "changePercent": -2.3790213571235452,
+          "roundChangePercent": [
+            -6.324456902592878,
+            1.7999628873631268
+          ]
+        },
+        "flat-512": {
+          "baselineMeanOfRoundMediansMS": 0.54308325,
+          "candidateMeanOfRoundMediansMS": 0.73022925,
+          "changePercent": 34.4599101518966,
+          "roundChangePercent": [
+            35.31226611226612,
+            33.61367895839125
+          ]
+        },
+        "flat-2048": {
+          "baselineMeanOfRoundMediansMS": 8.042416750000001,
+          "candidateMeanOfRoundMediansMS": 10.91967725,
+          "changePercent": 35.776068182490015,
+          "roundChangePercent": [
+            35.92465007419641,
+            35.62473132630355
+          ]
+        },
+        "flat-3072": {
+          "baselineMeanOfRoundMediansMS": 17.952343750000004,
+          "candidateMeanOfRoundMediansMS": 24.2250935,
+          "changePercent": 34.94111876060748,
+          "roundChangePercent": [
+            33.57166172552739,
+            36.341093065816835
+          ]
+        },
+        "ramp-19": {
+          "baselineMeanOfRoundMediansMS": 0.00875,
+          "candidateMeanOfRoundMediansMS": 0.0085415,
+          "changePercent": -2.382857142857142,
+          "roundChangePercent": [
+            -14.467886579233847,
+            12.457826723534282
+          ]
+        },
+        "ramp-512": {
+          "baselineMeanOfRoundMediansMS": 0.71443725,
+          "candidateMeanOfRoundMediansMS": 0.8404372499999999,
+          "changePercent": 17.63625846776604,
+          "roundChangePercent": [
+            19.420901316684414,
+            15.87662739287734
+          ]
+        },
+        "ramp-2048": {
+          "baselineMeanOfRoundMediansMS": 10.867968999999999,
+          "candidateMeanOfRoundMediansMS": 13.44800025,
+          "changePercent": 23.73977373325229,
+          "roundChangePercent": [
+            23.82377375138951,
+            23.65529070471599
+          ]
+        },
+        "ramp-3072": {
+          "baselineMeanOfRoundMediansMS": 22.9153855,
+          "candidateMeanOfRoundMediansMS": 28.571375000000003,
+          "changePercent": 24.682061316402493,
+          "roundChangePercent": [
+            24.906574870912213,
+            24.461819073090794
+          ]
+        },
+        "noise-19": {
+          "baselineMeanOfRoundMediansMS": 0.008448,
+          "candidateMeanOfRoundMediansMS": 0.00860425,
+          "changePercent": 1.8495501893939448,
+          "roundChangePercent": [
+            0.23710386305806352,
+            3.5393939393939533
+          ]
+        },
+        "noise-512": {
+          "baselineMeanOfRoundMediansMS": 2.36758325,
+          "candidateMeanOfRoundMediansMS": 2.6408645,
+          "changePercent": 11.54262474191774,
+          "roundChangePercent": [
+            10.668975884176435,
+            12.424429778200064
+          ]
+        },
+        "noise-2048": {
+          "baselineMeanOfRoundMediansMS": 37.59279175,
+          "candidateMeanOfRoundMediansMS": 42.031302,
+          "changePercent": 11.806812006719337,
+          "roundChangePercent": [
+            12.52129930599384,
+            11.098621877144165
+          ]
+        },
+        "noise-3072": {
+          "baselineMeanOfRoundMediansMS": 83.682833,
+          "candidateMeanOfRoundMediansMS": 94.10759350000001,
+          "changePercent": 12.45746603726956,
+          "roundChangePercent": [
+            12.086837252837213,
+            12.82851008415886
+          ]
+        },
+        "mixed-19": {
+          "baselineMeanOfRoundMediansMS": 0.007906,
+          "candidateMeanOfRoundMediansMS": 0.00795825,
+          "changePercent": 0.660890462939534,
+          "roundChangePercent": [
+            -1.059619558279068,
+            2.349918536157425
+          ]
+        },
+        "mixed-512": {
+          "baselineMeanOfRoundMediansMS": 1.27906225,
+          "candidateMeanOfRoundMediansMS": 1.0963957500000001,
+          "changePercent": -14.281283025904312,
+          "roundChangePercent": [
+            -16.18440541582993,
+            -12.298150677441011
+          ]
+        },
+        "mixed-2048": {
+          "baselineMeanOfRoundMediansMS": 19.537021,
+          "candidateMeanOfRoundMediansMS": 16.6901145,
+          "changePercent": -14.571855658035071,
+          "roundChangePercent": [
+            -15.179941135416241,
+            -13.95445531920666
+          ]
+        },
+        "mixed-3072": {
+          "baselineMeanOfRoundMediansMS": 42.99448975,
+          "candidateMeanOfRoundMediansMS": 37.30933325,
+          "changePercent": -13.222988650539802,
+          "roundChangePercent": [
+            -13.409142883182923,
+            -13.035932467554323
+          ]
+        }
+      }
+    },
+    {
+      "name": "separate_kernels",
+      "outcome": "Rejected: original scalar source still lost caller specialisation.",
+      "resultPath": "/private/tmp/swiftjli-round2-lossless-separate-kernel/swiftjli-round2-lossless-matrix-results.json",
+      "resultSHA256": "dbcec964a9515f3b1648816a0f4611615af4e27649d2f9e143306ca28e4588c2",
+      "caseSummary": {
+        "flat-19": {
+          "baselineMeanOfRoundMediansMS": 0.008458,
+          "candidateMeanOfRoundMediansMS": 0.009552,
+          "changePercent": 12.934499881768735,
+          "roundChangePercent": [
+            20.816035288012458,
+            6.336880973066883
+          ]
+        },
+        "flat-512": {
+          "baselineMeanOfRoundMediansMS": 0.54541675,
+          "candidateMeanOfRoundMediansMS": 0.65138525,
+          "changePercent": 19.428904594514208,
+          "roundChangePercent": [
+            21.588470623648725,
+            17.193801978203194
+          ]
+        },
+        "flat-2048": {
+          "baselineMeanOfRoundMediansMS": 8.054885500000001,
+          "candidateMeanOfRoundMediansMS": 10.09661475,
+          "changePercent": 25.347712888035456,
+          "roundChangePercent": [
+            26.28787846409171,
+            24.40352402354531
+          ]
+        },
+        "flat-3072": {
+          "baselineMeanOfRoundMediansMS": 17.907208250000004,
+          "candidateMeanOfRoundMediansMS": 22.69205225,
+          "changePercent": 26.7202119571039,
+          "roundChangePercent": [
+            28.88424585417213,
+            24.572336215919233
+          ]
+        },
+        "ramp-19": {
+          "baselineMeanOfRoundMediansMS": 0.0082815,
+          "candidateMeanOfRoundMediansMS": 0.008229,
+          "changePercent": -0.6339431262452511,
+          "roundChangePercent": [
+            -5.889660624541204,
+            5.403126418888227
+          ]
+        },
+        "ramp-512": {
+          "baselineMeanOfRoundMediansMS": 0.69347925,
+          "candidateMeanOfRoundMediansMS": 0.8563127500000001,
+          "changePercent": 23.480659298746144,
+          "roundChangePercent": [
+            23.584612227941104,
+            23.37785534314307
+          ]
+        },
+        "ramp-2048": {
+          "baselineMeanOfRoundMediansMS": 10.827624750000002,
+          "candidateMeanOfRoundMediansMS": 12.8737815,
+          "changePercent": 18.897558765139124,
+          "roundChangePercent": [
+            18.162113853207607,
+            19.642362630971455
+          ]
+        },
+        "ramp-3072": {
+          "baselineMeanOfRoundMediansMS": 23.07733375,
+          "candidateMeanOfRoundMediansMS": 27.41005175,
+          "changePercent": 18.77477722052705,
+          "roundChangePercent": [
+            18.10603457158255,
+            19.441390936464376
+          ]
+        },
+        "noise-19": {
+          "baselineMeanOfRoundMediansMS": 0.0085835,
+          "candidateMeanOfRoundMediansMS": 0.008614750000000001,
+          "changePercent": 0.36407060057086493,
+          "roundChangePercent": [
+            0.2453767430726117,
+            0.4765957446808633
+          ]
+        },
+        "noise-512": {
+          "baselineMeanOfRoundMediansMS": 2.3535315,
+          "candidateMeanOfRoundMediansMS": 2.4513955000000003,
+          "changePercent": 4.15817676542678,
+          "roundChangePercent": [
+            3.653505510811872,
+            4.662022277191458
+          ]
+        },
+        "noise-2048": {
+          "baselineMeanOfRoundMediansMS": 37.61298975,
+          "candidateMeanOfRoundMediansMS": 38.9434375,
+          "changePercent": 3.5372028622106644,
+          "roundChangePercent": [
+            4.2802261002965025,
+            2.7992625261401116
+          ]
+        },
+        "noise-3072": {
+          "baselineMeanOfRoundMediansMS": 84.00741675,
+          "candidateMeanOfRoundMediansMS": 87.22636425,
+          "changePercent": 3.8317420348483733,
+          "roundChangePercent": [
+            3.80069705152577,
+            3.862625529777719
+          ]
+        },
+        "mixed-19": {
+          "baselineMeanOfRoundMediansMS": 0.007948,
+          "candidateMeanOfRoundMediansMS": 0.00797925,
+          "changePercent": 0.3931806743834976,
+          "roundChangePercent": [
+            -2.3255813953488413,
+            3.191421459117927
+          ]
+        },
+        "mixed-512": {
+          "baselineMeanOfRoundMediansMS": 1.2875835,
+          "candidateMeanOfRoundMediansMS": 1.17926025,
+          "changePercent": -8.412910696665499,
+          "roundChangePercent": [
+            -7.592533179940131,
+            -9.223052382692632
+          ]
+        },
+        "mixed-2048": {
+          "baselineMeanOfRoundMediansMS": 19.5124895,
+          "candidateMeanOfRoundMediansMS": 18.129375,
+          "changePercent": -7.088354871376101,
+          "roundChangePercent": [
+            -8.134583201246514,
+            -6.0357208262248445
+          ]
+        },
+        "mixed-3072": {
+          "baselineMeanOfRoundMediansMS": 43.427969,
+          "candidateMeanOfRoundMediansMS": 40.859114500000004,
+          "changePercent": -5.915207547467838,
+          "roundChangePercent": [
+            -6.314226344740792,
+            -5.518309565326673
+          ]
+        }
+      }
+    },
+    {
+      "name": "always_inline_kernels",
+      "outcome": "Rejected: forcing both kernels inline did not recover scalar performance.",
+      "resultPath": "/private/tmp/swiftjli-round2-lossless-iteration-inlining/swiftjli-round2-lossless-matrix-results.json",
+      "resultSHA256": "b7fafc668a55f7e48d4a9c181afca0b7777efde9da05b293ed48bc155ac1ee8f",
+      "caseSummary": {
+        "flat-19": {
+          "baselineMeanOfRoundMediansMS": 0.00802075,
+          "candidateMeanOfRoundMediansMS": 0.009031,
+          "changePercent": 12.595455537200406,
+          "roundChangePercent": [
+            15.139741822283504,
+            10.07751937984498
+          ]
+        },
+        "flat-512": {
+          "baselineMeanOfRoundMediansMS": 0.5359895,
+          "candidateMeanOfRoundMediansMS": 0.66260425,
+          "changePercent": 23.62261760724791,
+          "roundChangePercent": [
+            23.166266933009403,
+            24.07121194043105
+          ]
+        },
+        "flat-2048": {
+          "baselineMeanOfRoundMediansMS": 8.049677,
+          "candidateMeanOfRoundMediansMS": 9.7948755,
+          "changePercent": 21.680354379436583,
+          "roundChangePercent": [
+            19.103149177291034,
+            24.24491097876329
+          ]
+        },
+        "flat-3072": {
+          "baselineMeanOfRoundMediansMS": 17.864583250000003,
+          "candidateMeanOfRoundMediansMS": 21.522875,
+          "changePercent": 20.477901436631598,
+          "roundChangePercent": [
+            19.621145047000276,
+            21.330935177459075
+          ]
+        },
+        "ramp-19": {
+          "baselineMeanOfRoundMediansMS": 0.00812475,
+          "candidateMeanOfRoundMediansMS": 0.008270999999999999,
+          "changePercent": 1.8000553863195545,
+          "roundChangePercent": [
+            1.2928368180130878,
+            2.3020877977101506
+          ]
+        },
+        "ramp-512": {
+          "baselineMeanOfRoundMediansMS": 0.700698,
+          "candidateMeanOfRoundMediansMS": 0.8306770000000001,
+          "changePercent": 18.549931639593666,
+          "roundChangePercent": [
+            21.34819248721842,
+            15.870798777826266
+          ]
+        },
+        "ramp-2048": {
+          "baselineMeanOfRoundMediansMS": 10.795156,
+          "candidateMeanOfRoundMediansMS": 12.899562499999998,
+          "changePercent": 19.493988785340367,
+          "roundChangePercent": [
+            18.706036901413015,
+            20.282809451815176
+          ]
+        },
+        "ramp-3072": {
+          "baselineMeanOfRoundMediansMS": 22.86593725,
+          "candidateMeanOfRoundMediansMS": 27.6306145,
+          "changePercent": 20.837445663855302,
+          "roundChangePercent": [
+            20.535918209277604,
+            21.13817143543466
+          ]
+        },
+        "noise-19": {
+          "baselineMeanOfRoundMediansMS": 0.008270749999999999,
+          "candidateMeanOfRoundMediansMS": 0.008458499999999999,
+          "changePercent": 2.270048060937646,
+          "roundChangePercent": [
+            -1.7244444444444396,
+            6.428923988154001
+          ]
+        },
+        "noise-512": {
+          "baselineMeanOfRoundMediansMS": 2.35,
+          "candidateMeanOfRoundMediansMS": 2.4798645,
+          "changePercent": 5.526148936170205,
+          "roundChangePercent": [
+            6.467996626663131,
+            4.58556968102557
+          ]
+        },
+        "noise-2048": {
+          "baselineMeanOfRoundMediansMS": 37.301843500000004,
+          "candidateMeanOfRoundMediansMS": 38.76045825,
+          "changePercent": 3.9103020471360717,
+          "roundChangePercent": [
+            3.8992224408657794,
+            3.921439532323201
+          ]
+        },
+        "noise-3072": {
+          "baselineMeanOfRoundMediansMS": 83.42245849999999,
+          "candidateMeanOfRoundMediansMS": 86.98138549999999,
+          "changePercent": 4.266149744316161,
+          "roundChangePercent": [
+            4.126449018350753,
+            4.406233996154807
+          ]
+        },
+        "mixed-19": {
+          "baselineMeanOfRoundMediansMS": 0.00778125,
+          "candidateMeanOfRoundMediansMS": 0.0079795,
+          "changePercent": 2.5477911646586415,
+          "roundChangePercent": [
+            6.69207113250434,
+            -1.2865714108987403
+          ]
+        },
+        "mixed-512": {
+          "baselineMeanOfRoundMediansMS": 1.27215625,
+          "candidateMeanOfRoundMediansMS": 1.1848125,
+          "changePercent": -6.865803630646794,
+          "roundChangePercent": [
+            -6.321056897275779,
+            -7.413134501467933
+          ]
+        },
+        "mixed-2048": {
+          "baselineMeanOfRoundMediansMS": 19.498104,
+          "candidateMeanOfRoundMediansMS": 17.7666355,
+          "changePercent": -8.88018906863971,
+          "roundChangePercent": [
+            -8.48836726587827,
+            -9.272559698606964
+          ]
+        },
+        "mixed-3072": {
+          "baselineMeanOfRoundMediansMS": 42.92776025,
+          "candidateMeanOfRoundMediansMS": 39.13757325,
+          "changePercent": -8.829221412733723,
+          "roundChangePercent": [
+            -8.437587016757087,
+            -9.221486005624268
+          ]
+        }
+      }
+    },
+    {
+      "name": "never_inline_lookup",
+      "outcome": "Accepted by parent: mixed gain and no repeated >5% regression in16 cases.",
+      "resultPath": "/private/tmp/swiftjli-round2-lossless-iteration-noinline/swiftjli-round2-lossless-matrix-results.json",
+      "resultSHA256": "0c24f88fde2cf0513af71f36ea67e5c40e07f1d6c32923274670e92a8a93715e",
+      "caseSummary": {
+        "flat-19": {
+          "baselineMeanOfRoundMediansMS": 0.008302,
+          "candidateMeanOfRoundMediansMS": 0.00828125,
+          "changePercent": -0.24993977354854646,
+          "roundChangePercent": [
+            3.1105847151227994,
+            -3.390422929045789
+          ]
+        },
+        "flat-512": {
+          "baselineMeanOfRoundMediansMS": 0.5390105000000001,
+          "candidateMeanOfRoundMediansMS": 0.5512815,
+          "changePercent": 2.276579027681258,
+          "roundChangePercent": [
+            3.2892927758645607,
+            1.2803668495761977
+          ]
+        },
+        "flat-2048": {
+          "baselineMeanOfRoundMediansMS": 7.95563525,
+          "candidateMeanOfRoundMediansMS": 7.933562500000001,
+          "changePercent": -0.27744798883281296,
+          "roundChangePercent": [
+            0.256966559881322,
+            -0.8072128594886374
+          ]
+        },
+        "flat-3072": {
+          "baselineMeanOfRoundMediansMS": 17.787781250000002,
+          "candidateMeanOfRoundMediansMS": 17.668375,
+          "changePercent": -0.6712824287739672,
+          "roundChangePercent": [
+            -0.1249142246470436,
+            -1.2171114505961533
+          ]
+        },
+        "ramp-19": {
+          "baselineMeanOfRoundMediansMS": 0.00813525,
+          "candidateMeanOfRoundMediansMS": 0.00797925,
+          "changePercent": -1.9175808979441267,
+          "roundChangePercent": [
+            -3.8033902424205235,
+            0.012436264146264975
+          ]
+        },
+        "ramp-512": {
+          "baselineMeanOfRoundMediansMS": 0.7049894999999999,
+          "candidateMeanOfRoundMediansMS": 0.70532275,
+          "changePercent": 0.04727020757047118,
+          "roundChangePercent": [
+            0.3921674096921457,
+            -0.2990673335034333
+          ]
+        },
+        "ramp-2048": {
+          "baselineMeanOfRoundMediansMS": 10.73499975,
+          "candidateMeanOfRoundMediansMS": 10.893218999999998,
+          "changePercent": 1.4738635648314569,
+          "roundChangePercent": [
+            0.9702156544990181,
+            1.9776502965639375
+          ]
+        },
+        "ramp-3072": {
+          "baselineMeanOfRoundMediansMS": 22.837198,
+          "candidateMeanOfRoundMediansMS": 23.071625000000004,
+          "changePercent": 1.0265138481524883,
+          "roundChangePercent": [
+            1.1567147389271781,
+            0.896717709938688
+          ]
+        },
+        "noise-19": {
+          "baselineMeanOfRoundMediansMS": 0.008448,
+          "candidateMeanOfRoundMediansMS": 0.00840625,
+          "changePercent": -0.4941998106060663,
+          "roundChangePercent": [
+            1.513598263281657,
+            -2.4289615898657413
+          ]
+        },
+        "noise-512": {
+          "baselineMeanOfRoundMediansMS": 2.3834065,
+          "candidateMeanOfRoundMediansMS": 2.34255175,
+          "changePercent": -1.7141326920103617,
+          "roundChangePercent": [
+            -0.5896307600210315,
+            -2.8171103550372445
+          ]
+        },
+        "noise-2048": {
+          "baselineMeanOfRoundMediansMS": 37.136302,
+          "candidateMeanOfRoundMediansMS": 37.630979249999996,
+          "changePercent": 1.3320584532083846,
+          "roundChangePercent": [
+            0.8090629366149127,
+            1.8572428913549377
+          ]
+        },
+        "noise-3072": {
+          "baselineMeanOfRoundMediansMS": 83.50652074999999,
+          "candidateMeanOfRoundMediansMS": 84.10503125,
+          "changePercent": 0.7167230709944405,
+          "roundChangePercent": [
+            0.7327673553758629,
+            0.7006838213174271
+          ]
+        },
+        "mixed-19": {
+          "baselineMeanOfRoundMediansMS": 0.0076875,
+          "candidateMeanOfRoundMediansMS": 0.008021,
+          "changePercent": 4.338211382113832,
+          "roundChangePercent": [
+            6.521455588887459,
+            2.1665801764400694
+          ]
+        },
+        "mixed-512": {
+          "baselineMeanOfRoundMediansMS": 1.2777085000000001,
+          "candidateMeanOfRoundMediansMS": 1.0857082500000002,
+          "changePercent": -15.026921242208214,
+          "roundChangePercent": [
+            -15.077189929788926,
+            -14.976618117846563
+          ]
+        },
+        "mixed-2048": {
+          "baselineMeanOfRoundMediansMS": 19.3936875,
+          "candidateMeanOfRoundMediansMS": 16.533781250000004,
+          "changePercent": -14.746583134331704,
+          "roundChangePercent": [
+            -14.876661996611418,
+            -14.615662584506428
+          ]
+        },
+        "mixed-3072": {
+          "baselineMeanOfRoundMediansMS": 43.099219000000005,
+          "candidateMeanOfRoundMediansMS": 36.910781,
+          "changePercent": -14.358585012874602,
+          "roundChangePercent": [
+            -14.300212436059079,
+            -14.417042722833372
+          ]
+        }
+      }
+    }
+  ],
+  "isolation": {
+    "noLosslessResult": "/private/tmp/swiftjli-round2-isolation-no-lossless-matrix-results.json",
+    "noLosslessSource": "/private/tmp/swiftjli-round2-isolation-no-lossless-source.json",
+    "finding": "Removing only lookup restored flat/noise/mixed baseline but ramp regressed~10%; final noinline shape restored all scalar cases within~2%. Thus integration changes compiler optimisation, not sample arithmetic.",
+    "flatProfileBaseline": "/private/tmp/swiftjli-round2-flat-profile-baseline.txt",
+    "flatProfileCandidate": "/private/tmp/swiftjli-round2-flat-profile-candidate.txt",
+    "inclusiveNativeOperationCheckSampleShare": 0.017599538372763995
+  },
+  "acceptedEvidence": {
+    "resultPath": "/private/tmp/swiftjli-round2-lossless-iteration-noinline/swiftjli-round2-lossless-matrix-results.json",
+    "runnerPath": "/private/tmp/swiftjli-run-round2-lossless-matrix.py",
+    "harnessPath": "/private/tmp/swiftjli-native-matrix.swift",
+    "measuredSourceManifest": "/private/tmp/swiftjli-round2-noinline-source-before.json",
+    "measuredSourceManifestAfter": "/private/tmp/swiftjli-round2-noinline-source-after.json",
+    "finalSourceManifest": "/private/tmp/swiftjli-round2-lossless-final-source.json",
+    "finalSourceDifference": "Only two-line rationale comment added after measurement. Parent will rebuild and benchmark final commit.",
+    "testLog": "/private/tmp/swiftjli-round2-noinline-tests.log",
+    "testResult": "exit0;29 tests in6 suites",
+    "testCommand": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift test --configuration release --scratch-path /private/tmp/swiftjli-round2-lossless-build --filter 'LosslessLookaheadTests|LosslessDifferenceTests|LosslessRowStorageTests|LosslessTests|LosslessRestartTests|NearLosslessAPITests'",
+    "testCoverage": "327680 exhaustive combined prefix/offset/table cases including category16, long and invalid categories;112 large scan combinations over precision2/8/12/16, predictors1..7, Pt0/min2 and restartrows0/3; padded/offset destination sentinels and exact comparison to existing owned decoder; all16 public native benchmark cases verified pixel-exact before timing.",
+    "fullFinalValidation": "Owned by parent, pending at handoff; focused release evidence does not replace final sanitiser/full suite/oracle gates."
+  },
+  "memoryAndLifetime": {
+    "lookupBytes": 32768,
+    "minimumSamples": 16384,
+    "selector": "At least half valid canonical8-bit prefixes resolvable within13bits, and at least3 covered categories. Tiny/constant/long magnitude tables retain previous scalar kernel.",
+    "reservation": "Lookup32768+history4*width<=8*sampleCount at construction threshold and valid width<=sampleCount. Existing workspace admission remains conservative.",
+    "lifetime": "Array table and predictor row scoped to synchronous scan, no cache; borrowed output/history pointers do not escape; row cancellation and restart checks unchanged.",
+    "fidelity": "No change to depth, signedness, point transform, prediction, sample clamp, marker/stuffing fallback or output layout; unknown entries use existing checked entropy decoder."
+  },
+  "originalFixtureAliases": {
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-512.jpg": {
+      "matrixFixture": "/private/tmp/swiftjli-native-matrix-fixtures/mixed-512.jpg",
+      "sha256": "7690f836d0d50a8694f7e374410a4808402cbdfbeb22a5c14b73a159d7bfecaf",
+      "note": "Byte-identical fixture; timed once under mixed name, not counted as another case."
+    },
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-2048.jpg": {
+      "matrixFixture": "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+      "sha256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "note": "Byte-identical fixture; timed once under mixed name, not counted as another case."
+    }
+  }
+}

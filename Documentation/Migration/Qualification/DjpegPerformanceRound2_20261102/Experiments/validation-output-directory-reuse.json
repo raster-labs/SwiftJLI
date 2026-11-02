@@ -1,0 +1,60 @@
+{
+  "startedUTC": "2026-11-02T14:47:50.294550+00:00",
+  "cwd": "/private/tmp/swiftjli-djpeg-round2",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+  },
+  "checks": [
+    {
+      "name": "baseline-tests",
+      "command": [
+        "swift",
+        "test",
+        "--package-path",
+        "/private/tmp/swiftjli-djpeg-performance",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round2-final-baseline-build"
+      ],
+      "startedUTC": "2026-11-02T14:47:50.294689+00:00",
+      "log": "baseline-tests.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:47:52.567956+00:00"
+    },
+    {
+      "name": "release-tests",
+      "command": [
+        "swift",
+        "test",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round2-final-build"
+      ],
+      "startedUTC": "2026-11-02T14:47:52.568226+00:00",
+      "log": "release-tests.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:48:30.030845+00:00"
+    },
+    {
+      "name": "release-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round2-final-cli"
+      ],
+      "startedUTC": "2026-11-02T14:48:30.031106+00:00",
+      "log": "release-cli.log",
+      "exitCode": 2,
+      "finishedUTC": "2026-11-02T14:48:30.084478+00:00"
+    }
+  ]
+}
