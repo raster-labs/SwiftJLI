@@ -67,8 +67,15 @@ struct ParsedJPEG: Sendable {
     /// Explicit interpretation supplied by a caller for an unmarked DCT stream.
     var sourceColorModel: JLIColorModel? = nil
 
+    /// Avoid constructing the fixed XYB profile for streams without ICC data.
+    /// Optional equality evaluates both operands, including static initialisers.
+    var isXYB: Bool {
+        guard let iccProfile else { return false }
+        return iccProfile == XYBICCProfile.data
+    }
+
     var isRawRGB: Bool {
-        frameInfo.components.count == 3 && iccProfile != XYBICCProfile.data &&
+        frameInfo.components.count == 3 && !isXYB &&
             (sourceColorModel == .rgb || (sourceColorModel == nil &&
                 (adobeTransform == 0 || frameInfo.components.map(\.id) == [82, 71, 66])))
     }

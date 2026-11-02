@@ -443,6 +443,22 @@ private func classifyFormatName(_ name: String) throws -> CanonicalFormat {
 
 private func classifyPathExtension(_ path: String) throws -> CanonicalFormat? {
     guard path != "-" else { return nil }
+    // Ordinary recognised filenames need no URL construction or current-directory
+    // resolution. Keep Foundation's handling for dotfiles, path normalisation,
+    // embedded NULs and every unrecognised suffix.
+    let bytes = path.utf8
+    let componentStart = bytes.lastIndex(of: 47).map { bytes.index(after: $0) } ?? bytes.startIndex
+    if !bytes.contains(0), let dot = bytes.lastIndex(of: 46), dot > componentStart,
+       bytes[componentStart..<dot].contains(where: { $0 != 46 }) {
+        switch String(decoding: bytes[bytes.index(after: dot)...], as: UTF8.self).lowercased() {
+        case "jpg", "jpeg": return .jpeg
+        case "nrrd": return .nrrd
+        case "pgm": return .pgm
+        case "ppm": return .ppm
+        case "pnm": return .pnm
+        default: break
+        }
+    }
     let ext = URL(fileURLWithPath: path).pathExtension.lowercased()
     guard !ext.isEmpty else { return nil }
     switch ext {
@@ -1432,47 +1448,6 @@ private func writeNetpbm(
     return totalBytes
 }
 
-// MARK: - Asynchronous Codec Bridge
-
-private nonisolated func runAsync<T: Sendable>(
-    context: CommandExecutionContext,
-    _ operation: @escaping @Sendable () async throws -> T
-) throws -> T {
-    try context.check()
-    let box = Mutex<Result<T, any Error>?>(nil)
-    let semaphore = DispatchSemaphore(value: 0)
-    let task = Task.detached {
-        let outcome: Result<T, any Error>
-        do {
-            try context.check()
-            outcome = .success(try await operation())
-        } catch {
-            outcome = .failure(error)
-        }
-        box.withLock { $0 = outcome }
-        semaphore.signal()
-    }
-    while semaphore.wait(timeout: .now() + .milliseconds(5)) == .timedOut {
-        if interrupted.load(ordering: .relaxed) {
-            task.cancel()
-        } else if (try? context.remainingSeconds()) == nil {
-            task.cancel()
-        }
-    }
-    if interrupted.load(ordering: .relaxed) {
-        throw CancellationError()
-    }
-    try context.check()
-    do {
-        return try box.withLock { $0! }.get()
-    } catch is CancellationError {
-        if interrupted.load(ordering: .relaxed) {
-            throw CancellationError()
-        }
-        throw CodecError(.resourceLimitExceeded, "CLI command deadline exceeded.")
-    }
-}
-
 private func mapCodecErrorCategory(_ category: CodecError.Category) -> Int32 {
     switch category {
     case .invalidArgument: return 2
@@ -1538,7 +1513,10 @@ private func describeFidelity(_ fidelity: Fidelity) -> (name: String, maxError: 
 
 private func run() throws -> Int32 {
     let startInstant = ContinuousClock.now
-    let start = ProcessInfo.processInfo.systemUptime
+    func elapsedSeconds() -> Double {
+        let components = startInstant.duration(to: .now).components
+        return Double(components.seconds) + Double(components.attoseconds) / 1e18
+    }
     let options: Options
     do { options = try parse(Array(CommandLine.arguments.dropFirst())) }
     catch let error as UsageError {
@@ -1549,9 +1527,9 @@ private func run() throws -> Int32 {
         try write(help(options.command), to: .standardOutput); return 0
     }
     if options.version { try write("\(tool) \(version)\n", to: .standardOutput); return 0 }
-    func diagnostic(_ level: Int, _ message: String) throws {
+    func diagnostic(_ level: Int, _ message: @autoclosure () -> String) throws {
         if !options.quiet && options.verbosity >= level {
-            try write("[\(level)] \(tool): \(message)\n", to: .standardError)
+            try write("[\(level)] \(tool): \(message())\n", to: .standardError)
         }
     }
 
@@ -1573,7 +1551,7 @@ private func run() throws -> Int32 {
             try write("\(tool) \(version)\nencode: \(encoder.canEncode)\ndecode: \(decoder.canDecode)\ninspect: \(decoder.canInspect)\nformats: \(formats.isEmpty ? "none" : formats.joined(separator: ", "))\n", to: .standardOutput)
         }
         try diagnostic(3, "advertised formats: \(formats.count); capability values read from the library")
-        try diagnostic(4, "elapsed seconds: \(ProcessInfo.processInfo.systemUptime - start)")
+        try diagnostic(4, "elapsed seconds: \(elapsedSeconds())")
         try diagnostic(5, "arguments validated; capability report emitted; no codec payload opened")
         return 0
     }
@@ -1637,9 +1615,8 @@ private func run() throws -> Int32 {
                 copyPolicy: copyPolicy, metadataPolicy: .preserve, progress: progressCallback
             )
             let decoder = try SwiftJLI.Decoder()
-            let info = try runAsync(context: context) {
-                try decoder.inspectJPEG(data, options: decodeOptions)
-            }
+            let info = try decoder.inspectJPEGSynchronously(data, options: decodeOptions,
+                cancellationCheck: { try context.check() })
             try context.check()
             let d = info.imageInfo.descriptor
             let pt = info.pointTransform ?? 0
@@ -1701,7 +1678,7 @@ private func run() throws -> Int32 {
                 try context.check()
                 try write(lines.joined(separator: "\n") + "\n", to: .standardOutput)
             }
-            try diagnostic(4, "elapsed seconds: \(ProcessInfo.processInfo.systemUptime - start)")
+            try diagnostic(4, "elapsed seconds: \(elapsedSeconds())")
             try diagnostic(5, "header inspection completed; no entropy decode or file write performed")
             return 0
 
@@ -1713,12 +1690,10 @@ private func run() throws -> Int32 {
                 copyPolicy: copyPolicy, metadataPolicy: .preserve, progress: progressCallback
             )
             let decoder = try SwiftJLI.Decoder()
-            let info = try runAsync(context: context) {
-                try decoder.inspectJPEG(data, options: decodeOptions)
-            }
-            let decoded = try runAsync(context: context) {
-                try await decoder.decode(data, options: decodeOptions)
-            }
+            let info = try decoder.inspectJPEGSynchronously(data, options: decodeOptions,
+                cancellationCheck: { try context.check() })
+            let decoded = try decoder.decodeSynchronously(data, options: decodeOptions,
+                cancellationCheck: { try context.check() })
             try context.check()
             let d = decoded.image.descriptor
             let fid = describeFidelity(decoded.report.fidelity)
@@ -1765,7 +1740,7 @@ private func run() throws -> Int32 {
                 try context.check()
                 try write(text + "\n", to: .standardOutput)
             }
-            try diagnostic(4, "elapsed seconds: \(ProcessInfo.processInfo.systemUptime - start)")
+            try diagnostic(4, "elapsed seconds: \(elapsedSeconds())")
             try diagnostic(5, "full stream and entropy validation completed; copyEvents=\(decoded.report.copyEvents.count)")
             return 0
 
@@ -1785,15 +1760,13 @@ private func run() throws -> Int32 {
             do {
                 let inputCopy = data
                 if options.json {
-                    info = try runAsync(context: context) {
-                        try decoder.inspectJPEG(inputCopy, options: decodeOptions)
-                    }
+                    info = try decoder.inspectJPEGSynchronously(inputCopy, options: decodeOptions,
+                        cancellationCheck: { try context.check() })
                 } else {
                     info = nil
                 }
-                decoded = try runAsync(context: context) {
-                    try await decoder.decode(inputCopy, options: decodeOptions)
-                }
+                decoded = try decoder.decodeSynchronously(inputCopy, options: decodeOptions,
+                    cancellationCheck: { try context.check() })
             }
             // Release compressed input buffer before allocating serialised uncompressed output.
             data = Data()
@@ -1816,7 +1789,7 @@ private func run() throws -> Int32 {
             }
             let fid = describeFidelity(report.fidelity)
             try diagnostic(3, "decoded \(d.width)x\(d.height) bits=\(d.meaningfulBits) to \(targetFormat.rawValue) (\(outputByteCount) bytes) backend=\(describeBackend(report.backend))")
-            try diagnostic(4, "elapsed seconds: \(ProcessInfo.processInfo.systemUptime - start)")
+            try diagnostic(4, "elapsed seconds: \(elapsedSeconds())")
             try diagnostic(5, "decode committed atomically; copyEvents=\(report.copyEvents.count)")
             if let info {
                 let jsonReport: [String: Any] = [
@@ -1874,15 +1847,14 @@ private func run() throws -> Int32 {
                 resourceLimits: encodeLimits, executionPolicy: executionPolicy,
                 copyPolicy: copyPolicy, metadataPolicy: .preserve, progress: progressCallback
             )
-            let encoded = try runAsync(context: context) {
-                try await encoder.encode(sourceImage, options: encodeOptions)
-            }
+            let encoded = try encoder.encodeSynchronously(sourceImage, options: encodeOptions,
+                cancellationCheck: { try context.check() })
             let d = sourceImage.descriptor
             let report = encoded.report
             let fid = describeFidelity(report.fidelity)
             try writeOutputAtomically(encoded.data, to: outputPath, overwrite: options.overwrite, context: context)
             try diagnostic(3, "encoded \(d.width)x\(d.height) bits=\(d.meaningfulBits) mode=\(describeMode(encoded.encoding.mode)) (\(encoded.data.count) bytes) backend=\(describeBackend(report.backend))")
-            try diagnostic(4, "elapsed seconds: \(ProcessInfo.processInfo.systemUptime - start)")
+            try diagnostic(4, "elapsed seconds: \(elapsedSeconds())")
             try diagnostic(5, "encode committed atomically; copyEvents=\(report.copyEvents.count)")
             if options.json {
                 let jsonReport: [String: Any] = [

@@ -259,6 +259,36 @@ struct BitReader {
         return magnitude < (1 << (category - 1)) ? magnitude - ((1 << category) - 1) : magnitude
     }
 
+    /// A wider lookahead consumes one complete, precomputed difference. Only
+    /// the FF-free bulk path may prefetch beyond the existing eight-bit fill;
+    /// stuffing, markers and short input retain the ordinary fallback.
+    @inline(__always)
+    mutating func fastDecodeLosslessDifference(_ table: LosslessLookahead) -> Int32? {
+        if bitsAvailable < LosslessLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
+        guard bitsAvailable >= LosslessLookahead.bits else { return nil }
+        let prefix = Int((bitBuffer >> (bitsAvailable - LosslessLookahead.bits)) & UInt64(LosslessLookahead.count - 1))
+        let entry = table.entries[prefix]
+        guard entry != 0 else { return nil }
+        bitsAvailable -= Int(entry >> 16)
+        return Int32(Int16(truncatingIfNeeded: entry))
+    }
+
+    /// Resolves a complete AC run/value only when all its bits are buffered.
+    /// The same eight-bit refill threshold as ordinary symbol decoding keeps
+    /// byte offsets, stuffing, markers and truncated-input behaviour unchanged.
+    /// Run overflow must fall back before consuming magnitude bits: the existing
+    /// AC decoder stops after the Huffman symbol in that case.
+    @inline(__always)
+    mutating func fastDecodeAC(_ table: ACLookahead, remaining: Int) -> UInt32? {
+        if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+        guard bitsAvailable >= ACLookahead.bits else { return nil }
+        let prefix = Int((bitBuffer >> (bitsAvailable - ACLookahead.bits)) & UInt64(ACLookahead.count - 1))
+        let entry = table.entries[prefix]
+        guard entry != 0, Int((entry >> 16) & 0xFF) <= remaining else { return nil }
+        bitsAvailable -= Int(entry >> 24)
+        return entry
+    }
+
     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,

@@ -159,7 +159,6 @@ struct JLIDecoder: Sendable {
             let acTables = prepareACTables(scan.acTables)
             var bitReader = BitReader(data: scan.entropyData)
             var prevDC = [Int32](repeating: 0, count: numComponents)
-            var acBuf = [Int32](repeating: 0, count: 64)
 
             let restartInterval = parsed.restartInterval
             var mcuCount = 0
@@ -175,6 +174,9 @@ struct JLIDecoder: Sendable {
             let compACTables: [HuffmanTable] = components.map { comp in
                 let sc = scan.header.components.first { $0.componentSelector == comp.id }
                 return acTables[sc?.acTableId ?? 0] ?? StandardHuffmanTables.acLuminance
+            }
+            let compACLookups = compACTables.enumerated().map { index, table in
+                ACLookahead(table: table, blockCount: componentZigzag[index].count / 64)
             }
 
             for mcuY in 0..<mcuCountV {
@@ -212,18 +214,17 @@ struct JLIDecoder: Sendable {
                                 }
                                 prevDC[compIdx] = Int32(dc)
 
-                                try HuffmanDecoder.decodeAC(
-                                    from: &bitReader, table: acTable, into: &acBuf
-                                )
-                                acBuf[0] = prevDC[compIdx]
-
-                                // One uniqueness check per block via the buffer
-                                // pointer, instead of 64 from nested-array
-                                // subscript writes (the COW-check cost in the
-                                // decode profile).
-                                componentZigzag[compIdx].withUnsafeMutableBufferPointer { zz in
-                                    let d = zz.baseAddress! + dst
-                                    for i in 0..<64 { d[i] = acBuf[i] }
+                                // Decode directly into the coefficient plane.
+                                // One scoped borrow replaces per-coefficient
+                                // array uniqueness checks and a block copy.
+                                try componentZigzag[compIdx].withUnsafeMutableBufferPointer { zz in
+                                    let block = UnsafeMutableBufferPointer(rebasing: zz[dst..<(dst + 64)])
+                                    if let lookup = compACLookups[compIdx] {
+                                        try HuffmanDecoder.decodeAC(from: &bitReader, table: acTable, lookup: lookup, into: block)
+                                    } else {
+                                        try HuffmanDecoder.decodeAC(from: &bitReader, table: acTable, into: block)
+                                    }
+                                    block[0] = prevDC[compIdx]
                                 }
                             }
                         }
@@ -439,7 +440,7 @@ struct JLIDecoder: Sendable {
         // 4:4:4, previews, raw Float32, greyscale and XYB keep their existing
         // semantics. The established 4:4:4 oracle has a tighter error bound.
         if scale == 1, numComponents == 3, configuration.outputPixelFormat != .float32,
-           parsed.iccProfile != XYBICCProfile.data, !parsed.isRawRGB,
+           !parsed.isXYB, !parsed.isRawRGB,
            components.contains(where: { $0.horizontalSampling != hMaxSampling || $0.verticalSampling != vMaxSampling }) {
             for index in componentPlanes.indices {
                 let plane = componentPlanes[index]
@@ -454,7 +455,7 @@ struct JLIDecoder: Sendable {
         }
         if let borrowedDestination {
             let floating = configuration.outputPixelFormat == .float32
-            let xyb = parsed.iccProfile == XYBICCProfile.data
+            let xyb = parsed.isXYB
             guard !normaliseXYBOutput || (xyb && floating),
                   configuration.outputPixelFormat == nil || (floating && (numComponents == 1 || normaliseXYBOutput)),
                   configuration.outputColorModel == nil,
@@ -463,7 +464,7 @@ struct JLIDecoder: Sendable {
                 throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT output")
             }
             try SharedDCTStorage.write(componentPlanes, width: outW, height: outH,
-                precision: frame.precision, floatOutput: floating, xyb: parsed.iccProfile == XYBICCProfile.data,
+                precision: frame.precision, floatOutput: floating, xyb: parsed.isXYB,
                 rawRGB: parsed.isRawRGB, into: borrowedDestination)
             return try JLIImage(geometryOnlyWidth: outW, height: outH,
                 pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
@@ -513,7 +514,7 @@ struct JLIDecoder: Sendable {
             outputData = bytes
             outputColorModel = .rgb
         } else if numComponents == 3 && !isExtendedPrecision
-                    && parsed.iccProfile == XYBICCProfile.data {
+                    && parsed.isXYB {
             // XYB color: the three full-resolution planes are scaled-XYB samples
             // (4:4:4). Invert the XYB transform per pixel to recover sRGB. (The
             // embedded ICC also lets non-XYB-aware decoders display it.)
@@ -688,10 +689,21 @@ struct JLIDecoder: Sendable {
                     "lossless restart interval \(restartInterval) not a multiple of "
                     + "samples-per-row (\(w))")
             }
-            try Self.losslessGrayInto(
-                borrowed, width: w, height: h, predictor: predictor, half: half,
-                table: tables[0], reader: &reader, pointTransform: pt,
-                segmentRows: restartInterval > 0 ? restartInterval / w : h)
+            // The bounded table is only useful for sufficiently large scans
+            // with varied short categories. Choose the kernel once per scan.
+            // Its <=32 KiB plus row history fits the existing 8-byte/sample
+            // reservation at the table's >=16384-sample construction threshold.
+            if let lookup = LosslessLookahead(table: tables[0], sampleCount: count) {
+                try Self.losslessGrayLookupInto(
+                    borrowed, width: w, height: h, predictor: predictor, half: half,
+                    table: tables[0], reader: &reader, pointTransform: pt,
+                    segmentRows: restartInterval > 0 ? restartInterval / w : h, lookup: lookup)
+            } else {
+                try Self.losslessGrayInto(
+                    borrowed, width: w, height: h, predictor: predictor, half: half,
+                    table: tables[0], reader: &reader, pointTransform: pt,
+                    segmentRows: restartInterval > 0 ? restartInterval / w : h)
+            }
             let format = configuration.outputPixelFormat ?? (borrowed.bytesPerSample == 1 ? .uint8 : .uint16)
             return try JLIImage(geometryOnlyWidth: w, height: h, pixelFormat: format,
                 colorModel: configuration.outputColorModel ?? .grayscale,
@@ -1043,6 +1055,85 @@ struct JLIDecoder: Sendable {
             output[x * 2] = UInt8(truncatingIfNeeded: shifted)
             output[x * 2 + 1] = UInt8(shifted >> 8)
         }
+    }
+
+    // This separate kernel preserves the original scalar loop's compiled
+    // shape. Its prediction/output arithmetic intentionally matches the scalar
+    // kernel above; the large predictor/restart/padding matrix checks both.
+    /// Synchronous borrowed-output scan. Only one row of predictor history is
+    /// live; `aboveLeft` saves the previous-row sample before its slot is reused.
+    /// Every slot is written on the first row of a restart segment before any
+    /// subsequent row reads it. Neither pointer escapes this call.
+    @inline(never)
+    private static func losslessGrayLookupInto(
+        _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
+        predictor: Int, half: Int32, table: HuffmanTable, reader: inout BitReader,
+        pointTransform pt: Int, segmentRows: Int, lookup: LosslessLookahead
+    ) throws {
+        let bps = destination.bytesPerSample
+        guard bps == 1 || bps == 2, destination.rowBytes >= w * bps else {
+            throw JLIError.decodingFailed("invalid lossless destination layout")
+        }
+        let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: destination.rowBytes)
+        let (needed, overflow2) = rowOffset.addingReportingOverflow(w * bps)
+        guard !overflow1, !overflow2, needed <= destination.bytes.count,
+              let output = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+            throw JLIError.decodingFailed("lossless destination is too small")
+        }
+        let history = UnsafeMutableBufferPointer<Int32>.allocate(capacity: w)
+        defer { history.deallocate() }
+        // w >= 1 has already been validated by decodeLossless.
+        guard let row = history.baseAddress else { return }
+        for y in 0..<h {
+            try NativeOperation.check()
+            let segmentY = y % segmentRows
+            if y > 0, segmentY == 0 {
+                try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+            }
+            let outputRow = output + y * destination.rowBytes
+            if predictor == 1 {
+                // The left predictor only needs the preceding row's first
+                // sample. Avoid all other history loads/stores in this common
+                // scan mode, while retaining the identical entropy reader.
+                var value = segmentY == 0 ? half : row[0]
+                for x in 0..<w {
+                    value = (value + (try losslessLookupDifference(table, &reader, lookup))) & 0xFFFF
+                    if x == 0 { row[0] = value }
+                    writeLosslessSample(value, outputRow, x, bps, pt)
+                }
+            } else {
+                var left = half, aboveLeft: Int32 = 0
+                for x in 0..<w {
+                    let above = segmentY == 0 ? half : row[x]
+                    let predicted: Int32
+                    if x == 0 { predicted = above }
+                    else if segmentY == 0 { predicted = left }
+                    else {
+                        switch predictor {
+                        case 2: predicted = above
+                        case 3: predicted = aboveLeft
+                        case 4: predicted = left + above - aboveLeft
+                        case 5: predicted = left + ((above - aboveLeft) >> 1)
+                        case 6: predicted = above + ((left - aboveLeft) >> 1)
+                        default: predicted = (left + above) >> 1
+                        }
+                    }
+                    let value = (predicted + (try losslessLookupDifference(table, &reader, lookup))) & 0xFFFF
+                    row[x] = value
+                    left = value
+                    aboveLeft = above
+                    writeLosslessSample(value, outputRow, x, bps, pt)
+                }
+            }
+        }
+    }
+
+    @inline(__always)
+    private static func losslessLookupDifference(
+        _ table: HuffmanTable, _ reader: inout BitReader, _ lookup: LosslessLookahead
+    ) throws -> Int32 {
+        if let difference = reader.fastDecodeLosslessDifference(lookup) { return difference }
+        return try losslessDifference(table, &reader)
     }
 
     /// Grayscale (single-component) lossless scan — the clinical hot loop.

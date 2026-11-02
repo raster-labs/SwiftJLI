@@ -18,6 +18,8 @@ swift run swiftjli-cli decode -i image.jpg -o - --output-format pgm \
 
 Both global and command-local help include availability, examples, option ranges/defaults, streams, errors and manual discovery. No arguments also show help. Use `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` with the qualified Xcode on macOS.
 
+The executable runs codec operations on its calling thread, with any parallel workers joined before returning. Package-only synchronous adapters use the same validated kernels, owning storage and reports as the public asynchronous API. They poll the command's signal and deadline checks at the existing cancellation points, including joined workers. Application clients retain the public asynchronous executor policy.
+
 ## Commands and Fidelity-Preserving Uncompressed Formats
 
 - **`capabilities [--json]`**: Reports the library's actual `canEncode`, `canDecode`, `canInspect` and `formats` values without reading files.

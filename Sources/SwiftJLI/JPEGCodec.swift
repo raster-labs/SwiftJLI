@@ -251,13 +251,13 @@ enum JPEGCodec {
         let f = parsed.frameInfo
         if let sourceColourModel {
             guard !f.isLossless, f.components.count == 3, adobeTransform == nil,
-                  parsed.iccProfile != XYBICCProfile.data else {
+                  !parsed.isXYB else {
                 throw CodecError(.unsupportedFeature, "Source colour override requires unmarked three-component DCT JPEG.")
             }
             parsed.sourceColorModel = sourceColourModel == .rgb ? .rgb : .yCbCr
         }
         if !f.isLossless {
-            let xyb = parsed.iccProfile == XYBICCProfile.data
+            let xyb = parsed.isXYB
             guard !xyb || adobeTransform == 0 else {
                 throw CodecError(.unsupportedFeature, "XYB JPEG requires Adobe transform 0.")
             }
@@ -297,7 +297,7 @@ enum JPEGCodec {
         guard !f.isLossless || scale == 1 else {
             throw CodecError(.unsupportedFeature, "Reduced-scale decode requires DCT JPEG.")
         }
-        let xyb = parsed.iccProfile == XYBICCProfile.data
+        let xyb = parsed.isXYB
         let floating = sampleFormat != .nativeInteger
         guard sampleFormat != .float32NormalisedSRGB || (xyb && !f.isLossless) else {
             throw CodecError(.unsupportedFeature, "Normalised Float32 sRGB output requires recognised XYB JPEG.")
@@ -391,7 +391,7 @@ enum JPEGCodec {
                     pixelAllocationCount: supplied == nil ? 1 : 0,
                     peakPixelBytes: supplied == nil ? descriptor.requiredByteCount : 0,
                     sampleConversion: configuration.sampleFormat == .float32NormalisedSRGB ? .rawSRGBToNormalisedFloat32 : nil,
-                    colourConversion: parsed.iccProfile == XYBICCProfile.data ? .xybToSRGB : nil))
+                    colourConversion: parsed.isXYB ? .xybToSRGB : nil))
             }
         }
     }

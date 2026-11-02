@@ -2,9 +2,6 @@
 // Copyright 2024 Raster Lab. All rights reserved.
 
 import Foundation
-#if canImport(CryptoKit)
-import CryptoKit
-#endif
 
 /// Generates the ICC profile that lets a *standard* (ICC-aware) decoder display
 /// an XYB JPEG. Faithful port of libjxl v0.11.2 `MaybeCreateProfileImpl` for the
@@ -179,11 +176,10 @@ enum XYBICCProfile {
         for p in 44..<48 { forSum[p] = 0 }      // flags
         for p in 64..<68 { forSum[p] = 0 }      // rendering intent
         for p in 84..<100 { forSum[p] = 0 }     // profile id region
-        #if canImport(CryptoKit)
-        let digest = Array(Insecure.MD5.hash(data: Data(forSum)))
-        #else
+        // This is an ICC identifier, not a security digest. Use the existing
+        // portable implementation on every platform, preserving profile bytes
+        // without imposing a CryptoKit runtime dependency on ordinary JPEGs.
         let digest = ICCProfileMD5.digest(forSum)
-        #endif
         for (i, byte) in digest.enumerated() { icc[84 + i] = byte }
         return icc
     }

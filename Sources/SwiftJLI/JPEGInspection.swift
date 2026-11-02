@@ -78,7 +78,7 @@ extension JPEGCodec {
             return JPEGInspection(imageInfo: information,
                 codingProcess: frame.isLossless ? .predictive : frame.isProgressive ? .progressiveDCT : .sequentialDCT,
                 componentSampling: components, chromaSubsampling: sampling,
-                isXYB: parsed.iccProfile == XYBICCProfile.data,
+                isXYB: parsed.isXYB,
                 restartInterval: parsed.restartInterval, scanCount: parsed.scans.count,
                 predictor: frame.isLossless ? scan?.header.spectralStart : nil,
                 pointTransform: frame.isLossless ? scan?.header.successiveApproxLow : nil)

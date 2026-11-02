@@ -194,6 +194,21 @@ def main():
             assert insp_json['bitsPerComponent'] == 16 and insp_json['isLossless'] is True and insp_json['predictor'] == 1
             assert insp_json['fidelity'] == 'exactSamples' and insp_json['maximumAbsoluteError'] == 0
 
+            # Ordinary extension recognition must retain Foundation's path semantics.
+            # Include mixed case, a leading dot with a real stem, Unicode and percent
+            # characters. A name consisting only of dots before its suffix remains
+            # a dotfile without an extension and needs an explicit format.
+            for filename in ['upper.JpEg', '.image.jpeg', 'café%20image.jpg', '..jpeg']:
+                named_jpeg = temp / filename
+                named_jpeg.write_bytes(jpg_16.read_bytes())
+                if filename == '..jpeg':
+                    cli('inspect', '-i', str(named_jpeg), '--json', expected=2)
+                    format_args = ['--input-format', 'jpeg']
+                else:
+                    format_args = []
+                named_info = json.loads(cli('inspect', '-i', str(named_jpeg), '--json', *format_args).stdout)
+                assert named_info == insp_json
+
             val_plain = cli('validate','-i',str(jpg_16))
             assert 'valid: true' in val_plain.stdout and 'fidelity: exactSamples' in val_plain.stdout
             val_json = json.loads(cli('validate','-i',str(jpg_16),'--json').stdout)
