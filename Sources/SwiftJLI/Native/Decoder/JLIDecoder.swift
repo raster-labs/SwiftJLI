@@ -1064,6 +1064,8 @@ struct JLIDecoder: Sendable {
     /// live; `aboveLeft` saves the previous-row sample before its slot is reused.
     /// Every slot is written on the first row of a restart segment before any
     /// subsequent row reads it. Neither pointer escapes this call.
+    // Keep this boundary: measured release builds otherwise lose scalar
+    // caller specialisation and regress scans that do not use the lookup.
     @inline(never)
     private static func losslessGrayLookupInto(
         _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
