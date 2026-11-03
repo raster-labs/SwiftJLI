@@ -52,7 +52,8 @@ import Testing
         }
     }
 
-    @Test func producerCancellationAndWorkerFailureJoinBeforeReturning() throws {
+    @Test(arguments: [Backend.scalarCPU, .accelerated])
+    func producerCancellationAndWorkerFailureJoinBeforeReturning(backend: Backend) throws {
         let parsed = try fixture(width: 513, precision: 8), scan = parsed.scans[0]
         let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: .default,
             hasDestination: true, normaliseXYBOutput: false, workerLimit: 2, backend: .accelerated))
@@ -71,7 +72,7 @@ import Testing
                     let n = polls.withLock { $0 += 1; return $0 }
                     if !failWorker && n >= 5 { throw CancellationError() }
                 }) {
-                    try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 2)) {
+                    try NativeOperation.$current.withValue(.init(seconds: 120, backend: backend, maximumWorkers: 2)) {
                         try output.withUnsafeMutableBytes { bytes in
                             try PipelinedGreyscaleDecoder.decode(reader: &reader, dcTable: dc, acTable: ac,
                                 lookup: ACLookahead(table: ac, blockCount: plan.blockCount),
