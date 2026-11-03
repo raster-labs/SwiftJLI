@@ -75,3 +75,19 @@ retains the original two-codec checks. These are development-only tools.
 ## Watch resource qualification
 
 The development-only [WatchQualification package](../Examples/WatchQualification/README.md) supplies focused Watch-budget tests and a physical-device run procedure. Its macOS CI check validates the harness on the host. The watchOS simulator job also runs it with `--configuration Release`, then invokes `python3 Scripts/verify-watch-qualification.py --evidence /path/to/watch-qualification` to require six passing tests and records, zero skips/failures, the Watch simulator identity, unchanged budgets and committed source identity. The verifier queries a separately verified xcresult copy so the result tool can create its SQLite index while the original evidence remains unchanged. Device execution and measured resource acceptance remain necessary for full hardware release qualification; the completed Milestone 4 software scope does not satisfy that gate.
+
+The `Codec and contract` workflow also supports manual Watch-only qualification
+on `macos-26-intel` when hosted ARM runners are unavailable. Dispatch the exact
+candidate branch or tag, for example:
+
+```sh
+gh workflow run contract.yml --repo raster-labs/SwiftJLI --ref <candidate-ref>
+```
+
+Manual dispatch runs the existing Watch library suite, six Release resource and
+cancellation cases, strict evidence verifier and artefact upload. Other job
+definitions are deliberately skipped for this targeted invocation. Pull
+requests and main pushes retain the ordinary thirteen-job matrix and ARM Watch
+runner. A targeted pass is Watch simulator evidence, not a full-matrix or
+physical-device result. Retain the actual checked-out revision, runner image,
+compiler, simulator and verification receipts before accepting it.

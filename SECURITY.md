@@ -8,6 +8,28 @@ The prepared reporting channel is [GitHub private vulnerability reporting](https
 
 Include affected version/commit, platform, a minimal safe reproducer, expected/actual behaviour and impact. Use synthetic data where possible. Keep the report private while maintainers reproduce the issue and prepare a correction. Coordinate disclosure through the private advisory thread.
 
+### Administrator activation
+
+For this public repository, a repository administrator, organisation owner or
+security manager can enable the prepared channel:
+
+1. Open [repository Settings](https://github.com/raster-labs/SwiftJLI/settings).
+2. Under **Security and quality**, select **Advanced Security**.
+3. Beside **Private vulnerability reporting**, select **Enable**.
+4. Confirm that **Report a vulnerability** appears on the
+   [Advisories page](https://github.com/raster-labs/SwiftJLI/security/advisories).
+
+These steps follow [GitHub's repository instructions](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository),
+checked on 3 November 2026. A read-only confirmation command is:
+
+```sh
+gh api repos/raster-labs/SwiftJLI/private-vulnerability-reporting --jq .enabled
+```
+
+Activation is verified only when that command succeeds and returns `true`.
+The Milestone 5 acceptance record must retain the successful check before
+closing this prerequisite.
+
 ## Supported versions
 
 | Version or branch | Security-fix policy |

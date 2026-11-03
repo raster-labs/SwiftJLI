@@ -1,0 +1,136 @@
+{
+  "auditedUTC": "2026-11-03T10:44:17.670690+00:00",
+  "status": "passed",
+  "baselineRevision": "8d0f8b4cbb3c482376e88caa8b6e894f3042a75d",
+  "checkoutRevision": "8d0f8b4cbb3c482376e88caa8b6e894f3042a75d",
+  "workflow": ".github/workflows/contract.yml",
+  "baselineSHA256": "06a0353acea9b4d48f7965fb3c414e60edbc73c3eb0584c22130826eb19b7ebc",
+  "auditedSHA256": "fd9f6e3a928d64f48b95f3ac4e33cfef62f860df1df10fb5f473dd9f55ec70e1",
+  "helperSHA256": "4f94bf8290cae5ca92742de4feacdcce01a4841d0522fc19f0225f3ee590b4b3",
+  "parser": {
+    "ruby": "2.6.10",
+    "psych": "3.1.0",
+    "duplicateKeysRejected": true,
+    "aliasesRejected": true,
+    "yaml11OnKeyNormalised": true
+  },
+  "normalEvents": {
+    "events": [
+      "pull_request",
+      "push"
+    ],
+    "deepEqualToBaselineAfterEvaluatingAddedConditions": true,
+    "jobCounts": {
+      "contract-identity": 1,
+      "linux": 4,
+      "macos": 1,
+      "apple-sdk-builds": 1,
+      "macos-intel": 1,
+      "ios-simulator": 1,
+      "other-apple-simulators": 3,
+      "independent-consumer": 1
+    },
+    "totalJobs": 13
+  },
+  "manualDispatch": {
+    "executedJobDefinitions": [
+      "other-apple-simulators"
+    ],
+    "platforms": [
+      "watchOS"
+    ],
+    "runner": "macos-26-intel",
+    "totalJobs": 1,
+    "skippedJobDefinitions": [
+      "contract-identity",
+      "linux",
+      "macos",
+      "apple-sdk-builds",
+      "macos-intel",
+      "ios-simulator",
+      "independent-consumer"
+    ],
+    "allTargetJobStepsUnchanged": true,
+    "includesLibrarySuiteAndSixReleaseCaseVerifier": true
+  },
+  "unchanged": [
+    "normal event triggers",
+    "permissions",
+    "concurrency",
+    "timeouts",
+    "all job steps",
+    "action pins",
+    "failure propagation",
+    "always-upload evidence paths and retention"
+  ],
+  "method": "Ruby Psych parse and duplicate-key check; exact expression-string checks; evaluate the two explicit event branches, then recursively compare the complete normal-event structure. This is not a GitHub Actions expression-engine execution.",
+  "limits": [
+    "No workflow dispatch, hosted run, codec build/test or simulator execution.",
+    "Runner allocation and successful execution remain unverified by this static audit.",
+    "Manual Watch success would not qualify skipped jobs, physical devices or performance."
+  ],
+  "invocation": [
+    "/opt/homebrew/opt/python@3.15/bin/python3.15",
+    "Documentation/Migration/Qualification/Milestone5/ci/watch-qualification/intel-fallback/audit-workflow.py",
+    "--repository",
+    "/Users/pushparaj/projects/SwiftJLI-milestone5",
+    "--baseline",
+    "8d0f8b4cbb3c482376e88caa8b6e894f3042a75d",
+    "--output",
+    "Documentation/Migration/Qualification/Milestone5/ci/watch-qualification/intel-fallback/workflow-audit.json"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "show",
+        "8d0f8b4cbb3c482376e88caa8b6e894f3042a75d:.github/workflows/contract.yml"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "06a0353acea9b4d48f7965fb3c414e60edbc73c3eb0584c22130826eb19b7ebc",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "ruby",
+        "-e",
+        "\nrequire 'psych'\nrequire 'json'\ntext = STDIN.read\ndef inspect_node(node)\n  if node.is_a?(Psych::Nodes::Mapping)\n    keys = node.children.each_slice(2).map { |pair| pair[0].value }\n    raise 'Duplicate YAML mapping key' unless keys.uniq == keys\n  end\n  raise 'Unexpected YAML alias' if node.is_a?(Psych::Nodes::Alias)\n  (node.children || []).each { |child| inspect_node(child) }\nend\ninspect_node(Psych.parse_stream(text))\nvalue = Psych.load(text)\n# Psych 3 uses YAML 1.1 and parses the Actions top-level 'on' key as true.\nvalue['on'] = value.delete(true) if value.key?(true)\nputs JSON.generate({'document' => value, 'ruby' => RUBY_VERSION, 'psych' => Psych::VERSION})\n"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "089851ddfa5eb501f333dcf6a4ce6aca82269f40295a7bf194d12a87b5783074",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "ruby",
+        "-e",
+        "\nrequire 'psych'\nrequire 'json'\ntext = STDIN.read\ndef inspect_node(node)\n  if node.is_a?(Psych::Nodes::Mapping)\n    keys = node.children.each_slice(2).map { |pair| pair[0].value }\n    raise 'Duplicate YAML mapping key' unless keys.uniq == keys\n  end\n  raise 'Unexpected YAML alias' if node.is_a?(Psych::Nodes::Alias)\n  (node.children || []).each { |child| inspect_node(child) }\nend\ninspect_node(Psych.parse_stream(text))\nvalue = Psych.load(text)\n# Psych 3 uses YAML 1.1 and parses the Actions top-level 'on' key as true.\nvalue['on'] = value.delete(true) if value.key?(true)\nputs JSON.generate({'document' => value, 'ruby' => RUBY_VERSION, 'psych' => Psych::VERSION})\n"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "66a8cdfa0fc9b256400b7341be1701da957be2981dad0f90ffe67ba20489c311",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        ".github/workflows/contract.yml"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "19752a977bef002a2b992b37023a90fe51ce413d50a763b3918e6e1f4030ae20",
+      "stderr": ""
+    }
+  ]
+}
