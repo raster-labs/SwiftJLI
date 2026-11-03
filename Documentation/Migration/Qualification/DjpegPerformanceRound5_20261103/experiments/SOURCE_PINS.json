@@ -113,6 +113,16 @@
       "revision": "01362d4ceee126d0a5a7675a73e5e991058551be",
       "baseline": "14f35018d241666358480da2a8527d29ab047627",
       "disposition": "Rejected paired AC production6ea5411 plus test-only macrofix01362d4; repeated dense DCT regressions."
+    },
+    {
+      "revision": "ec861325347806d9967237c3e8e92442d535dfd1",
+      "baseline": "14f35018d241666358480da2a8527d29ab047627",
+      "disposition": "Rejected extended AC: repeated lossless flat/ramp regressions in the original and four targeted paired rounds; source-level cause unproven."
+    },
+    {
+      "revision": "3f18c9fc44d4c2bcb9cc978d566859658d2ce63a",
+      "baseline": "14f35018d241666358480da2a8527d29ab047627",
+      "disposition": "Rejected narrow640 pipeline: exact samples and 58/11 focused tests, but repeated DCT latency regressions; RSS not measured."
     }
   ],
   "completedTrialAppend": {
@@ -128,5 +138,14 @@
     },
     "notice": "Separate trial qualification; merged root additionally tests large compact admission. Final safety/comparator gates not represented by this append."
   },
-  "latestCompletedCheckpoint": "14f35018d241666358480da2a8527d29ab047627"
+  "latestCompletedCheckpoint": "14f35018d241666358480da2a8527d29ab047627",
+  "diagnostics": [
+    {
+      "name": "pipeline-profile",
+      "sourceRevision": "14f35018d241666358480da2a8527d29ab047627",
+      "frozenBuildRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+      "objectSHA256": "9604e96a89586c07368942799ce1c29fa835fcdfc466c0b1e20074a76d6de9ed",
+      "disposition": "Read-only stack sampling diagnosis; no production change or performance acceptance."
+    }
+  ]
 }

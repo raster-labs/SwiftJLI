@@ -1,0 +1,683 @@
+commit 3f18c9fc44d4c2bcb9cc978d566859658d2ce63a
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 20:39:39 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 20:39:39 2026 +0530
+
+    Trial compact coefficient pipeline with separate input and output ownership
+
+diff --git a/Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift
+index 22ae793..e78d506 100644
+--- a/Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift
+@@ -133,7 +133,7 @@ enum ParallelSequentialGreyscaleDecoder {
+         }
+     }
+ 
+-    private static func encodeConstantTiles(_ values: UnsafeBufferPointer<Float>,
++    static func encodeConstantTiles(_ values: UnsafeBufferPointer<Float>,
+                                             into bytes: UnsafeMutableRawBufferPointer,
+                                             precision: Int, bytesPerSample: Int, floatOutput: Bool) throws {
+         let maximum = Float((1 << precision) - 1)
+diff --git a/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
+index 232c53f..b299b88 100644
+--- a/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
+@@ -2,27 +2,36 @@
+ import Foundation
+ import Synchronization
+ 
+-/// One joined reconstruction worker overlaps serial entropy decoding. The caller
+-/// alone reads compressed input and writes provider storage. Two internal slots
+-/// alternate, each holding one canonical 1024-block coefficient/output batch.
++/// One joined worker overlaps reconstruction with serial entropy decoding.
++/// A narrow coefficient slot is released after packing, while two independent
++/// Float buffers retain the canonical 1024-block transform. Only the caller
++/// writes provider storage, and releases each completed output before reuse.
+ enum PipelinedGreyscaleDecoder {
+     private final class State: Sendable {
+-        struct Progress { var completed = 0; var stopped = false; var error: (any Error)? }
++        struct Progress {
++            var inputConsumed = 0
++            var outputCompleted = 0
++            var stopped = false
++            var error: (any Error)?
++        }
+         let progress = Mutex(Progress())
+         let ready = DispatchSemaphore(value: 0)
+-        let done = DispatchSemaphore(value: 0)
++        let changed = DispatchSemaphore(value: 0)
++        let outputReleased = DispatchSemaphore(value: 0)
+         let joined = DispatchGroup()
+     }
+ 
+-    /// These independently owned arrays remain borrowed until joined.wait()
+-    /// returns, on every success/error path. Entropy exclusively owns slot N
+-    /// until signalling ready; the worker owns it through reconstruction and
+-    /// compaction, then publishes completion under the mutex. Only after that
+-    /// publication may the caller scatter/reuse the slot. The worker alone uses
+-    /// scratch; the quantiser is immutable. No provider pointer is captured.
++    /// All four owners remain in synchronous borrows until joined.wait returns.
++    /// The caller owns the narrow slot until ready; the worker reads it only
++    /// during packing. Publishing inputConsumed ends those reads before reuse.
++    /// The worker alone owns scratch. It owns output through reconstruction,
++    /// then publishes outputCompleted; the caller reads only its packed bytes
++    /// and signals outputReleased before the worker may write output again.
++    /// The immutable quantiser is shared. No provider pointer enters this carrier.
+     private struct Buffers: @unchecked Sendable {
+-        let coefficients: UnsafeMutablePointer<Int32>
++        let coefficients: UnsafeMutablePointer<Int16>
+         let scratch: UnsafeMutablePointer<Float>
++        let output: UnsafeMutablePointer<Float>
+         let quantiser: UnsafePointer<Float>
+     }
+ 
+@@ -33,106 +42,155 @@ enum PipelinedGreyscaleDecoder {
+         let blocks = plan.blockCount, slotSamples = 1024 * 64
+         guard blocks >= 2048, plan.batchBlocks == 1024, plan.blocksPerRow > 0,
+               precision == 8 || precision == 12, restartInterval >= 0,
+-              quantTable.count >= 64 else {
++              quantTable.count >= 64, NarrowSequentialCoefficients.accepts(acTable, precision: precision) else {
+             throw JLIError.decodingFailed("Invalid pipelined greyscale scan")
+         }
+-        var coefficients = [Int32](unsafeUninitializedCapacity: slotSamples * 2) { _, count in count = slotSamples * 2 }
++        var coefficients = [Int16](unsafeUninitializedCapacity: slotSamples) { _, count in count = slotSamples }
+         var scratch = [Float](unsafeUninitializedCapacity: slotSamples) { _, count in count = slotSamples }
++        var output = [Float](unsafeUninitializedCapacity: slotSamples) { _, count in count = slotSamples }
+         try coefficients.withUnsafeMutableBufferPointer { cp in
+             try scratch.withUnsafeMutableBufferPointer { sp in
+-                try quantTable.withUnsafeBufferPointer { qt in
+-                    guard let base = cp.baseAddress, let workspace = sp.baseAddress,
+-                          let quantiser = qt.baseAddress else {
+-                        throw JLIError.decodingFailed("Missing pipeline storage")
+-                    }
+-                    let buffers = Buffers(coefficients: base, scratch: workspace, quantiser: quantiser)
+-                    let state = State(), batches = (blocks - 1) / 1024 + 1
+-                    let context = NativeOperation.current, bps = destination.bytesPerSample
+-                    // The group covers the entire submitted work item, rather
+-                    // than an early signal from inside the worker body.
+-                    DispatchQueue.global(qos: .userInitiated).async(group: state.joined) {
+-                        do {
+-                            try NativeOperation.$current.withValue(context) {
+-                                for batch in 0..<batches {
+-                                    state.ready.wait()
+-                                    if state.progress.withLock({ $0.stopped }) { return }
+-                                    try NativeOperation.check()
+-                                    let count = min(1024, blocks - batch * 1024) * 64
+-                                    try ParallelSequentialGreyscaleDecoder.reconstructWindow(
+-                                        .init(start: buffers.coefficients + (batch & 1) * slotSamples, count: count),
+-                                        quantTable: .init(start: buffers.quantiser, count: 64),
+-                                        scratch: .init(start: buffers.scratch, count: slotSamples),
+-                                        precision: precision, bytesPerSample: bps, floatOutput: floatOutput)
+-                                    state.progress.withLock { $0.completed = batch + 1 }
+-                                    state.done.signal()
++                try output.withUnsafeMutableBufferPointer { op in
++                    try quantTable.withUnsafeBufferPointer { qt in
++                        guard let base = cp.baseAddress, let workspace = sp.baseAddress,
++                              let pixels = op.baseAddress, let quantiser = qt.baseAddress else {
++                            throw JLIError.decodingFailed("Missing pipeline storage")
++                        }
++                        let buffers = Buffers(coefficients: base, scratch: workspace,
++                                              output: pixels, quantiser: quantiser)
++                        let state = State(), batches = (blocks - 1) / 1024 + 1
++                        let context = NativeOperation.current, bps = destination.bytesPerSample
++                        DispatchQueue.global(qos: .userInitiated).async(group: state.joined) {
++                            do {
++                                try NativeOperation.$current.withValue(context) {
++                                    for batch in 0..<batches {
++                                        state.ready.wait()
++                                        if state.progress.withLock({ $0.stopped }) { return }
++                                        try NativeOperation.check()
++                                        let count = min(1024, blocks - batch * 1024), samples = count * 64
++                                        let dcOnly = NarrowSequentialCoefficients.prepareDCOnly(
++                                            UnsafePointer(buffers.coefficients), quantiser: buffers.quantiser,
++                                            into: buffers.scratch, blockCount: count)
++                                        if !dcOnly {
++                                            NarrowSequentialCoefficients.pack(UnsafePointer(buffers.coefficients),
++                                                quantiser: buffers.quantiser, into: buffers.scratch, blockCount: count)
++                                        }
++                                        // No coefficient access occurs after this publication.
++                                        state.progress.withLock { $0.inputConsumed = batch + 1 }
++                                        state.changed.signal()
++                                        if batch > 0 {
++                                            state.outputReleased.wait()
++                                            if state.progress.withLock({ $0.stopped }) { return }
++                                        }
++                                        try NativeOperation.check()
++                                        var centre = Float(1 << (precision - 1))
++                                        var low: Float = 0, high = Float((1 << precision) - 1)
++                                        if dcOnly {
++                                            jliDSP_vsadd(buffers.scratch, 1, &centre, buffers.scratch, 1, count)
++                                            jliDSP_vclip(buffers.scratch, 1, &low, &high, buffers.scratch, 1, count)
++                                            try ParallelSequentialGreyscaleDecoder.encodeConstantTiles(
++                                                .init(start: buffers.scratch, count: count),
++                                                into: .init(start: buffers.output, count: samples * MemoryLayout<Float>.stride),
++                                                precision: precision, bytesPerSample: bps, floatOutput: floatOutput)
++                                        } else {
++                                            AccelerateDSP.inverseDCTBatchPacked(output: buffers.output,
++                                                scratch: buffers.scratch, blockCount: count)
++                                            jliDSP_vsadd(buffers.output, 1, &centre, buffers.output, 1, samples)
++                                            jliDSP_vclip(buffers.output, 1, &low, &high, buffers.output, 1, samples)
++                                            try ParallelSequentialGreyscaleDecoder.compactPixelsInPlace(
++                                                .init(start: buffers.output, count: samples), precision: precision,
++                                                bytesPerSample: bps, floatOutput: floatOutput)
++                                        }
++                                        state.progress.withLock { $0.outputCompleted = batch + 1 }
++                                        state.changed.signal()
++                                    }
+                                 }
++                            } catch {
++                                state.progress.withLock { $0.error = error; $0.stopped = true }
++                                state.changed.signal()
+                             }
+-                        } catch {
+-                            state.progress.withLock { $0.error = error; $0.stopped = true }
+-                            state.done.signal()
+                         }
+-                    }
+-                    // Wake a worker waiting for unpublished entropy on any
+-                    // producer error, then join before either array borrow ends.
+-                    defer {
+-                        state.progress.withLock { $0.stopped = true }
+-                        state.ready.signal()
+-                        state.joined.wait()
+-                    }
+-                    func scatterCompleted(_ batch: Int) throws {
+-                        while true {
+-                            let status = state.progress.withLock { ($0.completed, $0.error) }
+-                            if let error = status.1 { throw error }
+-                            if status.0 > batch { break }
+-                            try NativeOperation.check()
+-                            // Deadline/cancellation remains observable while
+-                            // the bounded reconstruction unit is in flight.
+-                            _ = state.done.wait(timeout: .now() + .milliseconds(5))
++                        // Producer failure wakes either worker wait. Joining covers
++                        // the complete submitted work item, not an early body signal.
++                        defer {
++                            state.progress.withLock { $0.stopped = true }
++                            state.ready.signal()
++                            state.outputReleased.signal()
++                            state.joined.wait()
+                         }
+-                        try NativeOperation.check()
+-                        let count = min(1024, blocks - batch * 1024) * 64
+-                        try ParallelSequentialGreyscaleDecoder.scatterWindow(
+-                            .init(start: base + (batch & 1) * slotSamples, count: count),
+-                            firstBlock: batch * 1024, blocksPerRow: plan.blocksPerRow,
+-                            width: width, height: height, destination: destination)
+-                    }
+-                    var previousDC: Int32 = 0, restartIndex = 0
+-                    for batch in 0..<batches {
+-                        if batch >= 2 { try scatterCompleted(batch - 2) }
+-                        if let error = state.progress.withLock({ $0.error }) { throw error }
+-                        let first = batch * 1024, end = min(first + 1024, blocks)
+-                        let slot = base + (batch & 1) * slotSamples
+-                        var index = first
+-                        while index < end {
+-                            try NativeOperation.check()
+-                            let rowEnd = min(end, index + plan.blocksPerRow - index % plan.blocksPerRow)
+-                            while index < rowEnd {
+-                                if restartInterval > 0, index > 0, index % restartInterval == 0 {
+-                                    try reader.skipRestartMarker(expectedIndex: restartIndex)
+-                                    restartIndex = (restartIndex + 1) & 7
+-                                    previousDC = 0
+-                                }
+-                                let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
+-                                let dc = Int64(previousDC) + Int64(difference)
+-                                guard abs(dc) <= (1 << (precision + 2)) else {
+-                                    throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
++                        func awaitProgress(_ batch: Int, input: Bool) throws {
++                            while true {
++                                let status = state.progress.withLock {
++                                    (input ? $0.inputConsumed : $0.outputCompleted, $0.error)
+                                 }
+-                                previousDC = Int32(dc)
+-                                let block = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: 64)
+-                                if let lookup {
+-                                    try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
+-                                } else {
+-                                    try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
++                                if let error = status.1 { throw error }
++                                if status.0 > batch { break }
++                                try NativeOperation.check()
++                                _ = state.changed.wait(timeout: .now() + .milliseconds(5))
++                            }
++                            try NativeOperation.check()
++                        }
++                        func scatterCompleted(_ batch: Int) throws {
++                            try awaitProgress(batch, input: false)
++                            let count = min(1024, blocks - batch * 1024)
++                            try scatter(.init(start: pixels, count: count * 64 * bps),
++                                firstBlock: batch * 1024, blockCount: count, blocksPerRow: plan.blocksPerRow,
++                                width: width, height: height, destination: destination)
++                            state.outputReleased.signal()
++                        }
++                        var previousDC: Int32 = 0, restartIndex = 0
++                        for batch in 0..<batches {
++                            if batch > 0 { try awaitProgress(batch - 1, input: true) }
++                            if let error = state.progress.withLock({ $0.error }) { throw error }
++                            let first = batch * 1024, end = min(first + 1024, blocks)
++                            var index = first
++                            while index < end {
++                                try NativeOperation.check()
++                                let rowEnd = min(end, index + plan.blocksPerRow - index % plan.blocksPerRow)
++                                while index < rowEnd {
++                                    if restartInterval > 0, index > 0, index % restartInterval == 0 {
++                                        try reader.skipRestartMarker(expectedIndex: restartIndex)
++                                        restartIndex = (restartIndex + 1) & 7
++                                        previousDC = 0
++                                    }
++                                    let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
++                                    let dc = Int64(previousDC) + Int64(difference)
++                                    guard abs(dc) <= (1 << (precision + 2)) else {
++                                        throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
++                                    }
++                                    previousDC = Int32(dc)
++                                    let block = base + (index - first) * 64
++                                    try NarrowSequentialCoefficients.decodeAC(from: &reader, table: acTable,
++                                        lookup: lookup, into: block)
++                                    // The checked accumulated value is within ±16384.
++                                    block[0] = Int16(truncatingIfNeeded: previousDC)
++                                    index += 1
+                                 }
+-                                block[0] = previousDC
+-                                index += 1
+                             }
++                            state.ready.signal()
++                            if batch > 0 { try scatterCompleted(batch - 1) }
+                         }
+-                        state.ready.signal()
++                        try scatterCompleted(batches - 1)
+                     }
+-                    for batch in max(0, batches - 2)..<batches { try scatterCompleted(batch) }
+                 }
+             }
+         }
+     }
++
++    /// Only the caller reads the packed output after outputCompleted. The worker
++    /// cannot touch it again until this call finishes and outputReleased signals.
++    private static func scatter(_ source: UnsafeRawBufferPointer, firstBlock: Int,
++                                blockCount: Int, blocksPerRow: Int, width: Int, height: Int,
++                                destination: BorrowedSampleDestination) throws {
++        let base = source.baseAddress!, output = destination.bytes.baseAddress!, bps = destination.bytesPerSample
++        for index in 0..<blockCount {
++            if index & 63 == 0 { try NativeOperation.check() }
++            let block = firstBlock + index, x = block % blocksPerRow * 8, y = block / blocksPerRow * 8
++            guard x < width, y < height else { continue }
++            let tile = base + index * 64 * bps, bytes = min(8, width - x) * bps
++            for row in 0..<min(8, height - y) {
++                memcpy(output + (y + row) * destination.rowBytes + x * bps, tile + row * 8 * bps, bytes)
++            }
++        }
++    }
+ }
+diff --git a/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift b/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift
+index 88db08b..8c55baf 100644
+--- a/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift
++++ b/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift
+@@ -19,7 +19,7 @@ struct SequentialGreyscalePlan: Sendable {
+     /// The selected scan-local AC table proves every AC coefficient is zero.
+     let dcOnlyTable: Bool
+     /// Payload of coefficient/output slots and Float IDCT scratch. The
+-    /// pipeline owns two coefficient slots and one scratch slot; grouped and
++    /// pipeline owns one Int16 coefficient slot and two Float buffers; grouped and
+     /// serial paths own one of each per logical lane. A table-proven DC-only
+     /// scan retains one value of each type per block.
+     /// This is a conservative reservation component, not measured peak memory.
+@@ -63,6 +63,7 @@ struct SequentialGreyscalePlan: Sendable {
+         // this allocation/admission decision based on the immutable ceiling.
+         let serialThreshold = backend == .accelerated ? maximumAutomaticBlocks : maximumAutomaticScalarBlocks
+         let pipelined = !dcOnlyTable && backend == .accelerated && workerLimit >= 2 && blockCount >= 2048
++            && NarrowSequentialCoefficients.accepts(acTable, precision: frame.precision)
+         let parallelLanes: Int
+         // Compact DC storage always uses one canonical batch, even for a
+         // large image that would otherwise select a parallel window.
+@@ -74,7 +75,7 @@ struct SequentialGreyscalePlan: Sendable {
+         let batchBlocks = min(try checkedMultiply(maximumBatchBlocks, parallelLanes), blockCount)
+         let samples = try checkedMultiply(batchBlocks, dcOnlyTable ? 1 : 64)
+         let bytesPerSample = try checkedAdd(MemoryLayout<Int32>.stride, MemoryLayout<Float>.stride)
+-        let workspaceBytes = pipelined ? 786_432 : try checkedMultiply(samples, bytesPerSample)
++        let workspaceBytes = pipelined ? 655_360 : try checkedMultiply(samples, bytesPerSample)
+         return Self(blocksPerRow: blocksPerRow, blockRows: blockRows,
+                     blockCount: blockCount, batchBlocks: batchBlocks,
+                     parallelLanes: parallelLanes, pipelined: pipelined, dcOnlyTable: dcOnlyTable, workspaceBytes: workspaceBytes)
+diff --git a/Sources/SwiftJLI/Native/Entropy/NarrowSequentialCoefficients.swift b/Sources/SwiftJLI/Native/Entropy/NarrowSequentialCoefficients.swift
+new file mode 100644
+index 0000000..c1700d6
+--- /dev/null
++++ b/Sources/SwiftJLI/Native/Entropy/NarrowSequentialCoefficients.swift
+@@ -0,0 +1,99 @@
++// SPDX-License-Identifier: Apache-2.0
++
++/// Compact storage is restricted to validated sequential 8/12-bit scans. AC
++/// categories are at most 10/14, hence magnitudes are at most 1023/16383. The
++/// caller checks the accumulated DC against ±2^(precision+2) before storing it.
++/// Progressive coefficients and unchecked table values never use this helper.
++enum NarrowSequentialCoefficients {
++    static func accepts(_ table: HuffmanTable, precision: Int) -> Bool {
++        (precision == 8 || precision == 12) && !table.values.isEmpty
++            && table.values.allSatisfy { ($0 & 15) <= (precision == 8 ? 10 : 14) }
++    }
++
++    /// The table was checked by accepts before any scan storage was allocated.
++    /// All 64 slots are cleared before AC decoding. A throw leaves the same
++    /// partial coefficients as the ordinary decoder, represented exactly.
++    static func decodeAC(from reader: inout BitReader, table: HuffmanTable,
++                         lookup: ACLookahead?, into coefficients: UnsafeMutablePointer<Int16>) throws {
++        coefficients.update(repeating: 0, count: 64)
++        var index = 1
++        if let lookup {
++            while index < 64 {
++                if let entry = reader.fastDecodeAC(lookup, remaining: 64 - index) {
++                    let advance = Int((entry >> 16) & 0xFF)
++                    if advance == 0 { break }
++                    index += advance
++                    coefficients[index - 1] = Int16(truncatingIfNeeded: entry)
++                    continue
++                }
++                let symbol = try HuffmanDecoder.decodeSymbol(from: &reader, table: table)
++                if symbol == 0 { break }
++                if symbol == 0xF0 { index += 16; continue }
++                index += Int(symbol >> 4)
++                guard index < 64 else { break }
++                let value = try HuffmanDecoder.decodeValue(from: &reader, category: Int(symbol & 15))
++                guard let narrow = Int16(exactly: value) else {
++                    throw JLIError.decodingFailed("AC coefficient exceeds compact storage")
++                }
++                coefficients[index] = narrow
++                index += 1
++            }
++        } else {
++            while index < 64 {
++                let symbol = try HuffmanDecoder.decodeSymbol(from: &reader, table: table)
++                if symbol == 0 { break }
++                if symbol == 0xF0 { index += 16; continue }
++                index += Int(symbol >> 4)
++                guard index < 64 else { break }
++                let value = try HuffmanDecoder.decodeValue(from: &reader, category: Int(symbol & 15))
++                guard let narrow = Int16(exactly: value) else {
++                    throw JLIError.decodingFailed("AC coefficient exceeds compact storage")
++                }
++                coefficients[index] = narrow
++                index += 1
++            }
++        }
++    }
++
++    /// Consumes every narrow coefficient before its producer may reuse storage.
++    /// The Float conversion and multiplication match the existing Int32 pack:
++    /// every Int16 value is exactly representable in Float. Buffers are disjoint.
++    static func pack(_ coefficients: UnsafePointer<Int16>, quantiser: UnsafePointer<Float>,
++                     into scratch: UnsafeMutablePointer<Float>, blockCount: Int) {
++        guard blockCount > 0 else { return }
++        let rowStride = 8 * blockCount
++        Quantization.inverseZigzagOrder.withUnsafeBufferPointer { order in
++            let invZig = order.baseAddress!
++            for block in 0..<blockCount {
++                let source = coefficients + block * 64
++                for row in 0..<8 {
++                    let destination = scratch + row * rowStride + block * 8
++                    for column in 0..<8 {
++                        let index = row * 8 + column
++                        destination[column] = Float(source[invZig[index]]) * quantiser[index]
++                    }
++                }
++            }
++        }
++    }
++
++    /// Retains the exact DC-only shortcut for all-zero batches in a mixed table.
++    /// On success scratch holds one raw Float per block; all source reads finish
++    /// before this returns. On false no scratch value has been published.
++    static func prepareDCOnly(_ coefficients: UnsafePointer<Int16>, quantiser: UnsafePointer<Float>,
++                              into scratch: UnsafeMutablePointer<Float>, blockCount: Int) -> Bool {
++        guard blockCount > 0 else { return false }
++        for block in 0..<blockCount {
++            var nonzero: Int16 = 0
++            for index in 1..<64 { nonzero |= coefficients[block * 64 + index] }
++            if nonzero != 0 { return false }
++        }
++        let basis = AccelerateDSP.dctMatrix[0]
++        for block in 0..<blockCount {
++            let dequantised = Float(coefficients[block * 64]) * quantiser[0]
++            let first = dequantised * basis
++            scratch[block] = first * basis
++        }
++        return true
++    }
++}
+diff --git a/Tests/SwiftJLITests/Native/NarrowSequentialCoefficientTests.swift b/Tests/SwiftJLITests/Native/NarrowSequentialCoefficientTests.swift
+new file mode 100644
+index 0000000..f7933a2
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/NarrowSequentialCoefficientTests.swift
+@@ -0,0 +1,119 @@
++// SPDX-License-Identifier: Apache-2.0
++import Testing
++@testable import SwiftJLI
++
++@Suite struct NarrowSequentialCoefficientTests {
++    @Test(arguments: [8, 12], [false, true])
++    func allLegalACExtremesMatchWideDecoder(precision: Int, combined: Bool) throws {
++        let limit = precision == 8 ? 10 : 14
++        var bits = [UInt8](repeating: 0, count: 16)
++        let symbols = [UInt8(0), 0xF0] + (1...limit).map { UInt8($0) }
++        bits[3] = UInt8(symbols.count)
++        let table = HuffmanTable(bits: bits, values: symbols)
++        #expect(NarrowSequentialCoefficients.accepts(table, precision: precision))
++        let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 1024)) : nil
++        for category in 1...limit { for sign: Int32 in [-1, 1] {
++            var expected = [Int32](repeating: 0, count: 64)
++            for index in 1..<64 { expected[index] = sign * ((1 << category) - 1) }
++            var writer = BitWriter()
++            HuffmanEncoder.encodeAC(expected, table: table, writer: &writer)
++            writer.flush()
++            var wideReader = BitReader(data: writer.data), narrowReader = wideReader
++            var wide = [Int32](repeating: 123456, count: 64)
++            var narrow = [Int16](repeating: 12345, count: 70)
++            try wide.withUnsafeMutableBufferPointer { output in
++                if let lookup { try HuffmanDecoder.decodeAC(from: &wideReader, table: table, lookup: lookup, into: output) }
++                else { try HuffmanDecoder.decodeAC(from: &wideReader, table: table, into: output) }
++            }
++            try narrow.withUnsafeMutableBufferPointer { output in
++                try NarrowSequentialCoefficients.decodeAC(from: &narrowReader, table: table,
++                    lookup: lookup, into: output.baseAddress! + 3)
++            }
++            #expect(wide == expected)
++            #expect(narrow[3..<67].map(Int32.init) == expected)
++            #expect(narrow.prefix(3).allSatisfy { $0 == 12345 } && narrow.suffix(3).allSatisfy { $0 == 12345 })
++            wideReader.alignToByte(); narrowReader.alignToByte()
++            #expect(wideReader.byteOffset == narrowReader.byteOffset)
++        } }
++    }
++
++    @Test func invalidCategoriesAndTruncatedEntropyDoNotPublishNarrowValues() throws {
++        var bits = [UInt8](repeating: 0, count: 16); bits[0] = 1
++        let tooWide = HuffmanTable(bits: bits, values: [0x0F])
++        #expect(!NarrowSequentialCoefficients.accepts(tooWide, precision: 12))
++        #expect(!NarrowSequentialCoefficients.accepts(StandardHuffmanTables.acLuminance, precision: 7))
++        let table = StandardHuffmanTables.acLuminance
++        for combined in [false, true] {
++            let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 1024)) : nil
++            for bytes in [[UInt8](), [0xFF], [0xFF, 0xD0], [0x12, 0x37]] {
++                var wideReader = BitReader(data: bytes), narrowReader = wideReader
++                var wide = [Int32](repeating: 123456, count: 64)
++                var narrow = [Int16](repeating: 12345, count: 64)
++                let wideResult = Result { try wide.withUnsafeMutableBufferPointer { output in
++                    if let lookup { try HuffmanDecoder.decodeAC(from: &wideReader, table: table, lookup: lookup, into: output) }
++                    else { try HuffmanDecoder.decodeAC(from: &wideReader, table: table, into: output) }
++                } }
++                let narrowResult = Result { try narrow.withUnsafeMutableBufferPointer { output in
++                    try NarrowSequentialCoefficients.decodeAC(from: &narrowReader, table: table,
++                        lookup: lookup, into: output.baseAddress!)
++                } }
++                switch (wideResult, narrowResult) {
++                case (.failure(let a), .failure(let b)): #expect(String(describing: a) == String(describing: b))
++                case (.success, .success): break
++                default: Issue.record("Narrow entropy handling diverged")
++                }
++                #expect(narrow.map(Int32.init) == wide)
++                wideReader.alignToByte(); narrowReader.alignToByte()
++                #expect(wideReader.byteOffset == narrowReader.byteOffset)
++            }
++        }
++    }
++
++    @Test func narrowPackingAndCanonicalTransformsKeepRawFloatBits() {
++        for count in [1, 7, 8, 63, 226, 1023, 1024] { for dcOnly in [false, true] {
++            let extremes: [Int16] = [-16384, -16383, -1024, -1, 0, 1, 1024, 16383, 16384]
++            var narrow = [Int16](repeating: 0, count: count * 64)
++            for block in 0..<count {
++                narrow[block * 64] = extremes[block % extremes.count]
++                if !dcOnly { for index in 1..<64 {
++                    narrow[block * 64 + index] = Int16((block * 97 + index * 151) % 32767 - 16383)
++                } }
++            }
++            let wide = narrow.map(Int32.init), quantiser: [Float] = (0..<64).map { [1, 3, 255, 65535][$0 % 4] }
++            var expected = [Float](repeating: 123456, count: narrow.count)
++            var actual = expected, scratch = expected
++            wide.withUnsafeBufferPointer { w in
++                narrow.withUnsafeBufferPointer { n in
++                    quantiser.withUnsafeBufferPointer { q in
++                        expected.withUnsafeMutableBufferPointer { e in
++                            actual.withUnsafeMutableBufferPointer { a in
++                                scratch.withUnsafeMutableBufferPointer { s in
++                                    AccelerateDSP.packDequantizedDCTBatch(zigzag: w.baseAddress!,
++                                        quantTable: q.baseAddress!, scratch: e.baseAddress!, blockCount: count)
++                                    NarrowSequentialCoefficients.pack(n.baseAddress!, quantiser: q.baseAddress!,
++                                        into: a.baseAddress!, blockCount: count)
++                                    #expect(a.indices.allSatisfy { a[$0].bitPattern == e[$0].bitPattern })
++                                    if dcOnly {
++                                        var prepared = [Float](repeating: 123456, count: count)
++                                        prepared.withUnsafeMutableBufferPointer { p in
++                                            #expect(NarrowSequentialCoefficients.prepareDCOnly(n.baseAddress!,
++                                                quantiser: q.baseAddress!, into: p.baseAddress!, blockCount: count))
++                                            #expect(AccelerateDSP.prepareDCOnlyDCTBatch(zigzag: w.baseAddress!,
++                                                quantTable: q.baseAddress!, scratch: s.baseAddress!, blockCount: count))
++                                            #expect(p.indices.allSatisfy { p[$0].bitPattern == s[$0].bitPattern })
++                                        }
++                                    }
++                                    // The same canonical GEMM dimensions consume identical inputs.
++                                    AccelerateDSP.inverseDCTBatchPacked(output: s.baseAddress!, scratch: e.baseAddress!, blockCount: count)
++                                    let reference = Array(s)
++                                    AccelerateDSP.inverseDCTBatchPacked(output: s.baseAddress!, scratch: a.baseAddress!, blockCount: count)
++                                    #expect(reference.indices.allSatisfy { reference[$0].bitPattern == s[$0].bitPattern })
++                                }
++                            }
++                        }
++                    }
++                }
++            }
++        } }
++    }
++}
+diff --git a/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift b/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
+index d4615c9..9ec2674 100644
+--- a/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
++++ b/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
+@@ -33,7 +33,7 @@ import Testing
+             for workers in [2, 8] {
+                 let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: cfg,
+                     hasDestination: true, normaliseXYBOutput: false, workerLimit: workers, backend: .accelerated))
+-                #expect(plan.pipelined && plan.workspaceBytes == 786_432)
++                #expect(plan.pipelined && plan.workspaceBytes == 655_360)
+                 var output = [UInt8](repeating: 0xA5, count: 3 + stride * height + 7)
+                 try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: workers)) {
+                     try output.withUnsafeMutableBytes { bytes in
+@@ -89,4 +89,54 @@ import Testing
+             #expect(output.allSatisfy { $0 == 7 })
+         }
+     }
++    @Test func truncatedSecondBatchWakesAndJoinsWorkerHoldingFirstOutput() throws {
++        let parsed = try fixture(width: 1025, precision: 12), scan = parsed.scans[0]
++        let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: .default,
++            hasDestination: true, normaliseXYBOutput: false, workerLimit: 2, backend: .accelerated))
++        let selector = try #require(scan.header.components.first)
++        let dc = try #require(scan.dcTables[selector.dcTableId]), ac = try #require(scan.acTables[selector.acTableId])
++        let entropy = Array(scan.entropyData)
++        let secondRestart = try #require((0..<(entropy.count - 1)).first {
++            entropy[$0] == 0xFF && entropy[$0 + 1] == 0xD1
++        })
++        // RST1 follows block2045. Batch0 has been handed to the worker, but
++        // truncation prevents batch1 publication and caller scatter of batch0.
++        var reader = BitReader(data: Array(entropy.prefix(secondRestart)))
++        var output = [UInt8](repeating: 0xA5, count: 1025 * 257 * 2)
++        #expect(throws: JLIError.self) {
++            try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 2)) {
++                try output.withUnsafeMutableBytes { bytes in
++                    try PipelinedGreyscaleDecoder.decode(reader: &reader, dcTable: dc, acTable: ac,
++                        lookup: ACLookahead(table: ac, blockCount: plan.blockCount),
++                        quantTable: parsed.quantTables[0].map(Float.init), plan: plan,
++                        width: 1025, height: 257, precision: 12, restartInterval: parsed.restartInterval,
++                        floatOutput: false, destination: .init(bytes: bytes, rowBytes: 2050, bytesPerSample: 2))
++                }
++            }
++        }
++        #expect(output.allSatisfy { $0 == 0xA5 })
++        output.withUnsafeMutableBytes { $0.initializeMemory(as: UInt8.self, repeating: 7) }
++        #expect(output.allSatisfy { $0 == 7 })
++    }
++
++    @Test func uncheckedWideACTableRejectsBeforeStartingWorkerOrReadingEntropy() throws {
++        let parsed = try fixture(width: 513, precision: 12), scan = parsed.scans[0]
++        let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: .default,
++            hasDestination: true, normaliseXYBOutput: false, workerLimit: 2, backend: .accelerated))
++        var bits = [UInt8](repeating: 0, count: 16); bits[0] = 1
++        let invalid = HuffmanTable(bits: bits, values: [0x0F])
++        var reader = BitReader(data: scan.entropyData)
++        var output = [UInt8](repeating: 0xA5, count: 513 * 257 * 2)
++        #expect(throws: JLIError.self) {
++            try output.withUnsafeMutableBytes { bytes in
++                try PipelinedGreyscaleDecoder.decode(reader: &reader,
++                    dcTable: StandardHuffmanTables.dcLuminance, acTable: invalid, lookup: nil,
++                    quantTable: [Float](repeating: 1, count: 64), plan: plan,
++                    width: 513, height: 257, precision: 12, restartInterval: 0, floatOutput: false,
++                    destination: .init(bytes: bytes, rowBytes: 1026, bytesPerSample: 2))
++            }
++        }
++        #expect(reader.byteOffset == 0 && output.allSatisfy { $0 == 0xA5 })
++    }
++
+ }
+diff --git a/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift b/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift
+index 7ae6b20..593bf6f 100644
+--- a/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift
++++ b/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift
+@@ -212,12 +212,12 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+             let plan = try #require(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
+                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend))
+             #expect(plan.blockCount == threshold && plan.batchBlocks == 1024)
+-            #expect(plan.workspaceBytes == (backend == .accelerated ? 786_432 : 524_288))
++            #expect(plan.workspaceBytes == (backend == .accelerated ? 655_360 : 524_288))
+             let aboveThreshold = replacingGeometry(width: 8, height: (threshold + 1) * 8)
+             let above = try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
+                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend)
+             if backend == .accelerated {
+-                #expect(above?.pipelined == true && above?.batchBlocks == 1024 && above?.workspaceBytes == 786_432)
++                #expect(above?.pipelined == true && above?.batchBlocks == 1024 && above?.workspaceBytes == 655_360)
+             } else { #expect(above == nil) }
+             #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
+                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: backend)?.workspaceBytes == 524_288)
+@@ -240,7 +240,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+                 let lanes = pipeline ? 1 : min(workers, 8)
+                 #expect(plan.pipelined == pipeline)
+                 #expect(plan.parallelLanes == lanes && plan.batchBlocks == lanes * 1024)
+-                #expect(plan.workspaceBytes == (pipeline ? 786_432 : lanes * 524_288))
++                #expect(plan.workspaceBytes == (pipeline ? 655_360 : lanes * 524_288))
+             }
+         }
+     }
+@@ -291,10 +291,10 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+             sampleStride: 1, pixelStride: 1, rowBytes: rowBytes, byteCount: 3 + rowBytes * height)
+         let descriptor = try ImageDescriptor(width: width, height: height,
+             sampleType: .unsignedInteger, storageBits: 8, meaningfulBits: 8, planes: [plane])
+-        // Accelerated scans use two coefficient slots and one IDCT scratch;
++        // Accelerated scans use one Int16 coefficient slot and two Float buffers;
+         // scalar scans retain the two-lane grouped reservation.
+         for backend in Decoder.capabilities.availableBackends {
+-            let payload = backend == .accelerated ? 786_432 : 1_048_576
++            let payload = backend == .accelerated ? 655_360 : 1_048_576
+             let workspace = data.count * 64 + payload + 1_048_576
+             let total = data.count + storageBytes + workspace
+             let storage = try WorkspaceObservedStorage(byteCount: storageBytes)

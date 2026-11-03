@@ -1,0 +1,165 @@
+{
+  "note": "CPU sampling diagnosis only; no production edits or latency acceptance claims.",
+  "productionSourceRevision": "14f35018d241666358480da2a8527d29ab047627",
+  "frozenBuildRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "compiler": "Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)\nTarget: arm64-apple-macosx27.0.0\n",
+  "compilerSHA256": "448457da9a8a56741f2c8c4b8931e85b7377fc009c16918cd8ac1a8a3210ea1f",
+  "object": "/private/tmp/swiftjli-round5-704ddae-products/SwiftJLI.o",
+  "objectSHA256": "9604e96a89586c07368942799ce1c29fa835fcdfc466c0b1e20074a76d6de9ed",
+  "harnessSHA256": "3384b75b14beaee889b619fd7945d1e8ab8864331eb03d3b0d42fd16b5a30394",
+  "compileCommand": [
+    "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+    "-O",
+    "-g",
+    "-parse-as-library",
+    "-target",
+    "arm64-apple-macos26.0",
+    "-sdk",
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+    "-I",
+    "/private/tmp/swiftjli-round5-704ddae-products",
+    "/private/tmp/swiftjli-round5-704ddae-products/SwiftJLI.o",
+    "-framework",
+    "Accelerate",
+    "/private/tmp/swiftjli-round5-evidence/pipeline-profile/Profile.swift",
+    "-o",
+    "/private/tmp/swiftjli-round5-evidence/pipeline-profile/profile-decode"
+  ],
+  "runs": [
+    {
+      "case": "dct12-512-w8",
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline-profile/profile-decode",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "6"
+      ],
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "14312",
+        "4",
+        "1",
+        "-mayDie",
+        "-fullPaths",
+        "-file",
+        "/private/tmp/swiftjli-round5-evidence/pipeline-profile/dct12-512-w8.sample.txt"
+      ],
+      "sampleExitCode": 0,
+      "processExitCode": 0,
+      "initialOutputSHA256": "35256d7b7e98eed0285919dedd926131f7c5e636c505e5cc0a9b9c31ea64e5be",
+      "result": {
+        "checksum": 1865416704,
+        "firstLastOutputExact": true,
+        "fixture": "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "iterations": 3558,
+        "note": "Sampling diagnostic only; not a benchmark result.",
+        "outputSHA256": "35256d7b7e98eed0285919dedd926131f7c5e636c505e5cc0a9b9c31ea64e5be",
+        "profileDurationSeconds": 6,
+        "workers": 8
+      }
+    },
+    {
+      "case": "dct12-512-w1",
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline-profile/profile-decode",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "1",
+        "6"
+      ],
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "14351",
+        "4",
+        "1",
+        "-mayDie",
+        "-fullPaths",
+        "-file",
+        "/private/tmp/swiftjli-round5-evidence/pipeline-profile/dct12-512-w1.sample.txt"
+      ],
+      "sampleExitCode": 0,
+      "processExitCode": 0,
+      "initialOutputSHA256": "35256d7b7e98eed0285919dedd926131f7c5e636c505e5cc0a9b9c31ea64e5be",
+      "result": {
+        "checksum": 1822425088,
+        "firstLastOutputExact": true,
+        "fixture": "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "iterations": 3476,
+        "note": "Sampling diagnostic only; not a benchmark result.",
+        "outputSHA256": "35256d7b7e98eed0285919dedd926131f7c5e636c505e5cc0a9b9c31ea64e5be",
+        "profileDurationSeconds": 6,
+        "workers": 1
+      }
+    },
+    {
+      "case": "noise12-512-w8",
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline-profile/profile-decode",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "6"
+      ],
+      "fixtureSHA256": "fff9fe5e9aff91c4d8c1474ff6ac374d45eb660b940bdd1e9d841dc12fee5113",
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "14384",
+        "4",
+        "1",
+        "-mayDie",
+        "-fullPaths",
+        "-file",
+        "/private/tmp/swiftjli-round5-evidence/pipeline-profile/noise12-512-w8.sample.txt"
+      ],
+      "sampleExitCode": 0,
+      "processExitCode": 0,
+      "initialOutputSHA256": "f05143d2eacc36feb57a4e622986fc2025a007749545967b8322b9a138cf6a38",
+      "result": {
+        "checksum": 1670905856,
+        "firstLastOutputExact": true,
+        "fixture": "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "iterations": 3187,
+        "note": "Sampling diagnostic only; not a benchmark result.",
+        "outputSHA256": "f05143d2eacc36feb57a4e622986fc2025a007749545967b8322b9a138cf6a38",
+        "profileDurationSeconds": 6,
+        "workers": 8
+      }
+    },
+    {
+      "case": "dct12-2048-w8",
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline-profile/profile-decode",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "6"
+      ],
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "14429",
+        "4",
+        "1",
+        "-mayDie",
+        "-fullPaths",
+        "-file",
+        "/private/tmp/swiftjli-round5-evidence/pipeline-profile/dct12-2048-w8.sample.txt"
+      ],
+      "sampleExitCode": 0,
+      "processExitCode": 0,
+      "initialOutputSHA256": "e2b6192e4b877bd4893f02269cdf09ab3256bc2104cc9c0594b8ecd79b2f0b82",
+      "result": {
+        "checksum": 2264924160,
+        "firstLastOutputExact": true,
+        "fixture": "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "iterations": 270,
+        "note": "Sampling diagnostic only; not a benchmark result.",
+        "outputSHA256": "e2b6192e4b877bd4893f02269cdf09ab3256bc2104cc9c0594b8ecd79b2f0b82",
+        "profileDurationSeconds": 6,
+        "workers": 8
+      }
+    }
+  ],
+  "compileExitCode": 0,
+  "binarySHA256": "c3c9d956fefa93187ad31ed1002f49e0ce55706442bb54f9b6da44d9af6e5453",
+  "objectUnchanged": true
+}
