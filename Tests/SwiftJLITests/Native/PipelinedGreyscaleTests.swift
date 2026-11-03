@@ -62,7 +62,7 @@ import Testing
             let polls = Mutex(0)
             // An unsupported internal sample layout fails inside the worker
             // on every backend. NaN quantisers are not public JPEG inputs, and
-            // scalar/Accelerate clipping intentionally need not agree on NaN.
+            // scalar and Accelerate clipping can differ for NaN.
             let bytesPerSample = failWorker ? 3 : 1
             var output = [UInt8](repeating: 0xA5, count: 513 * 257 * bytesPerSample)
             var reader = BitReader(data: scan.entropyData)
