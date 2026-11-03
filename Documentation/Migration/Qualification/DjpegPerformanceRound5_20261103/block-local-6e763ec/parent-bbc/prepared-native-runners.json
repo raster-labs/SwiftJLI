@@ -1,0 +1,59 @@
+{
+  "status": "prepared-not-run",
+  "baselineRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "unchangedHarnesses": {
+    "/private/tmp/swiftjli-native-matrix.swift": "2863108c6088e0353fbb67433fe9791e1aefc2ba782223f1519627127959e6c6",
+    "/private/tmp/swiftjli-round2-dct-benchmark.swift": "bbd3423fbf17cb5ab4f5af32318953c06d2d91fa41f145dad127e603cef9e1de"
+  },
+  "baselineObjects": {
+    "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/SwiftJLI.o": "416de73390f6dc9b73e6c5829d51f7e294c2f196cf417acc908b7de107a5c1b9",
+    "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/SwiftJLIEntropyC.o": "3795a06fbc842f68bebac2d8ed0f0d7c3c1ec29c87649e982d5b98a2e1aef776"
+  },
+  "baselineReceipts": {
+    "/private/tmp/swiftjli-round5-evidence/parser-reservation/full-release-1/command.json": "65b3d2c8c75ef850b07c0c150a24c0d7686c0bdb4198ae82a197b01f2d67e8db",
+    "/private/tmp/swiftjli-round5-evidence/parser-reservation/native-lossless-1/receipt.json": "36df79ce5a88ebb754debc207d8be86637b0d2620a5c91a4df825bb46f886ea4",
+    "/private/tmp/swiftjli-round5-evidence/parser-reservation/native-dct-1/receipt.json": "c52a9443aba3f410ccdf4f25d6ab3dc727b64c90b2c7b90eda4b6c891b9f25db"
+  },
+  "candidateRevision": "bbc9ebe1a1e6c5fbe3839c697e562980d2a4a737",
+  "runnerSHA256": {
+    "run-dct.py": "afefae08bf4c569e8dbe3f07840074f5c07c8151ef8d1924b6b63b4623f97360",
+    "run-lossless.py": "ef39a37b07ba81f2318d328df9b8fc19974f1c62df5df32bd7fc26e5597abd40",
+    "provenance.py": "2247377523ba1db3321ede235409124dc75d28fe688dc5cd7947413faaeb015a",
+    "summarise-native.py": "a9e9f8602ed143b3ed9a1c7033845e8d12cdce4e99e7322a830f5af085919d52"
+  },
+  "sourceWorktree": "/private/tmp/swiftjli-round5-flat-small-recovery",
+  "sourceProof": {
+    "path": "/private/tmp/swiftjli-round5-evidence/flat-small-recovery-guards/source.json",
+    "sha256": "47a4cc414d68bc1600361ad167c2d6b67c0a1d6d0c221a956eb504f7843281d7"
+  },
+  "notes": [
+    "Prepared only: no native compilation or timing executed. Root owns CPU for the current full Release rerun.",
+    "Both full native Swift harness sources are unchanged byte-for-byte from prior production comparisons.",
+    "Candidate is independently pinned bbc composition; all old full-matrix failures and fixed diagnostic receipts remain separate and are not waived.",
+    "Each run requires a new non-existent output directory; source/object/compiler/import/binary/harness/fixture and runner hashes are retained."
+  ],
+  "commands": {
+    "lossless": [
+      "python3",
+      "/private/tmp/swiftjli-round5-evidence/flat-small-recovery-guards/run-lossless.py",
+      "--baseline-products",
+      "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release",
+      "--candidate-products",
+      "/private/tmp/swiftjli-round5-flat-small-recovery-release-build/out/Products/Release",
+      "--output",
+      "/private/tmp/swiftjli-round5-evidence/flat-small-recovery-guards/native-lossless-1/receipt.json"
+    ],
+    "dct": [
+      "python3",
+      "/private/tmp/swiftjli-round5-evidence/flat-small-recovery-guards/run-dct.py",
+      "--baseline-products",
+      "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release",
+      "--baseline-revision",
+      "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+      "--candidate-products",
+      "/private/tmp/swiftjli-round5-flat-small-recovery-release-build/out/Products/Release",
+      "--output",
+      "/private/tmp/swiftjli-round5-evidence/flat-small-recovery-guards/native-dct-1/receipt.json"
+    ]
+  }
+}

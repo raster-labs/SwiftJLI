@@ -132,8 +132,9 @@ metadata bytes, the current reservations are:
 | Parsing | `P` (structural reservation below) |
 | Predictive decode | `P + 8 × N` |
 | DCT decode, except eligible greyscale streaming | `P + 128 × N` |
-| Eligible full-resolution greyscale DCT streaming | `P + 512 × min(1024 × L, K)` |
-| Accelerated greyscale pipeline, at least 2,048 blocks and two permitted workers | `P + 786,432` |
+| Eligible greyscale DCT streaming using the retained GEMM transform | `P + 512 × min(1024 × L, K)` |
+| ARM64 accelerated block-local greyscale DCT, serial | `P + 256 × min(256, K)` |
+| Accelerated greyscale pipeline, at least 2,048 blocks and two permitted workers | `P + 131,072` for ARM64 block-local reconstruction; `P + 786,432` for GEMM |
 | Table-proven DC-only greyscale streaming | `P + 8 × min(1024, K)` |
 
 For public `Data` input, the parser reservation is
@@ -156,7 +157,7 @@ integer or raw Float output. An explicit worker ceiling of one uses one lane;
 small scans use one lane up to 4,096 accelerated or 2,048 scalar blocks. Larger
 scans use `min(8, maximumWorkers, floor(K/2048))` lanes when that permits at least
 two; otherwise the conservative full-plane reservation applies. The generic
-streaming payload is therefore at most 4 MiB. Each lane reconstructs canonical
+GEMM streaming payload is therefore at most 4 MiB. Each lane reconstructs canonical
 1,024-block groups, preserving the Float arithmetic grouping across worker counts.
 Workers use internal buffers; the calling thread copies finished tiles into the
 borrowed destination after all workers join.
@@ -170,13 +171,21 @@ precision; this is not reduced-scale decoding.
 For eligible nonconstant accelerated scans with at least 2,048 blocks and a
 worker ceiling of at least two, the pipeline takes precedence over the generic
 lane choice. It overlaps caller-thread entropy decoding with one joined
-reconstruction worker, using two 1,024-block coefficient/output slots and one
-Float scratch slot (768 KiB). The caller alone scatters completed tiles into
-provider storage. If only one CPU is active, execution falls back to the serial
-path within the same conservative reservation. The 768 KiB payload is lower
-than large grouped windows; it is 256 KiB higher than the intermediate one-batch
-512 KiB path for medium images. This explicit concurrency tradeoff is reflected
-in admission and its exact-bound tests.
+reconstruction worker. ARM64 Accelerate uses two 256-block coefficient/output
+slots (128 KiB), with no Float scratch array. Its block-local transform consumes
+all coefficients before reusing each slot and retains the established ascending
+fused multiply-add order, separate centring and clipping. Its serial route uses
+one slot, at most 64 KiB. Other architectures and the scalar backend retain their
+existing canonical GEMM paths; an eligible GEMM pipeline uses two 1,024-block
+coefficient/output slots and one Float scratch slot (768 KiB).
+
+The caller alone scatters completed tiles into provider storage. If only one CPU
+is active, execution falls back to the serial path within the same conservative
+reservation. Admission and dispatch use the same immutable transform/batch choice.
+The [qualified block-local checkpoint](Documentation/Migration/Qualification/DjpegPerformanceRound5_20261103/block-local-6e763ec/README.md)
+records exact output comparisons, cancellation/lifetime checks, the repaired
+zero-capacity scratch race and separate measured RSS. Allocation payloads above
+are not peak-memory measurements.
 
 Public allocated-output and caller-storage decode share these plans. Reduced
 scales, progressive/colour scans and unsupported layouts retain their existing

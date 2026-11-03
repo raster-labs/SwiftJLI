@@ -1,0 +1,165 @@
+{
+  "status": "primary-lossless-screen-failed-diagnostic-does-not-automatically-waive",
+  "candidateRevision": "bbc9ebe1a1e6c5fbe3839c697e562980d2a4a737",
+  "baselineRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "primaryScreen": "A fixture fails if candidate process median is more than5% slower in both original predeclared rounds. All original samples/outliers retained.",
+  "failures": {
+    "lossless": [
+      {
+        "case": "ramp-19",
+        "roundPercentChange": [
+          14.088900441902785,
+          7.25544554455444
+        ],
+        "repeatedOver5PercentRegression": true,
+        "baselineMilliseconds": [
+          0.0057705000000000005,
+          0.0063125
+        ],
+        "candidateMilliseconds": [
+          0.006583500000000001,
+          0.0067705
+        ]
+      }
+    ],
+    "dct": []
+  },
+  "allOutputExact": true,
+  "sourceAndArtifactsUnchanged": true,
+  "diagnostic": {
+    "receipt": "/private/tmp/swiftjli-round5-evidence/flat-small-recovery-guards/fixed-lossless-reproducibility/run1/receipt.json",
+    "sha256": "a9d11922d2d61dac941a2cedb254f189bf39041ee53a018becd263cc4f35e0ea",
+    "sameFrozenBinaries": true,
+    "processes": 12,
+    "records": 192,
+    "ramp19": {
+      "kind": "lossless",
+      "case": "ramp-19",
+      "pairs": [
+        {
+          "phase": "original",
+          "round": 1,
+          "baselineFirst": true,
+          "baselineMicroseconds": 5.7705,
+          "candidateMicroseconds": 6.583500000000001,
+          "changeMicroseconds": 0.8130000000000005,
+          "percentChange": 14.088900441902785
+        },
+        {
+          "phase": "original",
+          "round": 2,
+          "baselineFirst": false,
+          "baselineMicroseconds": 6.3125,
+          "candidateMicroseconds": 6.7705,
+          "changeMicroseconds": 0.4579999999999997,
+          "percentChange": 7.25544554455444
+        },
+        {
+          "phase": "diagnostic",
+          "round": 1,
+          "baselineFirst": true,
+          "baselineMicroseconds": 6.4375,
+          "candidateMicroseconds": 6.0,
+          "changeMicroseconds": -0.4374999999999996,
+          "percentChange": -6.796116504854366
+        },
+        {
+          "phase": "diagnostic",
+          "round": 2,
+          "baselineFirst": false,
+          "baselineMicroseconds": 6.625,
+          "candidateMicroseconds": 6.2295,
+          "changeMicroseconds": -0.39549999999999985,
+          "percentChange": -5.969811320754714
+        },
+        {
+          "phase": "diagnostic",
+          "round": 3,
+          "baselineFirst": true,
+          "baselineMicroseconds": 7.3125,
+          "candidateMicroseconds": 5.542000000000001,
+          "changeMicroseconds": -1.7704999999999993,
+          "percentChange": -24.211965811965808
+        },
+        {
+          "phase": "diagnostic",
+          "round": 4,
+          "baselineFirst": false,
+          "baselineMicroseconds": 5.7705,
+          "candidateMicroseconds": 5.396000000000001,
+          "changeMicroseconds": -0.37449999999999956,
+          "percentChange": -6.489905554111419
+        },
+        {
+          "phase": "diagnostic",
+          "round": 5,
+          "baselineFirst": true,
+          "baselineMicroseconds": 5.791,
+          "candidateMicroseconds": 6.0,
+          "changeMicroseconds": 0.20900000000000002,
+          "percentChange": 3.609048523571068
+        },
+        {
+          "phase": "diagnostic",
+          "round": 6,
+          "baselineFirst": false,
+          "baselineMicroseconds": 6.6045,
+          "candidateMicroseconds": 5.582999999999999,
+          "changeMicroseconds": -1.0215000000000003,
+          "percentChange": -15.466727231433119
+        }
+      ],
+      "originalTwo": {
+        "medianPairedPercentChange": 10.672172993228612,
+        "rangePercentChange": [
+          7.25544554455444,
+          14.088900441902785
+        ],
+        "roundsOver5Percent": 2,
+        "allRoundsOver5Percent": true,
+        "orderStrataMedianPercentChange": {
+          "baselineFirst": 14.088900441902785,
+          "candidateFirst": 7.25544554455444
+        }
+      },
+      "diagnosticSix": {
+        "medianPairedPercentChange": -6.643011029482892,
+        "rangePercentChange": [
+          -24.211965811965808,
+          3.609048523571068
+        ],
+        "roundsOver5Percent": 0,
+        "allRoundsOver5Percent": false,
+        "orderStrataMedianPercentChange": {
+          "baselineFirst": -6.796116504854366,
+          "candidateFirst": -6.489905554111419
+        }
+      },
+      "combinedEightDescriptiveOnly": {
+        "medianPairedPercentChange": -6.229858437433067,
+        "rangePercentChange": [
+          -24.211965811965808,
+          14.088900441902785
+        ],
+        "roundsOver5Percent": 2,
+        "allRoundsOver5Percent": false,
+        "orderStrataMedianPercentChange": {
+          "baselineFirst": -1.593533990641649,
+          "candidateFirst": -6.229858437433067
+        }
+      }
+    },
+    "interpretation": "Initial ramp19 slowing did not persist in fixedsix rounds; original primary failure is retained. No automatic acceptance waiver. Parent assesses combined evidence and remaining safety/oracle/CLI gates."
+  },
+  "CPUReleasedToRoot": true,
+  "notCoveredByTheseReceipts": [
+    "CLI/djpeg comparisons",
+    "fresh owned-output RSS",
+    "combined ASan/TSan results",
+    "selected-production integration"
+  ],
+  "summarySHA256": {
+    "lossless": "12ad5540232a89f95e7bb6830cf0b6542f22625042f7034ad47bb84d191963e7",
+    "dct": "ee37bf0c0613366098093761a5422b34b7aa7c4cab40bc032e413486067b013e"
+  }
+}

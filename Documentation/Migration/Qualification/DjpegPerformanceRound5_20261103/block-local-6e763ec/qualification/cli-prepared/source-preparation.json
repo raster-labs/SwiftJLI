@@ -1,0 +1,43 @@
+{
+  "status": "source-prepared-products-not-pinned",
+  "createdUTC": "2026-11-03T19:44:35.626247+00:00",
+  "sourceRevision": "6e763ec2099e162bae52a40109ff74269ea9899f",
+  "baselineRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "sourceSHA256": "087d10d8b053d3a78bbd17b1e853aa0e02cf5bf259e4ce1991fe8ceea7704c3e",
+  "files": {
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-prepared/prepare.py": "c87794b2e7dd25dd31ea292e9ab88173b96435232e597ad06bdb52f912e04ee7",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-prepared/run.py": "ec13f05069f6f460b7afeeb4e1edb6e473e7b5c1d421e34517015c61131c6a94",
+    "/private/tmp/swiftjli-round5-empty-scratch-fix/Scripts/benchmark-djpeg.py": "fba72076516c3bcf4460b9e058ff9618049ffeb8b22862d59cd687aff5042466",
+    "/private/tmp/swiftjli-round5-empty-scratch-fix/Scripts/test-cli.py": "8ca9a45a0eb00532dac365532c2b5fee961c3a0f77141c14695e1bafe3a4e2c6"
+  },
+  "priorHeldPlanSHA256": "de067cd74bdca9c1f7ff1ebbf5f6f1fb76e07dee627fbb5dac04b79a3330165b",
+  "freezeCommand": [
+    "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/bin/python3.15",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-prepared/prepare.py"
+  ],
+  "freezeRequires": "Successful corrected-source full Release at release-1/command.json; same source and compiler and all artifact hashes verified. The plan is new and refuses overwrite. Do not freeze while the Release products are still being built.",
+  "futureCommands": {
+    "cli-checks": [
+      "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/bin/python3.15",
+      "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-prepared/run.py",
+      "--gate",
+      "cli-checks"
+    ],
+    "benchmarks": [
+      "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/bin/python3.15",
+      "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-prepared/run.py",
+      "--gate",
+      "benchmarks"
+    ]
+  },
+  "cliCheckCommand": [
+    "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/bin/python3.15",
+    "/private/tmp/swiftjli-round5-empty-scratch-fix/Scripts/test-cli.py",
+    "--binary",
+    "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+    "--output",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-checks-1/process-checks"
+  ],
+  "method": "Same reviewed wrapper and unchanged benchmark script, all16lossless against ca0; original plus lossless-patterns against3.2.1 and3.2.0. No execution or product pinning performed.",
+  "candidateProducts": "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release"
+}

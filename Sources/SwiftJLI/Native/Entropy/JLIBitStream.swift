@@ -277,6 +277,21 @@ struct BitReader {
         return count
     }
 
+    /// Consumes complete 00 pairs while retaining the refill schedule of two
+    /// one-bit Huffman symbols per pair. The caller proves the symbols' meaning.
+    /// Leave at least seven bits: every skipped symbol must begin with eight
+    /// buffered bits, so the ordinary symbol reader would not refill inside the
+    /// run. Short buffers and incomplete pairs retain the ordinary decoder.
+    mutating func consumeZeroCodePairs(maximum: Int) -> Int {
+        guard maximum > 0 else { return 0 }
+        if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+        guard bitsAvailable >= 9 else { return 0 }
+        let aligned = bitBuffer &<< (64 - bitsAvailable)
+        let pairs = min(maximum, (bitsAvailable - 7) / 2, aligned.leadingZeroBitCount / 2)
+        bitsAvailable -= pairs * 2
+        return pairs
+    }
+
     /// Resolves a lossless category and its magnitude together when both are
     /// already buffered. This avoids a separate bit-reader call per sample.
     /// A miss consumes no bits: the ordinary symbol/value path retains all

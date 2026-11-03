@@ -1,0 +1,27 @@
+{
+  "status": "Proceed to safety and direct djpeg comparison; not selected production yet",
+  "sourceRevision": "bbc9ebe1a1e6c5fbe3839c697e562980d2a4a737",
+  "referenceRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "decisionUTC": "2026-11-03T19:35:19.959811+00:00",
+  "facts": [
+    "Initial full16 lossless screen preserved all samples and flagged ramp19 at +14.0889%/+7.2554%.",
+    "Full18 DCT screen preserved all samples with no repeated greater-than5% slowdown. FlatDCT,lateAC and noisy512 cases improved in both rounds.",
+    "One predeclared six-round diagnostic reused the same lossless executables and all16 cases without relinking or filtering. Ramp19 had0of6 greater-than5% slowdowns; all192additional case records were source-exact.",
+    "Across all8 paired ramp19 rounds the descriptive median change is -6.2299%, with2of8 above5%; all4tiny descriptive medians are below the accepted baseline."
+  ],
+  "judgment": "The initial tiny-ramp flag was not reproduced by the bounded unchanged-binary audit. This supports proceeding to broader qualification under the authorised provisional-timing scope. It does not establish a controlled no-regression guarantee, erase the failed initial screen, or complete the djpeg goal. No sample tolerance or workload was changed.",
+  "remaining": [
+    "FocusedASan andTSan",
+    "CLI regression and independent oracle checks",
+    "Direct djpeg timings and owned-output/whole-process RSS",
+    "Final source selection and report"
+  ],
+  "evidenceSHA256": {
+    "native-lossless-1/receipt.json": "912973bb59c3a1f9e8f926ee6d48ff45c3715be3d6807ed1ea83a30886eb1b6c",
+    "native-lossless-1/summary.json": "12ad5540232a89f95e7bb6830cf0b6542f22625042f7034ad47bb84d191963e7",
+    "native-dct-1/receipt.json": "f6dfe30ed08d6c9caeb1dfd85d4505af57fb2b8653dc2f79f0ad36218cad3d85",
+    "native-dct-1/summary.json": "ee37bf0c0613366098093761a5422b34b7aa7c4cab40bc032e413486067b013e",
+    "fixed-lossless-reproducibility/run1/receipt.json": "a9d11922d2d61dac941a2cedb254f189bf39041ee53a018becd263cc4f35e0ea",
+    "fixed-lossless-reproducibility/run1/independent-review.json": "57f692b448ac6dab92231d19c3205929ecd4cb458de12e3869708fd26246091a"
+  }
+}

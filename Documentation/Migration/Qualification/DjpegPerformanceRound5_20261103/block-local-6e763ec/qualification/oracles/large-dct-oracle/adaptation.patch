@@ -1,0 +1,66 @@
+--- /private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-dct-oracle/build.py
++++ /private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/build.py
+@@ -3,10 +3,10 @@
+ import argparse, datetime, hashlib, json, os, pathlib, subprocess
+ 
+ ROOT = pathlib.Path(__file__).resolve().parent
+-PRODUCTS = pathlib.Path('/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release')
++PRODUCTS = pathlib.Path('/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release')
+ COMPILER = pathlib.Path('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc')
+ SDK = '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk'
+-PIN = '5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd'
++PIN = '6e763ec2099e162bae52a40109ff74269ea9899f'
+ sha = lambda p: hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
+ now = lambda: datetime.datetime.now(datetime.timezone.utc).isoformat()
+ 
+@@ -27,7 +27,10 @@
+         print(json.dumps({'status': 'NOT EXECUTED', 'sourceRevision': PIN, 'command': command}, indent=2))
+         return
+     manifest = json.loads((ROOT / 'source-manifest.json').read_text())
++    assert manifest['executionStatus'] == 'ready', manifest.get('holdReason', 'Oracle execution is held')
+     assert manifest['sourceRevision'] == PIN
++    assert not manifest.get('pendingInputs'), 'Release product/build evidence binding is incomplete'
++    assert manifest.get('qualificationReceipt'), 'Release qualification receipt is required'
+     for item in manifest['files'] + manifest['frozenInputs']:
+         path = pathlib.Path(item['path'])
+         if not path.is_absolute(): path = ROOT / path
+--- /private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-dct-oracle/run.py
++++ /private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run.py
+@@ -4,7 +4,7 @@
+ 
+ ROOT = pathlib.Path(__file__).resolve().parent
+ TURBO = pathlib.Path('/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin')
+-PIN = '5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd'
++PIN = '6e763ec2099e162bae52a40109ff74269ea9899f'
+ sha = lambda p: hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
+ now = lambda: datetime.datetime.now(datetime.timezone.utc).isoformat()
+ 
+@@ -49,8 +49,14 @@
+                           'policies': ['scalarCPU', 'automatic'], 'maximumSampleDifferences': {'8': 2, '12': 4}}, indent=2))
+         return
+     manifest = json.loads((ROOT / 'source-manifest.json').read_text())
+-    for item in manifest['files']:
+-        assert sha(ROOT / item['path']) == item['sha256'], item['path']
++    assert manifest['executionStatus'] == 'ready', manifest.get('holdReason', 'Oracle execution is held')
++    assert manifest['sourceRevision'] == PIN
++    assert not manifest.get('pendingInputs'), 'Release product/build evidence binding is incomplete'
++    assert manifest.get('qualificationReceipt'), 'Release qualification receipt is required'
++    for item in manifest['files'] + manifest['frozenInputs']:
++        path = pathlib.Path(item['path'])
++        if not path.is_absolute(): path = ROOT / path
++        assert sha(path) == item['sha256'], str(path)
+     build = json.loads((args.build_dir / 'build.json').read_text())
+     assert build['status'] == 'passed' and build['sourceRevision'] == PIN
+     assert build['sourceManifestSHA256'] == sha(ROOT / 'source-manifest.json')
+@@ -122,7 +128,10 @@
+         assert len(receipt['profiles']) == 8 and len(receipt['comparisons']) == 16
+         assert sha(binary) == receipt['binarySHA256']
+         assert sha(TURBO / 'cjpeg') == receipt['cjpegSHA256'] and sha(TURBO / 'djpeg') == receipt['djpegSHA256']
+-        for item in manifest['files']: assert sha(ROOT / item['path']) == item['sha256']
++        for item in manifest['files'] + manifest['frozenInputs']:
++            path = pathlib.Path(item['path'])
++            if not path.is_absolute(): path = ROOT / path
++            assert sha(path) == item['sha256'], str(path)
+         for path in sorted(output.iterdir()):
+             if path.suffix in ['.pnm', '.jpg']:
+                 receipt['artifacts'].append({'path': path.name, 'bytes': path.stat().st_size, 'sha256': sha(path),

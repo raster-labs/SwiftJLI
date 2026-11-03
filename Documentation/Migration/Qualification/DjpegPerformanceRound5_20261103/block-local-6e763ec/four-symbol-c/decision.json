@@ -1,0 +1,110 @@
+{
+  "status": "held-performance-regression",
+  "sourceRevision": "f104160bb87da441083a43e095c49a5c25596c15",
+  "baselineRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "productionBaselineUnchanged": true,
+  "correctness": {
+    "focusedReleaseTests": 51,
+    "focusedReleaseSuites": 10,
+    "focusedExitCode": 0,
+    "standaloneCases": 1902443,
+    "standaloneASanUBSanExitCode": 0,
+    "allSourceExactLosslessPairs": 32,
+    "allExactDCTPairs": 36
+  },
+  "losslessScreen": {
+    "passed": true,
+    "repeatedOver5PercentRegressions": [],
+    "rampResults": [
+      {
+        "case": "ramp-512",
+        "roundPercentChange": [
+          -3.6936370944985475,
+          -11.574309439078112
+        ],
+        "repeatedOver5PercentRegression": false,
+        "baselineMilliseconds": [
+          0.375646,
+          0.3688125
+        ],
+        "candidateMilliseconds": [
+          0.361771,
+          0.326125
+        ]
+      },
+      {
+        "case": "ramp-2048",
+        "roundPercentChange": [
+          -37.14557450188681,
+          -38.28550665963035
+        ],
+        "repeatedOver5PercentRegression": false,
+        "baselineMilliseconds": [
+          5.815520500000001,
+          5.4204585
+        ],
+        "candidateMilliseconds": [
+          3.655312,
+          3.3452085
+        ]
+      },
+      {
+        "case": "ramp-3072",
+        "roundPercentChange": [
+          -35.09642157368259,
+          -39.741328033735876
+        ],
+        "repeatedOver5PercentRegression": false,
+        "baselineMilliseconds": [
+          12.12125,
+          13.108417000000001
+        ],
+        "candidateMilliseconds": [
+          7.867124999999999,
+          7.898958000000001
+        ]
+      }
+    ]
+  },
+  "dctScreen": {
+    "passed": false,
+    "repeatedOver5PercentRegressions": [
+      {
+        "case": "noise-8-19.jpg",
+        "roundPercentChange": [
+          12.58327471345222,
+          9.051428571428577
+        ],
+        "repeatedOver5PercentRegression": true,
+        "baselineMilliseconds": [
+          0.0120835,
+          0.013125000000000001
+        ],
+        "candidateMilliseconds": [
+          0.013604,
+          0.014313
+        ]
+      }
+    ]
+  },
+  "limitation": "The code-zero lossless optimisation is not executed for the regressing tiny DCT input. No causal explanation has been established; the observed repeated regression remains a failed gate. A separate composition, diagnostic or recovery requires its own source pin and qualification.",
+  "unexecuted": [
+    "CLI/djpeg comparisons",
+    "full broad Release/ASan/TSan acceptance",
+    "composition performance qualification",
+    "integration into selected production"
+  ],
+  "receiptsSHA256": {
+    "focused-release-1/command.json": "6eb3158582b50b91de9ed5995bf3283e1209a0cd8613b275abf5c2f6b2ff6d8e",
+    "focused-release-1/tests.log": "ae82afe6f6b1c7c336fd2deee61aee06065d0e618fc40cfb7587209776cb5f82",
+    "safety-run1/command-receipt.json": "6cb194ff8b032718adcb0f65dcabab9fd1ccb6a618c997edf6e8c5ede2f38bef",
+    "safety-run1/results.json": "03912b00dba17076133a026e443650edf869d6de861cad83d5d7e0da3e3d0d12",
+    "native-lossless-1/receipt.json": "7fb7b1f5bcb4e757058137e4318814f82b378ec27888a5377c4104cd6db2727b",
+    "native-lossless-1/summary.json": "861e39a8ffdd3394b720a27c5b104168fb13d529704f0203ab33de8918cbb089",
+    "native-dct-1/receipt.json": "f5d114017e7f00f4a5fa303519a68b23afd960374302d8b98b13e821d1ea75a0",
+    "native-dct-1/summary.json": "385ca24f77e1339ebd5e58ae00e5d62033e533bff8bbec3130a0dc76bcf727a1",
+    "codegen/path-review.json": "eb56c3a4cca41ca621632be8d4afca1804b0b6f48fc33116b088fbc92ef4aae6",
+    "post-run-verification.json": "96fc89c9608b821c578ad92a996573414b29419d4262d7a81b8adba581e45109"
+  },
+  "CPUReleased": true
+}

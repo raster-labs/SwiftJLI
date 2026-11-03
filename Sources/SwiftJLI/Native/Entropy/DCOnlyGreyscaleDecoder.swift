@@ -24,10 +24,18 @@ enum DCOnlyGreyscaleDecoder {
             throw JLIError.decodingFailed("Invalid compact DC-only scan")
         }
         let capacity = min(SequentialGreyscalePlan.maximumBatchBlocks, blocks)
+        // These canonical one-bit codes prove that 00 means unchanged DC
+        // followed by EOB. Other tables and non-zero prefixes keep the exact
+        // ordinary symbol path, including unusual zero-category AC symbols.
+        let zeroPairs = dcTable.lookaheadLength[0] == 1 && dcTable.lookaheadSymbol[0] == 0
+            && acTable.lookaheadLength[0] == 1 && acTable.lookaheadSymbol[0] == 0
         var values = [Int32](unsafeUninitializedCapacity: capacity) { _, count in count = capacity }
         var previousDC: Int32 = 0
         var restartIndex = 0
         try values.withUnsafeMutableBufferPointer { buffer in
+            guard let base = buffer.baseAddress else {
+                throw JLIError.decodingFailed("Invalid compact DC storage")
+            }
             for first in stride(from: 0, to: blocks, by: SequentialGreyscalePlan.maximumBatchBlocks) {
                 let end = min(first + SequentialGreyscalePlan.maximumBatchBlocks, blocks)
                 var index = first
@@ -39,6 +47,20 @@ enum DCOnlyGreyscaleDecoder {
                             try reader.skipRestartMarker(expectedIndex: restartIndex)
                             restartIndex = (restartIndex + 1) & 7
                             previousDC = 0
+                        }
+                        if zeroPairs {
+                            // Never cross a row, batch, restart or cancellation
+                            // boundary. previousDC was range-checked when set;
+                            // repeating it needs no new arithmetic or quantisation.
+                            let remaining = restartInterval > 0
+                                ? min(rowEnd - index, restartInterval - index % restartInterval)
+                                : rowEnd - index
+                            let run = reader.consumeZeroCodePairs(maximum: remaining)
+                            if run > 0 {
+                                base.advanced(by: index - first).update(repeating: previousDC, count: run)
+                                index += run
+                                continue
+                            }
                         }
                         let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
                         let dc = Int64(previousDC) + Int64(difference)
@@ -82,6 +104,52 @@ enum DCOnlyGreyscaleDecoder {
         }
     }
 
+    /// Tiny scans retain the established reconstruction and its Float stores
+    /// before a separate level-shift/clipping pass. The quantiser is a positive
+    /// JPEG integer, so the Int32 products and shifted samples are finite.
+    /// Input and output are independently owned, correctly bound scoped borrows.
+    static func reconstructTinyCentred(_ dc: UnsafeBufferPointer<Int32>, quantiser: Float,
+                                       precision: Int, into output: UnsafeMutableBufferPointer<Float>) throws {
+        guard (1...16).contains(dc.count), output.count == dc.count,
+              (8...12).contains(precision), let input = dc.baseAddress,
+              let samples = output.baseAddress else {
+            throw JLIError.decodingFailed("Invalid tiny compact DC reconstruction")
+        }
+        reconstruct(input, quantiser: quantiser, into: samples, blockCount: dc.count)
+        let centre = Float(1 << (precision - 1)), maximum = Float((1 << precision) - 1)
+        for index in 0..<dc.count {
+            let shifted = samples[index] + centre
+            samples[index] = min(maximum, max(0, shifted))
+        }
+    }
+
+    /// The plan admits at most 16 blocks. Temporary Float storage has exactly
+    /// the admitted count and never leaves this synchronous call. Entropy owns
+    /// its unchanged Int32 batch; no output is published until that batch is
+    /// complete. Entropy and caller-output cancellation polls are kept.
+    private static func decodeTinyInto(
+        reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable,
+        quantiser: Float, plan: SequentialGreyscalePlan,
+        width: Int, height: Int, precision: Int, restartInterval: Int,
+        floatOutput: Bool, destination: BorrowedSampleDestination
+    ) throws {
+        try withUnsafeTemporaryAllocation(of: Float.self, capacity: plan.blockCount) { output in
+            try decodeBatches(reader: &reader, dcTable: dcTable, acTable: acTable,
+                blocksPerRow: plan.blocksPerRow, blockRows: plan.blockRows,
+                precision: precision, restartInterval: restartInterval) { dc, first in
+                guard first == 0, dc.count == output.count else {
+                    throw JLIError.decodingFailed("Invalid tiny compact DC scan")
+                }
+                try reconstructTinyCentred(UnsafeBufferPointer(dc), quantiser: quantiser,
+                    precision: precision, into: output)
+                try SharedDCTStorage.writeGreyscaleConstantBlocks(
+                    UnsafeBufferPointer(output), firstBlock: first,
+                    blocksPerRow: plan.blocksPerRow, width: width, height: height,
+                    precision: precision, floatOutput: floatOutput, into: destination)
+            }
+        }
+    }
+
     /// Destination validation precedes this call. All entropy, reconstruction
     /// and caller-output work is synchronous on the calling thread. The only
     /// batches are one Int32 and one Float per block, bounded by 1024 blocks.
@@ -91,6 +159,13 @@ enum DCOnlyGreyscaleDecoder {
         width: Int, height: Int, precision: Int, restartInterval: Int,
         floatOutput: Bool, destination: BorrowedSampleDestination
     ) throws {
+        if (1...16).contains(plan.blockCount), plan.batchBlocks == plan.blockCount {
+            try decodeTinyInto(reader: &reader, dcTable: dcTable, acTable: acTable,
+                quantiser: quantiser, plan: plan, width: width, height: height,
+                precision: precision, restartInterval: restartInterval,
+                floatOutput: floatOutput, destination: destination)
+            return
+        }
         var values = [Float](unsafeUninitializedCapacity: plan.batchBlocks) { _, count in count = plan.batchBlocks }
         try values.withUnsafeMutableBufferPointer { output in
             try decodeBatches(reader: &reader, dcTable: dcTable, acTable: acTable,

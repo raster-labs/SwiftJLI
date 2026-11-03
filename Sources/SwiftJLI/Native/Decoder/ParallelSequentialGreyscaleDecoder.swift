@@ -13,14 +13,18 @@ enum ParallelSequentialGreyscaleDecoder {
         floatOutput: Bool, destination: BorrowedSampleDestination
     ) throws {
         let capacity = try checkedMultiply(plan.batchBlocks, 64)
-        var scratch = [Float](unsafeUninitializedCapacity: capacity) { _, count in count = capacity }
+        let scratchCount = plan.blockLocalIDCT ? 0 : capacity
+        // A zero-capacity uninitialised constructor writes the shared empty
+        // Array storage on this toolchain. FMA needs no scratch or such write.
+        var scratch: [Float] = scratchCount == 0 ? [] :
+            [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
         try quantTable.withUnsafeBufferPointer { qt in
             try scratch.withUnsafeMutableBufferPointer { workspace in
                 try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
                     dcTable: dcTable, acTable: acTable, lookup: lookup,
                     blocksPerRow: plan.blocksPerRow, blockRows: plan.blockRows,
                     precision: precision, restartInterval: restartInterval,
-                    windowBlocks: plan.batchBlocks) { coefficients, first in
+                    windowBlocks: plan.batchBlocks, transformGroupBlocks: plan.transformGroupBlocks) { coefficients, first in
                     try reconstructWindow(coefficients, quantTable: qt, scratch: workspace,
                         precision: precision,
                         bytesPerSample: destination.bytesPerSample, floatOutput: floatOutput)
@@ -51,19 +55,38 @@ enum ParallelSequentialGreyscaleDecoder {
         scratch: UnsafeMutableBufferPointer<Float>, zeroACGroups: UInt8? = nil,
         precision: Int, bytesPerSample: Int, floatOutput: Bool
     ) throws {
+        let blockLocal = BlockLocalIDCT.available && NativeDSP.usesAccelerate
         guard !coefficients.isEmpty, coefficients.count % 64 == 0,
               coefficients.count <= SequentialGreyscalePlan.maximumWindowBlocks * 64,
-              scratch.count >= coefficients.count, quantTable.count >= 64,
+              (blockLocal || scratch.count >= coefficients.count), quantTable.count >= 64,
               precision == 8 || precision == 12,
               floatOutput ? bytesPerSample == 4 : (bytesPerSample == 1 && precision <= 8) || bytesPerSample == 2,
-              let base = coefficients.baseAddress, let qt = quantTable.baseAddress,
-              let workspace = scratch.baseAddress else {
+              let base = coefficients.baseAddress, let qt = quantTable.baseAddress else {
             throw JLIError.decodingFailed("Invalid bounded reconstruction window")
         }
         let blocks = coefficients.count / 64, groups = (blocks - 1) / 1024 + 1
         let activeMask: UInt8 = groups == 8 ? .max : (UInt8(1) << groups) - 1
         if let zeroACGroups, zeroACGroups & ~activeMask != 0 {
             throw JLIError.decodingFailed("Invalid bounded reconstruction proof")
+        }
+        if blockLocal {
+            // Each canonical slot retains its original byte layout for scatter.
+            // The transform consumes all Int32 values before Float compaction.
+            // Neither phase accesses caller-owned destination storage.
+            for group in 0..<groups {
+                let first = group * 1024, count = min(1024, blocks - first) * 64
+                let slot = base + first * 64
+                try BlockLocalIDCT.reconstruct(.init(start: slot, count: count),
+                    quantiser: quantTable, precision: precision)
+                try slot.withMemoryRebound(to: Float.self, capacity: count) { pixels in
+                    try compactPixelsInPlace(.init(start: pixels, count: count), precision: precision,
+                        bytesPerSample: bytesPerSample, floatOutput: floatOutput)
+                }
+            }
+            return
+        }
+        guard let workspace = scratch.baseAddress else {
+            throw JLIError.decodingFailed("Missing bounded reconstruction scratch")
         }
         let buffers = WindowBuffers(coefficients: base, quantTable: qt, scratch: workspace)
         try NativeOperation.perform(iterations: groups) { group in

@@ -2,6 +2,29 @@
 
 **Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
 
+**4 November 2026 block-local decoding follow-up:** tested source
+`6e763ec2099e162bae52a40109ff74269ea9899f`, against parser source `ca0c1e8`,
+qualifies the composition of exact ARM64 FMA reconstruction, 256-block windows,
+serial C entropy, four-symbol C lossless rows, local small-image predictor history
+and compact DC zero-pair decoding. The pipeline payload falls from 768 to 128 KiB;
+serial block-local reconstruction uses at most 64 KiB. Other architecture/scalar
+GEMM paths and all fidelity, ownership and resource ceilings are retained.
+Parent `bbc9ebe` failed TSan on shared empty-array writes; explicit empty scratch
+arrays repair that race without suppression. Full Release passes 496 tests in
+85 suites, each focused sanitiser passes 133 tests in 25 suites, and CLI passes
+252 checks. All 68 native paired outputs are exact; no case slows over 5% in both
+rounds. Independent large oracles pass 24 exact lossless outputs and 16 DCT
+comparisons with maximum difference 1 within unchanged limits 2/4.
+The [qualified checkpoint](Qualification/DjpegPerformanceRound5_20261103/block-local-6e763ec/README.md)
+records all failures and commands, exact source/fixture pins, 11/12 allocated-output
+latency wins, five lossless RSS wins and seven remaining DCT RSS losses against
+libjpeg-turbo. All eight large lossless patterns beat both djpeg versions; small
+CLI cases and all CLI RSS comparisons still favour djpeg. Timings are provisional
+under owner-authorised host contention. New-source cross-platform/remote CI is
+unexecuted; the competitive goal and stable-release prerequisites remain open.
+Subsequent selected-Huffman and bounded-C-run experiments are separate and are
+not included in this checkpoint. Earlier entries below retain their source pins.
+
 **4 November 2026 parser admission follow-up:** tested source
 `ca0c1e874177f429ed199f3ed8ef6ac1315ee66a`, integrated as `0dc6730` with
 byte-identical Sources, Tests and Package.swift, replaces the blanket compressed

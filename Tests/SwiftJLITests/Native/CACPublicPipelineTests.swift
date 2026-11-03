@@ -27,8 +27,12 @@ private final class CACCanaryStorage: WritableImageStorage {
 }
 
 @Suite struct CACPublicPipelineTests {
-    @Test(.enabled(if: ProcessInfo.processInfo.activeProcessorCount >= 2), arguments: [8, 12], [false, true])
-    func publicDecodePreservesRestartCrossingAndCallerPadding(precision: Int, floating: Bool) async throws {
+    @Test(.enabled(if: ProcessInfo.processInfo.activeProcessorCount >= 2
+        && SwiftJLI.Decoder.capabilities.availableBackends.contains(.accelerated)),
+        arguments: [8, 12], [(false, 255), (true, 255), (false, 256), (true, 256),
+                            (false, 257), (true, 257), (false, 1023), (true, 1023)])
+    func publicDecodePreservesRestartCrossingAndCallerPadding(precision: Int, modes: (Bool, Int)) async throws {
+        let (floating, restart) = modes
         let width = 513, height = 257, sourceBps = precision == 8 ? 1 : 2
         let bps = floating ? 4 : sourceBps
         var samples = [UInt8](repeating: 0, count: width * height * sourceBps)
@@ -39,10 +43,10 @@ private final class CACCanaryStorage: WritableImageStorage {
         }
         let source = try JLIImage(width: width, height: height,
             pixelFormat: precision == 8 ? .uint8 : .uint16, colorModel: .grayscale, data: samples)
-        let bytes = try JLIEncoder().encode(source, configuration: .init(quality: 87, restartInterval: 1023))
+        let bytes = try JLIEncoder().encode(source, configuration: .init(quality: 87, restartInterval: restart))
         var parser = MarkerReader(data: bytes)
         let parsed = try parser.parse()
-        #expect(parsed.frameInfo.precision == precision && parsed.restartInterval == 1023)
+        #expect(parsed.frameInfo.precision == precision && parsed.restartInterval == restart)
         let scan = try #require(parsed.scans.first)
         let selector = try #require(scan.header.components.first)
         let dcTable = try #require(scan.dcTables[selector.dcTableId])
@@ -51,17 +55,26 @@ private final class CACCanaryStorage: WritableImageStorage {
         let acceleratedPlan = try #require(try SequentialGreyscalePlan.make(parsed: parsed,
             configuration: nativeConfiguration, hasDestination: true, normaliseXYBOutput: false,
             workerLimit: 2, backend: .accelerated))
-        // 65 * 33 blocks cover three alternating slots. Restarts at blocks
-        // 1023 and 2046 straddle the canonical 1024-block batch boundaries.
+        // 65 * 33 blocks reuse both slots and leave a 97-block final batch.
+        // Restarts immediately before/at/after 256 exercise the FMA boundary;
+        // 1023 retains the original GEMM boundary and crosses four FMA batches.
         #expect(acceleratedPlan.pipelined && acceleratedPlan.blockCount == 2145)
-        #expect(acceleratedPlan.batchBlocks == 1024 && !acceleratedPlan.dcOnlyTable)
+        let batchBlocks = BlockLocalIDCT.available ? 256 : 1024
+        #expect(acceleratedPlan.batchBlocks == batchBlocks && !acceleratedPlan.dcOnlyTable)
+        #expect(acceleratedPlan.workspaceBytes == (BlockLocalIDCT.available ? 131_072 : 786_432))
         let referencePlan = try #require(try SequentialGreyscalePlan.make(parsed: parsed,
             configuration: nativeConfiguration, hasDestination: true, normaliseXYBOutput: false,
             workerLimit: 1, backend: .accelerated))
-        #expect(!referencePlan.pipelined)
+        #expect(!referencePlan.pipelined && referencePlan.batchBlocks == batchBlocks)
         let lookup = try #require(ACLookahead(table: table, blockCount: acceleratedPlan.blockCount))
-        try CDCTKernel.withBorrowed(dcTable: dcTable, acTable: table, lookup: lookup, enabled: true) { kernel in
-            _ = try #require(kernel)
+        // Reproduce the C dispatch conditions for both serial and pipelined
+        // accelerated decodes. The scalar backend retains Swift entropy.
+        try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 2)) {
+            #expect(NativeOperation.workerLimit >= 2)
+            try CDCTKernel.withBorrowed(dcTable: dcTable, acTable: table, lookup: lookup,
+                enabled: NativeOperation.current?.backend == .accelerated) { kernel in
+                _ = try #require(kernel)
+            }
         }
 
         let offset = 4, suffix = 8, rowBytes = width * bps + 12

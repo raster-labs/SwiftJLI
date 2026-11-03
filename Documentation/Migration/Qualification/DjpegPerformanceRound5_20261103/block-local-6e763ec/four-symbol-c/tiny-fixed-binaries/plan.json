@@ -1,0 +1,134 @@
+{
+  "status": "predeclared-unexecuted",
+  "createdUTC": "2026-11-03T19:03:04.734017+00:00",
+  "candidateRevision": "f104160bb87da441083a43e095c49a5c25596c15",
+  "baselineRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "originalReceipt": "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/native-dct-1/receipt.json",
+  "originalReceiptSHA256": "f5d114017e7f00f4a5fa303519a68b23afd960374302d8b98b13e821d1ea75a0",
+  "originalGate": "Failed: noise-8-19 +12.58327471345222/+9.051428571428577%; unchanged by this diagnostic.",
+  "binaries": {
+    "baseline": {
+      "path": "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/native-dct-1/receipt-baseline",
+      "sha256": "e75b7677c28c8a7c3ee86731ba4a8c8d7c5567438b38b9c516b5508f426e2f2c"
+    },
+    "candidate": {
+      "path": "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/native-dct-1/receipt-candidate",
+      "sha256": "20aae0011cab3a2356d87d557bda111dca129cde165c9e367ec4754903edbc2c"
+    }
+  },
+  "harnessPath": "/private/tmp/swiftjli-round2-dct-benchmark.swift",
+  "harnessSHA256": "bbd3423fbf17cb5ab4f5af32318953c06d2d91fa41f145dad127e603cef9e1de",
+  "fixtures": {
+    "flat-8-19.jpg": {
+      "path": "/private/tmp/swiftjli-round5-dct-fixtures/flat-8-19.jpg",
+      "sha256": "4aa53d1f5630144dae9daf3fcba409bef5d761c1d714f97226c4d4c2a4516de1",
+      "expectedOutputSHA256": "af9a2ee78c31fe9dcd7b3eb206ce9b268fd256b551fb0f41c9cb0bf8f6c3995b",
+      "expectedOutputBytes": 361
+    },
+    "flat-12-19.jpg": {
+      "path": "/private/tmp/swiftjli-round5-dct-fixtures/flat-12-19.jpg",
+      "sha256": "daba87113be84aac1eb33fe506338f934433812abb1bf7102167a51a62efeb3a",
+      "expectedOutputSHA256": "fedf35cf441ad1c71e6f9c3146fea309ba23f0b33e6aa8a80787bf27cac6ebc0",
+      "expectedOutputBytes": 722
+    },
+    "noise-8-19.jpg": {
+      "path": "/private/tmp/swiftjli-round5-dct-fixtures/noise-8-19.jpg",
+      "sha256": "90211544c9c2d183d7b3cdb0baa3a75740396bdea1be7b01f0bdf00779d1fb85",
+      "expectedOutputSHA256": "d1b9c355b4a53086f36ec9ea6b19fe6b8cadeb88f0a9daae6c43eafa7a90ff59",
+      "expectedOutputBytes": 361
+    },
+    "noise-12-19.jpg": {
+      "path": "/private/tmp/swiftjli-round5-dct-fixtures/noise-12-19.jpg",
+      "sha256": "5d626a83f1cc52edfd5ba3c1b9ca897abca99b6ce4e96bc98bca7bfb432ebbad",
+      "expectedOutputSHA256": "ff3388ca0f813be8f7629f8ca205f7e4a077607e9ef7fba7d6d19b3365fc2299",
+      "expectedOutputBytes": 722
+    }
+  },
+  "schedule": [
+    {
+      "round": 1,
+      "caseOrder": [
+        "flat-8-19.jpg",
+        "flat-12-19.jpg",
+        "noise-8-19.jpg",
+        "noise-12-19.jpg"
+      ],
+      "binaryOrder": [
+        "baseline",
+        "candidate"
+      ]
+    },
+    {
+      "round": 2,
+      "caseOrder": [
+        "noise-12-19.jpg",
+        "noise-8-19.jpg",
+        "flat-12-19.jpg",
+        "flat-8-19.jpg"
+      ],
+      "binaryOrder": [
+        "candidate",
+        "baseline"
+      ]
+    },
+    {
+      "round": 3,
+      "caseOrder": [
+        "flat-12-19.jpg",
+        "noise-12-19.jpg",
+        "flat-8-19.jpg",
+        "noise-8-19.jpg"
+      ],
+      "binaryOrder": [
+        "baseline",
+        "candidate"
+      ]
+    },
+    {
+      "round": 4,
+      "caseOrder": [
+        "noise-8-19.jpg",
+        "flat-8-19.jpg",
+        "noise-12-19.jpg",
+        "flat-12-19.jpg"
+      ],
+      "binaryOrder": [
+        "candidate",
+        "baseline"
+      ]
+    },
+    {
+      "round": 5,
+      "caseOrder": [
+        "noise-8-19.jpg",
+        "noise-12-19.jpg",
+        "flat-8-19.jpg",
+        "flat-12-19.jpg"
+      ],
+      "binaryOrder": [
+        "baseline",
+        "candidate"
+      ]
+    },
+    {
+      "round": 6,
+      "caseOrder": [
+        "flat-12-19.jpg",
+        "flat-8-19.jpg",
+        "noise-12-19.jpg",
+        "noise-8-19.jpg"
+      ],
+      "binaryOrder": [
+        "candidate",
+        "baseline"
+      ]
+    }
+  ],
+  "method": "Same frozen executables and command shape as original DCT run; each process retains existing5warmups+20samples.48processes=4cases\u00d76rounds\u00d72binaries. No rebuild, relink, source change or harness change.",
+  "ordering": "Each case has baseline first in3rounds and candidate first in3. First4rounds are a Latin case-position square; final2are a reverse-order pair. With6rounds/4positions perfect case-position equality is impossible; each case occupies every position1or2times.",
+  "analysis": "For each case report all6paired process-median ratios/differences, their median/range, count over+5%, and separate medians for baseline-first/candidate-first rounds. Do not pool120individual samples as independent replicates. No rerun-until-pass or automatic acceptance waiver; original failed gate remains failed.",
+  "expectedRecords": 48,
+  "warmupsPerProcess": 5,
+  "measuredSamplesPerProcess": 20,
+  "purpose": "Assess reproducibility of tinyDCT regression under unchanged executable layout and expose order sensitivity."
+}

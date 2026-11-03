@@ -1,0 +1,1444 @@
+
+/private/tmp/swiftjli-round5-code0-four-symbols-build/out/Products/Release/SwiftJLIEntropyC.o:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+0000000000000000 <_sjli_ac_decode_block>:
+       0:      	cmp	x0, #0x0
+       4:      	ccmp	x1, #0x0, #0x4, eq
+       8:      	cset	w9, ne
+       c:      	mov	w8, #0x6                ; =6
+      10:      	cmp	x5, #0x2, lsl #12       ; =0x2000
+      14:      	b.ne	0x4e8 <_sjli_ac_decode_block+0x4e8>
+      18:      	tbnz	w9, #0x0, 0x4e8 <_sjli_ac_decode_block+0x4e8>
+      1c:      	cbz	x2, 0x4e8 <_sjli_ac_decode_block+0x4e8>
+      20:      	cbz	x3, 0x4e8 <_sjli_ac_decode_block+0x4e8>
+      24:      	cbz	x4, 0x4e8 <_sjli_ac_decode_block+0x4e8>
+      28:      	cbz	x6, 0x4e8 <_sjli_ac_decode_block+0x4e8>
+      2c:      	cmp	x7, #0x40
+      30:      	b.ne	0x4e8 <_sjli_ac_decode_block+0x4e8>
+      34:      	ldr	w11, [x3, #0x410]
+      38:      	cmp	w11, #0x100
+      3c:      	b.ls	0x48 <_sjli_ac_decode_block+0x48>
+      40:      	mov	w8, #0x6                ; =6
+      44:      	b	0x4e8 <_sjli_ac_decode_block+0x4e8>
+      48:      	stp	x26, x25, [sp, #-0x40]!
+      4c:      	stp	x24, x23, [sp, #0x10]
+      50:      	stp	x22, x21, [sp, #0x20]
+      54:      	stp	x20, x19, [sp, #0x30]
+      58:      	ldr	x20, [x2]
+      5c:      	cmp	x20, x1
+      60:      	b.hi	0x70 <_sjli_ac_decode_block+0x70>
+      64:      	ldr	w12, [x2, #0x10]
+      68:      	cmp	w12, #0x40
+      6c:      	b.ls	0x78 <_sjli_ac_decode_block+0x78>
+      70:      	mov	w8, #0x6                ; =6
+      74:      	b	0x4d8 <_sjli_ac_decode_block+0x4d8>
+      78:      	ldr	x10, [x2, #0x8]
+      7c:      	ldrb	w9, [x2, #0x14]
+      80:      	movi.2d	v0, #0000000000000000
+      84:      	stp	q0, q0, [x6]
+      88:      	stp	q0, q0, [x6, #0x20]
+      8c:      	stp	q0, q0, [x6, #0x40]
+      90:      	stp	q0, q0, [x6, #0x60]
+      94:      	stp	q0, q0, [x6, #0x80]
+      98:      	sub	x13, x6, #0x4
+      9c:      	stp	q0, q0, [x6, #0xa0]
+      a0:      	add	x14, x3, #0x210
+      a4:      	add	x15, x3, #0x310
+      a8:      	add	x16, x3, #0x110
+      ac:      	add	x17, x3, #0x90
+      b0:      	stp	q0, q0, [x6, #0xc0]
+      b4:      	mov	w21, #0x1               ; =1
+      b8:      	mov	x3, #-0x101010101010102 ; =-72340172838076674
+      bc:      	mov	w5, #0x40               ; =64
+      c0:      	mov	w7, #-0x1               ; =-1
+      c4:      	mov	w19, #-0x10000          ; =-65536
+      c8:      	stp	q0, q0, [x6, #0xe0]
+      cc:      	cmp	w12, #0xc
+      d0:      	b.hi	0x120 <_sjli_ac_decode_block+0x120>
+      d4:      	sub	x23, x1, x20
+      d8:      	cmp	x23, #0x8
+      dc:      	b.hs	0x168 <_sjli_ac_decode_block+0x168>
+      e0:      	cmp	w12, #0x7
+      e4:      	b.hi	0x188 <_sjli_ac_decode_block+0x188>
+      e8:      	orr	w8, w12, #0x8
+      ec:      	mov	x22, x1
+      f0:      	cmp	x1, x20
+      f4:      	b.eq	0x3b8 <_sjli_ac_decode_block+0x3b8>
+      f8:      	add	x24, x0, x20
+      fc:      	ldrb	w22, [x24]
+     100:      	cmp	x22, #0xff
+     104:      	b.eq	0x3a4 <_sjli_ac_decode_block+0x3a4>
+     108:      	mov	w12, #0x1               ; =1
+     10c:      	add	x20, x20, x12
+     110:      	orr	x10, x22, x10, lsl #8
+     114:      	cmp	w8, #0xd
+     118:      	b.hs	0x124 <_sjli_ac_decode_block+0x124>
+     11c:      	b	0x18c <_sjli_ac_decode_block+0x18c>
+     120:      	mov	x8, x12
+     124:      	sub	w12, w8, #0xd
+     128:      	lsr	x12, x10, x12
+     12c:      	and	x12, x12, #0x1fff
+     130:      	ldr	w22, [x4, x12, lsl #2]
+     134:      	ubfx	w23, w22, #16, #8
+     138:      	sub	w12, w5, w21
+     13c:      	cmp	w22, #0x0
+     140:      	ccmp	w23, w12, #0x2, ne
+     144:      	b.hi	0x18c <_sjli_ac_decode_block+0x18c>
+     148:      	sub	w12, w8, w22, lsr #24
+     14c:      	cbz	w23, 0x4ac <_sjli_ac_decode_block+0x4ac>
+     150:      	add	w21, w23, w21
+     154:      	tst	w22, #0x8000
+     158:      	csel	w8, wzr, w19, eq
+     15c:      	bfxil	w8, w22, #0, #16
+     160:      	str	w8, [x13, w21, uxtw #2]
+     164:      	b	0x398 <_sjli_ac_decode_block+0x398>
+     168:      	ldr	x8, [x0, x20]
+     16c:      	rev	x8, x8
+     170:      	sub	x22, x3, x8
+     174:      	and	x22, x8, x22
+     178:      	tst	x22, #0x8080808080808080
+     17c:      	b.eq	0x324 <_sjli_ac_decode_block+0x324>
+     180:      	cmp	w12, #0x8
+     184:      	b.lo	0xe8 <_sjli_ac_decode_block+0xe8>
+     188:      	mov	x8, x12
+     18c:      	sub	w12, w8, #0x8
+     190:      	lsr	x12, x10, x12
+     194:      	and	x22, x12, #0xff
+     198:      	ldrb	w12, [x14, x22]
+     19c:      	cbz	w12, 0x1ac <_sjli_ac_decode_block+0x1ac>
+     1a0:      	sub	w12, w8, w12
+     1a4:      	add	x8, x15, x22
+     1a8:      	b	0x288 <_sjli_ac_decode_block+0x288>
+     1ac:      	mov	x22, x20
+     1b0:      	mov	x12, x8
+     1b4:      	mov	x8, #0x0                ; =0
+     1b8:      	mov	w23, #0x0               ; =0
+     1bc:      	mov	x20, x22
+     1c0:      	cbnz	w12, 0x220 <_sjli_ac_decode_block+0x220>
+     1c4:      	sub	x12, x1, x20
+     1c8:      	cmp	x12, #0x8
+     1cc:      	b.lo	0x1e8 <_sjli_ac_decode_block+0x1e8>
+     1d0:      	ldr	x12, [x0, x20]
+     1d4:      	rev	x22, x12
+     1d8:      	sub	x12, x3, x22
+     1dc:      	and	x12, x22, x12
+     1e0:      	tst	x12, #0x8080808080808080
+     1e4:      	b.eq	0x254 <_sjli_ac_decode_block+0x254>
+     1e8:      	cmp	x1, x20
+     1ec:      	b.eq	0x4b4 <_sjli_ac_decode_block+0x4b4>
+     1f0:      	add	x22, x20, #0x1
+     1f4:      	ldrb	w12, [x0, x20]
+     1f8:      	cmp	x12, #0xff
+     1fc:      	b.ne	0x214 <_sjli_ac_decode_block+0x214>
+     200:      	cmp	x22, x1
+     204:      	b.eq	0x4c0 <_sjli_ac_decode_block+0x4c0>
+     208:      	ldrb	w24, [x0, x22]
+     20c:      	cbnz	w24, 0x4f0 <_sjli_ac_decode_block+0x4f0>
+     210:      	add	x22, x20, #0x2
+     214:      	orr	x10, x12, x10, lsl #8
+     218:      	mov	w12, #0x8               ; =8
+     21c:      	mov	x20, x22
+     220:      	sub	w12, w12, #0x1
+     224:      	lsr	x22, x10, x12
+     228:      	bfi	w22, w23, #1, #31
+     22c:      	add	x23, x17, x8, lsl #2
+     230:      	ldur	w24, [x23, #-0x48]
+     234:      	tbnz	w24, #0x1f, 0x240 <_sjli_ac_decode_block+0x240>
+     238:      	cmp	w22, w24
+     23c:      	b.ls	0x264 <_sjli_ac_decode_block+0x264>
+     240:      	add	x8, x8, #0x1
+     244:      	mov	x23, x22
+     248:      	cmp	x8, #0x10
+     24c:      	b.ne	0x1c0 <_sjli_ac_decode_block+0x1c0>
+     250:      	b	0x4a4 <_sjli_ac_decode_block+0x4a4>
+     254:      	add	x20, x20, #0x8
+     258:      	mov	w12, #0x40              ; =64
+     25c:      	mov	x10, x22
+     260:      	b	0x220 <_sjli_ac_decode_block+0x220>
+     264:      	ldr	x8, [x17, x8, lsl #3]
+     268:      	add	x22, x8, w22, uxtw
+     26c:      	ldursw	x23, [x23, #-0x8c]
+     270:      	mov	w8, #0x4                ; =4
+     274:      	subs	x22, x22, x23
+     278:      	b.mi	0x4cc <_sjli_ac_decode_block+0x4cc>
+     27c:      	cmp	x22, x11
+     280:      	b.hs	0x4cc <_sjli_ac_decode_block+0x4cc>
+     284:      	add	x8, x16, x22
+     288:      	ldrb	w8, [x8]
+     28c:      	cmp	w8, #0xf0
+     290:      	b.eq	0x31c <_sjli_ac_decode_block+0x31c>
+     294:      	cbz	w8, 0x4cc <_sjli_ac_decode_block+0x4cc>
+     298:      	add	w22, w21, w8, lsr #4
+     29c:      	cmp	w22, #0x3f
+     2a0:      	b.hi	0x4ac <_sjli_ac_decode_block+0x4ac>
+     2a4:      	and	x8, x8, #0xf
+     2a8:      	cbz	w8, 0x390 <_sjli_ac_decode_block+0x390>
+     2ac:      	cmp	w12, w8
+     2b0:      	b.hs	0x360 <_sjli_ac_decode_block+0x360>
+     2b4:      	sub	x21, x1, x20
+     2b8:      	cmp	x21, #0x8
+     2bc:      	b.lo	0x2d8 <_sjli_ac_decode_block+0x2d8>
+     2c0:      	ldr	x21, [x0, x20]
+     2c4:      	rev	x21, x21
+     2c8:      	sub	x23, x3, x21
+     2cc:      	and	x23, x21, x23
+     2d0:      	tst	x23, #0x8080808080808080
+     2d4:      	b.eq	0x460 <_sjli_ac_decode_block+0x460>
+     2d8:      	cmp	x1, x20
+     2dc:      	b.eq	0x4b8 <_sjli_ac_decode_block+0x4b8>
+     2e0:      	add	x21, x20, #0x1
+     2e4:      	ldrb	w23, [x0, x20]
+     2e8:      	cmp	x23, #0xff
+     2ec:      	b.ne	0x304 <_sjli_ac_decode_block+0x304>
+     2f0:      	cmp	x21, x1
+     2f4:      	b.eq	0x4c4 <_sjli_ac_decode_block+0x4c4>
+     2f8:      	ldrb	w24, [x0, x21]
+     2fc:      	cbnz	w24, 0x504 <_sjli_ac_decode_block+0x504>
+     300:      	add	x21, x20, #0x2
+     304:      	orr	x10, x23, x10, lsl #8
+     308:      	add	w12, w12, #0x8
+     30c:      	mov	x20, x21
+     310:      	cmp	w12, w8
+     314:      	b.lo	0x2b4 <_sjli_ac_decode_block+0x2b4>
+     318:      	b	0x364 <_sjli_ac_decode_block+0x364>
+     31c:      	add	w21, w21, #0x10
+     320:      	b	0x398 <_sjli_ac_decode_block+0x398>
+     324:      	sub	w22, w5, w12
+     328:      	lsr	w23, w22, #3
+     32c:      	and	w24, w22, #0x78
+     330:      	and	x22, x22, #0x38
+     334:      	lsl	x10, x10, x22
+     338:      	mvn	w22, w24
+     33c:      	lsr	x25, x8, #1
+     340:      	lsr	x22, x25, x22
+     344:      	orr	x10, x10, x22
+     348:      	cmp	w12, #0x0
+     34c:      	csel	w22, w5, w24, eq
+     350:      	csel	x10, x8, x10, eq
+     354:      	add	w8, w22, w12
+     358:      	add	x20, x20, w23, uxtw
+     35c:      	b	0x124 <_sjli_ac_decode_block+0x124>
+     360:      	mov	x21, x20
+     364:      	sub	w12, w12, w8
+     368:      	lsr	x20, x10, x12
+     36c:      	lsl	w23, w7, w8
+     370:      	bic	w20, w20, w23
+     374:      	sub	w23, w8, #0x1
+     378:      	lsr	w23, w20, w23
+     37c:      	lsl	w8, w7, w8
+     380:      	add	w8, w20, w8
+     384:      	cmp	w23, #0x0
+     388:      	csinc	w8, w20, w8, ne
+     38c:      	mov	x20, x21
+     390:      	add	w21, w22, #0x1
+     394:      	str	w8, [x6, w22, uxtw #2]
+     398:      	cmp	w21, #0x40
+     39c:      	b.lo	0xcc <_sjli_ac_decode_block+0xcc>
+     3a0:      	b	0x4ac <_sjli_ac_decode_block+0x4ac>
+     3a4:      	cmp	x23, #0x2
+     3a8:      	b.lo	0x3b4 <_sjli_ac_decode_block+0x3b4>
+     3ac:      	ldrb	w23, [x24, #0x1]
+     3b0:      	cbz	w23, 0x49c <_sjli_ac_decode_block+0x49c>
+     3b4:      	mov	x22, x20
+     3b8:      	sub	x20, x1, x22
+     3bc:      	cmp	x20, #0x8
+     3c0:      	b.lo	0x3dc <_sjli_ac_decode_block+0x3dc>
+     3c4:      	ldr	x23, [x0, x22]
+     3c8:      	rev	x23, x23
+     3cc:      	sub	x24, x3, x23
+     3d0:      	and	x24, x23, x24
+     3d4:      	tst	x24, #0x8080808080808080
+     3d8:      	b.eq	0x40c <_sjli_ac_decode_block+0x40c>
+     3dc:      	cmp	x1, x22
+     3e0:      	b.ne	0x3ec <_sjli_ac_decode_block+0x3ec>
+     3e4:      	mov	x22, x1
+     3e8:      	b	0x1b4 <_sjli_ac_decode_block+0x1b4>
+     3ec:      	add	x24, x0, x22
+     3f0:      	ldrb	w23, [x24]
+     3f4:      	cmp	x23, #0xff
+     3f8:      	b.eq	0x448 <_sjli_ac_decode_block+0x448>
+     3fc:      	mov	w12, #0x1               ; =1
+     400:      	add	x20, x22, x12
+     404:      	orr	x10, x23, x10, lsl #8
+     408:      	b	0x18c <_sjli_ac_decode_block+0x18c>
+     40c:      	sub	w8, w5, w12
+     410:      	lsr	w20, w8, #3
+     414:      	and	w24, w8, #0x78
+     418:      	and	x8, x8, #0x38
+     41c:      	lsl	x8, x10, x8
+     420:      	mvn	w10, w24
+     424:      	lsr	x25, x23, #1
+     428:      	lsr	x10, x25, x10
+     42c:      	orr	x8, x8, x10
+     430:      	cmp	w12, #0x0
+     434:      	csel	w24, w5, w24, eq
+     438:      	csel	x10, x23, x8, eq
+     43c:      	orr	w8, w24, w12
+     440:      	add	x20, x22, w20, uxtw
+     444:      	b	0x18c <_sjli_ac_decode_block+0x18c>
+     448:      	cmp	x20, #0x2
+     44c:      	b.lo	0x1b4 <_sjli_ac_decode_block+0x1b4>
+     450:      	ldrb	w20, [x24, #0x1]
+     454:      	cbnz	w20, 0x1b4 <_sjli_ac_decode_block+0x1b4>
+     458:      	mov	w12, #0x2               ; =2
+     45c:      	b	0x400 <_sjli_ac_decode_block+0x400>
+     460:      	sub	w23, w5, w12
+     464:      	lsr	w24, w23, #3
+     468:      	and	w25, w23, #0xfffffff8
+     46c:      	and	x23, x23, #0x38
+     470:      	lsl	x10, x10, x23
+     474:      	mvn	w23, w25
+     478:      	lsr	x26, x21, #1
+     47c:      	lsr	x23, x26, x23
+     480:      	orr	x10, x10, x23
+     484:      	cmp	w12, #0x0
+     488:      	csel	w23, w5, w25, eq
+     48c:      	csel	x10, x21, x10, eq
+     490:      	add	w12, w23, w12
+     494:      	add	x21, x20, w24, uxtw
+     498:      	b	0x364 <_sjli_ac_decode_block+0x364>
+     49c:      	mov	w12, #0x2               ; =2
+     4a0:      	b	0x10c <_sjli_ac_decode_block+0x10c>
+     4a4:      	mov	w8, #0x5                ; =5
+     4a8:      	b	0x4cc <_sjli_ac_decode_block+0x4cc>
+     4ac:      	mov	w8, #0x0                ; =0
+     4b0:      	b	0x4cc <_sjli_ac_decode_block+0x4cc>
+     4b4:      	mov	w12, #0x0               ; =0
+     4b8:      	mov	w8, #0x1                ; =1
+     4bc:      	b	0x4c8 <_sjli_ac_decode_block+0x4c8>
+     4c0:      	mov	w12, #0x0               ; =0
+     4c4:      	mov	w8, #0x2                ; =2
+     4c8:      	mov	x20, x1
+     4cc:      	stp	x20, x10, [x2]
+     4d0:      	str	w12, [x2, #0x10]
+     4d4:      	strb	w9, [x2, #0x14]
+     4d8:      	ldp	x20, x19, [sp, #0x30]
+     4dc:      	ldp	x22, x21, [sp, #0x20]
+     4e0:      	ldp	x24, x23, [sp, #0x10]
+     4e4:      	ldp	x26, x25, [sp], #0x40
+     4e8:      	mov	x0, x8
+     4ec:      	ret
+     4f0:      	mov	w12, #0x0               ; =0
+     4f4:      	mov	w8, #0x3                ; =3
+     4f8:      	mov	x9, x24
+     4fc:      	mov	x20, x22
+     500:      	b	0x4cc <_sjli_ac_decode_block+0x4cc>
+     504:      	mov	w8, #0x3                ; =3
+     508:      	mov	x9, x24
+     50c:      	mov	x20, x21
+     510:      	b	0x4cc <_sjli_ac_decode_block+0x4cc>
+
+0000000000000514 <_sjli_dct_decode_block>:
+     514:      	cmp	x0, #0x0
+     518:      	ccmp	x1, #0x0, #0x4, eq
+     51c:      	cset	w9, eq
+     520:      	mov	w8, #0x6                ; =6
+     524:      	cmp	x6, #0x2, lsl #12       ; =0x2000
+     528:      	b.ne	0x5a4 <_sjli_dct_decode_block+0x90>
+     52c:      	stp	x28, x27, [sp, #-0x50]!
+     530:      	stp	x26, x25, [sp, #0x10]
+     534:      	stp	x24, x23, [sp, #0x20]
+     538:      	stp	x22, x21, [sp, #0x30]
+     53c:      	stp	x20, x19, [sp, #0x40]
+     540:      	ldp	x11, x10, [sp, #0x58]
+     544:      	cmp	x10, #0x40
+     548:      	ccmp	w9, #0x0, #0x4, eq
+     54c:      	ccmp	x2, #0x0, #0x4, ne
+     550:      	ccmp	x3, #0x0, #0x4, ne
+     554:      	ccmp	x4, #0x0, #0x4, ne
+     558:      	ccmp	x5, #0x0, #0x4, ne
+     55c:      	ccmp	x7, #0x0, #0x4, ne
+     560:      	ccmp	x11, #0x0, #0x4, ne
+     564:      	b.eq	0x590 <_sjli_dct_decode_block+0x7c>
+     568:      	ldr	w14, [x3, #0x410]
+     56c:      	cmp	w14, #0x100
+     570:      	b.hi	0x58c <_sjli_dct_decode_block+0x78>
+     574:      	ldr	w12, [x4, #0x410]
+     578:      	cmp	w12, #0x100
+     57c:      	b.hi	0x58c <_sjli_dct_decode_block+0x78>
+     580:      	ldr	x13, [x2]
+     584:      	subs	x16, x1, x13
+     588:      	b.hs	0x5ac <_sjli_dct_decode_block+0x98>
+     58c:      	mov	w8, #0x6                ; =6
+     590:      	ldp	x20, x19, [sp, #0x40]
+     594:      	ldp	x22, x21, [sp, #0x30]
+     598:      	ldp	x24, x23, [sp, #0x20]
+     59c:      	ldp	x26, x25, [sp, #0x10]
+     5a0:      	ldp	x28, x27, [sp], #0x50
+     5a4:      	mov	x0, x8
+     5a8:      	ret
+     5ac:      	ldr	w15, [sp, #0x50]
+     5b0:      	and	w9, w15, #0xfffffffb
+     5b4:      	mov	w8, #0x6                ; =6
+     5b8:      	cmp	w9, #0x8
+     5bc:      	b.ne	0x590 <_sjli_dct_decode_block+0x7c>
+     5c0:      	ldr	w21, [x2, #0x10]
+     5c4:      	cmp	w21, #0x40
+     5c8:      	b.hi	0x590 <_sjli_dct_decode_block+0x7c>
+     5cc:      	ldr	x10, [x2, #0x8]
+     5d0:      	ldrb	w9, [x2, #0x14]
+     5d4:      	cmp	w21, #0x7
+     5d8:      	b.hi	0x660 <_sjli_dct_decode_block+0x14c>
+     5dc:      	cmp	x16, #0x8
+     5e0:      	b.lo	0x600 <_sjli_dct_decode_block+0xec>
+     5e4:      	ldr	x8, [x0, x13]
+     5e8:      	rev	x8, x8
+     5ec:      	mov	x17, #-0x101010101010102 ; =-72340172838076674
+     5f0:      	sub	x17, x17, x8
+     5f4:      	and	x17, x8, x17
+     5f8:      	tst	x17, #0x8080808080808080
+     5fc:      	b.eq	0x62c <_sjli_dct_decode_block+0x118>
+     600:      	cmp	x1, x13
+     604:      	b.eq	0xbbc <_sjli_dct_decode_block+0x6a8>
+     608:      	add	x17, x0, x13
+     60c:      	ldrb	w8, [x17]
+     610:      	cmp	x8, #0xff
+     614:      	b.eq	0xbac <_sjli_dct_decode_block+0x698>
+     618:      	mov	w16, #0x1               ; =1
+     61c:      	orr	w21, w21, #0x8
+     620:      	add	x13, x13, x16
+     624:      	orr	x10, x8, x10, lsl #8
+     628:      	b	0x660 <_sjli_dct_decode_block+0x14c>
+     62c:      	mov	w16, #0x40              ; =64
+     630:      	sub	x17, x16, x21
+     634:      	lsr	w6, w17, #3
+     638:      	and	x17, x17, #0x78
+     63c:      	lsl	x10, x10, x17
+     640:      	neg	w19, w17
+     644:      	lsr	x19, x8, x19
+     648:      	orr	x10, x19, x10
+     64c:      	cmp	w21, #0x0
+     650:      	csel	w16, w16, w17, eq
+     654:      	csel	x10, x8, x10, eq
+     658:      	orr	w21, w16, w21
+     65c:      	add	x13, x13, w6, uxtw
+     660:      	sub	w8, w21, #0x8
+     664:      	lsr	x8, x10, x8
+     668:      	add	x16, x3, w8, uxtb
+     66c:      	ldrb	w17, [x16, #0x210]
+     670:      	cbz	w17, 0xbbc <_sjli_dct_decode_block+0x6a8>
+     674:      	and	x16, x8, #0xff
+     678:      	sub	w21, w21, w17
+     67c:      	mov	w8, #0x310              ; =784
+     680:      	add	x8, x3, x8
+     684:      	ldrb	w14, [x8, x16]
+     688:      	cmp	w14, #0x10
+     68c:      	b.ls	0x69c <_sjli_dct_decode_block+0x188>
+     690:      	mov	w8, #0x7                ; =7
+     694:      	mov	x9, x14
+     698:      	b	0xd60 <_sjli_dct_decode_block+0x84c>
+     69c:      	cbz	w14, 0x714 <_sjli_dct_decode_block+0x200>
+     6a0:      	cmp	w21, w14
+     6a4:      	b.hs	0x71c <_sjli_dct_decode_block+0x208>
+     6a8:      	mov	x8, #-0x101010101010102 ; =-72340172838076674
+     6ac:      	sub	x16, x1, x13
+     6b0:      	cmp	x16, #0x8
+     6b4:      	b.lo	0x6d0 <_sjli_dct_decode_block+0x1bc>
+     6b8:      	ldr	x16, [x0, x13]
+     6bc:      	rev	x16, x16
+     6c0:      	sub	x17, x8, x16
+     6c4:      	and	x17, x16, x17
+     6c8:      	tst	x17, #0x8080808080808080
+     6cc:      	b.eq	0xcf0 <_sjli_dct_decode_block+0x7dc>
+     6d0:      	cmp	x1, x13
+     6d4:      	b.eq	0xcac <_sjli_dct_decode_block+0x798>
+     6d8:      	add	x16, x13, #0x1
+     6dc:      	ldrb	w17, [x0, x13]
+     6e0:      	cmp	x17, #0xff
+     6e4:      	b.ne	0x6fc <_sjli_dct_decode_block+0x1e8>
+     6e8:      	cmp	x16, x1
+     6ec:      	b.eq	0xcc0 <_sjli_dct_decode_block+0x7ac>
+     6f0:      	ldrb	w3, [x0, x16]
+     6f4:      	cbnz	w3, 0xd38 <_sjli_dct_decode_block+0x824>
+     6f8:      	add	x16, x13, #0x2
+     6fc:      	orr	x10, x17, x10, lsl #8
+     700:      	add	w21, w21, #0x8
+     704:      	mov	x13, x16
+     708:      	cmp	w21, w14
+     70c:      	b.lo	0x6ac <_sjli_dct_decode_block+0x198>
+     710:      	b	0x720 <_sjli_dct_decode_block+0x20c>
+     714:      	mov	w8, #0x0                ; =0
+     718:      	b	0x754 <_sjli_dct_decode_block+0x240>
+     71c:      	mov	x16, x13
+     720:      	sub	w21, w21, w14
+     724:      	lsr	x8, x10, x21
+     728:      	mov	x13, #-0x1              ; =-1
+     72c:      	lsl	x13, x13, x14
+     730:      	bic	w8, w8, w13
+     734:      	sub	w13, w14, #0x1
+     738:      	lsr	w13, w8, w13
+     73c:      	mov	w17, #-0x1              ; =-1
+     740:      	lsl	w14, w17, w14
+     744:      	add	w14, w8, w14
+     748:      	cmp	w13, #0x0
+     74c:      	csinc	w8, w8, w14, ne
+     750:      	mov	x13, x16
+     754:      	ldrsw	x14, [x7]
+     758:      	add	x14, x14, w8, sxtw
+     75c:      	orr	w8, w15, #0x2
+     760:      	mov	w15, #0x1               ; =1
+     764:      	lsl	x8, x15, x8
+     768:      	cmn	x14, x8
+     76c:      	ccmp	x14, x8, #0x0, ge
+     770:      	b.le	0x77c <_sjli_dct_decode_block+0x268>
+     774:      	mov	w8, #0x8                ; =8
+     778:      	b	0xd60 <_sjli_dct_decode_block+0x84c>
+     77c:      	str	w14, [x7]
+     780:      	movi.2d	v0, #0000000000000000
+     784:      	stp	q0, q0, [x11]
+     788:      	stp	q0, q0, [x11, #0x20]
+     78c:      	stp	q0, q0, [x11, #0x40]
+     790:      	stp	q0, q0, [x11, #0x60]
+     794:      	stp	q0, q0, [x11, #0x80]
+     798:      	sub	x15, x11, #0x4
+     79c:      	add	x16, x4, #0x210
+     7a0:      	stp	q0, q0, [x11, #0xa0]
+     7a4:      	add	x17, x4, #0x310
+     7a8:      	add	x3, x4, #0x110
+     7ac:      	add	x4, x4, #0x90
+     7b0:      	mov	w22, #0x1               ; =1
+     7b4:      	stp	q0, q0, [x11, #0xc0]
+     7b8:      	mov	x6, #-0x101010101010102 ; =-72340172838076674
+     7bc:      	mov	w7, #0x40               ; =64
+     7c0:      	mov	w19, #-0x1              ; =-1
+     7c4:      	mov	w20, #-0x10000          ; =-65536
+     7c8:      	stp	q0, q0, [x11, #0xe0]
+     7cc:      	cmp	w21, #0xc
+     7d0:      	b.hi	0x820 <_sjli_dct_decode_block+0x30c>
+     7d4:      	sub	x24, x1, x13
+     7d8:      	cmp	x24, #0x8
+     7dc:      	b.hs	0x868 <_sjli_dct_decode_block+0x354>
+     7e0:      	cmp	w21, #0x7
+     7e4:      	b.hi	0x888 <_sjli_dct_decode_block+0x374>
+     7e8:      	orr	w8, w21, #0x8
+     7ec:      	mov	x23, x1
+     7f0:      	cmp	x1, x13
+     7f4:      	b.eq	0xac0 <_sjli_dct_decode_block+0x5ac>
+     7f8:      	add	x25, x0, x13
+     7fc:      	ldrb	w23, [x25]
+     800:      	cmp	x23, #0xff
+     804:      	b.eq	0xaac <_sjli_dct_decode_block+0x598>
+     808:      	mov	w21, #0x1               ; =1
+     80c:      	add	x13, x13, x21
+     810:      	orr	x10, x23, x10, lsl #8
+     814:      	cmp	w8, #0xd
+     818:      	b.hs	0x824 <_sjli_dct_decode_block+0x310>
+     81c:      	b	0x88c <_sjli_dct_decode_block+0x378>
+     820:      	mov	x8, x21
+     824:      	sub	w21, w8, #0xd
+     828:      	lsr	x21, x10, x21
+     82c:      	and	x21, x21, #0x1fff
+     830:      	ldr	w23, [x5, x21, lsl #2]
+     834:      	ubfx	w24, w23, #16, #8
+     838:      	sub	w21, w7, w22
+     83c:      	cmp	w23, #0x0
+     840:      	ccmp	w24, w21, #0x2, ne
+     844:      	b.hi	0x88c <_sjli_dct_decode_block+0x378>
+     848:      	sub	w21, w8, w23, lsr #24
+     84c:      	cbz	w24, 0xcdc <_sjli_dct_decode_block+0x7c8>
+     850:      	add	w22, w24, w22
+     854:      	tst	w23, #0x8000
+     858:      	csel	w8, wzr, w20, eq
+     85c:      	bfxil	w8, w23, #0, #16
+     860:      	str	w8, [x15, w22, uxtw #2]
+     864:      	b	0xaa0 <_sjli_dct_decode_block+0x58c>
+     868:      	ldr	x8, [x0, x13]
+     86c:      	rev	x8, x8
+     870:      	sub	x23, x6, x8
+     874:      	and	x23, x8, x23
+     878:      	tst	x23, #0x8080808080808080
+     87c:      	b.eq	0xa24 <_sjli_dct_decode_block+0x510>
+     880:      	cmp	w21, #0x8
+     884:      	b.lo	0x7e8 <_sjli_dct_decode_block+0x2d4>
+     888:      	mov	x8, x21
+     88c:      	sub	w21, w8, #0x8
+     890:      	lsr	x21, x10, x21
+     894:      	and	x23, x21, #0xff
+     898:      	ldrb	w21, [x16, x23]
+     89c:      	cbz	w21, 0x8ac <_sjli_dct_decode_block+0x398>
+     8a0:      	sub	w21, w8, w21
+     8a4:      	add	x8, x17, x23
+     8a8:      	b	0x988 <_sjli_dct_decode_block+0x474>
+     8ac:      	mov	x23, x13
+     8b0:      	mov	x21, x8
+     8b4:      	mov	x8, #0x0                ; =0
+     8b8:      	mov	w24, #0x0               ; =0
+     8bc:      	mov	x13, x23
+     8c0:      	cbnz	w21, 0x920 <_sjli_dct_decode_block+0x40c>
+     8c4:      	sub	x21, x1, x13
+     8c8:      	cmp	x21, #0x8
+     8cc:      	b.lo	0x8e8 <_sjli_dct_decode_block+0x3d4>
+     8d0:      	ldr	x21, [x0, x13]
+     8d4:      	rev	x23, x21
+     8d8:      	sub	x21, x6, x23
+     8dc:      	and	x21, x23, x21
+     8e0:      	tst	x21, #0x8080808080808080
+     8e4:      	b.eq	0x954 <_sjli_dct_decode_block+0x440>
+     8e8:      	cmp	x1, x13
+     8ec:      	b.eq	0xca8 <_sjli_dct_decode_block+0x794>
+     8f0:      	add	x23, x13, #0x1
+     8f4:      	ldrb	w21, [x0, x13]
+     8f8:      	cmp	x21, #0xff
+     8fc:      	b.ne	0x914 <_sjli_dct_decode_block+0x400>
+     900:      	cmp	x23, x1
+     904:      	b.eq	0xcbc <_sjli_dct_decode_block+0x7a8>
+     908:      	ldrb	w25, [x0, x23]
+     90c:      	cbnz	w25, 0xd48 <_sjli_dct_decode_block+0x834>
+     910:      	add	x23, x13, #0x2
+     914:      	orr	x10, x21, x10, lsl #8
+     918:      	mov	w21, #0x8               ; =8
+     91c:      	mov	x13, x23
+     920:      	sub	w21, w21, #0x1
+     924:      	lsr	x23, x10, x21
+     928:      	bfi	w23, w24, #1, #31
+     92c:      	add	x24, x4, x8, lsl #2
+     930:      	ldur	w25, [x24, #-0x48]
+     934:      	tbnz	w25, #0x1f, 0x940 <_sjli_dct_decode_block+0x42c>
+     938:      	cmp	w23, w25
+     93c:      	b.ls	0x964 <_sjli_dct_decode_block+0x450>
+     940:      	add	x8, x8, #0x1
+     944:      	mov	x24, x23
+     948:      	cmp	x8, #0x10
+     94c:      	b.ne	0x8c0 <_sjli_dct_decode_block+0x3ac>
+     950:      	b	0xcb4 <_sjli_dct_decode_block+0x7a0>
+     954:      	add	x13, x13, #0x8
+     958:      	mov	w21, #0x40              ; =64
+     95c:      	mov	x10, x23
+     960:      	b	0x920 <_sjli_dct_decode_block+0x40c>
+     964:      	ldr	x8, [x4, x8, lsl #3]
+     968:      	add	x23, x8, w23, uxtw
+     96c:      	ldursw	x24, [x24, #-0x8c]
+     970:      	mov	w8, #0x4                ; =4
+     974:      	subs	x23, x23, x24
+     978:      	b.mi	0xce4 <_sjli_dct_decode_block+0x7d0>
+     97c:      	cmp	x23, x12
+     980:      	b.hs	0xce4 <_sjli_dct_decode_block+0x7d0>
+     984:      	add	x8, x3, x23
+     988:      	ldrb	w23, [x8]
+     98c:      	cmp	w23, #0xf0
+     990:      	b.eq	0xa1c <_sjli_dct_decode_block+0x508>
+     994:      	cbz	w23, 0xcdc <_sjli_dct_decode_block+0x7c8>
+     998:      	add	w8, w22, w23, lsr #4
+     99c:      	cmp	w8, #0x3f
+     9a0:      	b.hi	0xcdc <_sjli_dct_decode_block+0x7c8>
+     9a4:      	and	x22, x23, #0xf
+     9a8:      	cbz	w22, 0xa60 <_sjli_dct_decode_block+0x54c>
+     9ac:      	cmp	w21, w22
+     9b0:      	b.hs	0xa68 <_sjli_dct_decode_block+0x554>
+     9b4:      	sub	x23, x1, x13
+     9b8:      	cmp	x23, #0x8
+     9bc:      	b.lo	0x9d8 <_sjli_dct_decode_block+0x4c4>
+     9c0:      	ldr	x23, [x0, x13]
+     9c4:      	rev	x23, x23
+     9c8:      	sub	x24, x6, x23
+     9cc:      	and	x24, x23, x24
+     9d0:      	tst	x24, #0x8080808080808080
+     9d4:      	b.eq	0xb68 <_sjli_dct_decode_block+0x654>
+     9d8:      	cmp	x1, x13
+     9dc:      	b.eq	0xd30 <_sjli_dct_decode_block+0x81c>
+     9e0:      	add	x23, x13, #0x1
+     9e4:      	ldrb	w24, [x0, x13]
+     9e8:      	cmp	x24, #0xff
+     9ec:      	b.ne	0xa04 <_sjli_dct_decode_block+0x4f0>
+     9f0:      	cmp	x23, x1
+     9f4:      	b.eq	0xd58 <_sjli_dct_decode_block+0x844>
+     9f8:      	ldrb	w25, [x0, x23]
+     9fc:      	cbnz	w25, 0xd70 <_sjli_dct_decode_block+0x85c>
+     a00:      	add	x23, x13, #0x2
+     a04:      	orr	x10, x24, x10, lsl #8
+     a08:      	add	w21, w21, #0x8
+     a0c:      	mov	x13, x23
+     a10:      	cmp	w21, w22
+     a14:      	b.lo	0x9b4 <_sjli_dct_decode_block+0x4a0>
+     a18:      	b	0xa6c <_sjli_dct_decode_block+0x558>
+     a1c:      	add	w22, w22, #0x10
+     a20:      	b	0xaa0 <_sjli_dct_decode_block+0x58c>
+     a24:      	sub	w23, w7, w21
+     a28:      	lsr	w24, w23, #3
+     a2c:      	and	w25, w23, #0x78
+     a30:      	and	x23, x23, #0x38
+     a34:      	lsl	x10, x10, x23
+     a38:      	mvn	w23, w25
+     a3c:      	lsr	x26, x8, #1
+     a40:      	lsr	x23, x26, x23
+     a44:      	orr	x10, x10, x23
+     a48:      	cmp	w21, #0x0
+     a4c:      	csel	w23, w7, w25, eq
+     a50:      	csel	x10, x8, x10, eq
+     a54:      	add	w8, w23, w21
+     a58:      	add	x13, x13, w24, uxtw
+     a5c:      	b	0x824 <_sjli_dct_decode_block+0x310>
+     a60:      	mov	w24, #0x0               ; =0
+     a64:      	b	0xa98 <_sjli_dct_decode_block+0x584>
+     a68:      	mov	x23, x13
+     a6c:      	sub	w21, w21, w22
+     a70:      	lsr	x13, x10, x21
+     a74:      	lsl	w24, w19, w22
+     a78:      	bic	w13, w13, w24
+     a7c:      	sub	w24, w22, #0x1
+     a80:      	lsr	w24, w13, w24
+     a84:      	lsl	w22, w19, w22
+     a88:      	add	w22, w13, w22
+     a8c:      	cmp	w24, #0x0
+     a90:      	csinc	w24, w13, w22, ne
+     a94:      	mov	x13, x23
+     a98:      	add	w22, w8, #0x1
+     a9c:      	str	w24, [x11, w8, uxtw #2]
+     aa0:      	cmp	w22, #0x40
+     aa4:      	b.lo	0x7cc <_sjli_dct_decode_block+0x2b8>
+     aa8:      	b	0xcdc <_sjli_dct_decode_block+0x7c8>
+     aac:      	cmp	x24, #0x2
+     ab0:      	b.lo	0xabc <_sjli_dct_decode_block+0x5a8>
+     ab4:      	ldrb	w24, [x25, #0x1]
+     ab8:      	cbz	w24, 0xba4 <_sjli_dct_decode_block+0x690>
+     abc:      	mov	x23, x13
+     ac0:      	sub	x13, x1, x23
+     ac4:      	cmp	x13, #0x8
+     ac8:      	b.lo	0xae4 <_sjli_dct_decode_block+0x5d0>
+     acc:      	ldr	x24, [x0, x23]
+     ad0:      	rev	x24, x24
+     ad4:      	sub	x25, x6, x24
+     ad8:      	and	x25, x24, x25
+     adc:      	tst	x25, #0x8080808080808080
+     ae0:      	b.eq	0xb14 <_sjli_dct_decode_block+0x600>
+     ae4:      	cmp	x1, x23
+     ae8:      	b.ne	0xaf4 <_sjli_dct_decode_block+0x5e0>
+     aec:      	mov	x23, x1
+     af0:      	b	0x8b4 <_sjli_dct_decode_block+0x3a0>
+     af4:      	add	x25, x0, x23
+     af8:      	ldrb	w24, [x25]
+     afc:      	cmp	x24, #0xff
+     b00:      	b.eq	0xb50 <_sjli_dct_decode_block+0x63c>
+     b04:      	mov	w13, #0x1               ; =1
+     b08:      	add	x13, x23, x13
+     b0c:      	orr	x10, x24, x10, lsl #8
+     b10:      	b	0x88c <_sjli_dct_decode_block+0x378>
+     b14:      	sub	w8, w7, w21
+     b18:      	lsr	w13, w8, #3
+     b1c:      	and	w25, w8, #0x78
+     b20:      	and	x8, x8, #0x38
+     b24:      	lsl	x8, x10, x8
+     b28:      	mvn	w10, w25
+     b2c:      	lsr	x26, x24, #1
+     b30:      	lsr	x10, x26, x10
+     b34:      	orr	x8, x8, x10
+     b38:      	cmp	w21, #0x0
+     b3c:      	csel	w25, w7, w25, eq
+     b40:      	csel	x10, x24, x8, eq
+     b44:      	orr	w8, w25, w21
+     b48:      	add	x13, x23, w13, uxtw
+     b4c:      	b	0x88c <_sjli_dct_decode_block+0x378>
+     b50:      	cmp	x13, #0x2
+     b54:      	b.lo	0x8b4 <_sjli_dct_decode_block+0x3a0>
+     b58:      	ldrb	w13, [x25, #0x1]
+     b5c:      	cbnz	w13, 0x8b4 <_sjli_dct_decode_block+0x3a0>
+     b60:      	mov	w13, #0x2               ; =2
+     b64:      	b	0xb08 <_sjli_dct_decode_block+0x5f4>
+     b68:      	sub	w24, w7, w21
+     b6c:      	lsr	w25, w24, #3
+     b70:      	and	w26, w24, #0xfffffff8
+     b74:      	and	x24, x24, #0x38
+     b78:      	lsl	x10, x10, x24
+     b7c:      	mvn	w24, w26
+     b80:      	lsr	x27, x23, #1
+     b84:      	lsr	x24, x27, x24
+     b88:      	orr	x10, x10, x24
+     b8c:      	cmp	w21, #0x0
+     b90:      	csel	w24, w7, w26, eq
+     b94:      	csel	x10, x23, x10, eq
+     b98:      	add	w21, w24, w21
+     b9c:      	add	x23, x13, w25, uxtw
+     ba0:      	b	0xa6c <_sjli_dct_decode_block+0x558>
+     ba4:      	mov	w21, #0x2               ; =2
+     ba8:      	b	0x80c <_sjli_dct_decode_block+0x2f8>
+     bac:      	cmp	x16, #0x2
+     bb0:      	b.lo	0xbbc <_sjli_dct_decode_block+0x6a8>
+     bb4:      	ldrb	w16, [x17, #0x1]
+     bb8:      	cbz	w16, 0xce8 <_sjli_dct_decode_block+0x7d4>
+     bbc:      	mov	x8, #0x0                ; =0
+     bc0:      	mov	w6, #0x0                ; =0
+     bc4:      	add	x16, x3, #0x90
+     bc8:      	mov	x17, #-0x101010101010102 ; =-72340172838076674
+     bcc:      	cbnz	w21, 0xc2c <_sjli_dct_decode_block+0x718>
+     bd0:      	sub	x19, x1, x13
+     bd4:      	cmp	x19, #0x8
+     bd8:      	b.lo	0xbf4 <_sjli_dct_decode_block+0x6e0>
+     bdc:      	ldr	x19, [x0, x13]
+     be0:      	rev	x19, x19
+     be4:      	sub	x20, x17, x19
+     be8:      	and	x20, x19, x20
+     bec:      	tst	x20, #0x8080808080808080
+     bf0:      	b.eq	0xc60 <_sjli_dct_decode_block+0x74c>
+     bf4:      	cmp	x1, x13
+     bf8:      	b.eq	0xca8 <_sjli_dct_decode_block+0x794>
+     bfc:      	add	x19, x13, #0x1
+     c00:      	ldrb	w20, [x0, x13]
+     c04:      	cmp	x20, #0xff
+     c08:      	b.ne	0xc20 <_sjli_dct_decode_block+0x70c>
+     c0c:      	cmp	x19, x1
+     c10:      	b.eq	0xcbc <_sjli_dct_decode_block+0x7a8>
+     c14:      	ldrb	w22, [x0, x19]
+     c18:      	cbnz	w22, 0xcc8 <_sjli_dct_decode_block+0x7b4>
+     c1c:      	add	x19, x13, #0x2
+     c20:      	orr	x10, x20, x10, lsl #8
+     c24:      	mov	w21, #0x8               ; =8
+     c28:      	mov	x13, x19
+     c2c:      	sub	w21, w21, #0x1
+     c30:      	lsr	x19, x10, x21
+     c34:      	bfi	w19, w6, #1, #31
+     c38:      	add	x6, x16, x8, lsl #2
+     c3c:      	ldur	w6, [x6, #-0x48]
+     c40:      	tbnz	w6, #0x1f, 0xc4c <_sjli_dct_decode_block+0x738>
+     c44:      	cmp	w19, w6
+     c48:      	b.ls	0xc70 <_sjli_dct_decode_block+0x75c>
+     c4c:      	add	x8, x8, #0x1
+     c50:      	mov	x6, x19
+     c54:      	cmp	x8, #0x10
+     c58:      	b.ne	0xbcc <_sjli_dct_decode_block+0x6b8>
+     c5c:      	b	0xca0 <_sjli_dct_decode_block+0x78c>
+     c60:      	add	x13, x13, #0x8
+     c64:      	mov	w21, #0x40              ; =64
+     c68:      	mov	x10, x19
+     c6c:      	b	0xc2c <_sjli_dct_decode_block+0x718>
+     c70:      	add	x16, x3, #0x90
+     c74:      	ldr	x17, [x16, x8, lsl #3]
+     c78:      	add	x17, x17, w19, uxtw
+     c7c:      	add	x8, x16, x8, lsl #2
+     c80:      	ldursw	x16, [x8, #-0x8c]
+     c84:      	mov	w8, #0x4                ; =4
+     c88:      	subs	x16, x17, x16
+     c8c:      	b.mi	0xd60 <_sjli_dct_decode_block+0x84c>
+     c90:      	cmp	x16, x14
+     c94:      	b.hs	0xd60 <_sjli_dct_decode_block+0x84c>
+     c98:      	mov	w8, #0x110              ; =272
+     c9c:      	b	0x680 <_sjli_dct_decode_block+0x16c>
+     ca0:      	mov	w8, #0x5                ; =5
+     ca4:      	b	0xd60 <_sjli_dct_decode_block+0x84c>
+     ca8:      	mov	w21, #0x0               ; =0
+     cac:      	mov	w8, #0x1                ; =1
+     cb0:      	b	0xd5c <_sjli_dct_decode_block+0x848>
+     cb4:      	mov	w8, #0x5                ; =5
+     cb8:      	b	0xce4 <_sjli_dct_decode_block+0x7d0>
+     cbc:      	mov	w21, #0x0               ; =0
+     cc0:      	mov	w8, #0x2                ; =2
+     cc4:      	b	0xd5c <_sjli_dct_decode_block+0x848>
+     cc8:      	mov	w21, #0x0               ; =0
+     ccc:      	mov	w8, #0x3                ; =3
+     cd0:      	mov	x9, x22
+     cd4:      	mov	x13, x19
+     cd8:      	b	0xd60 <_sjli_dct_decode_block+0x84c>
+     cdc:      	mov	w8, #0x0                ; =0
+     ce0:      	str	w14, [x11]
+     ce4:      	b	0xd60 <_sjli_dct_decode_block+0x84c>
+     ce8:      	mov	w16, #0x2               ; =2
+     cec:      	b	0x61c <_sjli_dct_decode_block+0x108>
+     cf0:      	mov	w8, #0x40               ; =64
+     cf4:      	sub	w17, w8, w21
+     cf8:      	lsr	w3, w17, #3
+     cfc:      	and	w6, w17, #0xfffffff8
+     d00:      	and	x17, x17, #0x38
+     d04:      	lsl	x10, x10, x17
+     d08:      	mvn	w17, w6
+     d0c:      	lsr	x19, x16, #1
+     d10:      	lsr	x17, x19, x17
+     d14:      	orr	x10, x10, x17
+     d18:      	cmp	w21, #0x0
+     d1c:      	csel	w8, w8, w6, eq
+     d20:      	csel	x10, x16, x10, eq
+     d24:      	add	w21, w8, w21
+     d28:      	add	x16, x13, w3, uxtw
+     d2c:      	b	0x720 <_sjli_dct_decode_block+0x20c>
+     d30:      	mov	w8, #0x1                ; =1
+     d34:      	b	0xd5c <_sjli_dct_decode_block+0x848>
+     d38:      	mov	w8, #0x3                ; =3
+     d3c:      	mov	x9, x3
+     d40:      	mov	x13, x16
+     d44:      	b	0xd60 <_sjli_dct_decode_block+0x84c>
+     d48:      	mov	w21, #0x0               ; =0
+     d4c:      	mov	w8, #0x3                ; =3
+     d50:      	mov	x9, x25
+     d54:      	b	0xd78 <_sjli_dct_decode_block+0x864>
+     d58:      	mov	w8, #0x2                ; =2
+     d5c:      	mov	x13, x1
+     d60:      	stp	x13, x10, [x2]
+     d64:      	str	w21, [x2, #0x10]
+     d68:      	strb	w9, [x2, #0x14]
+     d6c:      	b	0x590 <_sjli_dct_decode_block+0x7c>
+     d70:      	mov	w8, #0x3                ; =3
+     d74:      	mov	x9, x25
+     d78:      	mov	x13, x23
+     d7c:      	b	0xd60 <_sjli_dct_decode_block+0x84c>
+
+0000000000000d80 <_sjli_lossless_left_u16_code0_row>:
+     d80:      	sub	sp, sp, #0xc0
+     d84:      	stp	x28, x27, [sp, #0x60]
+     d88:      	stp	x26, x25, [sp, #0x70]
+     d8c:      	stp	x24, x23, [sp, #0x80]
+     d90:      	stp	x22, x21, [sp, #0x90]
+     d94:      	stp	x20, x19, [sp, #0xa0]
+     d98:      	stp	x29, x30, [sp, #0xb0]
+     d9c:      	add	x29, sp, #0xb0
+     da0:      	mov	x24, x0
+     da4:      	cmp	x0, #0x0
+     da8:      	ccmp	x1, #0x0, #0x4, eq
+     dac:      	cset	w8, ne
+     db0:      	mov	w0, #0x6                ; =6
+     db4:      	lsr	w9, w4, #16
+     db8:      	cbnz	w9, 0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     dbc:      	mov	x21, x5
+     dc0:      	sub	x9, x5, #0x10, lsl #12  ; =0x10000
+     dc4:      	cmn	x9, #0x10, lsl #12      ; =0x10000
+     dc8:      	b.ls	0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     dcc:      	tbnz	w8, #0x0, 0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     dd0:      	mov	x19, x2
+     dd4:      	cbz	x2, 0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     dd8:      	mov	x22, x3
+     ddc:      	cbz	x3, 0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     de0:      	mov	x20, x6
+     de4:      	cbz	x6, 0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     de8:      	ldr	x10, [x29, #0x10]
+     dec:      	cbz	x10, 0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     df0:      	lsl	x8, x21, #1
+     df4:      	cmp	x7, x8
+     df8:      	b.lo	0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     dfc:      	ldr	w8, [x22, #0x410]
+     e00:      	cmp	w8, #0x100
+     e04:      	b.hi	0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     e08:      	mov	x23, x1
+     e0c:      	ldr	x8, [x19]
+     e10:      	cmp	x8, x1
+     e14:      	b.hi	0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     e18:      	ldr	w8, [x19, #0x10]
+     e1c:      	cmp	w8, #0x40
+     e20:      	b.hi	0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     e24:      	ldrb	w8, [x22, #0x210]
+     e28:      	cmp	w8, #0x1
+     e2c:      	b.ne	0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     e30:      	ldrb	w8, [x22, #0x310]
+     e34:      	sub	w9, w8, #0x8
+     e38:      	cmn	w9, #0x7
+     e3c:      	b.lo	0x1124 <_sjli_lossless_left_u16_code0_row+0x3a4>
+     e40:      	str	x10, [sp, #0x18]
+     e44:      	mov	w27, #0x0               ; =0
+     e48:      	mov	w26, #0x0               ; =0
+     e4c:      	mov	w25, #0x0               ; =0
+     e50:      	mov	x28, #0x0               ; =0
+     e54:      	add	w11, w8, #0x1
+     e58:      	mov	w9, #0x1                ; =1
+     e5c:      	lsl	w10, w9, w8
+     e60:      	sub	w12, w10, #0x1
+     e64:      	sub	w8, w8, #0x1
+     e68:      	lsl	w8, w9, w8
+     e6c:      	stp	w8, w12, [sp, #0x2c]
+     e70:      	lsl	w8, w11, #2
+     e74:      	str	w8, [sp, #0x24]
+     e78:      	add	w12, w11, w11, lsl #1
+     e7c:      	str	w11, [sp, #0x34]
+     e80:      	lsl	w8, w11, #1
+     e84:      	stp	w8, w12, [sp, #0x10]
+     e88:      	sub	w8, w8, #0x1
+     e8c:      	lsl	w8, w9, w8
+     e90:      	sub	w11, w12, #0x1
+     e94:      	lsl	w9, w9, w11
+     e98:      	add	w11, w12, #0x8
+     e9c:      	str	w11, [sp, #0x28]
+     ea0:      	orr	w8, w8, w10
+     ea4:      	orr	w8, w9, w8
+     ea8:      	str	w8, [sp, #0x20]
+     eac:      	ldr	q0, [x19]
+     eb0:      	str	q0, [sp, #0x40]
+     eb4:      	ldr	x8, [x19, #0x10]
+     eb8:      	str	x8, [sp, #0x50]
+     ebc:      	ldr	w8, [sp, #0x50]
+     ec0:      	cmp	w8, #0x7
+     ec4:      	b.hi	0xf68 <_sjli_lossless_left_u16_code0_row+0x1e8>
+     ec8:      	ldr	x9, [sp, #0x40]
+     ecc:      	sub	x12, x23, x9
+     ed0:      	cmp	x12, #0x8
+     ed4:      	b.lo	0xef4 <_sjli_lossless_left_u16_code0_row+0x174>
+     ed8:      	ldr	x10, [x24, x9]
+     edc:      	rev	x10, x10
+     ee0:      	mov	x11, #-0x101010101010102 ; =-72340172838076674
+     ee4:      	sub	x11, x11, x10
+     ee8:      	and	x11, x10, x11
+     eec:      	tst	x11, #0x8080808080808080
+     ef0:      	b.eq	0xf2c <_sjli_lossless_left_u16_code0_row+0x1ac>
+     ef4:      	cmp	x23, x9
+     ef8:      	b.eq	0xf78 <_sjli_lossless_left_u16_code0_row+0x1f8>
+     efc:      	ldr	x10, [sp, #0x48]
+     f00:      	add	x13, x24, x9
+     f04:      	ldrb	w11, [x13]
+     f08:      	cmp	x11, #0xff
+     f0c:      	b.eq	0x1034 <_sjli_lossless_left_u16_code0_row+0x2b4>
+     f10:      	mov	w12, #0x1               ; =1
+     f14:      	orr	w8, w8, #0x8
+     f18:      	add	x9, x9, x12
+     f1c:      	orr	x10, x11, x10, lsl #8
+     f20:      	stp	x9, x10, [sp, #0x40]
+     f24:      	str	w8, [sp, #0x50]
+     f28:      	b	0xf68 <_sjli_lossless_left_u16_code0_row+0x1e8>
+     f2c:      	mov	w12, #0x40              ; =64
+     f30:      	sub	x11, x12, x8
+     f34:      	cbz	w8, 0xf54 <_sjli_lossless_left_u16_code0_row+0x1d4>
+     f38:      	ldr	x12, [sp, #0x48]
+     f3c:      	and	x13, x11, #0x78
+     f40:      	lsl	x12, x12, x13
+     f44:      	neg	w14, w13
+     f48:      	lsr	x10, x10, x14
+     f4c:      	orr	x10, x12, x10
+     f50:      	mov	x12, x13
+     f54:      	lsr	w11, w11, #3
+     f58:      	orr	w8, w12, w8
+     f5c:      	str	w8, [sp, #0x50]
+     f60:      	add	x9, x9, w11, uxtw
+     f64:      	stp	x9, x10, [sp, #0x40]
+     f68:      	ldr	x11, [sp, #0x48]
+     f6c:      	sub	w9, w8, #0x1
+     f70:      	lsr	x9, x11, x9
+     f74:      	tbz	w9, #0x0, 0xfac <_sjli_lossless_left_u16_code0_row+0x22c>
+     f78:      	add	x6, x20, x28, lsl #1
+     f7c:      	add	x8, sp, #0x38
+     f80:      	str	x8, [sp]
+     f84:      	add	x2, sp, #0x40
+     f88:      	mov	x0, x24
+     f8c:      	mov	x1, x23
+     f90:      	mov	x3, x22
+     f94:      	mov	w5, #0x1                ; =1
+     f98:      	mov	w7, #0x2                ; =2
+     f9c:      	bl	0xf9c <_sjli_lossless_left_u16_code0_row+0x21c>
+		0000000000000f9c:  ARM64_RELOC_BRANCH26	_sjli_lossless_left_u16_row
+     fa0:      	cbnz	w0, 0x1104 <_sjli_lossless_left_u16_code0_row+0x384>
+     fa4:      	ldrh	w4, [sp, #0x3a]
+     fa8:      	b	0x1014 <_sjli_lossless_left_u16_code0_row+0x294>
+     fac:      	sub	x10, x21, x28
+     fb0:      	add	x9, x20, x28, lsl #1
+     fb4:      	cmp	x10, #0x4
+     fb8:      	b.lo	0xfdc <_sjli_lossless_left_u16_code0_row+0x25c>
+     fbc:      	ldr	w10, [sp, #0x28]
+     fc0:      	cmp	w8, w10
+     fc4:      	b.lo	0xfdc <_sjli_lossless_left_u16_code0_row+0x25c>
+     fc8:      	ldp	w13, w10, [sp, #0x20]
+     fcc:      	sub	w10, w8, w10
+     fd0:      	lsr	x12, x11, x10
+     fd4:      	tst	w13, w12
+     fd8:      	b.eq	0x104c <_sjli_lossless_left_u16_code0_row+0x2cc>
+     fdc:      	ldr	w10, [sp, #0x34]
+     fe0:      	sub	w8, w8, w10
+     fe4:      	str	w8, [sp, #0x50]
+     fe8:      	lsr	x8, x11, x8
+     fec:      	ldp	w11, w10, [sp, #0x2c]
+     ff0:      	and	w8, w10, w8
+     ff4:      	cmp	w8, w11
+     ff8:      	csel	w10, w10, wzr, lo
+     ffc:      	add	w8, w8, w4
+    1000:      	sub	w8, w8, w10
+    1004:      	and	w4, w8, #0xffff
+    1008:      	strb	w8, [x9]
+    100c:      	lsr	w8, w8, #8
+    1010:      	strb	w8, [x9, #0x1]
+    1014:      	cmp	x28, #0x0
+    1018:      	csel	w27, w4, w27, eq
+    101c:      	add	w25, w25, #0x1
+    1020:      	mov	x26, x4
+    1024:      	add	x28, x28, #0x1
+    1028:      	cmp	x28, x21
+    102c:      	b.lo	0xebc <_sjli_lossless_left_u16_code0_row+0x13c>
+    1030:      	b	0x1100 <_sjli_lossless_left_u16_code0_row+0x380>
+    1034:      	cmp	x12, #0x2
+    1038:      	b.lo	0xf78 <_sjli_lossless_left_u16_code0_row+0x1f8>
+    103c:      	ldrb	w12, [x13, #0x1]
+    1040:      	cbnz	w12, 0xf78 <_sjli_lossless_left_u16_code0_row+0x1f8>
+    1044:      	mov	w12, #0x2               ; =2
+    1048:      	b	0xf14 <_sjli_lossless_left_u16_code0_row+0x194>
+    104c:      	ldp	w11, w8, [sp, #0x10]
+    1050:      	lsr	w8, w12, w8
+    1054:      	ldp	w15, w13, [sp, #0x30]
+    1058:      	and	w8, w8, w15
+    105c:      	lsr	w11, w12, w11
+    1060:      	and	w11, w11, w15
+    1064:      	lsr	w13, w12, w13
+    1068:      	and	w13, w13, w15
+    106c:      	and	w12, w15, w12
+    1070:      	ldr	w16, [sp, #0x2c]
+    1074:      	cmp	w8, w16
+    1078:      	csel	w14, w15, wzr, lo
+    107c:      	add	w8, w8, w4
+    1080:      	sub	w8, w8, w14
+    1084:      	cmp	w11, w16
+    1088:      	csel	w14, w15, wzr, lo
+    108c:      	sub	w11, w11, w14
+    1090:      	add	w11, w11, w8
+    1094:      	strb	w8, [x9]
+    1098:      	cmp	w13, w16
+    109c:      	csel	w14, w15, wzr, lo
+    10a0:      	sub	w13, w13, w14
+    10a4:      	add	w13, w13, w11
+    10a8:      	lsr	w14, w8, #8
+    10ac:      	strb	w14, [x9, #0x1]
+    10b0:      	strb	w11, [x9, #0x2]
+    10b4:      	cmp	w12, w16
+    10b8:      	csel	w14, w15, wzr, lo
+    10bc:      	lsr	w11, w11, #8
+    10c0:      	strb	w11, [x9, #0x3]
+    10c4:      	strb	w13, [x9, #0x4]
+    10c8:      	sub	w11, w12, w14
+    10cc:      	add	w26, w11, w13
+    10d0:      	and	w4, w26, #0xffff
+    10d4:      	lsr	w11, w13, #8
+    10d8:      	strb	w11, [x9, #0x5]
+    10dc:      	strb	w26, [x9, #0x6]
+    10e0:      	lsr	w11, w26, #8
+    10e4:      	strb	w11, [x9, #0x7]
+    10e8:      	str	w10, [sp, #0x50]
+    10ec:      	cmp	x28, #0x0
+    10f0:      	csel	w27, w8, w27, eq
+    10f4:      	add	w25, w25, #0x4
+    10f8:      	add	x28, x28, #0x3
+    10fc:      	b	0x1024 <_sjli_lossless_left_u16_code0_row+0x2a4>
+    1100:      	mov	w0, #0x0                ; =0
+    1104:      	ldr	x8, [sp, #0x18]
+    1108:      	strh	w27, [x8]
+    110c:      	strh	w26, [x8, #0x2]
+    1110:      	str	w25, [x8, #0x4]
+    1114:      	ldr	q0, [sp, #0x40]
+    1118:      	str	q0, [x19]
+    111c:      	ldr	x8, [sp, #0x50]
+    1120:      	str	x8, [x19, #0x10]
+    1124:      	ldp	x29, x30, [sp, #0xb0]
+    1128:      	ldp	x20, x19, [sp, #0xa0]
+    112c:      	ldp	x22, x21, [sp, #0x90]
+    1130:      	ldp	x24, x23, [sp, #0x80]
+    1134:      	ldp	x26, x25, [sp, #0x70]
+    1138:      	ldp	x28, x27, [sp, #0x60]
+    113c:      	add	sp, sp, #0xc0
+    1140:      	ret
+
+0000000000001144 <_sjli_lossless_left_u16_row>:
+    1144:      	cmp	x0, #0x0
+    1148:      	ccmp	x1, #0x0, #0x4, eq
+    114c:      	cset	w9, ne
+    1150:      	mov	w8, #0x6                ; =6
+    1154:      	lsr	w10, w4, #16
+    1158:      	cbnz	w10, 0x11e4 <_sjli_lossless_left_u16_row+0xa0>
+    115c:      	sub	x10, x5, #0x10, lsl #12 ; =0x10000
+    1160:      	cmn	x10, #0x10, lsl #12     ; =0x10000
+    1164:      	b.ls	0x11e4 <_sjli_lossless_left_u16_row+0xa0>
+    1168:      	tbnz	w9, #0x0, 0x11e4 <_sjli_lossless_left_u16_row+0xa0>
+    116c:      	cbz	x2, 0x11e4 <_sjli_lossless_left_u16_row+0xa0>
+    1170:      	cbz	x3, 0x11e4 <_sjli_lossless_left_u16_row+0xa0>
+    1174:      	cbz	x6, 0x11e4 <_sjli_lossless_left_u16_row+0xa0>
+    1178:      	stp	x28, x27, [sp, #-0x60]!
+    117c:      	stp	x26, x25, [sp, #0x10]
+    1180:      	stp	x24, x23, [sp, #0x20]
+    1184:      	stp	x22, x21, [sp, #0x30]
+    1188:      	stp	x20, x19, [sp, #0x40]
+    118c:      	stp	x29, x30, [sp, #0x50]
+    1190:      	ldr	x9, [sp, #0x60]
+    1194:      	cbz	x9, 0x11cc <_sjli_lossless_left_u16_row+0x88>
+    1198:      	lsl	x10, x5, #1
+    119c:      	cmp	x7, x10
+    11a0:      	b.lo	0x11cc <_sjli_lossless_left_u16_row+0x88>
+    11a4:      	ldr	w16, [x3, #0x410]
+    11a8:      	cmp	w16, #0x100
+    11ac:      	b.hi	0x11c8 <_sjli_lossless_left_u16_row+0x84>
+    11b0:      	ldr	x14, [x2]
+    11b4:      	cmp	x14, x1
+    11b8:      	b.hi	0x11c8 <_sjli_lossless_left_u16_row+0x84>
+    11bc:      	ldr	w21, [x2, #0x10]
+    11c0:      	cmp	w21, #0x40
+    11c4:      	b.ls	0x11ec <_sjli_lossless_left_u16_row+0xa8>
+    11c8:      	mov	w8, #0x6                ; =6
+    11cc:      	ldp	x29, x30, [sp, #0x50]
+    11d0:      	ldp	x20, x19, [sp, #0x40]
+    11d4:      	ldp	x22, x21, [sp, #0x30]
+    11d8:      	ldp	x24, x23, [sp, #0x20]
+    11dc:      	ldp	x26, x25, [sp, #0x10]
+    11e0:      	ldp	x28, x27, [sp], #0x60
+    11e4:      	mov	x0, x8
+    11e8:      	ret
+    11ec:      	mov	x17, #0x0               ; =0
+    11f0:      	mov	w11, #0x0               ; =0
+    11f4:      	mov	w15, #0x0               ; =0
+    11f8:      	mov	w10, #0x0               ; =0
+    11fc:      	ldr	x13, [x2, #0x8]
+    1200:      	ldrb	w12, [x2, #0x14]
+    1204:      	add	x7, x3, #0x210
+    1208:      	add	x19, x3, #0x310
+    120c:      	add	x20, x3, #0x90
+    1210:      	mov	x22, #-0x101010101010102 ; =-72340172838076674
+    1214:      	mov	w23, #0x40              ; =64
+    1218:      	mov	w24, #-0x8000           ; =-32768
+    121c:      	mov	w26, #-0x1              ; =-1
+    1220:      	cmp	w21, #0x7
+    1224:      	b.hi	0x125c <_sjli_lossless_left_u16_row+0x118>
+    1228:      	sub	x27, x1, x14
+    122c:      	cmp	x27, #0x8
+    1230:      	b.lo	0x124c <_sjli_lossless_left_u16_row+0x108>
+    1234:      	ldr	x8, [x0, x14]
+    1238:      	rev	x8, x8
+    123c:      	sub	x28, x22, x8
+    1240:      	and	x28, x8, x28
+    1244:      	tst	x28, #0x8080808080808080
+    1248:      	b.eq	0x1288 <_sjli_lossless_left_u16_row+0x144>
+    124c:      	cmp	x1, x14
+    1250:      	b.ne	0x1264 <_sjli_lossless_left_u16_row+0x120>
+    1254:      	mov	x14, x1
+    1258:      	b	0x1338 <_sjli_lossless_left_u16_row+0x1f4>
+    125c:      	mov	x8, x21
+    1260:      	b	0x12c0 <_sjli_lossless_left_u16_row+0x17c>
+    1264:      	orr	w8, w21, #0x8
+    1268:      	add	x30, x0, x14
+    126c:      	ldrb	w28, [x30]
+    1270:      	cmp	x28, #0xff
+    1274:      	b.eq	0x1320 <_sjli_lossless_left_u16_row+0x1dc>
+    1278:      	mov	w21, #0x1               ; =1
+    127c:      	add	x14, x21, x14
+    1280:      	orr	x13, x28, x13, lsl #8
+    1284:      	b	0x12c0 <_sjli_lossless_left_u16_row+0x17c>
+    1288:      	sub	w27, w23, w21
+    128c:      	lsr	w28, w27, #3
+    1290:      	and	w30, w27, #0x78
+    1294:      	and	x27, x27, #0x38
+    1298:      	lsl	x13, x13, x27
+    129c:      	mvn	w27, w30
+    12a0:      	lsr	x25, x8, #1
+    12a4:      	lsr	x25, x25, x27
+    12a8:      	orr	x13, x13, x25
+    12ac:      	cmp	w21, #0x0
+    12b0:      	csel	w25, w23, w30, eq
+    12b4:      	csel	x13, x8, x13, eq
+    12b8:      	orr	w8, w25, w21
+    12bc:      	add	x14, x14, w28, uxtw
+    12c0:      	sub	w21, w8, #0x8
+    12c4:      	lsr	x21, x13, x21
+    12c8:      	and	x27, x21, #0xff
+    12cc:      	ldrb	w21, [x7, x27]
+    12d0:      	cbz	w21, 0x12f8 <_sjli_lossless_left_u16_row+0x1b4>
+    12d4:      	ldrb	w27, [x19, x27]
+    12d8:      	tst	w27, #0xffffffef
+    12dc:      	b.ne	0x12e8 <_sjli_lossless_left_u16_row+0x1a4>
+    12e0:      	sub	w21, w8, w21
+    12e4:      	b	0x141c <_sjli_lossless_left_u16_row+0x2d8>
+    12e8:      	cmp	w27, #0xf
+    12ec:      	add	w21, w27, w21
+    12f0:      	ccmp	w8, w21, #0x0, ls
+    12f4:      	b.hs	0x14fc <_sjli_lossless_left_u16_row+0x3b8>
+    12f8:      	sub	w21, w8, #0x8
+    12fc:      	lsr	x21, x13, x21
+    1300:      	and	x27, x21, #0xff
+    1304:      	ldrb	w21, [x7, x27]
+    1308:      	cbz	w21, 0x1318 <_sjli_lossless_left_u16_row+0x1d4>
+    130c:      	sub	w21, w8, w21
+    1310:      	mov	w8, #0x310              ; =784
+    1314:      	b	0x140c <_sjli_lossless_left_u16_row+0x2c8>
+    1318:      	mov	x21, x8
+    131c:      	b	0x1338 <_sjli_lossless_left_u16_row+0x1f4>
+    1320:      	cmp	x27, #0x2
+    1324:      	b.lo	0x1338 <_sjli_lossless_left_u16_row+0x1f4>
+    1328:      	ldrb	w25, [x30, #0x1]
+    132c:      	cbz	w25, 0x152c <_sjli_lossless_left_u16_row+0x3e8>
+    1330:      	cmp	x27, #0x8
+    1334:      	b.hs	0x1534 <_sjli_lossless_left_u16_row+0x3f0>
+    1338:      	mov	x8, #0x0                ; =0
+    133c:      	mov	w27, #0x0               ; =0
+    1340:      	cbz	w21, 0x134c <_sjli_lossless_left_u16_row+0x208>
+    1344:      	sub	w21, w21, #0x1
+    1348:      	b	0x13a8 <_sjli_lossless_left_u16_row+0x264>
+    134c:      	sub	x21, x1, x14
+    1350:      	cmp	x21, #0x8
+    1354:      	b.lo	0x1370 <_sjli_lossless_left_u16_row+0x22c>
+    1358:      	ldr	x21, [x0, x14]
+    135c:      	rev	x28, x21
+    1360:      	sub	x21, x22, x28
+    1364:      	and	x21, x28, x21
+    1368:      	tst	x21, #0x8080808080808080
+    136c:      	b.eq	0x13d8 <_sjli_lossless_left_u16_row+0x294>
+    1370:      	cmp	x1, x14
+    1374:      	b.eq	0x15f8 <_sjli_lossless_left_u16_row+0x4b4>
+    1378:      	add	x28, x14, #0x1
+    137c:      	ldrb	w21, [x0, x14]
+    1380:      	cmp	x21, #0xff
+    1384:      	b.ne	0x139c <_sjli_lossless_left_u16_row+0x258>
+    1388:      	cmp	x28, x1
+    138c:      	b.eq	0x1614 <_sjli_lossless_left_u16_row+0x4d0>
+    1390:      	ldrb	w30, [x0, x28]
+    1394:      	cbnz	w30, 0x1624 <_sjli_lossless_left_u16_row+0x4e0>
+    1398:      	add	x28, x14, #0x2
+    139c:      	orr	x13, x21, x13, lsl #8
+    13a0:      	mov	w21, #0x7               ; =7
+    13a4:      	mov	x14, x28
+    13a8:      	lsr	x28, x13, x21
+    13ac:      	bfi	w28, w27, #1, #31
+    13b0:      	add	x27, x20, x8, lsl #2
+    13b4:      	ldur	w30, [x27, #-0x48]
+    13b8:      	tbnz	w30, #0x1f, 0x13c4 <_sjli_lossless_left_u16_row+0x280>
+    13bc:      	cmp	w28, w30
+    13c0:      	b.ls	0x13e8 <_sjli_lossless_left_u16_row+0x2a4>
+    13c4:      	add	x8, x8, #0x1
+    13c8:      	mov	x27, x28
+    13cc:      	cmp	x8, #0x10
+    13d0:      	b.ne	0x1340 <_sjli_lossless_left_u16_row+0x1fc>
+    13d4:      	b	0x15f0 <_sjli_lossless_left_u16_row+0x4ac>
+    13d8:      	add	x14, x14, #0x8
+    13dc:      	mov	w21, #0x3f              ; =63
+    13e0:      	mov	x13, x28
+    13e4:      	b	0x13a8 <_sjli_lossless_left_u16_row+0x264>
+    13e8:      	ldr	x8, [x20, x8, lsl #3]
+    13ec:      	add	x25, x8, w28, uxtw
+    13f0:      	ldursw	x27, [x27, #-0x8c]
+    13f4:      	mov	w8, #0x4                ; =4
+    13f8:      	subs	x27, x25, x27
+    13fc:      	b.mi	0x1634 <_sjli_lossless_left_u16_row+0x4f0>
+    1400:      	cmp	x27, x16
+    1404:      	b.hs	0x1634 <_sjli_lossless_left_u16_row+0x4f0>
+    1408:      	mov	w8, #0x110              ; =272
+    140c:      	add	x8, x3, x8
+    1410:      	ldrb	w27, [x8, x27]
+    1414:      	tst	w27, #0xffffffef
+    1418:      	b.ne	0x144c <_sjli_lossless_left_u16_row+0x308>
+    141c:      	cmp	w27, #0x0
+    1420:      	csel	w8, wzr, w24, eq
+    1424:      	add	w4, w8, w4
+    1428:      	strh	w4, [x6, x17, lsl #1]
+    142c:      	cmp	x17, #0x0
+    1430:      	csel	w10, w4, w10, eq
+    1434:      	add	w11, w11, #0x1
+    1438:      	add	x17, x17, #0x1
+    143c:      	mov	x15, x4
+    1440:      	cmp	x17, x5
+    1444:      	b.ne	0x1220 <_sjli_lossless_left_u16_row+0xdc>
+    1448:      	b	0x1604 <_sjli_lossless_left_u16_row+0x4c0>
+    144c:      	cmp	w27, #0x10
+    1450:      	b.hi	0x1650 <_sjli_lossless_left_u16_row+0x50c>
+    1454:      	cmp	w21, w27
+    1458:      	b.hs	0x14c4 <_sjli_lossless_left_u16_row+0x380>
+    145c:      	sub	x8, x1, x14
+    1460:      	cmp	x8, #0x8
+    1464:      	b.lo	0x1480 <_sjli_lossless_left_u16_row+0x33c>
+    1468:      	ldr	x8, [x0, x14]
+    146c:      	rev	x8, x8
+    1470:      	sub	x25, x22, x8
+    1474:      	and	x25, x8, x25
+    1478:      	tst	x25, #0x8080808080808080
+    147c:      	b.eq	0x1568 <_sjli_lossless_left_u16_row+0x424>
+    1480:      	cmp	x1, x14
+    1484:      	b.eq	0x15fc <_sjli_lossless_left_u16_row+0x4b8>
+    1488:      	add	x28, x14, #0x1
+    148c:      	ldrb	w8, [x0, x14]
+    1490:      	cmp	x8, #0xff
+    1494:      	b.ne	0x14ac <_sjli_lossless_left_u16_row+0x368>
+    1498:      	cmp	x28, x1
+    149c:      	b.eq	0x1618 <_sjli_lossless_left_u16_row+0x4d4>
+    14a0:      	ldrb	w30, [x0, x28]
+    14a4:      	cbnz	w30, 0x1628 <_sjli_lossless_left_u16_row+0x4e4>
+    14a8:      	add	x28, x14, #0x2
+    14ac:      	orr	x13, x8, x13, lsl #8
+    14b0:      	add	w21, w21, #0x8
+    14b4:      	mov	x14, x28
+    14b8:      	cmp	w21, w27
+    14bc:      	b.lo	0x145c <_sjli_lossless_left_u16_row+0x318>
+    14c0:      	b	0x14c8 <_sjli_lossless_left_u16_row+0x384>
+    14c4:      	mov	x28, x14
+    14c8:      	sub	w21, w21, w27
+    14cc:      	lsr	x8, x13, x21
+    14d0:      	mov	x14, #-0x1              ; =-1
+    14d4:      	lsl	x14, x14, x27
+    14d8:      	bic	w8, w8, w14
+    14dc:      	sub	w14, w27, #0x1
+    14e0:      	lsr	w14, w8, w14
+    14e4:      	lsl	w15, w26, w27
+    14e8:      	add	w15, w15, w8
+    14ec:      	cmp	w14, #0x0
+    14f0:      	csinc	w8, w8, w15, ne
+    14f4:      	mov	x14, x28
+    14f8:      	b	0x1424 <_sjli_lossless_left_u16_row+0x2e0>
+    14fc:      	sub	w21, w8, w21
+    1500:      	lsr	x8, x13, x21
+    1504:      	mov	x15, #-0x1              ; =-1
+    1508:      	lsl	x15, x15, x27
+    150c:      	bic	w8, w8, w15
+    1510:      	sub	w15, w27, #0x1
+    1514:      	lsr	w15, w8, w15
+    1518:      	lsl	w25, w26, w27
+    151c:      	cmp	w15, #0x0
+    1520:      	csinc	w15, wzr, w25, ne
+    1524:      	add	w8, w15, w8
+    1528:      	b	0x1424 <_sjli_lossless_left_u16_row+0x2e0>
+    152c:      	mov	w21, #0x2               ; =2
+    1530:      	b	0x127c <_sjli_lossless_left_u16_row+0x138>
+    1534:      	ldr	x28, [x30]
+    1538:      	rev	x27, x28
+    153c:      	sub	x25, x22, x27
+    1540:      	and	x25, x27, x25
+    1544:      	tst	x25, #0x8080808080808080
+    1548:      	b.eq	0x15a4 <_sjli_lossless_left_u16_row+0x460>
+    154c:      	and	x27, x28, #0xff
+    1550:      	cmp	x27, #0xff
+    1554:      	b.ne	0x15e0 <_sjli_lossless_left_u16_row+0x49c>
+    1558:      	tst	x28, #0xff00
+    155c:      	b.ne	0x1338 <_sjli_lossless_left_u16_row+0x1f4>
+    1560:      	mov	w21, #0x2               ; =2
+    1564:      	b	0x15e4 <_sjli_lossless_left_u16_row+0x4a0>
+    1568:      	sub	w15, w23, w21
+    156c:      	lsr	w25, w15, #3
+    1570:      	and	w28, w15, #0xfffffff8
+    1574:      	and	x15, x15, #0x38
+    1578:      	lsl	x13, x13, x15
+    157c:      	mvn	w15, w28
+    1580:      	lsr	x30, x8, #1
+    1584:      	lsr	x15, x30, x15
+    1588:      	orr	x13, x13, x15
+    158c:      	cmp	w21, #0x0
+    1590:      	csel	w15, w23, w28, eq
+    1594:      	csel	x13, x8, x13, eq
+    1598:      	add	w21, w15, w21
+    159c:      	add	x28, x14, w25, uxtw
+    15a0:      	b	0x14c8 <_sjli_lossless_left_u16_row+0x384>
+    15a4:      	sub	w8, w23, w21
+    15a8:      	lsr	w25, w8, #3
+    15ac:      	and	w28, w8, #0x78
+    15b0:      	and	x8, x8, #0x38
+    15b4:      	lsl	x8, x13, x8
+    15b8:      	mvn	w13, w28
+    15bc:      	lsr	x30, x27, #1
+    15c0:      	lsr	x13, x30, x13
+    15c4:      	orr	x8, x8, x13
+    15c8:      	cmp	w21, #0x0
+    15cc:      	csel	w28, w23, w28, eq
+    15d0:      	csel	x13, x27, x8, eq
+    15d4:      	orr	w8, w28, w21
+    15d8:      	add	x14, x14, w25, uxtw
+    15dc:      	b	0x12f8 <_sjli_lossless_left_u16_row+0x1b4>
+    15e0:      	mov	w21, #0x1               ; =1
+    15e4:      	add	x14, x21, x14
+    15e8:      	orr	x13, x27, x13, lsl #8
+    15ec:      	b	0x12f8 <_sjli_lossless_left_u16_row+0x1b4>
+    15f0:      	mov	w8, #0x5                ; =5
+    15f4:      	b	0x1634 <_sjli_lossless_left_u16_row+0x4f0>
+    15f8:      	mov	w21, #0x0               ; =0
+    15fc:      	mov	w8, #0x1                ; =1
+    1600:      	b	0x161c <_sjli_lossless_left_u16_row+0x4d8>
+    1604:      	mov	w8, #0x0                ; =0
+    1608:      	mov	x15, x4
+    160c:      	mov	x11, x5
+    1610:      	b	0x1634 <_sjli_lossless_left_u16_row+0x4f0>
+    1614:      	mov	w21, #0x0               ; =0
+    1618:      	mov	w8, #0x2                ; =2
+    161c:      	mov	x14, x1
+    1620:      	b	0x1634 <_sjli_lossless_left_u16_row+0x4f0>
+    1624:      	mov	w21, #0x0               ; =0
+    1628:      	mov	w8, #0x3                ; =3
+    162c:      	mov	x12, x30
+    1630:      	mov	x14, x28
+    1634:      	strh	w10, [x9]
+    1638:      	strh	w15, [x9, #0x2]
+    163c:      	str	w11, [x9, #0x4]
+    1640:      	stp	x14, x13, [x2]
+    1644:      	str	w21, [x2, #0x10]
+    1648:      	strb	w12, [x2, #0x14]
+    164c:      	b	0x11cc <_sjli_lossless_left_u16_row+0x88>
+    1650:      	mov	w8, #0x7                ; =7
+    1654:      	mov	x12, x27
+    1658:      	b	0x1634 <_sjli_lossless_left_u16_row+0x4f0>

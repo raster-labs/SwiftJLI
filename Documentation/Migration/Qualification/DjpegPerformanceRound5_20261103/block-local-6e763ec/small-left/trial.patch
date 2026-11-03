@@ -1,0 +1,316 @@
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index c2ce2a2..1869eea 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -1399,6 +1399,12 @@ struct JLIDecoder: Sendable {
+               let output = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+             throw JLIError.decodingFailed("lossless destination is too small")
+         }
++        if predictor == 1 {
++            try losslessSmallLeftInto(output, rowBytes: destination.rowBytes, bytesPerSample: bps,
++                width: w, height: h, half: half, table: table, reader: &reader,
++                pointTransform: pt, segmentRows: segmentRows)
++            return
++        }
+         let history = UnsafeMutableBufferPointer<Int32>.allocate(capacity: w)
+         defer { history.deallocate() }
+         // w >= 1 has already been validated by decodeLossless.
+@@ -1456,6 +1462,41 @@ struct JLIDecoder: Sendable {
+         }
+     }
+ 
++    /// The small-scan caller has validated dimensions, output extent and sample
++    /// layout and retains its destination borrow through this synchronous call.
++    /// Predictor 1 needs only the preceding row's first sample, so keep that
++    /// value locally instead of allocating a row of history. Entropy reads,
++    /// output writes and polling are unchanged: narrow rows share at most 1024
++    /// samples between checks; wider rows retain their per-row boundary.
++    @inline(never)
++    private static func losslessSmallLeftInto(
++        _ output: UnsafeMutablePointer<UInt8>, rowBytes: Int, bytesPerSample bps: Int,
++        width w: Int, height h: Int, half: Int32, table: HuffmanTable,
++        reader: inout BitReader, pointTransform pt: Int, segmentRows: Int
++    ) throws {
++        var firstSample = half
++        let rowsPerCheck = max(1, 1024 / w)
++        var rowsUntilCheck = 0
++        for y in 0..<h {
++            if rowsUntilCheck == 0 {
++                try NativeOperation.check()
++                rowsUntilCheck = rowsPerCheck
++            }
++            rowsUntilCheck -= 1
++            let segmentY = y % segmentRows
++            if y > 0, segmentY == 0 {
++                try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
++            }
++            var value = segmentY == 0 ? half : firstSample
++            let outputRow = output + y * rowBytes
++            for x in 0..<w {
++                value = (value + (try losslessDifference(table, &reader))) & 0xFFFF
++                if x == 0 { firstSample = value }
++                writeLosslessSample(value, outputRow, x, bps, pt)
++            }
++        }
++    }
++
+     @inline(__always)
+     private static func losslessDifference(_ table: HuffmanTable, _ reader: inout BitReader) throws -> Int32 {
+         if let difference = reader.fastDecodeLosslessDifference(table) { return difference }
+diff --git a/Tests/SwiftJLITests/Native/SmallLeftLosslessTests.swift b/Tests/SwiftJLITests/Native/SmallLeftLosslessTests.swift
+new file mode 100644
+index 0000000..0f3f9dd
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/SmallLeftLosslessTests.swift
+@@ -0,0 +1,251 @@
++// SPDX-License-Identifier: Apache-2.0
++import Foundation
++import Synchronization
++import Testing
++@testable import SwiftJLI
++
++private enum SmallLeftCancellationPoint: Sendable, CaseIterable {
++    case sealing, completedProgress
++}
++
++private final class SmallLeftCancellingProvider: WritableImageStorage {
++    private let owner: OwnedImageStorage
++    private let point: SmallLeftCancellationPoint
++    private let seals = Mutex(0)
++    init(byteCount: Int, point: SmallLeftCancellationPoint) throws {
++        owner = try OwnedImageStorage(byteCount: byteCount)
++        self.point = point
++    }
++    var byteCount: Int { owner.byteCount }
++    var allocationID: UUID { owner.allocationID }
++    var sealCount: Int { seals.withLock { $0 } }
++    func reserveWrite() throws -> StorageWriteLease { try owner.reserveWrite() }
++    func withUnsafeMutableBytes<R>(lease: StorageWriteLease,
++        _ body: (UnsafeMutableRawBufferPointer) throws -> R) throws -> R {
++        try owner.withUnsafeMutableBytes(lease: lease, body)
++    }
++    func finishAndSeal(lease: StorageWriteLease) throws -> any ReadOnlyImageStorage {
++        let result = try owner.finishAndSeal(lease: lease)
++        seals.withLock { $0 += 1 }
++        if point == .sealing { withUnsafeCurrentTask { $0?.cancel() } }
++        return result
++    }
++    func abortAndInvalidate(lease: StorageWriteLease) throws {
++        try owner.abortAndInvalidate(lease: lease)
++    }
++}
++
++@Suite struct SmallLeftLosslessTests {
++    private func encoded(width: Int, height: Int, precision: Int, pt: Int = 0,
++                         restartRows: Int = 0, constant: UInt8? = nil) throws -> ([UInt8], ParsedJPEG) {
++        let bps = precision <= 8 ? 1 : 2, mask = (1 << precision) - 1
++        var bytes: [UInt8] = []
++        for index in 0..<(width * height) {
++            let value = constant.map(Int.init) ?? (index % 3 == 0 ? mask : index % 3 == 1 ? 0 : (index * 8191) & mask)
++            bytes.append(UInt8(truncatingIfNeeded: value))
++            if bps == 2 { bytes.append(UInt8(value >> 8)) }
++        }
++        let image = try JLIImage(width: width, height: height,
++            pixelFormat: bps == 1 ? .uint8 : .uint16, colorModel: .grayscale, data: bytes)
++        var configuration = JLIEncoderConfiguration(lossless: true)
++        configuration.losslessPrecision = precision
++        configuration.losslessPredictor = 1
++        configuration.losslessPointTransform = pt
++        configuration.restartInterval = width * restartRows
++        let jpeg = try JLIEncoder().encode(image, configuration: configuration)
++        var parser = MarkerReader(data: jpeg)
++        let parsed = try parser.parse()
++        #expect(parsed.scans.first?.header.spectralStart == 1)
++        return (jpeg, parsed)
++    }
++
++    private func replacing(_ parsed: ParsedJPEG, entropy: [UInt8], table: HuffmanTable? = nil) throws -> ParsedJPEG {
++        let scan = try #require(parsed.scans.first)
++        let tables = table.map { [0: $0] } ?? scan.dcTables
++        let replacement = JPEGScanData(header: scan.header, entropyData: JPEGBytes(entropy),
++            dcTables: tables, acTables: scan.acTables)
++        return ParsedJPEG(frameInfo: parsed.frameInfo, quantTables: parsed.quantTables,
++            huffmanDCTables: tables, huffmanACTables: parsed.huffmanACTables,
++            scans: [replacement], restartInterval: parsed.restartInterval,
++            iccProfile: parsed.iccProfile, exif: parsed.exif,
++            parserWorkspaceBytes: parsed.parserWorkspaceBytes)
++    }
++
++    private func checkBorrowed(_ parsed: ParsedJPEG, bps: Int) throws {
++        let width = parsed.frameInfo.width, height = parsed.frameInfo.height
++        let native = try JLIDecoder().decodeParsed(parsed).data
++        let nativeBps = parsed.frameInfo.precision <= 8 ? 1 : 2
++        let expected = nativeBps == 1 && bps == 2 ? native.flatMap { [$0, UInt8(0)] } : native
++        let stride = width * bps + 5, offset = 3
++        var storage = [UInt8](repeating: 0xA5, count: offset + stride * height + 7)
++        try storage.withUnsafeMutableBytes { raw in
++            try JLIDecoder().decodeSharedLossless(parsed, into: .init(
++                bytes: .init(rebasing: raw[offset..<(offset + stride * height)]),
++                rowBytes: stride, bytesPerSample: bps))
++        }
++        for row in 0..<height {
++            let first = offset + row * stride, count = width * bps
++            #expect(storage[first..<(first + count)]
++                .elementsEqual(expected[(row * count)..<((row + 1) * count)]))
++            #expect(storage[(first + count)..<(first + stride)].allSatisfy { $0 == 0xA5 })
++        }
++        #expect(storage.prefix(offset).allSatisfy { $0 == 0xA5 })
++        #expect(storage.suffix(7).allSatisfy { $0 == 0xA5 })
++    }
++
++    @Test func smallLeftMatchesFullPlaneAcrossLayoutsPointTransformsAndRestarts() throws {
++        for (width, height, precision, pt, restartRows) in [
++            (1, 7, 8, 0, 1), (19, 11, 8, 2, 3), (17, 9, 12, 3, 1),
++            (19, 11, 16, 0, 0), (17, 9, 16, 4, 2), (1, 1, 2, 1, 0)
++        ] {
++            let (_, parsed) = try encoded(width: width, height: height, precision: precision,
++                pt: pt, restartRows: restartRows)
++            #expect(width * height < 16384)
++            try checkBorrowed(parsed, bps: precision <= 8 ? 1 : 2)
++            if precision <= 8 { try checkBorrowed(parsed, bps: 2) }
++        }
++    }
++
++    @Test func thresholdNeighboursPreserveTheSameSamples() throws {
++        for (width, height) in [(16383, 1), (128, 128)] {
++            let (_, parsed) = try encoded(width: width, height: height, precision: 16)
++            #expect(width * height == 16383 || width * height == 16384)
++            try checkBorrowed(parsed, bps: 2)
++        }
++    }
++
++    @Test func malformedDifferencesRetainWrapAndPostPredictionClamping() throws {
++        let table = HuffmanTable(bits: [1, 1, 1, 1] + Array(repeating: 0, count: 12),
++            values: [16, 15, 1, 0])
++        for (precision, pt) in [(8, 0), (8, 3), (16, 4)] {
++            let (_, original) = try encoded(width: 7, height: 5, precision: precision, pt: pt)
++            var writer = BitWriter()
++            for index in 0..<35 {
++                let category = [16, 15, 1, 0][index % 4]
++                let symbol = table.encodingTable[category]
++                writer.writeBits(UInt32(symbol.code), count: Int(symbol.length))
++                if category > 0, category < 16 {
++                    writer.writeBits(index & 1 == 0 ? 0 : (1 << category) - 1, count: category)
++                }
++            }
++            writer.flush()
++            let malformed = try replacing(original, entropy: writer.data, table: table)
++            // The full-plane decoder retains raw modulo65536 prediction;
++            // clamping is applied only when samples are written to the image.
++            try checkBorrowed(malformed, bps: precision <= 8 ? 1 : 2)
++        }
++    }
++
++    @Test func truncatedRowsPreserveReferenceErrorsAndOnlyWriteCompletePrefixes() throws {
++        let (_, original) = try encoded(width: 19, height: 7, precision: 8, constant: 42)
++        let entropy = Array(try #require(original.scans.first).entropyData)
++        let expected = try JLIDecoder().decodeParsed(original).data
++        #expect(expected.allSatisfy { $0 == 42 })
++        for cutoff in [0, 1, max(1, entropy.count / 2)] {
++            for tail: [UInt8] in [[], [0xFF], [0xFF, 0xD9]] {
++                let parsed = try replacing(original, entropy: Array(entropy.prefix(cutoff)) + tail)
++                let reference = Result { try JLIDecoder().decodeParsed(parsed) }
++                var storage = [UInt8](repeating: 0xA5, count: expected.count + 8)
++                let borrowed = Result {
++                    try storage.withUnsafeMutableBytes { raw in
++                        try JLIDecoder().decodeSharedLossless(parsed, into: .init(
++                            bytes: .init(rebasing: raw[4..<(4 + expected.count)]),
++                            rowBytes: 19, bytesPerSample: 1))
++                    }
++                }
++                switch (reference, borrowed) {
++                case (.failure(let lhs), .failure(let rhs)):
++                    #expect(String(describing: lhs) == String(describing: rhs))
++                default: Issue.record("Truncated small-left scan did not preserve the full-plane failure")
++                }
++                let output = storage[4..<(4 + expected.count)]
++                let written = output.prefix(while: { $0 == 42 }).count
++                #expect(output.prefix(written).elementsEqual(expected.prefix(written)))
++                #expect(output.dropFirst(written).allSatisfy { $0 == 0xA5 })
++                #expect(storage.prefix(4).allSatisfy { $0 == 0xA5 })
++                #expect(storage.suffix(4).allSatisfy { $0 == 0xA5 })
++            }
++        }
++    }
++
++    @Test func cancellationStopsAfterOneBoundedPollingUnit() throws {
++        for (width, height) in [(1, 2048), (19, 100), (2049, 3)] {
++            let (_, parsed) = try encoded(width: width, height: height, precision: 8, constant: 42)
++            let calls = Mutex(0)
++            var output = [UInt8](repeating: 0xA5, count: width * height)
++            #expect(throws: CancellationError.self) {
++                try output.withUnsafeMutableBytes { raw in
++                    try NativeOperation.withSynchronousCancellation({
++                        if calls.withLock({ $0 += 1; return $0 }) >= 3 { throw CancellationError() }
++                    }) {
++                        try NativeOperation.$current.withValue(.init(seconds: 60)) {
++                            try JLIDecoder().decodeSharedLossless(parsed, into: .init(
++                                bytes: raw, rowBytes: width, bytesPerSample: 1))
++                        }
++                    }
++                }
++            }
++            let written = output.prefix(while: { $0 == 42 }).count
++            #expect(written > 0 && written <= max(1024, width))
++            #expect(output.dropFirst(written).allSatisfy { $0 == 0xA5 })
++        }
++    }
++
++    @Test func invalidSmallDestinationRejectsBeforeWriting() throws {
++        let (_, parsed) = try encoded(width: 7, height: 3, precision: 8)
++        for (bps, stride, count) in [(0, 7, 21), (3, 21, 63), (1, 6, 21),
++                                     (2, 13, 42), (1, 7, 20), (2, 14, 41),
++                                     (1, Int.max, 21)] {
++            var storage = [UInt8](repeating: 0xA5, count: count)
++            #expect(throws: JLIError.self) {
++                try storage.withUnsafeMutableBytes { raw in
++                    try JLIDecoder().decodeSharedLossless(parsed, into: .init(
++                        bytes: raw, rowBytes: stride, bytesPerSample: bps))
++                }
++            }
++            #expect(storage.allSatisfy { $0 == 0xA5 })
++        }
++    }
++
++    @Test func expiredDeadlineRejectsSmallLeftBeforeWriting() throws {
++        // Parse before installing the expired context so this necessarily
++        // reaches the new predictor-1 helper's initial bounded-work check.
++        let (_, parsed) = try encoded(width: 19, height: 19, precision: 8, constant: 42)
++        var output = [UInt8](repeating: 0xA5, count: 19 * 19)
++        do {
++            try NativeOperation.$current.withValue(.init(seconds: Double.leastNonzeroMagnitude)) {
++                try output.withUnsafeMutableBytes { raw in
++                    try JLIDecoder().decodeSharedLossless(parsed, into: .init(
++                        bytes: raw, rowBytes: 19, bytesPerSample: 1))
++                }
++            }
++            Issue.record("Expired small-left deadline was ignored")
++        } catch let error as CodecError {
++            #expect(error.category == .resourceLimitExceeded)
++        }
++        #expect(output.allSatisfy { $0 == 0xA5 })
++    }
++
++    @Test(arguments: SmallLeftCancellationPoint.allCases)
++    private func finalCancellationCannotPublishOrReuseSmallDestination(point: SmallLeftCancellationPoint) async throws {
++        let (jpeg, parsed) = try encoded(width: 19, height: 11, precision: 16)
++        #expect(parsed.frameInfo.width * parsed.frameInfo.height < 16384)
++        let descriptor = try ImageDescriptor.greyscale16(width: 19, height: 11)
++        let provider = try SmallLeftCancellingProvider(byteCount: descriptor.requiredByteCount, point: point)
++        let destination = try ImageDestination(descriptor: descriptor, storage: provider)
++        let completed = Mutex(false), decoder = try SwiftJLI.Decoder()
++        let operation = Task {
++            try await decoder.decode(Data(jpeg), into: destination, options: .init(progress: { update in
++                if update.phase == .completed {
++                    completed.withLock { $0 = true }
++                    if point == .completedProgress { withUnsafeCurrentTask { $0?.cancel() } }
++                }
++            }))
++        }
++        await #expect(throws: CancellationError.self) { try await operation.value }
++        #expect(provider.sealCount == 1)
++        if point == .completedProgress { #expect(completed.withLock { $0 }) }
++        #expect(throws: CodecError.self) { _ = try provider.reserveWrite() }
++        #expect(throws: CodecError.self) { _ = try destination.write { _ in } }
++    }
++}

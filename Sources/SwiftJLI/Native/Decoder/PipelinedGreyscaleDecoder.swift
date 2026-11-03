@@ -4,7 +4,8 @@ import Synchronization
 
 /// One joined reconstruction worker overlaps serial entropy decoding. The caller
 /// alone reads compressed input and writes provider storage. Two internal slots
-/// alternate, each holding one canonical 1024-block coefficient/output batch.
+/// alternate, each holding a 256-block FMA or 1024-block GEMM coefficient/output
+/// batch. Admission and dispatch use the same immutable batch size.
 enum PipelinedGreyscaleDecoder {
     private final class State: Sendable {
         struct Progress { var completed = 0; var stopped = false; var error: (any Error)? }
@@ -19,10 +20,11 @@ enum PipelinedGreyscaleDecoder {
     /// until signalling ready; the worker owns it through reconstruction and
     /// compaction, then publishes completion under the mutex. Only after that
     /// publication may the caller scatter/reuse the slot. The worker alone uses
-    /// scratch; the quantiser is immutable. No provider pointer is captured.
+    /// optional GEMM scratch; block-local reconstruction owns only local values.
+    /// The quantiser is immutable. No provider pointer is captured.
     private struct Buffers: @unchecked Sendable {
         let coefficients: UnsafeMutablePointer<Int32>
-        let scratch: UnsafeMutablePointer<Float>
+        let scratch: UnsafeMutablePointer<Float>?
         let quantiser: UnsafePointer<Float>
     }
 
@@ -30,23 +32,31 @@ enum PipelinedGreyscaleDecoder {
                        lookup: ACLookahead?, quantTable: [Float], plan: SequentialGreyscalePlan,
                        width: Int, height: Int, precision: Int, restartInterval: Int,
                        floatOutput: Bool, destination: BorrowedSampleDestination) throws {
-        let blocks = plan.blockCount, slotSamples = 1024 * 64
-        guard blocks >= 2048, plan.batchBlocks == 1024, plan.blocksPerRow > 0,
+        let blocks = plan.blockCount, batchBlocks = plan.batchBlocks
+        guard blocks >= 2048, blocks <= Int.max / 64,
+              batchBlocks == 1024 || (plan.blockLocalIDCT && batchBlocks == 256),
+              plan.blocksPerRow > 0,
               precision == 8 || precision == 12, restartInterval >= 0,
               quantTable.count >= 64 else {
             throw JLIError.decodingFailed("Invalid pipelined greyscale scan")
         }
+        let slotSamples = batchBlocks * 64
         var coefficients = [Int32](unsafeUninitializedCapacity: slotSamples * 2) { _, count in count = slotSamples * 2 }
-        var scratch = [Float](unsafeUninitializedCapacity: slotSamples) { _, count in count = slotSamples }
+        let scratchCount = plan.blockLocalIDCT ? 0 : slotSamples
+        // A zero-capacity uninitialised constructor writes the shared empty
+        // Array storage on this toolchain. FMA needs no scratch or such write.
+        var scratch: [Float] = scratchCount == 0 ? [] :
+            [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
         try coefficients.withUnsafeMutableBufferPointer { cp in
             try scratch.withUnsafeMutableBufferPointer { sp in
                 try quantTable.withUnsafeBufferPointer { qt in
-                    guard let base = cp.baseAddress, let workspace = sp.baseAddress,
+                    guard let base = cp.baseAddress,
+                          plan.blockLocalIDCT || sp.baseAddress != nil,
                           let quantiser = qt.baseAddress else {
                         throw JLIError.decodingFailed("Missing pipeline storage")
                     }
-                    let buffers = Buffers(coefficients: base, scratch: workspace, quantiser: quantiser)
-                    let state = State(), batches = (blocks - 1) / 1024 + 1
+                    let buffers = Buffers(coefficients: base, scratch: sp.baseAddress, quantiser: quantiser)
+                    let state = State(), batches = (blocks - 1) / batchBlocks + 1
                     let context = NativeOperation.current, bps = destination.bytesPerSample
                     // The group covers the entire submitted work item, rather
                     // than an early signal from inside the worker body.
@@ -57,11 +67,11 @@ enum PipelinedGreyscaleDecoder {
                                     state.ready.wait()
                                     if state.progress.withLock({ $0.stopped }) { return }
                                     try NativeOperation.check()
-                                    let count = min(1024, blocks - batch * 1024) * 64
+                                    let count = min(batchBlocks, blocks - batch * batchBlocks) * 64
                                     try ParallelSequentialGreyscaleDecoder.reconstructWindow(
                                         .init(start: buffers.coefficients + (batch & 1) * slotSamples, count: count),
                                         quantTable: .init(start: buffers.quantiser, count: 64),
-                                        scratch: .init(start: buffers.scratch, count: slotSamples),
+                                        scratch: .init(start: buffers.scratch, count: scratchCount),
                                         precision: precision, bytesPerSample: bps, floatOutput: floatOutput)
                                     state.progress.withLock { $0.completed = batch + 1 }
                                     state.done.signal()
@@ -90,10 +100,10 @@ enum PipelinedGreyscaleDecoder {
                             _ = state.done.wait(timeout: .now() + .milliseconds(5))
                         }
                         try NativeOperation.check()
-                        let count = min(1024, blocks - batch * 1024) * 64
+                        let count = min(batchBlocks, blocks - batch * batchBlocks) * 64
                         try ParallelSequentialGreyscaleDecoder.scatterWindow(
                             .init(start: base + (batch & 1) * slotSamples, count: count),
-                            firstBlock: batch * 1024, blocksPerRow: plan.blocksPerRow,
+                            firstBlock: batch * batchBlocks, blocksPerRow: plan.blocksPerRow,
                             width: width, height: height, destination: destination)
                     }
                     try CDCTKernel.withBorrowed(dcTable: dcTable, acTable: acTable, lookup: lookup,
@@ -102,7 +112,7 @@ enum PipelinedGreyscaleDecoder {
                         for batch in 0..<batches {
                             if batch >= 2 { try scatterCompleted(batch - 2) }
                             if let error = state.progress.withLock({ $0.error }) { throw error }
-                            let first = batch * 1024, end = min(first + 1024, blocks)
+                            let first = batch * batchBlocks, end = min(first + batchBlocks, blocks)
                             let slot = base + (batch & 1) * slotSamples
                             var index = first
                             while index < end {

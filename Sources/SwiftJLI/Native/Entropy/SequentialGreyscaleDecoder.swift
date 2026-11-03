@@ -16,22 +16,30 @@ enum SequentialGreyscaleDecoder {
     /// fully initialised by decodeAC and its DC assignment before it is read;
     /// no coefficient value carries between batches. The production consumer
     /// finishes reconstruction and output before returning.
-    /// DC prediction and restart numbering span batches, while each batch keeps
-    /// the established 1024-block reconstruction grouping.
+    /// DC prediction and restart numbering span batches. GEMM callers retain
+    /// 1024-block groups; the block-local FMA caller may use 256-block groups.
     static func decodeBatches(
         reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable,
         lookup: ACLookahead?, blocksPerRow: Int, blockRows: Int,
         precision: Int, restartInterval: Int,
         windowBlocks: Int = SequentialGreyscalePlan.maximumBatchBlocks,
+        transformGroupBlocks: Int = SequentialGreyscalePlan.maximumBatchBlocks,
         consume: (UnsafeMutableBufferPointer<Int32>, Int) throws -> Void
     ) throws {
         let (blocks, overflow) = blocksPerRow.multipliedReportingOverflow(by: blockRows)
         let (_, countOverflow) = blocks.multipliedReportingOverflow(by: 64)
         guard blocksPerRow > 0, blockRows > 0, !overflow, !countOverflow,
               (8...12).contains(precision), restartInterval >= 0,
+              transformGroupBlocks == 1024 || transformGroupBlocks == 256,
               windowBlocks > 0, windowBlocks <= SequentialGreyscalePlan.maximumWindowBlocks,
-              windowBlocks >= blocks || windowBlocks % 1024 == 0 else {
+              windowBlocks >= blocks || windowBlocks % transformGroupBlocks == 0 else {
             throw JLIError.decodingFailed("Invalid sequential coefficient destination")
+        }
+        if try CSequentialGreyscaleDecoder.decodeBatchesIfEligible(
+            reader: &reader, dcTable: dcTable, acTable: acTable, lookup: lookup,
+            blocksPerRow: blocksPerRow, blockRows: blockRows, precision: precision,
+            restartInterval: restartInterval, windowBlocks: windowBlocks, transformGroupBlocks: transformGroupBlocks, consume: consume) {
+            return
         }
         let capacity = min(windowBlocks, blocks) * 64
         var coefficients = [Int32](unsafeUninitializedCapacity: capacity) { _, count in count = capacity }
@@ -44,8 +52,8 @@ enum SequentialGreyscaleDecoder {
                 var index = first
                 while index < end {
                     try NativeOperation.check()
-                    let canonicalEnd = index + 1024 - index % 1024
-                    let rowEnd = min(end, min(index + blocksPerRow - index % blocksPerRow, canonicalEnd))
+                    let groupEnd = index + transformGroupBlocks - index % transformGroupBlocks
+                    let rowEnd = min(end, min(index + blocksPerRow - index % blocksPerRow, groupEnd))
                     while index < rowEnd {
                         if restartInterval > 0, index > 0, index % restartInterval == 0 {
                             try reader.skipRestartMarker(expectedIndex: restartIndex)

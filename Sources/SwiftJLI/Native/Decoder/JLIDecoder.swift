@@ -1128,7 +1128,7 @@ struct JLIDecoder: Sendable {
                 restartInterval: restartInterval, floatOutput: floatOutput, destination: destination)
             return
         }
-        if plan.parallelLanes > 1 {
+        if plan.parallelLanes > 1 || plan.blockLocalIDCT {
             try ParallelSequentialGreyscaleDecoder.decode(reader: &reader,
                 dcTable: dcTable, acTable: acTable, lookup: lookup, quantTable: quantTable,
                 plan: plan, width: width, height: height, precision: precision,
@@ -1399,6 +1399,12 @@ struct JLIDecoder: Sendable {
               let output = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
             throw JLIError.decodingFailed("lossless destination is too small")
         }
+        if predictor == 1 {
+            try losslessSmallLeftInto(output, rowBytes: destination.rowBytes, bytesPerSample: bps,
+                width: w, height: h, half: half, table: table, reader: &reader,
+                pointTransform: pt, segmentRows: segmentRows)
+            return
+        }
         let history = UnsafeMutableBufferPointer<Int32>.allocate(capacity: w)
         defer { history.deallocate() }
         // w >= 1 has already been validated by decodeLossless.
@@ -1452,6 +1458,41 @@ struct JLIDecoder: Sendable {
                     aboveLeft = above
                     writeLosslessSample(value, outputRow, x, bps, pt)
                 }
+            }
+        }
+    }
+
+    /// The small-scan caller has validated dimensions, output extent and sample
+    /// layout and retains its destination borrow through this synchronous call.
+    /// Predictor 1 needs only the preceding row's first sample, so keep that
+    /// value locally instead of allocating a row of history. Entropy reads,
+    /// output writes and polling are unchanged: narrow rows share at most 1024
+    /// samples between checks; wider rows retain their per-row boundary.
+    @inline(never)
+    private static func losslessSmallLeftInto(
+        _ output: UnsafeMutablePointer<UInt8>, rowBytes: Int, bytesPerSample bps: Int,
+        width w: Int, height h: Int, half: Int32, table: HuffmanTable,
+        reader: inout BitReader, pointTransform pt: Int, segmentRows: Int
+    ) throws {
+        var firstSample = half
+        let rowsPerCheck = max(1, 1024 / w)
+        var rowsUntilCheck = 0
+        for y in 0..<h {
+            if rowsUntilCheck == 0 {
+                try NativeOperation.check()
+                rowsUntilCheck = rowsPerCheck
+            }
+            rowsUntilCheck -= 1
+            let segmentY = y % segmentRows
+            if y > 0, segmentY == 0 {
+                try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+            }
+            var value = segmentY == 0 ? half : firstSample
+            let outputRow = output + y * rowBytes
+            for x in 0..<w {
+                value = (value + (try losslessDifference(table, &reader))) & 0xFFFF
+                if x == 0 { firstSample = value }
+                writeLosslessSample(value, outputRow, x, bps, pt)
             }
         }
     }

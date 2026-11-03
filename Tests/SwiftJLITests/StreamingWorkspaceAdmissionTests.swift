@@ -60,7 +60,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
         let native = JLIDecoderConfiguration(outputPixelFormat: floating ? .float32 : nil)
         // 9 x 8 padded blocks; shared coefficient/output and one scratch batch.
         // This boundary deliberately includes block padding, not width*height.
-        let workspace = parsed.parserWorkspaceBytes + (flat ? 576 : 36_864)
+        let parserWorkspace = parsed.parserWorkspaceBytes
         let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
             hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: .scalarCPU))
         #expect(plan.dcOnlyTable == flat)
@@ -71,9 +71,10 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
         let descriptor = try ImageDescriptor(width: width, height: height,
             sampleType: floating ? .floatingPoint : .unsignedInteger,
             storageBits: bps * 8, meaningfulBits: floating ? 32 : precision, planes: [plane])
-        let total = workspace + storageCapacity + data.count
-
         for backend in Decoder.capabilities.availableBackends { for workers in [1, 8] {
+            let densePayload = BlockLocalIDCT.available && backend == .accelerated ? 18_432 : 36_864
+            let workspace = parserWorkspace + (flat ? 576 : densePayload)
+            let total = workspace + storageCapacity + data.count
             let expected = try NativeOperation.$current.withValue(.init(seconds: 120, backend: backend, maximumWorkers: 1)) {
                 // No borrowed destination: this remains the retained full-plane reference.
                 try JLIDecoder().decodeParsed(parsed, configuration: native).data
@@ -210,19 +211,24 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
         }
         let thresholds: [(Backend, Int)] = [(.scalarCPU, 2048), (.accelerated, 4096)]
         for (backend, threshold) in thresholds {
+            let local = BlockLocalIDCT.available && backend == .accelerated
+            let groupBlocks = local ? 256 : 1024
+            let pipelineBytes = local ? 131_072 : 786_432
+            let serialBytes = local ? 65_536 : 524_288
             let atThreshold = replacingGeometry(width: 8, height: threshold * 8)
             let plan = try #require(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend))
-            #expect(plan.blockCount == threshold && plan.batchBlocks == 1024)
-            #expect(plan.workspaceBytes == (backend == .accelerated ? 786_432 : 524_288))
+            #expect(plan.blockCount == threshold && plan.batchBlocks == groupBlocks)
+            #expect(plan.blockLocalIDCT == local && plan.transformGroupBlocks == groupBlocks)
+            #expect(plan.workspaceBytes == (backend == .accelerated ? pipelineBytes : serialBytes))
             let aboveThreshold = replacingGeometry(width: 8, height: (threshold + 1) * 8)
             let above = try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend)
             if backend == .accelerated {
-                #expect(above?.pipelined == true && above?.batchBlocks == 1024 && above?.workspaceBytes == 786_432)
+                #expect(above?.pipelined == true && above?.batchBlocks == groupBlocks && above?.workspaceBytes == pipelineBytes)
             } else { #expect(above == nil) }
             #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
-                hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: backend)?.workspaceBytes == 524_288)
+                hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: backend)?.workspaceBytes == serialBytes)
             #expect(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
                 hasDestination: false, normaliseXYBOutput: false, workerLimit: 1, backend: backend) == nil)
             #expect(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
@@ -241,8 +247,8 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
                 let pipeline = backend == .accelerated && workers > 1
                 let lanes = pipeline ? 1 : min(workers, 8)
                 #expect(plan.pipelined == pipeline)
-                #expect(plan.parallelLanes == lanes && plan.batchBlocks == lanes * 1024)
-                #expect(plan.workspaceBytes == (pipeline ? 786_432 : lanes * 524_288))
+                #expect(plan.parallelLanes == lanes && plan.batchBlocks == lanes * groupBlocks)
+                #expect(plan.workspaceBytes == (pipeline ? pipelineBytes : lanes * serialBytes))
             }
         }
     }
@@ -267,6 +273,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
                     hasDestination: true, normaliseXYBOutput: false, workerLimit: workers, backend: backend))
                 #expect(plan.blockCount == 4225 && plan.dcOnlyTable)
                 #expect(plan.parallelLanes == 1 && plan.batchBlocks == 1024 && plan.workspaceBytes == 8192)
+                #expect(!plan.blockLocalIDCT && plan.transformGroupBlocks == 1024)
                 expectWorkspaceDenial {
                     _ = try JPEGCodec.decode(data, into: nil, configuration: configuration,
                         options: .init(resourceLimits: try ResourceLimits(maximumWorkspaceBytes: workspace - 1,
@@ -294,10 +301,11 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
             sampleStride: 1, pixelStride: 1, rowBytes: rowBytes, byteCount: 3 + rowBytes * height)
         let descriptor = try ImageDescriptor(width: width, height: height,
             sampleType: .unsignedInteger, storageBits: 8, meaningfulBits: 8, planes: [plane])
-        // Accelerated scans use two coefficient slots and one IDCT scratch;
-        // scalar scans retain the two-lane grouped reservation.
+        // FMA scans use two 256-block coefficient slots without Float scratch;
+        // accelerated GEMM retains two 1024-block slots and one scratch window.
+        // Scalar scans retain the two-lane grouped reservation.
         for backend in Decoder.capabilities.availableBackends {
-            let payload = backend == .accelerated ? 786_432 : 1_048_576
+            let payload = backend == .accelerated ? (BlockLocalIDCT.available ? 131_072 : 786_432) : 1_048_576
             let workspace = parsed.parserWorkspaceBytes + payload
             let total = data.count + storageBytes + workspace
             let storage = try WorkspaceObservedStorage(byteCount: storageBytes)

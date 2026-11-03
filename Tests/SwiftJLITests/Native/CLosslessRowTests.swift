@@ -187,6 +187,43 @@ private final class CLosslessObservedStorage: WritableImageStorage {
         }
     }
 
+    @Test func codeZeroFourSampleBoundariesPreservePredictorAndRemainder() throws {
+        // Complete groups, one-to-three sample tails, and a longer row share
+        // the unchanged Swift per-sample oracle, including its physical cursor.
+        for category in 1...7 {
+            let table = HuffmanTable(bits: [1, 1] + Array(repeating: 0, count: 14),
+                                     values: [UInt8(category), 16])
+            let threshold = UInt32(1 << (category - 1))
+            let magnitudes: [UInt32] = [0, threshold - 1, threshold, (threshold << 1) - 1]
+            try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { borrowed in
+                let kernel = try #require(borrowed)
+                #expect(kernel.usesCodeZero)
+                for count in [3, 4, 5, 7, 8, 9, 65] {
+                    for offset in 0..<8 {
+                        // A non-zero Huffman prefix in each candidate-group
+                        // position must fall back without speculative consumption.
+                        // Position four denotes an entirely specialised row.
+                        for genericPosition in 0...4 {
+                            var writer = BitWriter()
+                            writer.writeBits(0, count: offset)
+                            for index in 0..<count {
+                                emit(category: genericPosition < 4 && index == genericPosition ? 16 : category,
+                                     magnitude: magnitudes[index % 4], table: table, writer: &writer)
+                            }
+                            writer.emitRestartMarker(3)
+                            writer.writeBits(0xA55A, count: 16)
+                            writer.flush()
+                            for seed: Int32 in [0, 65535] {
+                                #expect(try !compare(writer.data, skipping: offset, table: table,
+                                    kernel: kernel, count: count, seed: seed))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Test func codeZeroSelectionRequiresItsProvenWidthAndCodeLength() throws {
         for (length, category, expected): (Int, UInt8, Bool) in [
             (1, 0, false), (1, 1, true), (1, 7, true), (1, 8, false),

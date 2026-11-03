@@ -1,0 +1,10 @@
+{
+  "createdUTC": "2026-11-03T19:22:15.243266+00:00",
+  "reviewer": "/root/round2_lossless",
+  "finding": "Candidate initial validation receipt pinned Swift object only; add tested-build C/import artefact binding.",
+  "correction": "Separate immutable artifact-binding.json pins fresh build outputs, source/build metadata and test executable. C object has5724byte identical text and identical raw relocation records versusdb1, as do EH/unwind sections; object SHA differs outside these sections. Runner requires this binding before linking and rechecks receipt identity after benchmark.",
+  "previousRunnerSHA256": "59c6a5a78fba286a15a0c169b9fdccc0315e1c91658ab7344bc37a685e83f71b",
+  "correctedRunnerSHA256": "9512a4e5c118e0b375a0a42dc41ca9d14e20220c0f68030c0a482235cf1a9046",
+  "noBenchmarkRunYet": true,
+  "workloadAndSwiftHarnessUnchanged": true
+}

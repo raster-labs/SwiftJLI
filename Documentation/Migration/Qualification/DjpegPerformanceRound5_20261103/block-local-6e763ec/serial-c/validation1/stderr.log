@@ -1,0 +1,67 @@
+Building for production...
+[Planning deferred tasks]
+[45 / 78]
+[56 / 87]
+[61 / 87] SwiftJLI
+[72 / 134]
+[74 / 134]
+[83 / 134]
+[86 / 134]
+[90 / 134]
+[93 / 134]
+[99 / 134]
+[102 / 134]
+[103 / 134]
+[106 / 134]
+[108 / 134]
+[109 / 134] SwiftJLI
+[121 / 136] swiftjli-cli-product
+[127 / 143]
+[130 / 143] swiftjli-cli-product
+[132 / 143] swiftjli-cli-product
+[133 / 143] swiftjli-cli-product
+/private/tmp/swiftjli-round5-group4-fma-serial-c/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift:104:20: warning: result of call to 'withUnsafeMutableBytes' is unused [#NoUsage]
+102 |             // Immediate reuse after the joined failure is covered by ASan/TSan;
+103 |             // no timing delay is used as evidence of worker completion.
+104 |             output.withUnsafeMutableBytes { $0.initializeMemory(as: UInt8.self, repeating: 7) }
+    |                    `- warning: result of call to 'withUnsafeMutableBytes' is unused [#NoUsage]
+105 |             #expect(output.allSatisfy { $0 == 7 })
+106 |         }
+
+/private/tmp/swiftjli-round5-group4-fma-serial-c/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-round5-group4-fma-serial-c/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:101:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 99 |                     var reader = BitReader(data: writer.data)
+100 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+101 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+102 |                     try destination.withUnsafeMutableBufferPointer {
+103 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+
+/private/tmp/swiftjli-round5-group4-fma-serial-c/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:31:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 29 |         let scan = Self.scan(blockCount: 2050, dcOnly: dcOnly)
+ 30 |         let table = StandardHuffmanTables.acLuminance
+ 31 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 32 |         let quantisation = (0..<64).map { Float($0 * 7 % 127 + 1) }
+ 33 |         for backend in Decoder.capabilities.availableBackends {
+
+/private/tmp/swiftjli-round5-group4-fma-serial-c/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:92:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 90 |         let scan = Self.scan(blockCount: 1025)
+ 91 |         let table = StandardHuffmanTables.acLuminance
+ 92 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 93 |         var reader = BitReader(data: scan.bytes), calls = 0
+ 94 |         #expect(throws: JLIError.self) {
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[134 / 143] SwiftJLITests-product
+[139 / 143] SwiftJLITests-product
+[141 / 143] SwiftJLITests-product
+Build complete! (54.85 secs)

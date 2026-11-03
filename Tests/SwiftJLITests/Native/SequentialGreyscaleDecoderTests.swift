@@ -4,22 +4,40 @@ import Testing
 
 @Suite struct SequentialGreyscaleDecoderTests {
     @Test func invalidWindowExtentsRejectBeforeReadingEntropy() throws {
-        for window in [-1, 0, 1023, 1025, 8193, Int.max] {
+        for (group, windows) in [(1024, [-1, 0, 1023, 1025, 8193, Int.max]),
+                                 (256, [-1, 0, 255, 257, 8193, Int.max])] {
+            for window in windows {
+                var reader = BitReader(data: []), calls = 0
+                #expect(throws: JLIError.self) {
+                    try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
+                        dcTable: StandardHuffmanTables.dcLuminance, acTable: StandardHuffmanTables.acLuminance,
+                        lookup: nil, blocksPerRow: 4100, blockRows: 2, precision: 12, restartInterval: 0,
+                        windowBlocks: window, transformGroupBlocks: group) { _, _ in calls += 1 }
+                }
+                #expect(calls == 0 && reader.byteOffset == 0)
+            }
+        }
+    }
+
+    @Test func invalidTransformGroupsRejectBeforeModulo() throws {
+        for group in [Int.min, -1, 0, 1, 255, 257, 1023, 1025, Int.max] {
             var reader = BitReader(data: []), calls = 0
             #expect(throws: JLIError.self) {
                 try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
                     dcTable: StandardHuffmanTables.dcLuminance, acTable: StandardHuffmanTables.acLuminance,
                     lookup: nil, blocksPerRow: 4100, blockRows: 2, precision: 12, restartInterval: 0,
-                    windowBlocks: window) { _, _ in calls += 1 }
+                    windowBlocks: 256, transformGroupBlocks: group) { _, _ in calls += 1 }
             }
             #expect(calls == 0 && reader.byteOffset == 0)
         }
     }
 
-    @Test(arguments: [2048, 8192])
+    @Test(arguments: [256, 2048, 8192])
     func groupedWindowsPreserveRestartPredictionAndFullyResetSlots(window: Int) throws {
         let dcTable = StandardHuffmanTables.dcLuminance, acTable = StandardHuffmanTables.acLuminance
-        for interval in [1023, 2048, 8193] {
+        let group = window == 256 ? 256 : 1024
+        let intervals = window == 256 ? [255, 256, 257, 1023, 2048, 8193] : [1023, 2048, 8193]
+        for interval in intervals {
             var writer = BitWriter(), previous: Int32 = 0
             var expected: [Int32] = []
             for index in 0..<8200 {
@@ -39,8 +57,8 @@ import Testing
             try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
                 dcTable: dcTable, acTable: acTable, lookup: lookup,
                 blocksPerRow: 4100, blockRows: 2, precision: 12, restartInterval: interval,
-                windowBlocks: window) { coefficients, first in
-                #expect(first == received / 64 && first % 1024 == 0)
+                windowBlocks: window, transformGroupBlocks: group) { coefficients, first in
+                #expect(first == received / 64 && first % group == 0)
                 #expect(coefficients.elementsEqual(expected[received..<(received + coefficients.count)]))
                 received += coefficients.count
                 coefficients.baseAddress!.update(repeating: 123456, count: coefficients.count)

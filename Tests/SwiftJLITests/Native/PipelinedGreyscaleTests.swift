@@ -33,7 +33,8 @@ import Testing
             for workers in [2, 8] {
                 let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: cfg,
                     hasDestination: true, normaliseXYBOutput: false, workerLimit: workers, backend: .accelerated))
-                #expect(plan.pipelined && plan.workspaceBytes == 786_432)
+                #expect(plan.pipelined && plan.workspaceBytes == (BlockLocalIDCT.available ? 131_072 : 786_432))
+                #expect(plan.batchBlocks == (BlockLocalIDCT.available ? 256 : 1024))
                 var output = [UInt8](repeating: 0xA5, count: 3 + stride * height + 7)
                 try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: workers)) {
                     try output.withUnsafeMutableBytes { bytes in
@@ -55,8 +56,17 @@ import Testing
     @Test(arguments: [Backend.scalarCPU, .accelerated])
     func producerCancellationAndWorkerFailureJoinBeforeReturning(backend: Backend) throws {
         let parsed = try fixture(width: 513, precision: 8), scan = parsed.scans[0]
-        let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: .default,
+        let acceleratedPlan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: .default,
             hasDestination: true, normaliseXYBOutput: false, workerLimit: 2, backend: .accelerated))
+        // This deliberately private scalar pipeline invocation is outside the
+        // public scalar admission path. Supply its actual GEMM scratch while
+        // retaining the same joined worker, cancellation and caller canaries.
+        let plan = backend == .scalarCPU ? SequentialGreyscalePlan(
+            blocksPerRow: acceleratedPlan.blocksPerRow, blockRows: acceleratedPlan.blockRows,
+            blockCount: acceleratedPlan.blockCount, batchBlocks: 1024,
+            parallelLanes: acceleratedPlan.parallelLanes, pipelined: acceleratedPlan.pipelined,
+            blockLocalIDCT: false, dcOnlyTable: acceleratedPlan.dcOnlyTable, workspaceBytes: 786_432)
+            : acceleratedPlan
         let selector = try #require(scan.header.components.first)
         let dc = try #require(scan.dcTables[selector.dcTableId]), ac = try #require(scan.acTables[selector.acTableId])
         for failWorker in [false, true] {

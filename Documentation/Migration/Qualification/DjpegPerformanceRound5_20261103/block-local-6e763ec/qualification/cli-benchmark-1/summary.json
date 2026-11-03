@@ -1,0 +1,3285 @@
+{
+  "sourceRevision": "6e763ec2099e162bae52a40109ff74269ea9899f",
+  "baselineRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "planSHA256": "b1bb1f848e2053623a3ad836c6f5b426dec6dcc5f46fb656e3112e5e6a2a1d9d",
+  "receiptSHA256": "a5aabd1331a554ed2ea235d7f75f263c8dcabe25ea201ced97f2062d29e0fbe9",
+  "analysisSHA256": "6c14536711cda49a675b01f7832146d41ad7873e9d4a3be674e7a54e74b1a414",
+  "createdUTC": "2026-11-03T19:52:01.367894+00:00",
+  "method": "Unchanged repository benchmark-djpeg.py: process launch + input read + decode + PNM to /dev/null; measured /usr/bin/time -l child RSS and enclosing wall interval. Five warmups, twenty samples, two rounds, original three-engine rotating/reversing order. Correctness precedes timings. Source and binary pins are checked outside timing. No workspace overrides. No compiler or benchmark was executed while preparing this plan.",
+  "qualityScope": "Both Swift builds must retain exact samples/layout and exact PNM. Lossless tolerance0 versus djpeg, all16cases x2 accepted and no resource exclusions. Original5 profiles x2 attempted; lossless16 and dct12 accepted (tolerances0/4); rgb8 and progressiveRGB8 max difference3 exceeds existing tolerance2 and remain excluded without timing. No quality tolerance changes or denominator based on old5f9 rejections. Native full-source oracles and focused safety are separate evidence.",
+  "percentageConvention": "100*(candidate/comparator-1); negative means lower candidate elapsed time or RSS.",
+  "matrices": [
+    {
+      "name": "original-3.2.1",
+      "rawSHA256": "f028b7dbfd7b5d202aaa5988d9db23dd0780699bd39ec71771588cabbb79e4c7",
+      "djpegVersion": "libjpeg-turbo version 3.2.1 (build 20261026)",
+      "acceptedRecords": 6,
+      "excludedRecords": 4,
+      "exclusions": [
+        {
+          "round": 1,
+          "profile": "rgb8",
+          "size": 512,
+          "inputSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+          "inputBytes": 219499,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 3,
+            "tolerance": 2,
+            "outputSHA256": {
+              "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+            }
+          },
+          "commands": {
+            "baseline": [
+              "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "candidate": [
+              "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "djpeg": [
+              "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg"
+            ]
+          },
+          "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+        },
+        {
+          "round": 1,
+          "profile": "progressiveRGB8",
+          "size": 512,
+          "inputSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+          "inputBytes": 219582,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 3,
+            "tolerance": 2,
+            "outputSHA256": {
+              "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+            }
+          },
+          "commands": {
+            "baseline": [
+              "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "candidate": [
+              "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "djpeg": [
+              "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg"
+            ]
+          },
+          "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+        },
+        {
+          "round": 2,
+          "profile": "rgb8",
+          "size": 512,
+          "inputSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+          "inputBytes": 219499,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 3,
+            "tolerance": 2,
+            "outputSHA256": {
+              "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+            }
+          },
+          "commands": {
+            "baseline": [
+              "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "candidate": [
+              "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "djpeg": [
+              "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg"
+            ]
+          },
+          "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+        },
+        {
+          "round": 2,
+          "profile": "progressiveRGB8",
+          "size": 512,
+          "inputSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+          "inputBytes": 219582,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 3,
+            "tolerance": 2,
+            "outputSHA256": {
+              "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+            }
+          },
+          "commands": {
+            "baseline": [
+              "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "candidate": [
+              "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "djpeg": [
+              "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg"
+            ]
+          },
+          "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+        }
+      ],
+      "records": [
+        {
+          "round": 1,
+          "profile": "lossless16",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.055354,
+            "candidate": 8.953916499999998,
+            "djpeg": 7.261167
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7716864.0,
+            "candidate": 7716864.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -1.1201936445554894,
+          "elapsedVsDjpegPercent": 23.312361497814305,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 161.66666666666666,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "lossless16",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 22.926854,
+            "candidate": 22.727166999999998,
+            "djpeg": 27.441750000000003
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 20021248.0,
+            "candidate": 20021248.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -0.870974273225622,
+          "elapsedVsDjpegPercent": -17.180329242850767,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 571.4285714285714,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "dct12",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.593354,
+            "candidate": 9.3191665,
+            "djpeg": 7.458875
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 8822784.0,
+            "candidate": 8011776.0,
+            "djpeg": 2310144.0
+          },
+          "elapsedVsBaselinePercent": -2.858098429391853,
+          "elapsedVsDjpegPercent": 24.940644534195844,
+          "rssVsBaselinePercent": -9.19220055710307,
+          "rssVsDjpegPercent": 246.80851063829786,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 1,
+            "tolerance": 4,
+            "outputSHA256": {
+              "baseline": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+              "candidate": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+              "djpeg": "524d2c39dedbaafa9a5c6daaf8e0e30fa491961ce495a9fc52a8d97c0af0d294"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "lossless16",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.1652295,
+            "candidate": 9.2613125,
+            "djpeg": 7.7117495
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7716864.0,
+            "candidate": 7733248.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": 1.0483425428681414,
+          "elapsedVsDjpegPercent": 20.093533899149605,
+          "rssVsBaselinePercent": 0.2123142250530785,
+          "rssVsDjpegPercent": 162.22222222222223,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "lossless16",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 23.415937500000002,
+            "candidate": 22.9102495,
+            "djpeg": 28.421583000000002
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 20021248.0,
+            "candidate": 20021248.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -2.159588955172098,
+          "elapsedVsDjpegPercent": -19.391367117025116,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 571.4285714285714,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "dct12",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.8251665,
+            "candidate": 9.6679165,
+            "djpeg": 7.698083499999999
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 8798208.0,
+            "candidate": 8011776.0,
+            "djpeg": 2310144.0
+          },
+          "elapsedVsBaselinePercent": -1.6004817831840268,
+          "elapsedVsDjpegPercent": 25.588615659988623,
+          "rssVsBaselinePercent": -8.93854748603352,
+          "rssVsDjpegPercent": 246.80851063829786,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 1,
+            "tolerance": 4,
+            "outputSHA256": {
+              "baseline": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+              "candidate": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+              "djpeg": "524d2c39dedbaafa9a5c6daaf8e0e30fa491961ce495a9fc52a8d97c0af0d294"
+            }
+          }
+        }
+      ],
+      "cases": [
+        {
+          "profile": "lossless16",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -1.1201936445554894,
+            1.0483425428681414
+          ],
+          "elapsedVsDjpegPercent": [
+            23.312361497814305,
+            20.093533899149605
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "lossless16",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -0.870974273225622,
+            -2.159588955172098
+          ],
+          "elapsedVsDjpegPercent": [
+            -17.180329242850767,
+            -19.391367117025116
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "dct12",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -2.858098429391853,
+            -1.6004817831840268
+          ],
+          "elapsedVsDjpegPercent": [
+            24.940644534195844,
+            25.588615659988623
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        }
+      ],
+      "candidateBeatsDjpegCasesBothRounds": 1,
+      "candidateBeatsBaselineCasesBothRounds": 2,
+      "repeatedBaselineOver5PercentCases": []
+    },
+    {
+      "name": "lossless-patterns-3.2.1",
+      "rawSHA256": "c6fef5aef1d0dc19ebd025a0c3e8217f5c4d9dec28fd93d0b7aeabe05d30f178",
+      "djpegVersion": "libjpeg-turbo version 3.2.1 (build 20261026)",
+      "acceptedRecords": 32,
+      "excludedRecords": 0,
+      "exclusions": [],
+      "records": [
+        {
+          "round": 1,
+          "profile": "flat",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 7.522333,
+            "candidate": 7.4860205,
+            "djpeg": 5.4961660000000006
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2883584.0
+          },
+          "elapsedVsBaselinePercent": -0.48272922775420835,
+          "elapsedVsDjpegPercent": 36.204410492696184,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 134.6590909090909,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+              "candidate": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+              "djpeg": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "flat",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 8.169562,
+            "candidate": 8.060270500000001,
+            "djpeg": 6.9090625
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7405568.0,
+            "candidate": 7405568.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -1.3377889781606256,
+          "elapsedVsDjpegPercent": 16.6622895653354,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 151.11111111111111,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+              "candidate": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+              "djpeg": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "flat",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 10.81375,
+            "candidate": 10.7705625,
+            "djpeg": 20.834645499999997
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 15745024.0,
+            "candidate": 15745024.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -0.3993757947058141,
+          "elapsedVsDjpegPercent": -48.304555985845774,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 428.021978021978,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac",
+              "candidate": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac",
+              "djpeg": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "flat",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 13.729417000000002,
+            "candidate": 13.503896000000001,
+            "djpeg": 37.43060400000001
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 26886144.0,
+            "candidate": 26886144.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -1.6426116272817648,
+          "elapsedVsDjpegPercent": -63.92284773176517,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 801.6483516483516,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88",
+              "candidate": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88",
+              "djpeg": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "ramp",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 8.621478999999999,
+            "candidate": 8.506271,
+            "djpeg": 6.6055205
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2883584.0
+          },
+          "elapsedVsBaselinePercent": -1.3362904439017997,
+          "elapsedVsDjpegPercent": 28.77518130478891,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 134.6590909090909,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+              "candidate": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+              "djpeg": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "ramp",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.308937499999999,
+            "candidate": 9.1768335,
+            "djpeg": 7.9570834999999995
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7651328.0,
+            "candidate": 7651328.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -1.4191093237010066,
+          "elapsedVsDjpegPercent": 15.329108963101866,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 159.44444444444446,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+              "candidate": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+              "djpeg": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "ramp",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 17.896417,
+            "candidate": 14.556937999999999,
+            "djpeg": 27.113541499999997
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 18464768.0,
+            "candidate": 18464768.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -18.660042398430942,
+          "elapsedVsDjpegPercent": -46.31118918935765,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 519.2307692307693,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e",
+              "candidate": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e",
+              "djpeg": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "ramp",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 27.795104000000002,
+            "candidate": 21.490291000000003,
+            "djpeg": 49.925542
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 31703040.0,
+            "candidate": 31703040.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -22.68317830363218,
+          "elapsedVsDjpegPercent": -56.95531758072852,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 963.1868131868132,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc",
+              "candidate": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc",
+              "djpeg": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "noise",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 8.730167,
+            "candidate": 8.8455415,
+            "djpeg": 6.9106875
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2883584.0
+          },
+          "elapsedVsBaselinePercent": 1.3215612026665546,
+          "elapsedVsDjpegPercent": 27.99799585786509,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 134.6590909090909,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+              "candidate": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+              "djpeg": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "noise",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 10.059645499999998,
+            "candidate": 9.983,
+            "djpeg": 8.4385
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7913472.0,
+            "candidate": 7913472.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -0.7619105464501508,
+          "elapsedVsDjpegPercent": 18.303015938851708,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 168.33333333333331,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+              "candidate": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+              "djpeg": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "noise",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 28.6938755,
+            "candidate": 29.350082999999998,
+            "djpeg": 32.0196665
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 23740416.0,
+            "candidate": 23740416.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 2.2869253057155037,
+          "elapsedVsDjpegPercent": -8.337324500241138,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 696.1538461538462,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+              "candidate": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+              "djpeg": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "noise",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 53.192708499999995,
+            "candidate": 54.00895799999999,
+            "djpeg": 62.7809585
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 44744704.0,
+            "candidate": 44761088.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 1.5345138892485677,
+          "elapsedVsDjpegPercent": -13.972390211277197,
+          "rssVsBaselinePercent": 0.03661662394727205,
+          "rssVsDjpegPercent": 1401.098901098901,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+              "candidate": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+              "djpeg": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "mixed",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 9.045729,
+            "candidate": 9.144375,
+            "djpeg": 7.166146
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6766592.0,
+            "candidate": 6766592.0,
+            "djpeg": 2883584.0
+          },
+          "elapsedVsBaselinePercent": 1.090525705556744,
+          "elapsedVsDjpegPercent": 27.60520089878158,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 134.6590909090909,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+              "candidate": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+              "djpeg": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "mixed",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 10.346082999999998,
+            "candidate": 10.4614375,
+            "djpeg": 8.704875000000001
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7716864.0,
+            "candidate": 7716864.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": 1.114958192390314,
+          "elapsedVsDjpegPercent": 20.179066327776084,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 161.66666666666666,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "mixed",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 23.815687,
+            "candidate": 24.038749999999997,
+            "djpeg": 28.5895005
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 20021248.0,
+            "candidate": 20021248.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 0.9366221516095452,
+          "elapsedVsDjpegPercent": -15.917558615618354,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 571.4285714285714,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "mixed",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 41.647479000000004,
+            "candidate": 42.4517295,
+            "djpeg": 55.633375
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 36323328.0,
+            "candidate": 36323328.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 1.931090474888042,
+          "elapsedVsDjpegPercent": -23.693772847683604,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 1118.131868131868,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+              "candidate": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+              "djpeg": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "flat",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 8.955625,
+            "candidate": 8.8233955,
+            "djpeg": 7.1455210000000005
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2883584.0
+          },
+          "elapsedVsBaselinePercent": -1.4764966152557624,
+          "elapsedVsDjpegPercent": 23.48148581468028,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 134.6590909090909,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+              "candidate": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+              "djpeg": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "flat",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.317437000000002,
+            "candidate": 9.205083,
+            "djpeg": 8.0831455
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7405568.0,
+            "candidate": 7405568.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -1.2058466292823034,
+          "elapsedVsDjpegPercent": 13.879961705501898,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 151.11111111111111,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+              "candidate": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+              "djpeg": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "flat",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 11.711125,
+            "candidate": 11.931187,
+            "djpeg": 21.566146
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 15745024.0,
+            "candidate": 15745024.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 1.8790850580110874,
+          "elapsedVsDjpegPercent": -44.676313514709584,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 428.021978021978,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac",
+              "candidate": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac",
+              "djpeg": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "flat",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 14.977437499999999,
+            "candidate": 14.735104,
+            "djpeg": 39.038208499999996
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 26886144.0,
+            "candidate": 26886144.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -1.6179903938841278,
+          "elapsedVsDjpegPercent": -62.254661353120234,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 801.6483516483516,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88",
+              "candidate": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88",
+              "djpeg": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "ramp",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 8.9691045,
+            "candidate": 9.3767705,
+            "djpeg": 7.250687500000001
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2883584.0
+          },
+          "elapsedVsBaselinePercent": 4.545225222874816,
+          "elapsedVsDjpegPercent": 29.32250217651773,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 134.6590909090909,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+              "candidate": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+              "djpeg": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "ramp",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.995500000000002,
+            "candidate": 9.8934165,
+            "djpeg": 8.562688
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7651328.0,
+            "candidate": 7651328.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -1.02129458256216,
+          "elapsedVsDjpegPercent": 15.541013522856396,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 159.44444444444446,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+              "candidate": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+              "djpeg": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "ramp",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 18.106707999999998,
+            "candidate": 14.667166499999999,
+            "djpeg": 27.550833
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 18464768.0,
+            "candidate": 18464768.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -18.995951666089717,
+          "elapsedVsDjpegPercent": -46.763255760724185,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 519.2307692307693,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e",
+              "candidate": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e",
+              "djpeg": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "ramp",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 28.235500000000002,
+            "candidate": 21.365896000000003,
+            "djpeg": 51.240958000000006
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 31703040.0,
+            "candidate": 31703040.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -24.329670096155542,
+          "elapsedVsDjpegPercent": -58.303090273995274,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 963.1868131868132,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc",
+              "candidate": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc",
+              "djpeg": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "noise",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 9.528875,
+            "candidate": 9.2669585,
+            "djpeg": 7.298604
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2883584.0
+          },
+          "elapsedVsBaselinePercent": -2.7486613057679854,
+          "elapsedVsDjpegPercent": 26.968917617670442,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 134.6590909090909,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+              "candidate": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+              "djpeg": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "noise",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 10.811603999999999,
+            "candidate": 10.863917,
+            "djpeg": 9.04575
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7913472.0,
+            "candidate": 7913472.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": 0.4838597492102137,
+          "elapsedVsDjpegPercent": 20.099682171185364,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 168.33333333333331,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+              "candidate": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+              "djpeg": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "noise",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 28.886770499999997,
+            "candidate": 29.584395999999998,
+            "djpeg": 32.46350050000001
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 23748608.0,
+            "candidate": 23740416.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 2.415034591700027,
+          "elapsedVsDjpegPercent": -8.868743221329467,
+          "rssVsBaselinePercent": -0.034494653328731584,
+          "rssVsDjpegPercent": 696.1538461538462,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+              "candidate": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+              "djpeg": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "noise",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 53.154271,
+            "candidate": 53.1431875,
+            "djpeg": 62.4871875
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 44744704.0,
+            "candidate": 44744704.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -0.020851569951929605,
+          "elapsedVsDjpegPercent": -14.95346546041938,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 1400.5494505494505,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+              "candidate": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+              "djpeg": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "mixed",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 9.3629375,
+            "candidate": 9.282499999999999,
+            "djpeg": 7.195958000000001
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6766592.0,
+            "candidate": 6766592.0,
+            "djpeg": 2883584.0
+          },
+          "elapsedVsBaselinePercent": -0.8591053822585182,
+          "elapsedVsDjpegPercent": 28.996028047968014,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 134.6590909090909,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+              "candidate": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+              "djpeg": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "mixed",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 10.2977705,
+            "candidate": 10.040542,
+            "djpeg": 8.378333500000002
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7716864.0,
+            "candidate": 7716864.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -2.497904764919756,
+          "elapsedVsDjpegPercent": 19.839369010555586,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 161.66666666666666,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "mixed",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 24.328812499999998,
+            "candidate": 24.2360835,
+            "djpeg": 29.051021
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 20021248.0,
+            "candidate": 20021248.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -0.3811488949573616,
+          "elapsedVsDjpegPercent": -16.57407324857877,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 571.4285714285714,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "mixed",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 42.5311665,
+            "candidate": 41.77725,
+            "djpeg": 55.716729
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 36339712.0,
+            "candidate": 36323328.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -1.7726212611638426,
+          "elapsedVsDjpegPercent": -25.018480535711273,
+          "rssVsBaselinePercent": -0.04508566275924775,
+          "rssVsDjpegPercent": 1118.131868131868,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+              "candidate": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+              "djpeg": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30"
+            }
+          }
+        }
+      ],
+      "cases": [
+        {
+          "profile": "flat",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            -0.48272922775420835,
+            -1.4764966152557624
+          ],
+          "elapsedVsDjpegPercent": [
+            36.204410492696184,
+            23.48148581468028
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -1.3377889781606256,
+            -1.2058466292823034
+          ],
+          "elapsedVsDjpegPercent": [
+            16.6622895653354,
+            13.879961705501898
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -0.3993757947058141,
+            1.8790850580110874
+          ],
+          "elapsedVsDjpegPercent": [
+            -48.304555985845774,
+            -44.676313514709584
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            -1.6426116272817648,
+            -1.6179903938841278
+          ],
+          "elapsedVsDjpegPercent": [
+            -63.92284773176517,
+            -62.254661353120234
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            -1.3362904439017997,
+            4.545225222874816
+          ],
+          "elapsedVsDjpegPercent": [
+            28.77518130478891,
+            29.32250217651773
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -1.4191093237010066,
+            -1.02129458256216
+          ],
+          "elapsedVsDjpegPercent": [
+            15.329108963101866,
+            15.541013522856396
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -18.660042398430942,
+            -18.995951666089717
+          ],
+          "elapsedVsDjpegPercent": [
+            -46.31118918935765,
+            -46.763255760724185
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            -22.68317830363218,
+            -24.329670096155542
+          ],
+          "elapsedVsDjpegPercent": [
+            -56.95531758072852,
+            -58.303090273995274
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            1.3215612026665546,
+            -2.7486613057679854
+          ],
+          "elapsedVsDjpegPercent": [
+            27.99799585786509,
+            26.968917617670442
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -0.7619105464501508,
+            0.4838597492102137
+          ],
+          "elapsedVsDjpegPercent": [
+            18.303015938851708,
+            20.099682171185364
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            2.2869253057155037,
+            2.415034591700027
+          ],
+          "elapsedVsDjpegPercent": [
+            -8.337324500241138,
+            -8.868743221329467
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            1.5345138892485677,
+            -0.020851569951929605
+          ],
+          "elapsedVsDjpegPercent": [
+            -13.972390211277197,
+            -14.95346546041938
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            1.090525705556744,
+            -0.8591053822585182
+          ],
+          "elapsedVsDjpegPercent": [
+            27.60520089878158,
+            28.996028047968014
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            1.114958192390314,
+            -2.497904764919756
+          ],
+          "elapsedVsDjpegPercent": [
+            20.179066327776084,
+            19.839369010555586
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            0.9366221516095452,
+            -0.3811488949573616
+          ],
+          "elapsedVsDjpegPercent": [
+            -15.917558615618354,
+            -16.57407324857877
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            1.931090474888042,
+            -1.7726212611638426
+          ],
+          "elapsedVsDjpegPercent": [
+            -23.693772847683604,
+            -25.018480535711273
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        }
+      ],
+      "candidateBeatsDjpegCasesBothRounds": 8,
+      "candidateBeatsBaselineCasesBothRounds": 6,
+      "repeatedBaselineOver5PercentCases": []
+    },
+    {
+      "name": "original-3.2.0",
+      "rawSHA256": "ed502c4be70e20baac1baac1b614b0c23800d139c7580bd7a9d2c9ea1a07fe69",
+      "djpegVersion": "libjpeg-turbo version 3.2.0 (build 20260630)",
+      "acceptedRecords": 6,
+      "excludedRecords": 4,
+      "exclusions": [
+        {
+          "round": 1,
+          "profile": "rgb8",
+          "size": 512,
+          "inputSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+          "inputBytes": 219499,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 3,
+            "tolerance": 2,
+            "outputSHA256": {
+              "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+            }
+          },
+          "commands": {
+            "baseline": [
+              "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "candidate": [
+              "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "djpeg": [
+              "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/bin/djpeg",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg"
+            ]
+          },
+          "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+        },
+        {
+          "round": 1,
+          "profile": "progressiveRGB8",
+          "size": 512,
+          "inputSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+          "inputBytes": 219582,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 3,
+            "tolerance": 2,
+            "outputSHA256": {
+              "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+            }
+          },
+          "commands": {
+            "baseline": [
+              "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "candidate": [
+              "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "djpeg": [
+              "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/bin/djpeg",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg"
+            ]
+          },
+          "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+        },
+        {
+          "round": 2,
+          "profile": "rgb8",
+          "size": 512,
+          "inputSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+          "inputBytes": 219499,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 3,
+            "tolerance": 2,
+            "outputSHA256": {
+              "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+            }
+          },
+          "commands": {
+            "baseline": [
+              "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "candidate": [
+              "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "djpeg": [
+              "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/bin/djpeg",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg"
+            ]
+          },
+          "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+        },
+        {
+          "round": 2,
+          "profile": "progressiveRGB8",
+          "size": 512,
+          "inputSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+          "inputBytes": 219582,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 3,
+            "tolerance": 2,
+            "outputSHA256": {
+              "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+              "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+            }
+          },
+          "commands": {
+            "baseline": [
+              "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "candidate": [
+              "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+              "decode",
+              "-i",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+              "-o",
+              "-",
+              "--output-format",
+              "pnm"
+            ],
+            "djpeg": [
+              "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/bin/djpeg",
+              "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg"
+            ]
+          },
+          "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+        }
+      ],
+      "records": [
+        {
+          "round": 1,
+          "profile": "lossless16",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 8.914521000000002,
+            "candidate": 8.7895205,
+            "djpeg": 7.074770999999999
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7725056.0,
+            "candidate": 7716864.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -1.4022121884058825,
+          "elapsedVsDjpegPercent": 24.237526557396706,
+          "rssVsBaselinePercent": -0.10604453870625141,
+          "rssVsDjpegPercent": 161.66666666666666,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "lossless16",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 23.6042915,
+            "candidate": 23.3159795,
+            "djpeg": 27.5505205
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 20021248.0,
+            "candidate": 20021248.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -1.2214389065649311,
+          "elapsedVsDjpegPercent": -15.3700943689975,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 571.4285714285714,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "dct12",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.406812500000001,
+            "candidate": 9.433708499999998,
+            "djpeg": 7.415646
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 8871936.0,
+            "candidate": 8019968.0,
+            "djpeg": 2310144.0
+          },
+          "elapsedVsBaselinePercent": 0.2859204432957396,
+          "elapsedVsDjpegPercent": 27.21357653803862,
+          "rssVsBaselinePercent": -9.602954755309323,
+          "rssVsDjpegPercent": 247.16312056737587,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 1,
+            "tolerance": 4,
+            "outputSHA256": {
+              "baseline": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+              "candidate": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+              "djpeg": "524d2c39dedbaafa9a5c6daaf8e0e30fa491961ce495a9fc52a8d97c0af0d294"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "lossless16",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.037895500000001,
+            "candidate": 8.958333000000001,
+            "djpeg": 7.3016045
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7716864.0,
+            "candidate": 7716864.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -0.8803210880231949,
+          "elapsedVsDjpegPercent": 22.68992383797288,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 161.66666666666666,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "lossless16",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 23.1162085,
+            "candidate": 22.960979,
+            "djpeg": 27.654104
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 20021248.0,
+            "candidate": 20021248.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -0.6715179956955253,
+          "elapsedVsDjpegPercent": -16.970808383450063,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 571.4285714285714,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "dct12",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 10.0295005,
+            "candidate": 9.857854,
+            "djpeg": 7.5220625000000005
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 8765440.0,
+            "candidate": 8011776.0,
+            "djpeg": 2310144.0
+          },
+          "elapsedVsBaselinePercent": -1.7114162365314267,
+          "elapsedVsDjpegPercent": 31.05254044352861,
+          "rssVsBaselinePercent": -8.598130841121499,
+          "rssVsDjpegPercent": 246.80851063829786,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 1,
+            "tolerance": 4,
+            "outputSHA256": {
+              "baseline": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+              "candidate": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+              "djpeg": "524d2c39dedbaafa9a5c6daaf8e0e30fa491961ce495a9fc52a8d97c0af0d294"
+            }
+          }
+        }
+      ],
+      "cases": [
+        {
+          "profile": "lossless16",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -1.4022121884058825,
+            -0.8803210880231949
+          ],
+          "elapsedVsDjpegPercent": [
+            24.237526557396706,
+            22.68992383797288
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "lossless16",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -1.2214389065649311,
+            -0.6715179956955253
+          ],
+          "elapsedVsDjpegPercent": [
+            -15.3700943689975,
+            -16.970808383450063
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "dct12",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            0.2859204432957396,
+            -1.7114162365314267
+          ],
+          "elapsedVsDjpegPercent": [
+            27.21357653803862,
+            31.05254044352861
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        }
+      ],
+      "candidateBeatsDjpegCasesBothRounds": 1,
+      "candidateBeatsBaselineCasesBothRounds": 2,
+      "repeatedBaselineOver5PercentCases": []
+    },
+    {
+      "name": "lossless-patterns-3.2.0",
+      "rawSHA256": "33c32e4c9c35100b00a93833f3fff7f626f8cfd1ecbf7ab64ed0f21d45e0b8a9",
+      "djpegVersion": "libjpeg-turbo version 3.2.0 (build 20260630)",
+      "acceptedRecords": 32,
+      "excludedRecords": 0,
+      "exclusions": [],
+      "records": [
+        {
+          "round": 1,
+          "profile": "flat",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 7.467479,
+            "candidate": 7.7460835,
+            "djpeg": 5.508687999999999
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2867200.0
+          },
+          "elapsedVsBaselinePercent": 3.7309043654491614,
+          "elapsedVsDjpegPercent": 40.61576005030601,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 136.0,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+              "candidate": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+              "djpeg": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "flat",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 7.9660415,
+            "candidate": 7.635062499999999,
+            "djpeg": 6.3215205
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7405568.0,
+            "candidate": 7405568.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -4.154874161777844,
+          "elapsedVsDjpegPercent": 20.778893305811465,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 151.11111111111111,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+              "candidate": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+              "djpeg": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "flat",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 10.3095,
+            "candidate": 10.479437,
+            "djpeg": 18.656875499999998
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 15745024.0,
+            "candidate": 15753216.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 1.64835346040062,
+          "elapsedVsDjpegPercent": -43.83069662441601,
+          "rssVsBaselinePercent": 0.05202913631634498,
+          "rssVsDjpegPercent": 428.2967032967033,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac",
+              "candidate": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac",
+              "djpeg": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "flat",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 14.0020835,
+            "candidate": 14.358395999999999,
+            "djpeg": 32.2345
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 26886144.0,
+            "candidate": 26886144.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 2.5447105782507196,
+          "elapsedVsDjpegPercent": -55.456433324543575,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 801.6483516483516,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88",
+              "candidate": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88",
+              "djpeg": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "ramp",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 8.264000000000001,
+            "candidate": 8.323917,
+            "djpeg": 6.5349375
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2883584.0
+          },
+          "elapsedVsBaselinePercent": 0.7250363020329109,
+          "elapsedVsDjpegPercent": 27.375617593894354,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 134.6590909090909,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+              "candidate": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+              "djpeg": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "ramp",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.125292,
+            "candidate": 9.043375,
+            "djpeg": 7.8013335
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7651328.0,
+            "candidate": 7651328.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -0.8976918218069119,
+          "elapsedVsDjpegPercent": 15.920887115004101,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 159.44444444444446,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+              "candidate": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+              "djpeg": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "ramp",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 17.590958,
+            "candidate": 14.7219795,
+            "djpeg": 27.265312
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 18464768.0,
+            "candidate": 18464768.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -16.309393155278983,
+          "elapsedVsDjpegPercent": -46.00472754538808,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 519.2307692307693,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e",
+              "candidate": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e",
+              "djpeg": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "ramp",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 27.666061999999997,
+            "candidate": 20.7839795,
+            "djpeg": 50.48929150000001
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 31703040.0,
+            "candidate": 31703040.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -24.875540653382465,
+          "elapsedVsDjpegPercent": -58.83487590630976,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 963.1868131868132,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc",
+              "candidate": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc",
+              "djpeg": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "noise",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 8.742583500000002,
+            "candidate": 9.051416999999999,
+            "djpeg": 6.780729
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2867200.0
+          },
+          "elapsedVsBaselinePercent": 3.532519878134388,
+          "elapsedVsDjpegPercent": 33.487372817878416,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 136.0,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+              "candidate": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+              "djpeg": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "noise",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 10.3234795,
+            "candidate": 10.076749999999999,
+            "djpeg": 8.378229000000001
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7913472.0,
+            "candidate": 7913472.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -2.38998391966585,
+          "elapsedVsDjpegPercent": 20.273031448531633,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 168.33333333333331,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+              "candidate": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+              "djpeg": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "noise",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 28.488875,
+            "candidate": 28.451583000000003,
+            "djpeg": 31.443458500000002
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 23740416.0,
+            "candidate": 23740416.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -0.13090021982263833,
+          "elapsedVsDjpegPercent": -9.515096756929575,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 696.1538461538462,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+              "candidate": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+              "djpeg": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "noise",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 52.3575835,
+            "candidate": 52.5559375,
+            "djpeg": 62.520770500000005
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 44744704.0,
+            "candidate": 44752896.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 0.37884483343277875,
+          "elapsedVsDjpegPercent": -15.938436011437195,
+          "rssVsBaselinePercent": 0.01830831197364713,
+          "rssVsDjpegPercent": 1400.8241758241759,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+              "candidate": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+              "djpeg": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "mixed",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 8.749292,
+            "candidate": 8.7944375,
+            "djpeg": 6.6858125
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6766592.0,
+            "candidate": 6766592.0,
+            "djpeg": 2867200.0
+          },
+          "elapsedVsBaselinePercent": 0.5159903224169371,
+          "elapsedVsDjpegPercent": 31.538799510156768,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 136.0,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+              "candidate": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+              "djpeg": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "mixed",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 10.268833500000001,
+            "candidate": 10.253313,
+            "djpeg": 8.5354795
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7716864.0,
+            "candidate": 7716864.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": -0.1511418020362365,
+          "elapsedVsDjpegPercent": 20.12579961090646,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 161.66666666666666,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "mixed",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 24.533396,
+            "candidate": 24.283167000000002,
+            "djpeg": 28.755520999999998
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 20021248.0,
+            "candidate": 20021248.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -1.0199525577298751,
+          "elapsedVsDjpegPercent": -15.553027190847967,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 571.4285714285714,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+            }
+          }
+        },
+        {
+          "round": 1,
+          "profile": "mixed",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 42.543875,
+            "candidate": 42.561749999999996,
+            "djpeg": 55.313146
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 36323328.0,
+            "candidate": 36331520.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 0.04201544875730434,
+          "elapsedVsDjpegPercent": -23.05310206004194,
+          "rssVsBaselinePercent": 0.02255299954894152,
+          "rssVsDjpegPercent": 1118.4065934065934,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+              "candidate": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+              "djpeg": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "flat",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 9.0717295,
+            "candidate": 8.924021000000002,
+            "djpeg": 6.8129585
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2867200.0
+          },
+          "elapsedVsBaselinePercent": -1.6282286635640908,
+          "elapsedVsDjpegPercent": 30.985987952223716,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 136.0,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+              "candidate": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+              "djpeg": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "flat",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.231686999999999,
+            "candidate": 9.275375499999999,
+            "djpeg": 7.578208
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7405568.0,
+            "candidate": 7405568.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": 0.47324503094612336,
+          "elapsedVsDjpegPercent": 22.395367084144404,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 151.11111111111111,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+              "candidate": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+              "djpeg": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "flat",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 10.974479,
+            "candidate": 11.1510415,
+            "djpeg": 18.054979
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 15745024.0,
+            "candidate": 15745024.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 1.608846306052425,
+          "elapsedVsDjpegPercent": -38.23841334847301,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 428.021978021978,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac",
+              "candidate": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac",
+              "djpeg": "f10b8e6024562585101a6026b59172b9f65f426419f5be17ab10e94d6c2105ac"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "flat",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 14.830833000000002,
+            "candidate": 14.720436999999999,
+            "djpeg": 33.6885
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 26886144.0,
+            "candidate": 26886144.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -0.744368168665932,
+          "elapsedVsDjpegPercent": -56.30426703474479,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 801.6483516483516,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88",
+              "candidate": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88",
+              "djpeg": "d9a3d78bf66da2c79bda0589ad12d244bd2a0ba8af93a358dd30fcd0a2437f88"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "ramp",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 9.2587915,
+            "candidate": 9.2052295,
+            "djpeg": 7.196896
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2867200.0
+          },
+          "elapsedVsBaselinePercent": -0.5784988246036016,
+          "elapsedVsDjpegPercent": 27.90555122652878,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 136.0,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+              "candidate": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+              "djpeg": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "ramp",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.882270499999999,
+            "candidate": 9.932229000000001,
+            "djpeg": 8.504207999999998
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7651328.0,
+            "candidate": 7651328.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": 0.5055366577954246,
+          "elapsedVsDjpegPercent": 16.791934063701184,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 159.44444444444446,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+              "candidate": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+              "djpeg": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "ramp",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 17.4696875,
+            "candidate": 14.567979,
+            "djpeg": 27.6508125
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 18464768.0,
+            "candidate": 18464768.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -16.609962256050657,
+          "elapsedVsDjpegPercent": -47.31446318259184,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 519.2307692307693,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e",
+              "candidate": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e",
+              "djpeg": "8b17a87a2b137b86cf91798261db29a366ffba2c21b548f2b98d5a044661fc8e"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "ramp",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 28.372833,
+            "candidate": 22.1110625,
+            "djpeg": 51.51675
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 31703040.0,
+            "candidate": 31703040.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -22.069599112644124,
+          "elapsedVsDjpegPercent": -57.07985752206805,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 963.1868131868132,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc",
+              "candidate": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc",
+              "djpeg": "a37a958a99e3616584aba94fb5e4671b6cba1b103ab57a5d025e09c3afaa88cc"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "noise",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 8.938312999999999,
+            "candidate": 9.22425,
+            "djpeg": 7.123562
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6782976.0,
+            "candidate": 6766592.0,
+            "djpeg": 2867200.0
+          },
+          "elapsedVsBaselinePercent": 3.1990041073746145,
+          "elapsedVsDjpegPercent": 29.48929201430408,
+          "rssVsBaselinePercent": -0.24154589371980784,
+          "rssVsDjpegPercent": 136.0,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+              "candidate": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+              "djpeg": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "noise",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 10.313958,
+            "candidate": 10.4983335,
+            "djpeg": 8.555354000000001
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7913472.0,
+            "candidate": 7913472.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": 1.787630897857051,
+          "elapsedVsDjpegPercent": 22.710685028345967,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 168.33333333333331,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+              "candidate": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+              "djpeg": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "noise",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 28.6215835,
+            "candidate": 29.0920415,
+            "djpeg": 32.0714375
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 23740416.0,
+            "candidate": 23740416.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 1.6437175811743643,
+          "elapsedVsDjpegPercent": -9.289873582997343,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 696.1538461538462,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+              "candidate": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+              "djpeg": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "noise",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 50.1543125,
+            "candidate": 50.4933955,
+            "djpeg": 59.594854000000005
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 44744704.0,
+            "candidate": 44744704.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": 0.6760794497980394,
+          "elapsedVsDjpegPercent": -15.272222162000782,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 1400.5494505494505,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+              "candidate": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+              "djpeg": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "mixed",
+          "size": 19,
+          "medianMilliseconds": {
+            "baseline": 8.082812500000001,
+            "candidate": 8.0586875,
+            "djpeg": 6.3085835
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 6766592.0,
+            "candidate": 6766592.0,
+            "djpeg": 2867200.0
+          },
+          "elapsedVsBaselinePercent": -0.2984728397448455,
+          "elapsedVsDjpegPercent": 27.741631699096956,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 136.0,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+              "candidate": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+              "djpeg": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "mixed",
+          "size": 512,
+          "medianMilliseconds": {
+            "baseline": 9.0536875,
+            "candidate": 9.213916999999999,
+            "djpeg": 7.552916499999999
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 7716864.0,
+            "candidate": 7716864.0,
+            "djpeg": 2949120.0
+          },
+          "elapsedVsBaselinePercent": 1.769770604518861,
+          "elapsedVsDjpegPercent": 21.99151149095848,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 161.66666666666666,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+              "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "mixed",
+          "size": 2048,
+          "medianMilliseconds": {
+            "baseline": 23.6457495,
+            "candidate": 23.5232295,
+            "djpeg": 27.6684165
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 20021248.0,
+            "candidate": 20021248.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -0.5181480925356197,
+          "elapsedVsDjpegPercent": -14.981656069836891,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 571.4285714285714,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+              "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+            }
+          }
+        },
+        {
+          "round": 2,
+          "profile": "mixed",
+          "size": 3072,
+          "medianMilliseconds": {
+            "baseline": 42.7767705,
+            "candidate": 42.554624499999996,
+            "djpeg": 54.96525
+          },
+          "medianPeakRSSBytes": {
+            "baseline": 36323328.0,
+            "candidate": 36323328.0,
+            "djpeg": 2981888.0
+          },
+          "elapsedVsBaselinePercent": -0.5193145658342724,
+          "elapsedVsDjpegPercent": -22.579039484037644,
+          "rssVsBaselinePercent": 0.0,
+          "rssVsDjpegPercent": 1118.131868131868,
+          "validation": {
+            "baselineCandidateExactSamples": true,
+            "baselineCandidateExactPNM": true,
+            "maximumDjpegSampleDifference": 0,
+            "tolerance": 0,
+            "outputSHA256": {
+              "baseline": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+              "candidate": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+              "djpeg": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30"
+            }
+          }
+        }
+      ],
+      "cases": [
+        {
+          "profile": "flat",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            3.7309043654491614,
+            -1.6282286635640908
+          ],
+          "elapsedVsDjpegPercent": [
+            40.61576005030601,
+            30.985987952223716
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -4.154874161777844,
+            0.47324503094612336
+          ],
+          "elapsedVsDjpegPercent": [
+            20.778893305811465,
+            22.395367084144404
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            1.64835346040062,
+            1.608846306052425
+          ],
+          "elapsedVsDjpegPercent": [
+            -43.83069662441601,
+            -38.23841334847301
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            2.5447105782507196,
+            -0.744368168665932
+          ],
+          "elapsedVsDjpegPercent": [
+            -55.456433324543575,
+            -56.30426703474479
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            0.7250363020329109,
+            -0.5784988246036016
+          ],
+          "elapsedVsDjpegPercent": [
+            27.375617593894354,
+            27.90555122652878
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -0.8976918218069119,
+            0.5055366577954246
+          ],
+          "elapsedVsDjpegPercent": [
+            15.920887115004101,
+            16.791934063701184
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -16.309393155278983,
+            -16.609962256050657
+          ],
+          "elapsedVsDjpegPercent": [
+            -46.00472754538808,
+            -47.31446318259184
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            -24.875540653382465,
+            -22.069599112644124
+          ],
+          "elapsedVsDjpegPercent": [
+            -58.83487590630976,
+            -57.07985752206805
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            3.532519878134388,
+            3.1990041073746145
+          ],
+          "elapsedVsDjpegPercent": [
+            33.487372817878416,
+            29.48929201430408
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -2.38998391966585,
+            1.787630897857051
+          ],
+          "elapsedVsDjpegPercent": [
+            20.273031448531633,
+            22.710685028345967
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -0.13090021982263833,
+            1.6437175811743643
+          ],
+          "elapsedVsDjpegPercent": [
+            -9.515096756929575,
+            -9.289873582997343
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            0.37884483343277875,
+            0.6760794497980394
+          ],
+          "elapsedVsDjpegPercent": [
+            -15.938436011437195,
+            -15.272222162000782
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            0.5159903224169371,
+            -0.2984728397448455
+          ],
+          "elapsedVsDjpegPercent": [
+            31.538799510156768,
+            27.741631699096956
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -0.1511418020362365,
+            1.769770604518861
+          ],
+          "elapsedVsDjpegPercent": [
+            20.12579961090646,
+            21.99151149095848
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -1.0199525577298751,
+            -0.5181480925356197
+          ],
+          "elapsedVsDjpegPercent": [
+            -15.553027190847967,
+            -14.981656069836891
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            0.04201544875730434,
+            -0.5193145658342724
+          ],
+          "elapsedVsDjpegPercent": [
+            -23.05310206004194,
+            -22.579039484037644
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        }
+      ],
+      "candidateBeatsDjpegCasesBothRounds": 8,
+      "candidateBeatsBaselineCasesBothRounds": 3,
+      "repeatedBaselineOver5PercentCases": []
+    }
+  ]
+}
