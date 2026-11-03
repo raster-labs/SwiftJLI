@@ -4,6 +4,8 @@
 
 The earlier [C entropy and compact-DC experiments](experiments/INDEX.md#c-entropy-and-compact-dc-follow-up-checkpoints) are retained unchanged, including failed or conflicting regressions. Subsequent helper-inlining and isolated row composition resolved the selected C regressions, with final safety qualification recorded in the new checkpoint. The compact-DC centring experiment was rejected. Later SIMD workspace and serial-C trials remain unaccepted; no experimental result is counted as an accepted djpeg win.
 
+The [4 November held-experiment archive](held-20261104/README.md) retains the FMA composition's repeated ramp regressions, the rejected row-alignment diagnostic and the numerically exact but slower certified-mirror prototype. None changes the qualified production selection or closes the remaining benchmark gaps.
+
 ## Retained f4a05be checkpoint
 
 The following report and tables remain pinned to `f4a05be`. They are historical evidence, including its earlier whole-process CLI benchmark matrix; they are not silently relabelled as pipeline measurements. All timings are provisional under unrelated host activity.

@@ -1,0 +1,119 @@
+{
+  "status": "Unaccepted: repeated lossless ramp regression gate failure; DCT gains retained separately",
+  "sourceRevision": "ba2771eb3393c703fba106082720d9987c0594e9",
+  "baseRevision": "5419b015a0f1b16c8f96f5fd90f658b231155eb7",
+  "baselineProductionRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "focusedTests": {
+    "exitCode": 0,
+    "tests": 76,
+    "suites": 18,
+    "log": "tests.log",
+    "logSHA256": "9ef94845ce02a4e9ed9ca93fad1bb16408defdac8e4533312853257f4a9b8646"
+  },
+  "DCTvs5f9": {
+    "exactPairs": 36,
+    "totalPairs": 36,
+    "repeatedOver5PercentRegressions": [],
+    "raw": "dct.json",
+    "summary": "dct-summary.json"
+  },
+  "losslessVs5f9": {
+    "exactPairs": 32,
+    "totalPairs": 32,
+    "repeatedOver5PercentRegressions": [
+      "ramp-2048",
+      "ramp-3072",
+      "ramp-512"
+    ],
+    "raw": "lossless.json",
+    "summary": "lossless-summary.json"
+  },
+  "failedCases": [
+    {
+      "fixture": "ramp-512",
+      "round": 1,
+      "baselineSeconds": 0.000376542,
+      "candidateSeconds": 0.0004451045,
+      "changePercent": 18.2084601452162,
+      "exact": true,
+      "thermalStates": [
+        0,
+        0
+      ]
+    },
+    {
+      "fixture": "ramp-2048",
+      "round": 1,
+      "baselineSeconds": 0.0055130414999999995,
+      "candidateSeconds": 0.006766083,
+      "changePercent": 22.728678897120602,
+      "exact": true,
+      "thermalStates": [
+        0,
+        0
+      ]
+    },
+    {
+      "fixture": "ramp-3072",
+      "round": 1,
+      "baselineSeconds": 0.012286895499999999,
+      "candidateSeconds": 0.01458425,
+      "changePercent": 18.697599405805974,
+      "exact": true,
+      "thermalStates": [
+        0,
+        0
+      ]
+    },
+    {
+      "fixture": "ramp-512",
+      "round": 2,
+      "baselineSeconds": 0.0004260415,
+      "candidateSeconds": 0.0004956875,
+      "changePercent": 16.347233778868976,
+      "exact": true,
+      "thermalStates": [
+        0,
+        0
+      ]
+    },
+    {
+      "fixture": "ramp-2048",
+      "round": 2,
+      "baselineSeconds": 0.005653604499999999,
+      "candidateSeconds": 0.007026312,
+      "changePercent": 24.280218044965828,
+      "exact": true,
+      "thermalStates": [
+        0,
+        0
+      ]
+    },
+    {
+      "fixture": "ramp-3072",
+      "round": 2,
+      "baselineSeconds": 0.012511271000000001,
+      "candidateSeconds": 0.014605104,
+      "changePercent": 16.735573867754926,
+      "exact": true,
+      "thermalStates": [
+        0,
+        0
+      ]
+    }
+  ],
+  "qualityMethod": "DCT processes hash a verification decode before their timed samples; baseline/candidate full-output SHA256 and byte counts are compared after both processes return. All36 pairs matched. Lossless compares full output with source.raw before timing for64 baseline/candidate case records across4 processes, yielding32 exact pairs. No per-timed-sample quality claim.",
+  "performanceInterpretation": "DCT lateAC8 improved22.16/21.19%, lateAC12 improved19.30/18.62%, noise8 improved6.40/6.42%; dense512 changed\u22120.04/\u22125.19% and dense2048+1.82/+0.75%. Lossless ramp512/2048/3072 each regressed>5% in both order-balanced rounds, so composition fails selection. Single-round flat/noise/mixed outliers remain in raw receipts. No regression waiver or broad acceptance is implied.",
+  "sourceAndArtifactsUnchanged": true,
+  "verification": "post-run-verification.json",
+  "codegen": "Candidate retains32 static vectorFMA instructions across the two block-local pass loops and16 vector multiplies; tiny helper retains separately rounded vector/scalar multiplication stages. Independent review found C disassembly identical to5f9 after removing object-path headings; this is not evidence of a causal source for the ramp regression. FMA-codegen.json and both C assembly files retained.",
+  "memory": "FMA payload131072-byte pipeline /<=65536-byte serial; no measured RSS for this composition. Parent923 diagnostic is a different source.",
+  "independentEvidenceReview": "DCT agent recomputed raw-sample medians and all exact-pair/gate counts; recorded artifact checks agree. C opcode/register/relative-layout comparison found no difference.",
+  "unexecuted": [
+    "Full Release and exact-source ASan/UBSan/TSan qualification",
+    "Fresh owned-output RSS and matched libjpeg/djpeg comparison",
+    "Integration or selection"
+  ],
+  "cpuReleased": true,
+  "finishedUTC": "2026-11-03T18:19:18.006872+00:00"
+}

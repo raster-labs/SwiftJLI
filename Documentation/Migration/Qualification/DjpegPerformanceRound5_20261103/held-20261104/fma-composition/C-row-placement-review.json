@@ -1,0 +1,463 @@
+{
+  "createdUTC": "2026-11-03T18:37:11.974637+00:00",
+  "mode": "Read-only source/disassembly/Mach-O review; no builds, profiles or timing",
+  "baselineRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "candidateRevision": "ba2771eb3393c703fba106082720d9987c0594e9",
+  "pins": {
+    "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/dct-baseline": "421220fa969ba3f5a5a938826e1c1b8f4a4a22dee46bc3f63a502f2a4738bc4b",
+    "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/dct-candidate": "60b38e10707cfc55f570009406312df904ed728157f0cd96f1d91f1880c6d231",
+    "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/lossless-baseline": "08e56c8260ea44160b7c96fb08a008eaead7b65a1360bf8ab4dc6bdb52c1de44",
+    "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/lossless-candidate": "d6a8c56811b3e77d5437d4049915f7f0933277ff72e68f4c4d9dbb2ef09f3328",
+    "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/C-baseline-assembly.txt": "dc958fc2e0cc2022bc6d38c155dab0dfdecb3c75dd4fe49bab139b6695add320",
+    "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/C-assembly.txt": "479be18c422f2745783830b3b59e6a5faf4f5d3ce79fcfc46b9ae5a907b7ac7b"
+  },
+  "assemblyEqualExceptInputPathHeading": true,
+  "CObjectText": {
+    "byteCount": 5448,
+    "baselineAndCandidateSHA256": "c9180e70fb6965337470cee763c96a6dccee3eb8d0575b2bed479620136e733d"
+  },
+  "frameAndCallReview": {
+    "equalityProof": "Entire saved instruction and relocation streams match, including stack spills/restores, registers and local branch destinations.",
+    "code0": {
+      "frameBytes": 160,
+      "calleeSavedRegisters": [
+        "x19",
+        "x20",
+        "x21",
+        "x22",
+        "x23",
+        "x24",
+        "x25",
+        "x26",
+        "x27",
+        "x28",
+        "x29",
+        "x30"
+      ],
+      "calls": [
+        {
+          "relativeOffset": "0x1e0",
+          "relocationTarget": "_sjli_lossless_left_u16_row"
+        }
+      ]
+    },
+    "general": {
+      "frameBytes": 96,
+      "calleeSavedRegisters": [
+        "x19",
+        "x20",
+        "x21",
+        "x22",
+        "x23",
+        "x24",
+        "x25",
+        "x26",
+        "x27",
+        "x28",
+        "x29",
+        "x30"
+      ],
+      "calls": []
+    }
+  },
+  "placements": {
+    "dct": {
+      "baseline": {
+        "_sjli_lossless_left_u16_code0_row": {
+          "entry": {
+            "relativeOffset": "0x0",
+            "address": "0x10008f88c",
+            "mod32": 12,
+            "mod64": 12,
+            "mod128": 12
+          },
+          "sampleLoopHeader": {
+            "relativeOffset": "0x100",
+            "address": "0x10008f98c",
+            "mod32": 12,
+            "mod64": 12,
+            "mod128": 12
+          },
+          "prefixTest": {
+            "relativeOffset": "0x1ac",
+            "address": "0x10008fa38",
+            "mod32": 24,
+            "mod64": 56,
+            "mod128": 56
+          },
+          "genericFallbackCall": {
+            "relativeOffset": "0x1e0",
+            "address": "0x10008fa6c",
+            "mod32": 12,
+            "mod64": 44,
+            "mod128": 108
+          },
+          "fastMagnitudePath": {
+            "relativeOffset": "0x1f0",
+            "address": "0x10008fa7c",
+            "mod32": 28,
+            "mod64": 60,
+            "mod128": 124
+          },
+          "outputStore": {
+            "relativeOffset": "0x224",
+            "address": "0x10008fab0",
+            "mod32": 16,
+            "mod64": 48,
+            "mod128": 48
+          },
+          "sampleLoopBackedge": {
+            "relativeOffset": "0x248",
+            "address": "0x10008fad4",
+            "mod32": 20,
+            "mod64": 20,
+            "mod128": 84
+          }
+        },
+        "_sjli_lossless_left_u16_row": {
+          "entry": {
+            "relativeOffset": "0x0",
+            "address": "0x10008fb3c",
+            "mod32": 28,
+            "mod64": 60,
+            "mod128": 60
+          },
+          "sampleLoopHeader": {
+            "relativeOffset": "0xdc",
+            "address": "0x10008fc18",
+            "mod32": 24,
+            "mod64": 24,
+            "mod128": 24
+          },
+          "huffmanLookup": {
+            "relativeOffset": "0x17c",
+            "address": "0x10008fcb8",
+            "mod32": 24,
+            "mod64": 56,
+            "mod128": 56
+          },
+          "fastMagnitudePath": {
+            "relativeOffset": "0x3b8",
+            "address": "0x10008fef4",
+            "mod32": 20,
+            "mod64": 52,
+            "mod128": 116
+          },
+          "outputStore": {
+            "relativeOffset": "0x2e4",
+            "address": "0x10008fe20",
+            "mod32": 0,
+            "mod64": 32,
+            "mod128": 32
+          },
+          "sampleLoopBackedge": {
+            "relativeOffset": "0x300",
+            "address": "0x10008fe3c",
+            "mod32": 28,
+            "mod64": 60,
+            "mod128": 60
+          }
+        }
+      },
+      "candidate": {
+        "_sjli_lossless_left_u16_code0_row": {
+          "entry": {
+            "relativeOffset": "0x0",
+            "address": "0x10008f15c",
+            "mod32": 28,
+            "mod64": 28,
+            "mod128": 92
+          },
+          "sampleLoopHeader": {
+            "relativeOffset": "0x100",
+            "address": "0x10008f25c",
+            "mod32": 28,
+            "mod64": 28,
+            "mod128": 92
+          },
+          "prefixTest": {
+            "relativeOffset": "0x1ac",
+            "address": "0x10008f308",
+            "mod32": 8,
+            "mod64": 8,
+            "mod128": 8
+          },
+          "genericFallbackCall": {
+            "relativeOffset": "0x1e0",
+            "address": "0x10008f33c",
+            "mod32": 28,
+            "mod64": 60,
+            "mod128": 60
+          },
+          "fastMagnitudePath": {
+            "relativeOffset": "0x1f0",
+            "address": "0x10008f34c",
+            "mod32": 12,
+            "mod64": 12,
+            "mod128": 76
+          },
+          "outputStore": {
+            "relativeOffset": "0x224",
+            "address": "0x10008f380",
+            "mod32": 0,
+            "mod64": 0,
+            "mod128": 0
+          },
+          "sampleLoopBackedge": {
+            "relativeOffset": "0x248",
+            "address": "0x10008f3a4",
+            "mod32": 4,
+            "mod64": 36,
+            "mod128": 36
+          }
+        },
+        "_sjli_lossless_left_u16_row": {
+          "entry": {
+            "relativeOffset": "0x0",
+            "address": "0x10008f40c",
+            "mod32": 12,
+            "mod64": 12,
+            "mod128": 12
+          },
+          "sampleLoopHeader": {
+            "relativeOffset": "0xdc",
+            "address": "0x10008f4e8",
+            "mod32": 8,
+            "mod64": 40,
+            "mod128": 104
+          },
+          "huffmanLookup": {
+            "relativeOffset": "0x17c",
+            "address": "0x10008f588",
+            "mod32": 8,
+            "mod64": 8,
+            "mod128": 8
+          },
+          "fastMagnitudePath": {
+            "relativeOffset": "0x3b8",
+            "address": "0x10008f7c4",
+            "mod32": 4,
+            "mod64": 4,
+            "mod128": 68
+          },
+          "outputStore": {
+            "relativeOffset": "0x2e4",
+            "address": "0x10008f6f0",
+            "mod32": 16,
+            "mod64": 48,
+            "mod128": 112
+          },
+          "sampleLoopBackedge": {
+            "relativeOffset": "0x300",
+            "address": "0x10008f70c",
+            "mod32": 12,
+            "mod64": 12,
+            "mod128": 12
+          }
+        }
+      }
+    },
+    "lossless": {
+      "baseline": {
+        "_sjli_lossless_left_u16_code0_row": {
+          "entry": {
+            "relativeOffset": "0x0",
+            "address": "0x100091528",
+            "mod32": 8,
+            "mod64": 40,
+            "mod128": 40
+          },
+          "sampleLoopHeader": {
+            "relativeOffset": "0x100",
+            "address": "0x100091628",
+            "mod32": 8,
+            "mod64": 40,
+            "mod128": 40
+          },
+          "prefixTest": {
+            "relativeOffset": "0x1ac",
+            "address": "0x1000916d4",
+            "mod32": 20,
+            "mod64": 20,
+            "mod128": 84
+          },
+          "genericFallbackCall": {
+            "relativeOffset": "0x1e0",
+            "address": "0x100091708",
+            "mod32": 8,
+            "mod64": 8,
+            "mod128": 8
+          },
+          "fastMagnitudePath": {
+            "relativeOffset": "0x1f0",
+            "address": "0x100091718",
+            "mod32": 24,
+            "mod64": 24,
+            "mod128": 24
+          },
+          "outputStore": {
+            "relativeOffset": "0x224",
+            "address": "0x10009174c",
+            "mod32": 12,
+            "mod64": 12,
+            "mod128": 76
+          },
+          "sampleLoopBackedge": {
+            "relativeOffset": "0x248",
+            "address": "0x100091770",
+            "mod32": 16,
+            "mod64": 48,
+            "mod128": 112
+          }
+        },
+        "_sjli_lossless_left_u16_row": {
+          "entry": {
+            "relativeOffset": "0x0",
+            "address": "0x1000917d8",
+            "mod32": 24,
+            "mod64": 24,
+            "mod128": 88
+          },
+          "sampleLoopHeader": {
+            "relativeOffset": "0xdc",
+            "address": "0x1000918b4",
+            "mod32": 20,
+            "mod64": 52,
+            "mod128": 52
+          },
+          "huffmanLookup": {
+            "relativeOffset": "0x17c",
+            "address": "0x100091954",
+            "mod32": 20,
+            "mod64": 20,
+            "mod128": 84
+          },
+          "fastMagnitudePath": {
+            "relativeOffset": "0x3b8",
+            "address": "0x100091b90",
+            "mod32": 16,
+            "mod64": 16,
+            "mod128": 16
+          },
+          "outputStore": {
+            "relativeOffset": "0x2e4",
+            "address": "0x100091abc",
+            "mod32": 28,
+            "mod64": 60,
+            "mod128": 60
+          },
+          "sampleLoopBackedge": {
+            "relativeOffset": "0x300",
+            "address": "0x100091ad8",
+            "mod32": 24,
+            "mod64": 24,
+            "mod128": 88
+          }
+        }
+      },
+      "candidate": {
+        "_sjli_lossless_left_u16_code0_row": {
+          "entry": {
+            "relativeOffset": "0x0",
+            "address": "0x100090df8",
+            "mod32": 24,
+            "mod64": 56,
+            "mod128": 120
+          },
+          "sampleLoopHeader": {
+            "relativeOffset": "0x100",
+            "address": "0x100090ef8",
+            "mod32": 24,
+            "mod64": 56,
+            "mod128": 120
+          },
+          "prefixTest": {
+            "relativeOffset": "0x1ac",
+            "address": "0x100090fa4",
+            "mod32": 4,
+            "mod64": 36,
+            "mod128": 36
+          },
+          "genericFallbackCall": {
+            "relativeOffset": "0x1e0",
+            "address": "0x100090fd8",
+            "mod32": 24,
+            "mod64": 24,
+            "mod128": 88
+          },
+          "fastMagnitudePath": {
+            "relativeOffset": "0x1f0",
+            "address": "0x100090fe8",
+            "mod32": 8,
+            "mod64": 40,
+            "mod128": 104
+          },
+          "outputStore": {
+            "relativeOffset": "0x224",
+            "address": "0x10009101c",
+            "mod32": 28,
+            "mod64": 28,
+            "mod128": 28
+          },
+          "sampleLoopBackedge": {
+            "relativeOffset": "0x248",
+            "address": "0x100091040",
+            "mod32": 0,
+            "mod64": 0,
+            "mod128": 64
+          }
+        },
+        "_sjli_lossless_left_u16_row": {
+          "entry": {
+            "relativeOffset": "0x0",
+            "address": "0x1000910a8",
+            "mod32": 8,
+            "mod64": 40,
+            "mod128": 40
+          },
+          "sampleLoopHeader": {
+            "relativeOffset": "0xdc",
+            "address": "0x100091184",
+            "mod32": 4,
+            "mod64": 4,
+            "mod128": 4
+          },
+          "huffmanLookup": {
+            "relativeOffset": "0x17c",
+            "address": "0x100091224",
+            "mod32": 4,
+            "mod64": 36,
+            "mod128": 36
+          },
+          "fastMagnitudePath": {
+            "relativeOffset": "0x3b8",
+            "address": "0x100091460",
+            "mod32": 0,
+            "mod64": 32,
+            "mod128": 96
+          },
+          "outputStore": {
+            "relativeOffset": "0x2e4",
+            "address": "0x10009138c",
+            "mod32": 12,
+            "mod64": 12,
+            "mod128": 12
+          },
+          "sampleLoopBackedge": {
+            "relativeOffset": "0x300",
+            "address": "0x1000913a8",
+            "mod32": 8,
+            "mod64": 40,
+            "mod128": 40
+          }
+        }
+      }
+    }
+  },
+  "interpretation": [
+    "Both retained linked harness pairs move all C entries by -0x730; their full linked C region remains byte-identical.",
+    "Loop labels are identified statically from the sample-counter backedge and source structure, not a runtime hotness measurement.",
+    "128-byte entry alignment fixes entry and corresponding relative-loop residues modulo32/64/128 across link layouts. It does not align every loop, guarantee cache geometry, or establish a performance cause.",
+    "This evidence does not qualify the failed composition or establish a causal alignment claim."
+  ]
+}

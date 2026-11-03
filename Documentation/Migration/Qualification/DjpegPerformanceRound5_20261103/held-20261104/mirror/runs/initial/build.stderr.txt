@@ -1,0 +1,7 @@
+/private/tmp/swiftjli-round5-certified-mirror-prototype/Probe.swift:238:43: error: value of type 'SIMD8<Float>' has no member 'contains'
+236 |             let expected = kernel.exactSecond(row)
+237 |             var output = [UInt16](repeating: 0, count: 8), counts = MirrorCounts()
+238 |             let expectedThrows = expected.contains { !CertifiedMirror.centredClipped($0, precision: precision).isFinite }
+    |                                           `- error: value of type 'SIMD8<Float>' has no member 'contains'
+239 |             do {
+240 |                 try kernel.certifiedRow(row, precision: precision, audit: true,
