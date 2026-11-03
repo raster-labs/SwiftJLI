@@ -63,6 +63,9 @@ struct ParsedJPEG: Sendable {
     let iccProfile: [UInt8]?
     /// Exif payload (APP1 body after the `Exif\0\0` identifier), or nil.
     let exif: [UInt8]?
+    /// Reservation validated before expanded parsing of this immutable input.
+    /// Zero identifies the internal, unadmitted native parser convenience path.
+    let parserWorkspaceBytes: Int
     var adobeTransform: UInt8? = nil
     /// Explicit interpretation supplied by a caller for an unmarked DCT stream.
     var sourceColorModel: JLIColorModel? = nil
@@ -91,6 +94,7 @@ struct MarkerReader {
     private let buffer: UnsafeRawBufferPointer
     private var offset: Int = 0
     private let validatedEntropyRanges: [Range<Int>]?
+    private let parserWorkspaceBytes: Int
     private var nextEntropyRange: Int = 0
 
     init(data: [UInt8]) {
@@ -98,6 +102,7 @@ struct MarkerReader {
         self.data = owned
         self.buffer = owned.ownedBuffer
         self.validatedEntropyRanges = nil
+        self.parserWorkspaceBytes = 0
     }
 
     /// Reuses entropy extents from structural admission of these exact bytes.
@@ -106,6 +111,7 @@ struct MarkerReader {
         self.data = validated.bytes
         self.buffer = validated.bytes.ownedBuffer
         self.validatedEntropyRanges = validated.entropyRanges
+        self.parserWorkspaceBytes = validated.parserWorkspaceBytes
     }
 
     /// Reads JPEG info without full decode.
@@ -277,7 +283,8 @@ struct MarkerReader {
             scans: scans,
             restartInterval: restartInterval,
             iccProfile: iccProfile,
-            exif: exifData, adobeTransform: adobeTransform
+            exif: exifData, parserWorkspaceBytes: parserWorkspaceBytes,
+            adobeTransform: adobeTransform
         )
     }
 

@@ -1,46 +1,57 @@
 // SPDX-License-Identifier: Apache-2.0
 import Foundation
 
-/// Allocation-free structural admission before the predecessor table parser.
+/// Bounded structural admission before the predecessor table parser.
 /// Each segment must fit its own declared extent; bytes in the next segment
 /// cannot satisfy a truncated SOF/SOS/table. Entropy is scanned, never decoded.
 enum JPEGEnvelope {
     /// Owns the exact immutable bytes whose segment and entropy extents passed
     /// admission. The private constructor prevents a parser from mixing ranges
-    /// validated against one input with another input. Data value semantics
-    /// retain the owner without making another full-input copy.
+    /// validated against one input with another input. The initial bridge may
+    /// copy; all readers and scan slices then retain this same immutable owner.
     struct Validated {
         let bytes: JPEGBytes
         let adobeTransform: UInt8?
         let entropyRanges: [Range<Int>]
+        let parserWorkspaceBytes: Int
 
-        fileprivate init(bytes: JPEGBytes, adobeTransform: UInt8?, entropyRanges: [Range<Int>]) {
+        fileprivate init(bytes: JPEGBytes, adobeTransform: UInt8?, entropyRanges: [Range<Int>],
+                         parserWorkspaceBytes: Int) {
             self.bytes = bytes
             self.adobeTransform = adobeTransform
             self.entropyRanges = entropyRanges
+            self.parserWorkspaceBytes = parserWorkspaceBytes
         }
     }
 
     static func validate(_ bytes: [UInt8], limits: ResourceLimits) throws -> Validated {
-        try validate(JPEGBytes(bytes), limits: limits)
+        // The convenience path can briefly hold both Array -> Data and bridge
+        // copies. Its original array is charged separately as compressed input.
+        let bootstrap = try JPEGParserReservation.bootstrap(compressedBytes: bytes.count, inputCopies: 2)
+        try JPEGCodec.admit(workspace: bootstrap, pixels: 0, compressed: bytes.count, metadata: 0, limits: limits)
+        return try validate(JPEGBytes(bytes), limits: limits, inputCopies: 2)
     }
 
     static func validate(_ data: Data, limits: ResourceLimits) throws -> Validated {
-        try validate(JPEGBytes(data), limits: limits)
+        let bootstrap = try JPEGParserReservation.bootstrap(compressedBytes: data.count)
+        try JPEGCodec.admit(workspace: bootstrap, pixels: 0, compressed: data.count, metadata: 0, limits: limits)
+        return try validate(JPEGBytes(data), limits: limits)
     }
 
-    private static func validate(_ bytes: JPEGBytes, limits: ResourceLimits) throws -> Validated {
-        try bytes.withUnsafeBytes { try validate($0, owner: bytes, limits: limits) }
+    private static func validate(_ bytes: JPEGBytes, limits: ResourceLimits, inputCopies: Int = 1) throws -> Validated {
+        try bytes.withUnsafeBytes { try validate($0, owner: bytes, limits: limits, inputCopies: inputCopies) }
     }
 
     /// Pointer access remains inside the owner's synchronous borrow. Only the
     /// immutable owner and checked integer ranges are returned in Validated.
     private static func validate(_ b: UnsafeRawBufferPointer, owner: JPEGBytes,
-                                 limits: ResourceLimits) throws -> Validated {
+                                 limits: ResourceLimits, inputCopies: Int) throws -> Validated {
         func malformed() -> CodecError { .init(.malformedInput, "Invalid JPEG marker envelope.") }
         guard b.count >= 4, b[0] == 255, b[1] == 216 else { throw malformed() }
         var p = 2, sawFrame = false, sawScan = false, metadata = 0, iccBytes = 0
         var frameMarker: UInt8 = 0, scanCount = 0
+        var huffmanDefinitions = 0, quantisationDefinitions = 0
+        var frameComponents = 0, scanComponents = 0
         var adobeTransform: UInt8?
         var entropyRanges: [Range<Int>] = []
         var iccCount: Int?, iccSequences = Set<Int>(), sawExif = false
@@ -62,7 +73,18 @@ enum JPEGEnvelope {
                 if let adobeTransform, (frameMarker == 0xC3 ? adobeTransform != 0 : adobeTransform > 1) {
                     throw CodecError(.unsupportedFeature, "JPEG colour transform is unsupported for this frame.")
                 }
-                return Validated(bytes: owner, adobeTransform: adobeTransform, entropyRanges: entropyRanges)
+                let workspace = try JPEGParserReservation.workspace(compressedBytes: b.count,
+                    huffmanDefinitions: huffmanDefinitions, quantisationDefinitions: quantisationDefinitions,
+                    scans: scanCount, frameComponents: frameComponents,
+                    scanComponents: scanComponents, metadataBytes: metadata, inputCopies: inputCopies)
+                // All expanded tables, scan snapshots and metadata copies in
+                // MarkerReader remain after this gate. Envelope storage itself
+                // is bounded by 128 ranges and 255 ICC sequence entries, covered
+                // by bootstrap before the input owner was constructed.
+                try JPEGCodec.admit(workspace: workspace, pixels: 0, compressed: b.count,
+                                    metadata: 0, limits: limits)
+                return Validated(bytes: owner, adobeTransform: adobeTransform,
+                    entropyRanges: entropyRanges, parserWorkspaceBytes: workspace)
             }
             guard marker != 0, marker != 216, !(208...215).contains(marker), p + 2 <= b.count else { throw malformed() }
             let length = Int(b[p]) * 256 + Int(b[p + 1])
@@ -90,6 +112,7 @@ enum JPEGEnvelope {
                     guard ids[lane] & mask == 0 else { throw malformed() }
                     ids[lane] |= mask
                 }
+                frameComponents = nc
                 sawFrame = true; frameMarker = marker
             case 0xDA:
                 scanCount += 1
@@ -100,6 +123,7 @@ enum JPEGEnvelope {
                 guard sawFrame, length >= 6 else { throw malformed() }
                 let nc = Int(b[start])
                 guard nc > 0, length == 6 + nc * 2 else { throw malformed() }
+                scanComponents = try checkedAdd(scanComponents, nc)
                 sawScan = true
             case 0xDD:
                 guard !sawScan else { throw CodecError(.unsupportedFeature, "Changing restart intervals between scans is unsupported.") }
@@ -110,7 +134,10 @@ enum JPEGEnvelope {
                 while q < end {
                     let precision = b[q] >> 4
                     guard precision <= 1, b[q] & 15 <= 3 else { throw malformed() }
-                    q += 1 + (precision == 0 ? 64 : 128)
+                    let definitionBytes = 1 + (precision == 0 ? 64 : 128)
+                    guard definitionBytes <= end - q else { throw malformed() }
+                    q += definitionBytes
+                    quantisationDefinitions = try checkedAdd(quantisationDefinitions, 1)
                 }
                 guard q == end else { throw malformed() }
             case 0xC4:
@@ -133,6 +160,7 @@ enum JPEGEnvelope {
                     }
                     guard symbols > 0, symbols <= 256, symbols <= end - q - 17 else { throw malformed() }
                     q += 17 + symbols
+                    huffmanDefinitions = try checkedAdd(huffmanDefinitions, 1)
                 }
             case 0xE0...0xEF, 0xFE:
                 metadata = try checkedAdd(metadata, length - 2)

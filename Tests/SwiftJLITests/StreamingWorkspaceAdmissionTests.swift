@@ -60,7 +60,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
         let native = JLIDecoderConfiguration(outputPixelFormat: floating ? .float32 : nil)
         // 9 x 8 padded blocks; shared coefficient/output and one scratch batch.
         // This boundary deliberately includes block padding, not width*height.
-        let workspace = data.count * 64 + (flat ? 576 : 36_864) + 1_048_576
+        let workspace = parsed.parserWorkspaceBytes + (flat ? 576 : 36_864)
         let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
             hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: .scalarCPU))
         #expect(plan.dcOnlyTable == flat)
@@ -139,7 +139,8 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
                 huffmanDCTables: parsed.huffmanDCTables, huffmanACTables: finalTables,
                 scans: [.init(header: header, entropyData: scan.entropyData,
                     dcTables: scan.dcTables, acTables: scanTables)],
-                restartInterval: 0, iccProfile: nil, exif: nil)
+                restartInterval: 0, iccProfile: nil, exif: nil,
+                parserWorkspaceBytes: parsed.parserWorkspaceBytes)
         }
         for id in [0, 1, 7] {
             for compact in [false, true] {
@@ -181,8 +182,8 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
             let storage = try WorkspaceObservedStorage(byteCount: info.descriptor.requiredByteCount)
             let destination = try ImageDestination(descriptor: info.descriptor, storage: storage)
             let frame = parsed.frameInfo
-            let workspace = data.count * 64 + frame.width * frame.height * frame.components.count
-                * (frame.isLossless ? 8 : 128) + 1_048_576
+            let workspace = parsed.parserWorkspaceBytes + frame.width * frame.height * frame.components.count
+                * (frame.isLossless ? 8 : 128)
             expectWorkspaceDenial {
                 _ = try JPEGCodec.decode(data, into: destination, configuration: configuration,
                     options: .init(resourceLimits: try ResourceLimits(maximumWorkspaceBytes: workspace - 1,
@@ -204,7 +205,8 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
                 components: frame.components, isProgressive: false), quantTables: parsed.quantTables,
                 huffmanDCTables: parsed.huffmanDCTables, huffmanACTables: parsed.huffmanACTables,
                 scans: parsed.scans, restartInterval: parsed.restartInterval,
-                iccProfile: parsed.iccProfile, exif: parsed.exif)
+                iccProfile: parsed.iccProfile, exif: parsed.exif,
+                parserWorkspaceBytes: parsed.parserWorkspaceBytes)
         }
         let thresholds: [(Backend, Int)] = [(.scalarCPU, 2048), (.accelerated, 4096)]
         for (backend, threshold) in thresholds {
@@ -254,7 +256,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
         let configuration = DecoderConfiguration(sampleFormat: floating ? .float32RawSamples : .nativeInteger)
         let bps = floating ? 4 : precision == 8 ? 1 : 2
         let outputBytes = width * height * bps
-        let workspace = data.count * 64 + 8192 + 1_048_576
+        let workspace = parsed.parserWorkspaceBytes + 8192
         for backend in Decoder.capabilities.availableBackends {
             let expected = try NativeOperation.$current.withValue(.init(seconds: 120,
                 backend: backend, maximumWorkers: 1)) {
@@ -286,6 +288,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
     @Test func groupedReservationIncludesBothWindowsAndDeniesBeforeBorrow() throws {
         let width = 513, height = 513, rowBytes = width + 7
         let data = try Self.jpeg(width: width, height: height)
+        let parsed = try JPEGCodec.parse(data, options: .init())
         let storageBytes = 3 + rowBytes * height + 5
         let plane = try PlaneDescriptor(width: width, height: height, offset: 3,
             sampleStride: 1, pixelStride: 1, rowBytes: rowBytes, byteCount: 3 + rowBytes * height)
@@ -295,7 +298,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
         // scalar scans retain the two-lane grouped reservation.
         for backend in Decoder.capabilities.availableBackends {
             let payload = backend == .accelerated ? 786_432 : 1_048_576
-            let workspace = data.count * 64 + payload + 1_048_576
+            let workspace = parsed.parserWorkspaceBytes + payload
             let total = data.count + storageBytes + workspace
             let storage = try WorkspaceObservedStorage(byteCount: storageBytes)
             let destination = try ImageDestination(descriptor: descriptor, storage: storage)

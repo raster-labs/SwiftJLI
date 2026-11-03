@@ -241,9 +241,8 @@ enum JPEGCodec {
 
     static func parse(_ data: Data, options: DecodeOptions, sourceColourModel: JPEGSourceColourModel? = nil) throws -> ParsedJPEG {
         let limits = options.resourceLimits
-        // Retain the existing conservative parser/table admission before parsing.
-        let parserBudget = try checkedAdd(checkedMultiply(data.count, 64), 1_048_576)
-        try admit(workspace: parserBudget, pixels: 0, compressed: data.count, metadata: 0, limits: limits)
+        // Envelope admission gates a possible input copy before the bridge,
+        // then expanded parser allocations using counts from the same traversal.
         let envelope = try JPEGEnvelope.validate(data, limits: limits)
         let adobeTransform = envelope.adobeTransform
         var reader = MarkerReader(validated: envelope)
@@ -366,10 +365,13 @@ enum JPEGCodec {
                 let imageWorkspace: Int
                 if let streaming { imageWorkspace = streaming.workspaceBytes }
                 else { imageWorkspace = try checkedMultiply(sampleCount, isDCT ? 128 : 8) }
-                // Retain the compressed/parser reservation and fixed table,
-                // allocator and backend reserve. All independent ceilings still
-                // apply; the reservation is not reported as measured workspace.
-                let workspace = try checkedAdd(checkedAdd(checkedMultiply(data.count, 64), imageWorkspace), 1_048_576)
+                // The parser reservation belongs to the same immutable input
+                // whose scans are decoded. It already includes a possible bridge
+                // copy and the fixed table/allocator/backend reserve.
+                guard parsed.parserWorkspaceBytes > 0 else {
+                    throw CodecError(.internalFailure, "JPEG parser admission is missing.")
+                }
+                let workspace = try checkedAdd(parsed.parserWorkspaceBytes, imageWorkspace)
                 let metadataSize = try information.metadata.validate(limits: options.resourceLimits, additionalBytes: source.iccProfile?.count ?? 0)
                 try admit(workspace: workspace, pixels: supplied?.storage.byteCount ?? descriptor.requiredByteCount,
                           compressed: data.count, metadata: metadataSize, limits: options.resourceLimits)
