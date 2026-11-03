@@ -244,6 +244,21 @@ struct BitReader {
         return table.lookaheadSymbol[peek]
     }
 
+    /// Consumes consecutive zero bits only for the canonical one-bit zero
+    /// category. Every consumed bit therefore represents one zero difference.
+    /// A failed table check consumes nothing; the caller keeps the normal path.
+    mutating func consumeZeroDifferences(_ table: HuffmanTable, maximum: Int) -> Int {
+        guard maximum > 0, table.lookaheadLength[0] == 1,
+              table.lookaheadSymbol[0] == 0 else { return 0 }
+        if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+        guard bitsAvailable > 0 else { return 0 }
+        // The guard bounds the shift to 0...63, including a full accumulator.
+        let aligned = bitBuffer &<< (64 - bitsAvailable)
+        let count = min(maximum, bitsAvailable, aligned.leadingZeroBitCount)
+        bitsAvailable -= count
+        return count
+    }
+
     /// Resolves a lossless category and its magnitude together when both are
     /// already buffered. This avoids a separate bit-reader call per sample.
     /// A miss consumes no bits: the ordinary symbol/value path retains all

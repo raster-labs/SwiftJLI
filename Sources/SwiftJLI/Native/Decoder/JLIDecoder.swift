@@ -704,7 +704,13 @@ struct JLIDecoder: Sendable {
             // with varied short categories. Choose the kernel once per scan.
             // Its <=32 KiB plus row history fits the existing 8-byte/sample
             // reservation at the table's >=16384-sample construction threshold.
-            if let lookup = LosslessLookahead(table: tables[0], sampleCount: count) {
+            if predictor == 1, count >= 16384,
+               tables[0].lookaheadLength[0] == 1, tables[0].lookaheadSymbol[0] == 0 {
+                try ZeroRunLosslessDecoder.decode(
+                    into: borrowed, width: w, height: h, half: half,
+                    table: tables[0], reader: &reader, pointTransform: pt,
+                    segmentRows: restartInterval > 0 ? restartInterval / w : h)
+            } else if let lookup = LosslessLookahead(table: tables[0], sampleCount: count) {
                 try Self.losslessGrayLookupInto(
                     borrowed, width: w, height: h, predictor: predictor, half: half,
                     table: tables[0], reader: &reader, pointTransform: pt,
