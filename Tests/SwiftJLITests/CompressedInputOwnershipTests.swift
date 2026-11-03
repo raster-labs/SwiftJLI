@@ -43,6 +43,28 @@ private func compressedAutoreleasePool<R>(_ body: () throws -> R) rethrows -> R 
         return try parse(data)
     }
 
+    @inline(never)
+    private static func consumeAndDropParsedInput(_ releases: CompressedAllocationReleases,
+                                                 previousReleases: Int) throws {
+        let parsed = try retainedParsedInput(releases)
+        let decoded = try JLIDecoder().decodeParsed(parsed)
+        #expect(!decoded.data.isEmpty)
+        withExtendedLifetime(parsed) {
+            #expect(releases.count.withLock { $0 } == previousReleases)
+        }
+    }
+
+    @Test func repeatedDecodesReleaseInputsWithoutAnOuterAutoreleasePool() throws {
+        let releases = CompressedAllocationReleases()
+        // A fresh large allocation per call catches NSData inner-pointer
+        // autoreleases accumulating until an unrelated event-loop pool drains.
+        // No outer pool may mask this test's ordinary function-scope release.
+        for index in 0..<16 {
+            try Self.consumeAndDropParsedInput(releases, previousReleases: index)
+            #expect(releases.count.withLock { $0 } == index + 1)
+        }
+    }
+
     @Test(arguments: [0, 17])
     func largeDataScansShareTheInputAllocationWithRebasedIndices(origin: Int) throws {
         let jpeg = Self.largeFixture()

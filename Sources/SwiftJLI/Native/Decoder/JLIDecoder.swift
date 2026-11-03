@@ -112,31 +112,28 @@ struct JLIDecoder: Sendable {
         let mcuCountH = (frame.width + mcuW - 1) / mcuW
         let mcuCountV = (frame.height + mcuH - 1) / mcuH
 
-        let sequentialGreyscale = numComponents == 1 && !frame.isProgressive && parsed.scans.count == 1
-            && components[0].horizontalSampling == 1 && components[0].verticalSampling == 1
-        // The worker setting is a ceiling. On small sequential greyscale
-        // frames the measured serial streaming path avoids dispatch and full
-        // coefficient/Float planes; large frames retain parallel reconstruction.
-        let serialGreyscale = NativeOperation.workerLimit == 1
-            || (sequentialGreyscale && mcuCountH * mcuCountV <= 4096)
-        let directGreyscale = scale == 1 && numComponents == 1 && serialGreyscale
+        // Admission and dispatch share this decision, including the bounded
+        // coefficient/scratch capacity. Unsupported paths retain full planes.
+        let streamingPlan = try SequentialGreyscalePlan.make(parsed: parsed, configuration: configuration,
+            hasDestination: borrowedDestination != nil, normaliseXYBOutput: normaliseXYBOutput,
+            workerLimit: NativeOperation.current?.maximumWorkers ?? NativeOperation.workerLimit)
+        let directGreyscale = scale == 1 && numComponents == 1 && NativeOperation.workerLimit == 1
             && !parsed.isXYB && !parsed.isRawRGB && !normaliseXYBOutput
             && configuration.outputColorModel == nil
             && (configuration.outputPixelFormat == nil || configuration.outputPixelFormat == .float32)
         let floating = configuration.outputPixelFormat == .float32
-        if directGreyscale, sequentialGreyscale, let borrowedDestination {
+        if let streamingPlan, let borrowedDestination {
             let scan = parsed.scans[0]
             let selector = scan.header.components.first { $0.componentSelector == components[0].id }
             let dcTable = prepareDCTables(scan.dcTables)[selector?.dcTableId ?? 0] ?? StandardHuffmanTables.dcLuminance
             let acTable = prepareACTables(scan.acTables)[selector?.acTableId ?? 0] ?? StandardHuffmanTables.acLuminance
-            let blockCount = mcuCountH * mcuCountV
             // Lookup admission uses the entire scan, as in the retained path.
-            let lookup = ACLookahead(table: acTable, blockCount: blockCount)
+            let lookup = ACLookahead(table: acTable, blockCount: streamingPlan.blockCount)
             var reader = BitReader(data: scan.entropyData)
             try Self.decodeSequentialGreyscaleInto(reader: &reader, dcTable: dcTable,
                 acTable: acTable, lookup: lookup,
                 quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
-                blocksPerRow: mcuCountH, blockRows: mcuCountV,
+                plan: streamingPlan,
                 width: frame.width, height: frame.height, precision: frame.precision,
                 restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
             return try JLIImage(geometryOnlyWidth: frame.width, height: frame.height,
@@ -830,15 +827,20 @@ struct JLIDecoder: Sendable {
             // the marker layout is anything but the expected one.
             var rstOffsets = [Int]()
             let ed = scan.entropyData
-            var si = 0
-            scanLoop: while si + 1 < ed.count {
-                if si % 4096 == 0 { try NativeOperation.check() }
-                if ed[si] != 0xFF { si += 1; continue }
-                switch ed[si + 1] {
-                case 0x00: si += 2                                  // stuffed data byte
-                case 0xFF: si += 1                                  // fill byte
-                case 0xD0...0xD7: rstOffsets.append(si); si += 2    // restart marker
-                default: break scanLoop                             // foreign marker — bail
+            // Acquire one synchronous view for the scan. In particular, do not
+            // fetch NSData.bytes (and its inner-pointer lifetime machinery) for
+            // every entropy byte. Only integer marker offsets leave this scope.
+            try ed.withUnsafeBytes { bytes in
+                var si = 0
+                scanLoop: while si + 1 < bytes.count {
+                    if si % 4096 == 0 { try NativeOperation.check() }
+                    if bytes[si] != 0xFF { si += 1; continue }
+                    switch bytes[si + 1] {
+                    case 0x00: si += 2                                  // stuffed data byte
+                    case 0xFF: si += 1                                  // fill byte
+                    case 0xD0...0xD7: rstOffsets.append(si); si += 2    // restart marker
+                    default: break scanLoop                             // foreign marker — bail
+                    }
                 }
             }
             let parallelOK = NativeOperation.current == nil && nc == 1 && rstOffsets.count == numSegments - 1
@@ -874,7 +876,9 @@ struct JLIDecoder: Sendable {
                             if k < numSegments - 1 {
                                 segReader.alignToByte()
                                 var pos = segReader.byteOffset
-                                while pos < markers[k], ed[pos] == 0xFF { pos += 1 }
+                                ed.withUnsafeBytes { bytes in
+                                    while pos < markers[k], bytes[pos] == 0xFF { pos += 1 }
+                                }
                                 guard pos == markers[k] else {
                                     throw JLIError.decodingFailed(
                                         "lossless restart segment \(k) ended at byte "
@@ -1077,13 +1081,13 @@ struct JLIDecoder: Sendable {
     /// on this thread; entropy state is carried across completed batches.
     private static func decodeSequentialGreyscaleInto(
         reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable, lookup: ACLookahead?,
-        quantTable: [Float], blocksPerRow: Int, blockRows: Int,
+        quantTable: [Float], plan: SequentialGreyscalePlan,
         width: Int, height: Int, precision: Int, restartInterval: Int,
         floatOutput: Bool, destination: BorrowedSampleDestination
     ) throws {
         try validateGreyscaleDestination(destination, width: width, height: height,
                                          precision: precision, floatOutput: floatOutput)
-        let scratchCount = min(1024, blocksPerRow * blockRows) * 64
+        let scratchCount = plan.batchBlocks * 64
         var pixels = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
         var scratch = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
         try quantTable.withUnsafeBufferPointer { qt in
@@ -1091,11 +1095,11 @@ struct JLIDecoder: Sendable {
                 try scratch.withUnsafeMutableBufferPointer { sc in
                     try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
                         dcTable: dcTable, acTable: acTable, lookup: lookup,
-                        blocksPerRow: blocksPerRow, blockRows: blockRows,
+                        blocksPerRow: plan.blocksPerRow, blockRows: plan.blockRows,
                         precision: precision, restartInterval: restartInterval) { coefficients, first in
                         try reconstructGreyscaleBatch(coefficients: coefficients.baseAddress!, quantTable: qt.baseAddress!,
                             pixels: px.baseAddress!, scratch: sc.baseAddress!, firstBlock: first,
-                            blockCount: coefficients.count / 64, blocksPerRow: blocksPerRow,
+                            blockCount: coefficients.count / 64, blocksPerRow: plan.blocksPerRow,
                             width: width, height: height, precision: precision,
                             floatOutput: floatOutput, destination: destination)
                     }

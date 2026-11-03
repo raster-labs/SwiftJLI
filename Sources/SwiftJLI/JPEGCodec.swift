@@ -352,10 +352,24 @@ enum JPEGCodec {
                       descriptor.iccProfile == nil || descriptor.iccProfile == source.iccProfile else {
                     throw CodecError(.incompatibleImageLayout, "Destination does not match JPEG sample interpretation.")
                 }
-                // Coefficient workspace remains full-frame even for small previews.
+                let native = JLIDecoderConfiguration(
+                    outputPixelFormat: configuration.sampleFormat != .nativeInteger ? .float32 : nil,
+                    scale: configuration.scale)
+                let normaliseXYBOutput = configuration.sampleFormat == .float32NormalisedSRGB
+                // The same plan controls native dispatch. Only that proven path
+                // replaces full-frame coefficient/reconstruction reservations.
+                let streaming = try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
+                    hasDestination: true, normaliseXYBOutput: normaliseXYBOutput,
+                    workerLimit: context.maximumWorkers)
                 let frame = parsed.frameInfo
                 let sampleCount = try checkedMultiply(checkedMultiply(frame.width, frame.height), frame.components.count)
-                let workspace = try checkedAdd(checkedAdd(checkedMultiply(data.count, 64), checkedMultiply(sampleCount, isDCT ? 128 : 8)), 1_048_576)
+                let imageWorkspace: Int
+                if let streaming { imageWorkspace = streaming.workspaceBytes }
+                else { imageWorkspace = try checkedMultiply(sampleCount, isDCT ? 128 : 8) }
+                // Retain the compressed/parser reservation and fixed table,
+                // allocator and backend reserve. All independent ceilings still
+                // apply; the reservation is not reported as measured workspace.
+                let workspace = try checkedAdd(checkedAdd(checkedMultiply(data.count, 64), imageWorkspace), 1_048_576)
                 let metadataSize = try information.metadata.validate(limits: options.resourceLimits, additionalBytes: source.iccProfile?.count ?? 0)
                 try admit(workspace: workspace, pixels: supplied?.storage.byteCount ?? descriptor.requiredByteCount,
                           compressed: data.count, metadata: metadataSize, limits: options.resourceLimits)
@@ -366,11 +380,8 @@ enum JPEGCodec {
                     let borrowed = BorrowedSampleDestination(bytes: .init(rebasing: raw[plane.offset...]),
                         rowBytes: plane.rowBytes, bytesPerSample: descriptor.storageBits / 8)
                     if isDCT {
-                        let native = JLIDecoderConfiguration(
-                            outputPixelFormat: configuration.sampleFormat != .nativeInteger ? .float32 : nil,
-                            scale: configuration.scale)
                         _ = try JLIDecoder().decodeParsed(parsed, configuration: native, borrowedDestination: borrowed,
-                            normaliseXYBOutput: configuration.sampleFormat == .float32NormalisedSRGB)
+                            normaliseXYBOutput: normaliseXYBOutput)
                     } else {
                         try JLIDecoder().decodeSharedLossless(parsed, into: borrowed)
                     }

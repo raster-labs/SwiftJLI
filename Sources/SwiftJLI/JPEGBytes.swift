@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import Foundation
+#if canImport(ObjectiveC)
+import CoreFoundation
+#endif
 
 /// Immutable bridge owner shared by parsed scans and joined decode workers.
 ///
@@ -11,6 +14,9 @@ import Foundation
 /// synchronous MarkerReader. Neither reader is stored in a parsed result.
 /// Each load explicitly keeps the owner alive. Ownership/COW/release and joined
 /// reader tests exercise this boundary; no unchecked annotation covers a pointer.
+/// On Objective-C platforms, the toll-free Core Foundation getter avoids the
+/// NSData.bytes inner-pointer autorelease. Ordinary decode scopes therefore
+/// release the input without an enclosing autorelease pool.
 private final class JPEGByteOwner: @unchecked Sendable {
     let data: NSData
     init(_ data: Data) { self.data = data as NSData }
@@ -42,7 +48,20 @@ struct JPEGBytes: RandomAccessCollection, Sendable, Equatable {
     /// explicitly extend this owner's lifetime; this is not a Data buffer borrow.
     var ownedBuffer: UnsafeRawBufferPointer {
         guard !bounds.isEmpty else { return .init(start: nil, count: 0) }
-        return .init(start: storage.data.bytes.advanced(by: bounds.lowerBound), count: bounds.count)
+        return withExtendedLifetime(storage) {
+            #if canImport(ObjectiveC)
+            // NSData.bytes is NS_RETURNS_INNER_POINTER, which adds a temporary
+            // owner autorelease. This ordinary toll-free cast and C getter
+            // access the same immutable allocation without that delayed retain.
+            // The actual owner stays alive here and in every cached reader load.
+            let data = storage.data as CFData
+            let bytes = UnsafeRawBufferPointer(start: CFDataGetBytePtr(data), count: CFDataGetLength(data))
+            #else
+            // No Objective-C autorelease semantics exist on this path.
+            let bytes = UnsafeRawBufferPointer(start: storage.data.bytes, count: storage.data.length)
+            #endif
+            return UnsafeRawBufferPointer(rebasing: bytes[bounds])
+        }
     }
 
     func withUnsafeBytes<Result>(_ body: (UnsafeRawBufferPointer) throws -> Result) rethrows -> Result {
