@@ -308,19 +308,16 @@ def main() -> int:
                 # check: it must mirror the real floor, not a reversed one.
                 '// swift-tools-version: 6.2\nimport PackageDescription\n'
                 'let package = Package(name: "FreshConsumer", platforms: [.macOS("26.0")],\n'
-                f' dependencies: [.package(path: {package_path})],\n'
+                f' dependencies: [.package(name: "{name}", path: {package_path})],\n'
                 f' targets: [.executableTarget(name: "Consumer", dependencies: [.product(name: "{name}", package: "{name}")])],\n'
                 ' swiftLanguageModes: [.v6])\n')
-            (consumer / "Sources/Consumer/main.swift").write_text(
-                f'import {name}\n'
-                'let d = try ImageDescriptor.greyscale16(width: 3, height: 1, meaningfulBits: 16, rowBytes: 8)\n'
-                'let image = try ImageDestination.allocate(descriptor: d).writeUInt16 { x, _ in [UInt16(0), 65535, 4095][x] }\n'
-                'guard try image.sampleUInt16(x: 1, y: 0) == 65535 else { throw CodecError(.internalFailure, "Sample mismatch") }\n'
-                'let encoder = try Encoder()\n'
-                'guard !encoder.capabilities.canEncode else { throw CodecError(.internalFailure, "Update this Milestone 1 consumer") }\n'
-                'do { _ = try await encoder.encode(image); throw CodecError(.internalFailure, "Unexpected codec success") }\n'
-                'catch let error as CodecError where error.category == .unsupportedFeature {}\n'
-                'print("Fresh independent consumer passed")\n')
+            # Exercise the maintained public codec example. The former Milestone 1
+            # stub asserted that encoding was unavailable and rejected the real
+            # implementation. Explicit package naming also permits isolated
+            # checkout directories whose basename differs from the module name.
+            consumer_source = repo / "Examples/IndependentConsumer/Sources/IndependentConsumer/main.swift"
+            (consumer / "Sources/Consumer/main.swift").write_bytes(consumer_source.read_bytes())
+            report["consumer_source_sha256"] = hashlib.sha256(consumer_source.read_bytes()).hexdigest()
             run("fresh-local-consumer", swift("run", "consumer", consumer) + ["Consumer"])
             report["open_gates"].append("Fresh URL-based consumer resolution is separate from this local consumer check")
         if "repetition" in selected:
