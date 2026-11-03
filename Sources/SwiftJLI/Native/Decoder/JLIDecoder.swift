@@ -771,6 +771,11 @@ struct JLIDecoder: Sendable {
                     borrowed, width: w, height: h, predictor: predictor, half: half,
                     table: tables[0], reader: &reader, pointTransform: pt,
                     segmentRows: restartInterval > 0 ? restartInterval / w : h)
+            } else if predictor == 1, pt == 0, borrowed.bytesPerSample == 2 {
+                try Self.losslessLeftUInt16Into(
+                    borrowed, width: w, height: h, half: half,
+                    table: tables[0], reader: &reader,
+                    segmentRows: restartInterval > 0 ? restartInterval / w : h)
             } else {
                 try Self.losslessGrayInto(
                     borrowed, width: w, height: h, predictor: predictor, half: half,
@@ -1186,6 +1191,46 @@ struct JLIDecoder: Sendable {
         let needed = try checkedAdd(checkedMultiply(height - 1, destination.rowBytes), rowPayload)
         guard destination.bytes.count >= needed else {
             throw JLIError.bufferSizeMismatch(expected: needed, actual: destination.bytes.count)
+        }
+    }
+
+    /// The untransformed left predictor needs only the previous row's first
+    /// sample. Every reconstructed value is already reduced modulo 65536, so
+    /// its UInt16 representation needs neither a shift nor output clamping.
+    /// The checked destination borrow remains synchronous, including odd bases
+    /// and strides; the raw word store has no alignment requirement.
+    @inline(never)
+    private static func losslessLeftUInt16Into(
+        _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
+        half: Int32, table: HuffmanTable, reader: inout BitReader, segmentRows: Int
+    ) throws {
+        guard (1...65535).contains(w), (1...65535).contains(h), segmentRows > 0,
+              destination.bytesPerSample == 2, destination.rowBytes >= w * 2 else {
+            throw JLIError.decodingFailed("invalid lossless destination layout")
+        }
+        let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: destination.rowBytes)
+        let (needed, overflow2) = rowOffset.addingReportingOverflow(w * 2)
+        guard !overflow1, !overflow2, needed <= destination.bytes.count,
+              let output = destination.bytes.baseAddress else {
+            throw JLIError.decodingFailed("lossless destination is too small")
+        }
+        var previousRowFirst = half
+        for y in 0..<h {
+            try NativeOperation.check()
+            let segmentY = y % segmentRows
+            if y > 0, segmentY == 0 {
+                try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+            }
+            let outputRow = output + y * destination.rowBytes
+            let prediction = segmentY == 0 ? half : previousRowFirst
+            var value = (prediction + (try losslessDifference(table, &reader))) & 0xFFFF
+            previousRowFirst = value
+            outputRow.storeBytes(of: UInt16(truncatingIfNeeded: value).littleEndian, as: UInt16.self)
+            for x in 1..<w {
+                value = (value + (try losslessDifference(table, &reader))) & 0xFFFF
+                outputRow.storeBytes(of: UInt16(truncatingIfNeeded: value).littleEndian,
+                    toByteOffset: x * 2, as: UInt16.self)
+            }
         }
     }
 
