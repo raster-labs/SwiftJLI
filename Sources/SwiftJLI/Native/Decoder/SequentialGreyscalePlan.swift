@@ -15,7 +15,10 @@ struct SequentialGreyscalePlan: Sendable {
     let blockCount: Int
     let batchBlocks: Int
     let parallelLanes: Int
+    /// The selected scan-local AC table proves every AC coefficient is zero.
+    let dcOnlyTable: Bool
     /// Payload of one Int32 coefficient/output batch and one Float IDCT scratch.
+    /// A table-proven DC-only scan retains one value of each type per block.
     /// This is a conservative reservation component, not measured peak memory.
     let workspaceBytes: Int
 
@@ -45,23 +48,31 @@ struct SequentialGreyscalePlan: Sendable {
         let blocksPerRow = try checkedAdd(frame.width, 7) / 8
         let blockRows = try checkedAdd(frame.height, 7) / 8
         let blockCount = try checkedMultiply(blocksPerRow, blockRows)
+        let scan = parsed.scans[0]
+        let selector = scan.header.components.first { $0.componentSelector == frame.components[0].id }
+        let acID = selector?.acTableId ?? 0
+        let acTable = scan.acTables[acID] ?? (acID == 1
+            ? StandardHuffmanTables.acChrominance : StandardHuffmanTables.acLuminance)
+        let dcOnlyTable = DCOnlyGreyscaleDecoder.accepts(acTable)
         // Small images retain their measured serial path. A large window uses
         // whole canonical transforms and never exceeds eight logical lanes.
         // A changing active-CPU count may execute fewer lanes, but cannot change
         // this allocation/admission decision based on the immutable ceiling.
         let serialThreshold = backend == .accelerated ? maximumAutomaticBlocks : maximumAutomaticScalarBlocks
         let parallelLanes: Int
-        if workerLimit == 1 || blockCount <= serialThreshold { parallelLanes = 1 }
+        // Compact DC storage always uses one canonical batch, even for a
+        // large image that would otherwise select a parallel window.
+        if dcOnlyTable || workerLimit == 1 || blockCount <= serialThreshold { parallelLanes = 1 }
         else {
             parallelLanes = min(maximumParallelLanes, min(workerLimit, blockCount / 2048))
             guard parallelLanes > 1 else { return nil }
         }
         let batchBlocks = min(try checkedMultiply(maximumBatchBlocks, parallelLanes), blockCount)
-        let samples = try checkedMultiply(batchBlocks, 64)
+        let samples = try checkedMultiply(batchBlocks, dcOnlyTable ? 1 : 64)
         let bytesPerSample = try checkedAdd(MemoryLayout<Int32>.stride, MemoryLayout<Float>.stride)
         let workspaceBytes = try checkedMultiply(samples, bytesPerSample)
         return Self(blocksPerRow: blocksPerRow, blockRows: blockRows,
                     blockCount: blockCount, batchBlocks: batchBlocks,
-                    parallelLanes: parallelLanes, workspaceBytes: workspaceBytes)
+                    parallelLanes: parallelLanes, dcOnlyTable: dcOnlyTable, workspaceBytes: workspaceBytes)
     }
 }

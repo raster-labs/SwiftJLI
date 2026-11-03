@@ -50,7 +50,16 @@ import Testing
                     let count = c.count, workspace = s.baseAddress! + 3
                     let dcOnly = AccelerateDSP.prepareDCOnlyDCTBatch(zigzag: UnsafePointer(c.baseAddress!),
                         quantTable: q.baseAddress!, scratch: workspace, blockCount: blocks)
-                    if !dcOnly {
+                    if dcOnly {
+                        let compact = stride(from: 0, to: coefficients.count, by: 64).map { coefficients[$0] }
+                        compact.withUnsafeBufferPointer { dc in
+                            DCOnlyGreyscaleDecoder.reconstruct(dc.baseAddress!, quantiser: quantiser,
+                                into: workspace, blockCount: blocks)
+                        }
+                        #expect((0..<blocks).allSatisfy {
+                            workspace[$0].bitPattern == expected[$0 * 64].bitPattern
+                        })
+                    } else {
                         AccelerateDSP.packDequantizedDCTBatch(zigzag: UnsafePointer(c.baseAddress!),
                             quantTable: q.baseAddress!, scratch: workspace, blockCount: blocks)
                     }

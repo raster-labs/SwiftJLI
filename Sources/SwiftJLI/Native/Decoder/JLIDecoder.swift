@@ -128,15 +128,24 @@ struct JLIDecoder: Sendable {
             let selector = scan.header.components.first { $0.componentSelector == components[0].id }
             let dcTable = prepareDCTables(scan.dcTables)[selector?.dcTableId ?? 0] ?? StandardHuffmanTables.dcLuminance
             let acTable = prepareACTables(scan.acTables)[selector?.acTableId ?? 0] ?? StandardHuffmanTables.acLuminance
-            // Lookup admission uses the entire scan, as in the retained path.
-            let lookup = ACLookahead(table: acTable, blockCount: streamingPlan.blockCount)
             var reader = BitReader(data: scan.entropyData)
-            try Self.decodeSequentialGreyscaleInto(reader: &reader, dcTable: dcTable,
-                acTable: acTable, lookup: lookup,
-                quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
-                plan: streamingPlan,
-                width: frame.width, height: frame.height, precision: frame.precision,
-                restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
+            if streamingPlan.dcOnlyTable {
+                try Self.validateGreyscaleDestination(borrowedDestination, width: frame.width,
+                    height: frame.height, precision: frame.precision, floatOutput: floating)
+                try DCOnlyGreyscaleDecoder.decodeInto(reader: &reader, dcTable: dcTable, acTable: acTable,
+                    quantiser: Float(quantTables[components[0].quantTableIndex][0]), plan: streamingPlan,
+                    width: frame.width, height: frame.height, precision: frame.precision,
+                    restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
+            } else {
+                // Lookup admission uses the entire scan, as in the retained path.
+                let lookup = ACLookahead(table: acTable, blockCount: streamingPlan.blockCount)
+                try Self.decodeSequentialGreyscaleInto(reader: &reader, dcTable: dcTable,
+                    acTable: acTable, lookup: lookup,
+                    quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
+                    plan: streamingPlan,
+                    width: frame.width, height: frame.height, precision: frame.precision,
+                    restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
+            }
             return try JLIImage(geometryOnlyWidth: frame.width, height: frame.height,
                 pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
                 colorModel: .grayscale, iccProfile: parsed.iccProfile, exif: parsed.exif)

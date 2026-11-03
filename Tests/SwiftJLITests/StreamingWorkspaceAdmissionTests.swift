@@ -36,11 +36,11 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
 @Suite struct StreamingWorkspaceAdmissionTests {
     private static func jpeg(width: Int = 65, height: Int = 57,
                              precision: Int = 8, progressive: Bool = false,
-                             colour: Bool = false) throws -> Data {
+                             colour: Bool = false, flat: Bool = false) throws -> Data {
         let bps = precision == 8 ? 1 : 2, components = colour ? 3 : 1
         var bytes = [UInt8](repeating: 0, count: width * height * components * bps)
         for i in 0..<(width * height * components) {
-            let value = (i * 151 + i / width * 17 + 117) & ((1 << precision) - 1)
+            let value = flat ? (1 << (precision - 1)) : (i * 151 + i / width * 17 + 117) & ((1 << precision) - 1)
             bytes[i * bps] = UInt8(truncatingIfNeeded: value)
             if bps == 2 { bytes[i * bps + 1] = UInt8(value >> 8) }
         }
@@ -50,16 +50,20 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
         return Data(try JLIEncoder().encode(image, configuration: .init(quality: 87, progressive: progressive)))
     }
 
-    @Test(arguments: [8, 12], [false, true])
-    func exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision: Int, floating: Bool) throws {
-        let data = try Self.jpeg(precision: precision)
+    @Test(arguments: [8, 12], [(false, false), (false, true), (true, false), (true, true)])
+    func exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision: Int, modes: (Bool, Bool)) throws {
+        let (floating, flat) = modes
+        let data = try Self.jpeg(precision: precision, flat: flat)
         let parsed = try JPEGCodec.parse(data, options: .init())
         let width = 65, height = 57, bps = floating ? 4 : precision == 8 ? 1 : 2
         let configuration = DecoderConfiguration(sampleFormat: floating ? .float32RawSamples : .nativeInteger)
         let native = JLIDecoderConfiguration(outputPixelFormat: floating ? .float32 : nil)
         // 9 x 8 padded blocks; shared coefficient/output and one scratch batch.
         // This boundary deliberately includes block padding, not width*height.
-        let workspace = data.count * 64 + 36_864 + 1_048_576
+        let workspace = data.count * 64 + (flat ? 576 : 36_864) + 1_048_576
+        let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
+            hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: .scalarCPU))
+        #expect(plan.dcOnlyTable == flat)
         let offset = bps * 2, rowBytes = (width + 3) * bps
         let planeCapacity = offset + rowBytes * height, storageCapacity = planeCapacity + 11
         let plane = try PlaneDescriptor(width: width, height: height, offset: offset,
@@ -122,6 +126,40 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
             #expect(allocated.report.pixelAllocationCount == 1)
             #expect(try allocated.image.storage.withUnsafeBytes { Array($0) } == expected)
         } }
+    }
+
+    @Test func compactAdmissionUsesSelectedScanTableSnapshot() throws {
+        let parsed = try JPEGCodec.parse(Self.jpeg(flat: true), options: .init())
+        let scan = parsed.scans[0]
+        let zeroTable = try #require(scan.acTables[scan.header.components[0].acTableId])
+        func make(scanTables: [Int: HuffmanTable], finalTables: [Int: HuffmanTable], id: Int) -> ParsedJPEG {
+            let header = JPEGScanHeader(components: [(parsed.frameInfo.components[0].id, 0, id)],
+                spectralStart: 0, spectralEnd: 63, successiveApproxHigh: 0, successiveApproxLow: 0)
+            return ParsedJPEG(frameInfo: parsed.frameInfo, quantTables: parsed.quantTables,
+                huffmanDCTables: parsed.huffmanDCTables, huffmanACTables: finalTables,
+                scans: [.init(header: header, entropyData: scan.entropyData,
+                    dcTables: scan.dcTables, acTables: scanTables)],
+                restartInterval: 0, iccProfile: nil, exif: nil)
+        }
+        for id in [0, 1, 7] {
+            for compact in [false, true] {
+                let current = compact ? zeroTable : StandardHuffmanTables.acLuminance
+                let later = compact ? StandardHuffmanTables.acLuminance : zeroTable
+                let plan = try #require(try SequentialGreyscalePlan.make(
+                    parsed: make(scanTables: [id: current], finalTables: [id: later], id: id),
+                    configuration: .default, hasDestination: true, normaliseXYBOutput: false,
+                    workerLimit: 1, backend: .scalarCPU))
+                #expect(plan.dcOnlyTable == compact)
+                #expect(plan.workspaceBytes == (compact ? 576 : 36_864))
+            }
+            // Missing selected tables retain the decoder's standard fallback;
+            // a final merged zero table must not make admission more permissive.
+            let plan = try #require(try SequentialGreyscalePlan.make(
+                parsed: make(scanTables: [:], finalTables: [id: zeroTable], id: id),
+                configuration: .default, hasDestination: true, normaliseXYBOutput: false,
+                workerLimit: 1, backend: .scalarCPU))
+            #expect(!plan.dcOnlyTable && plan.workspaceBytes == 36_864)
+        }
     }
 
     @Test func nonStreamingOperationsRetainTheirFullReservations() throws {
@@ -200,6 +238,44 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
                 let lanes = min(workers, 8)
                 #expect(plan.parallelLanes == lanes && plan.batchBlocks == lanes * 1024)
                 #expect(plan.workspaceBytes == lanes * 524_288)
+            }
+        }
+    }
+
+    @Test(arguments: [8, 12], [false, true])
+    func largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision: Int, floating: Bool) throws {
+        let width = 513, height = 513
+        let data = try Self.jpeg(width: width, height: height, precision: precision, flat: true)
+        let parsed = try JPEGCodec.parse(data, options: .init())
+        let native = JLIDecoderConfiguration(outputPixelFormat: floating ? .float32 : nil)
+        let configuration = DecoderConfiguration(sampleFormat: floating ? .float32RawSamples : .nativeInteger)
+        let bps = floating ? 4 : precision == 8 ? 1 : 2
+        let outputBytes = width * height * bps
+        let workspace = data.count * 64 + 8192 + 1_048_576
+        for backend in Decoder.capabilities.availableBackends {
+            let expected = try NativeOperation.$current.withValue(.init(seconds: 120,
+                backend: backend, maximumWorkers: 1)) {
+                try JLIDecoder().decodeParsed(parsed, configuration: native).data
+            }
+            for workers in [1, 8, 64] {
+                let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
+                    hasDestination: true, normaliseXYBOutput: false, workerLimit: workers, backend: backend))
+                #expect(plan.blockCount == 4225 && plan.dcOnlyTable)
+                #expect(plan.parallelLanes == 1 && plan.batchBlocks == 1024 && plan.workspaceBytes == 8192)
+                expectWorkspaceDenial {
+                    _ = try JPEGCodec.decode(data, into: nil, configuration: configuration,
+                        options: .init(resourceLimits: try ResourceLimits(maximumWorkspaceBytes: workspace - 1,
+                            maximumWorkers: workers), executionPolicy: .required(backend)))
+                }
+                let result = try JPEGCodec.decode(data, into: nil, configuration: configuration,
+                    options: .init(resourceLimits: try ResourceLimits(maximumCompressedBytes: data.count,
+                        maximumDecodedBytes: outputBytes, maximumWorkspaceBytes: workspace,
+                        maximumWorkers: workers, maximumMemoryBytes: data.count + outputBytes + workspace),
+                        executionPolicy: .required(backend)))
+                #expect(result.report.pixelAllocationCount == 1 && result.report.copyEvents.isEmpty)
+                try result.image.storage.withUnsafeBytes { bytes in
+                    #expect(bytes.count == outputBytes && bytes.elementsEqual(expected))
+                }
             }
         }
     }
