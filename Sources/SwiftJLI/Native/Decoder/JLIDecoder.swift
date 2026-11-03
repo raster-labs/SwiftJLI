@@ -1160,15 +1160,17 @@ struct JLIDecoder: Sendable {
     /// live; `aboveLeft` saves the previous-row sample before its slot is reused.
     /// Every slot is written on the first row of a restart segment before any
     /// subsequent row reads it. Neither pointer escapes this call.
-    // Preserve caller specialisation of the large scalar loop. Without this
-    // boundary, adding a separate tiny-image path can make the optimiser
-    // outline this loop and retain general-case work for every sample.
-    @inline(__always)
     private static func losslessGrayInto(
         _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
         predictor: Int, half: Int32, table: HuffmanTable, reader: inout BitReader,
         pointTransform pt: Int, segmentRows: Int
     ) throws {
+        // Dispatch validates these frame bounds. Restating them in this
+        // kernel preserves safe shift/index ranges if the optimiser outlines
+        // it instead of specialising it at the validated call site.
+        guard (1...65535).contains(w), (1...65535).contains(h), (0...15).contains(pt) else {
+            throw JLIError.decodingFailed("Invalid lossless frame or point transform")
+        }
         let bps = destination.bytesPerSample
         guard bps == 1 || bps == 2, destination.rowBytes >= w * bps else {
             throw JLIError.decodingFailed("invalid lossless destination layout")
