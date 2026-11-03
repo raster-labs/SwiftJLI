@@ -38,7 +38,7 @@ static inline void fill(const uint8_t *input, size_t count, SJLIACState *r) {
 
 static inline SJLIACStatus read_bits(const uint8_t *input, size_t count,
                                     SJLIACState *r, unsigned width, uint32_t *value) {
-    // All callers prove width <= 15. A zero category consumes no bits; avoid
+    // All callers prove width <= 16. A zero category consumes no bits; avoid
     // shifting by 64 when the accumulator is full.
     if (width == 0) { *value = 0; return SJLI_AC_OK; }
     while (r->available < width) {
@@ -89,25 +89,22 @@ static inline SJLIACStatus symbol(const uint8_t *input, size_t count,
     return SJLI_AC_INVALID_CODE;
 }
 
-SJLIACStatus sjli_ac_decode_block(const uint8_t *restrict input, size_t input_count,
-    SJLIACState *restrict state, const SJLIACHuffman *restrict table,
-    const uint32_t *restrict lookup, size_t lookup_count,
-    int32_t *restrict output, size_t output_count) {
-    if ((!input && input_count != 0) || !state || !table || !lookup || !output ||
-        output_count != 64 || lookup_count != 8192 || table->value_count > 256 ||
-        state->byte_offset > input_count || state->available > 64) return SJLI_AC_INVALID_ARGUMENT;
-    SJLIACState reader = *state;
+// The entrypoints validate all extents before this shared body is entered.
+// The DC+AC entrypoint keeps one local reader through both entropy stages.
+static inline SJLIACStatus ac_body(const uint8_t *restrict input, size_t input_count,
+    SJLIACState *restrict reader, const SJLIACHuffman *restrict table,
+    const uint32_t *restrict lookup, int32_t *restrict output) {
     memset(output, 0, 64 * sizeof(*output));
     SJLIACStatus status = SJLI_AC_OK;
     unsigned index = 1;
     while (index < 64) {
-        if (reader.available < 13 && !bulk(input, input_count, &reader)) fill(input, input_count, &reader);
-        if (reader.available >= 13) {
-            const unsigned prefix = (unsigned)((reader.accumulator >> (reader.available - 13)) & 8191);
+        if (reader->available < 13 && !bulk(input, input_count, reader)) fill(input, input_count, reader);
+        if (reader->available >= 13) {
+            const unsigned prefix = (unsigned)((reader->accumulator >> (reader->available - 13)) & 8191);
             const uint32_t entry = lookup[prefix];
             const unsigned advance = (entry >> 16) & 255;
             if (entry != 0 && advance <= 64 - index) {
-                reader.available -= entry >> 24;
+                reader->available -= entry >> 24;
                 if (advance == 0) break;
                 index += advance;
                 const uint32_t low = entry & 65535;
@@ -116,19 +113,72 @@ SJLIACStatus sjli_ac_decode_block(const uint8_t *restrict input, size_t input_co
             }
         }
         uint8_t value;
-        status = symbol(input, input_count, &reader, table, &value);
+        status = symbol(input, input_count, reader, table, &value);
         if (status != SJLI_AC_OK || value == 0) break;
         if (value == 0xf0) { index += 16; continue; }
         index += value >> 4;
         if (index >= 64) break;
         const unsigned category = value & 15;
         uint32_t magnitude;
-        status = read_bits(input, input_count, &reader, category, &magnitude);
+        status = read_bits(input, input_count, reader, category, &magnitude);
         if (status != SJLI_AC_OK) break;
         int32_t coefficient = (int32_t)magnitude;
         if (category != 0 && magnitude < (UINT32_C(1) << (category - 1)))
             coefficient -= (int32_t)((UINT32_C(1) << category) - 1);
         output[index++] = coefficient;
+    }
+    return status;
+}
+
+SJLIACStatus sjli_ac_decode_block(const uint8_t *restrict input, size_t input_count,
+    SJLIACState *restrict state, const SJLIACHuffman *restrict table,
+    const uint32_t *restrict lookup, size_t lookup_count,
+    int32_t *restrict output, size_t output_count) {
+    if ((!input && input_count != 0) || !state || !table || !lookup || !output ||
+        output_count != 64 || lookup_count != 8192 || table->value_count > 256 ||
+        state->byte_offset > input_count || state->available > 64) return SJLI_AC_INVALID_ARGUMENT;
+    SJLIACState reader = *state;
+    SJLIACStatus status = ac_body(input, input_count, &reader, table, lookup, output);
+    *state = reader;
+    return status;
+}
+
+SJLIACStatus sjli_dct_decode_block(const uint8_t *restrict input, size_t input_count,
+    SJLIACState *restrict state, const SJLIACHuffman *restrict dc_table,
+    const SJLIACHuffman *restrict ac_table, const uint32_t *restrict lookup,
+    size_t lookup_count, int32_t *restrict previous_dc, unsigned precision,
+    int32_t *restrict output, size_t output_count) {
+    if ((!input && input_count != 0) || !state || !dc_table || !ac_table || !lookup ||
+        !previous_dc || !output || output_count != 64 || lookup_count != 8192 ||
+        dc_table->value_count > 256 || ac_table->value_count > 256 ||
+        state->byte_offset > input_count || state->available > 64 ||
+        (precision != 8 && precision != 12)) return SJLI_AC_INVALID_ARGUMENT;
+    SJLIACState reader = *state;
+    uint8_t category;
+    SJLIACStatus status = symbol(input, input_count, &reader, dc_table, &category);
+    if (status == SJLI_AC_OK) {
+        if (category > 16) {
+            // Match Swift readBits validation after consuming the DC symbol
+            // but before consuming any magnitude or clearing coefficients.
+            reader.marker = category;
+            status = SJLI_AC_INVALID_WIDTH;
+        } else {
+            uint32_t magnitude;
+            status = read_bits(input, input_count, &reader, category, &magnitude);
+            if (status == SJLI_AC_OK) {
+                int32_t difference = (int32_t)magnitude;
+                if (category != 0 && magnitude < (UINT32_C(1) << (category - 1)))
+                    difference -= (int32_t)((UINT32_C(1) << category) - 1);
+                const int64_t dc = (int64_t)*previous_dc + difference;
+                const int64_t bound = INT64_C(1) << (precision + 2);
+                if (dc < -bound || dc > bound) status = SJLI_AC_DC_RANGE;
+                else {
+                    *previous_dc = (int32_t)dc;
+                    status = ac_body(input, input_count, &reader, ac_table, lookup, output);
+                    if (status == SJLI_AC_OK) output[0] = *previous_dc;
+                }
+            }
+        }
     }
     *state = reader;
     return status;

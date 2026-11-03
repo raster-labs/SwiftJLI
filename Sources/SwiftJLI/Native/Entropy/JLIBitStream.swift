@@ -367,6 +367,42 @@ struct BitReader {
         }
     }
 
+    /// One synchronous DC+AC leaf call, with the same scoped ownership as the
+    /// AC-only bridge. `previousDC` is independent producer-local storage.
+    /// The C leaf publishes it before AC, exactly like the Swift reference;
+    /// neither DC failure nor an invalid extent may clear the coefficient slot.
+    mutating func decodeDCT(using kernel: CDCTKernel, previousDC: inout Int32,
+                            precision: Int, into output: UnsafeMutableBufferPointer<Int32>) throws {
+        guard output.count == 64, let destination = output.baseAddress,
+              precision == 8 || precision == 12 else {
+            throw JLIError.decodingFailed("Invalid C DCT kernel arguments")
+        }
+        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
+                               available: UInt32(bitsAvailable), marker: 0)
+        let status = withExtendedLifetime(data) {
+            sjli_dct_decode_block(buffer.baseAddress?.assumingMemoryBound(to: UInt8.self), buffer.count,
+                &state, kernel.dcTable, kernel.ac.table, kernel.ac.lookup, 8192,
+                &previousDC, UInt32(precision), destination, output.count)
+        }
+        byteOffset = state.byte_offset
+        bitBuffer = state.accumulator
+        bitsAvailable = Int(state.available)
+        switch status {
+        case SJLI_AC_OK: return
+        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
+        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
+        case SJLI_AC_MARKER:
+            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
+        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
+        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
+        case SJLI_AC_INVALID_WIDTH:
+            throw JLIError.decodingFailed("invalid bit-read width \(state.marker)")
+        case SJLI_AC_DC_RANGE:
+            throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
+        default: throw JLIError.decodingFailed("Invalid C DCT kernel arguments")
+        }
+    }
+
     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,

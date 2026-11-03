@@ -9,16 +9,13 @@ struct CACKernel {
     let table: UnsafePointer<SJLIACHuffman>
     let lookup: UnsafePointer<UInt32>
 
-    static func withBorrowed(table: HuffmanTable, lookup: ACLookahead?, enabled: Bool,
-                             _ body: (CACKernel?) throws -> Void) rethrows {
-        guard enabled, let lookup, lookup.entries.count == 8192,
-              table.minCode.count == 17, table.maxCode.count == 17,
+    static func metadata(for table: HuffmanTable) -> SJLIACHuffman? {
+        guard table.minCode.count == 17, table.maxCode.count == 17,
               table.valPtr.count == 17, table.values.count <= 256,
               table.lookaheadLength.count == 256, table.lookaheadSymbol.count == 256,
               table.valPtr.allSatisfy({ $0 >= 0 && $0 <= 256 }),
               table.lookaheadLength.allSatisfy({ $0 <= 8 }) else {
-            try body(nil)
-            return
+            return nil
         }
         // Fixed stack metadata is bounded by 1,048 bytes on the supported
         // 64-bit ABIs, covered by the existing 1 MiB decoder scratch reserve.
@@ -46,11 +43,45 @@ struct CACKernel {
             table.lookaheadSymbol.withUnsafeBytes { target.copyMemory(from: $0) }
         }
         metadata.value_count = UInt32(table.values.count)
+        return metadata
+    }
+
+    static func withBorrowed(table: HuffmanTable, lookup: ACLookahead?, enabled: Bool,
+                             _ body: (CACKernel?) throws -> Void) rethrows {
+        guard enabled, let lookup, lookup.entries.count == 8192,
+              var metadata = metadata(for: table) else {
+            try body(nil)
+            return
+        }
         try withUnsafePointer(to: &metadata) { tablePointer in
             try lookup.entries.withUnsafeBufferPointer { entries in
                 // The exact positive count guard proves a non-nil base.
                 guard let base = entries.baseAddress else { try body(nil); return }
                 try body(.init(table: tablePointer, lookup: base))
+            }
+        }
+    }
+}
+
+/// Both fixed Huffman wire values are built once per scan. Their borrows and
+/// the existing combined AC lookup enclose only the synchronous producer;
+/// neither metadata pointer is Sendable or passed to reconstruction workers.
+struct CDCTKernel {
+    let dcTable: UnsafePointer<SJLIACHuffman>
+    let ac: CACKernel
+
+    static func withBorrowed(dcTable: HuffmanTable, acTable: HuffmanTable,
+                             lookup: ACLookahead?, enabled: Bool,
+                             _ body: (CDCTKernel?) throws -> Void) rethrows {
+        guard enabled, let lookup, lookup.entries.count == 8192,
+              var dcMetadata = CACKernel.metadata(for: dcTable) else {
+            try body(nil)
+            return
+        }
+        try CACKernel.withBorrowed(table: acTable, lookup: lookup, enabled: enabled) { ac in
+            guard let ac else { try body(nil); return }
+            try withUnsafePointer(to: &dcMetadata) { dc in
+                try body(.init(dcTable: dc, ac: ac))
             }
         }
     }

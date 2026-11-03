@@ -96,7 +96,7 @@ enum PipelinedGreyscaleDecoder {
                             firstBlock: batch * 1024, blocksPerRow: plan.blocksPerRow,
                             width: width, height: height, destination: destination)
                     }
-                    try CACKernel.withBorrowed(table: acTable, lookup: lookup,
+                    try CDCTKernel.withBorrowed(dcTable: dcTable, acTable: acTable, lookup: lookup,
                         enabled: NativeOperation.current?.backend == .accelerated) { kernel in
                         var previousDC: Int32 = 0, restartIndex = 0
                         for batch in 0..<batches {
@@ -114,21 +114,24 @@ enum PipelinedGreyscaleDecoder {
                                         restartIndex = (restartIndex + 1) & 7
                                         previousDC = 0
                                     }
-                                    let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
-                                    let dc = Int64(previousDC) + Int64(difference)
-                                    guard abs(dc) <= (1 << (precision + 2)) else {
-                                        throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
-                                    }
-                                    previousDC = Int32(dc)
                                     let block = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: 64)
                                     if let kernel {
-                                        try reader.decodeAC(using: kernel, into: block)
-                                    } else if let lookup {
-                                        try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
+                                        try reader.decodeDCT(using: kernel, previousDC: &previousDC,
+                                                             precision: precision, into: block)
                                     } else {
-                                        try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
+                                        let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
+                                        let dc = Int64(previousDC) + Int64(difference)
+                                        guard abs(dc) <= (1 << (precision + 2)) else {
+                                            throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
+                                        }
+                                        previousDC = Int32(dc)
+                                        if let lookup {
+                                            try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
+                                        } else {
+                                            try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
+                                        }
+                                        block[0] = previousDC
                                     }
-                                    block[0] = previousDC
                                     index += 1
                                 }
                             }
