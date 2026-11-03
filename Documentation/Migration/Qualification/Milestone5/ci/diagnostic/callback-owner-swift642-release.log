@@ -1,0 +1,94 @@
+Building for production...
+[Planning deferred tasks]
+[41 / 67]
+[42 / 68] SwiftJLI
+[49 / 114]
+[53 / 114]
+[58 / 114]
+[63 / 114]
+[65 / 114]
+[66 / 114]
+[69 / 114]
+[71 / 114]
+[73 / 114]
+[78 / 114]
+[81 / 114]
+[82 / 114]
+[83 / 114]
+[86 / 114]
+[88 / 114]
+[89 / 114] SwiftJLI
+[100 / 116] swiftjli-cli-product
+[105 / 123]
+[107 / 123]
+[109 / 123]
+[110 / 123]
+[112 / 123] swiftjli-cli-product
+[113 / 123] swiftjli-cli-product
+/Users/pushparaj/projects/SwiftJLI-milestone5/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/Users/pushparaj/projects/SwiftJLI-milestone5/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:37:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 35 |                     var reader = BitReader(data: writer.data)
+ 36 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 37 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 38 |                     try destination.withUnsafeMutableBufferPointer {
+ 39 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+[114 / 123] SwiftJLITests-product
+[119 / 123] SwiftJLITests-product
+[121 / 123] SwiftJLITests-product
+Build complete! (43.57 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite NativeExecutionTests started.
+◇ Suite CLISynchronousExecutionTests started.
+◇ Test hostCancellationReachesJoinedWorkersWithoutASwiftTask() started.
+◇ Test joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test throwingNestedHostScopeRestoresOuterCallbackWithoutRunningItsBody() started.
+◇ Test fractionalDeadlineStillExpires() started.
+◇ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test nestedHostScopeRetainsTaskCancellationForJoinedWorkers() started.
+◇ Test hostDeadlineAndMalformedCategoriesRemainDistinct() started.
+◇ Test deadlineReachesJoinedWorkers() started.
+◇ Test failureJoinsEveryStartedWorker() started.
+◇ Test hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test case passing 1 argument limit → 2 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument limit → 1 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 1 argument seconds → 10.0 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 1 argument seconds → 120.0 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument seconds → 1e+100 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument limit → 4 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument restarts → true to publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test case passing 1 argument restarts → false to publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test case passing 1 argument progressive → false to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test case passing 1 argument progressive → true to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test case passing 1 argument lossy → false to hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test case passing 1 argument lossy → true to hostAdaptersPreserveBytesAndReports(lossy:) started.
+✔ Test throwingNestedHostScopeRestoresOuterCallbackWithoutRunningItsBody() passed after 0.001 seconds.
+✔ Test deadlineReachesJoinedWorkers() passed after 0.001 seconds.
+✔ Test fractionalDeadlineStillExpires() passed after 0.001 seconds.
+✔ Test hostDeadlineAndMalformedCategoriesRemainDistinct() passed after 0.001 seconds.
+✔ Test finiteDeadlinesDoNotTrap(seconds:) with 3 test cases passed after 0.001 seconds.
+✔ Test hostAdaptersPreserveBytesAndReports(lossy:) with 2 test cases passed after 0.001 seconds.
+✔ Test hostCancellationReachesJoinedWorkersWithoutASwiftTask() passed after 0.001 seconds.
+✔ Test nestedHostScopeRetainsTaskCancellationForJoinedWorkers() passed after 0.001 seconds.
+✔ Suite CLISynchronousExecutionTests passed after 0.001 seconds.
+✔ Test cancellationReachesDispatchWorkersAndJoins(seconds:) with 2 test cases passed after 0.001 seconds.
+✔ Test failureJoinsEveryStartedWorker() passed after 0.012 seconds.
+✔ Test publicPredictiveParallelismPreservesBytes(restarts:) with 2 test cases passed after 0.015 seconds.
+✔ Test joinedWorkersRespectLimitAndBackend(limit:) with 3 test cases passed after 0.021 seconds.
+✔ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) with 2 test cases passed after 0.051 seconds.
+✔ Suite NativeExecutionTests passed after 0.052 seconds.
+✔ Test run with 13 tests in 2 suites passed after 0.052 seconds.

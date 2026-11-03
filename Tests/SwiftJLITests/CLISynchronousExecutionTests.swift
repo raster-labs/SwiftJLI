@@ -122,4 +122,35 @@ import Testing
             }
         }
     }
+
+    @Test func throwingNestedHostScopeRestoresOuterCallbackWithoutRunningItsBody() throws {
+        let state = Mutex((outerPolls: 0, innerPolls: 0, innerBodyRan: false))
+        try NativeOperation.withSynchronousCancellation({
+            state.withLock { $0.outerPolls += 1 }
+        }) {
+            do {
+                try NativeOperation.withSynchronousCancellation({
+                    state.withLock { $0.innerPolls += 1 }
+                    throw CancellationError()
+                }) {
+                    state.withLock { $0.innerBodyRan = true }
+                }
+                Issue.record("An immediately cancelled nested host scope unexpectedly succeeded")
+            } catch is CancellationError {
+                // The throwing inner scope must restore the outer host callback.
+            }
+            try NativeOperation.$current.withValue(.init(seconds: 5)) {
+                try NativeOperation.check()
+            }
+        }
+        let completed = state.withLock { $0 }
+        #expect(completed.outerPolls == 3)
+        #expect(completed.innerPolls == 1 && !completed.innerBodyRan)
+        // A subsequent operation inherits neither completed host callback.
+        try NativeOperation.$current.withValue(.init(seconds: 5)) {
+            try NativeOperation.check()
+        }
+        let after = state.withLock { $0 }
+        #expect(after.outerPolls == completed.outerPolls && after.innerPolls == completed.innerPolls)
+    }
 }

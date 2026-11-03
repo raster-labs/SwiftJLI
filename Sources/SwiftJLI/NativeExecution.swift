@@ -12,25 +12,35 @@ final class NativeCancellation: Sendable {
     }
 }
 
+/// An immutable owner retains the host callback across task-local capture and
+/// joined workers. A concrete type also avoids relying on task-local metadata
+/// for an optional throwing function, which crashes on the observed Swift 6.3.3
+/// macOS release path when entering an immediately throwing host scope.
+private final class NativeHostCancellation: Sendable {
+    private let callback: @Sendable () throws -> Void
+    init(_ callback: @escaping @Sendable () throws -> Void) { self.callback = callback }
+    func check() throws { try callback() }
+}
+
 /// Context is explicitly installed in every joined worker. A worker never relies
 /// on inheriting Swift task locals or cancellation through a Dispatch thread.
 struct NativeOperation: Sendable {
     @TaskLocal static var current: NativeOperation?
     @TaskLocal private static var taskCancellation: NativeCancellation?
-    @TaskLocal private static var callerCancellationCheck: (@Sendable () throws -> Void)?
+    @TaskLocal private static var callerCancellation: NativeHostCancellation?
     let started: ContinuousClock.Instant
     let seconds: Double
     let backend: Backend
     let maximumWorkers: Int
     let cancellation: NativeCancellation?
-    private let synchronousCancellationCheck: (@Sendable () throws -> Void)?
+    private let synchronousCancellation: NativeHostCancellation?
 
     init(seconds: Double, backend: Backend = .scalarCPU,
          started: ContinuousClock.Instant = .now, maximumWorkers: Int = 1) {
         self.seconds = seconds; self.backend = backend; self.started = started
         self.maximumWorkers = max(1, maximumWorkers)
         self.cancellation = Self.taskCancellation
-        self.synchronousCancellationCheck = Self.callerCancellationCheck
+        self.synchronousCancellation = Self.callerCancellation
     }
 
     static func withCancellation<T: Sendable>(_ body: () throws -> T) async throws -> T {
@@ -47,10 +57,11 @@ struct NativeOperation: Sendable {
     static func withSynchronousCancellation<T>(
         _ check: @escaping @Sendable () throws -> Void, _ body: () throws -> T
     ) throws -> T {
-        try $callerCancellationCheck.withValue(check) {
-            try check()
+        let owner = NativeHostCancellation(check)
+        return try $callerCancellation.withValue(owner) {
+            try owner.check()
             let result = try body()
-            try check()
+            try owner.check()
             return result
         }
     }
@@ -59,7 +70,7 @@ struct NativeOperation: Sendable {
         try Task.checkCancellation()
         if let context = current {
             try context.cancellation?.check()
-            try context.synchronousCancellationCheck?()
+            try context.synchronousCancellation?.check()
             // ResourceLimits accepts every positive finite Double. Converting
             // that caller value to Duration can trap outside Duration's range.
             // Elapsed components always fit in Double, so compare in seconds.

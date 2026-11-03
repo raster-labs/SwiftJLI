@@ -8,6 +8,7 @@ python3 - "$@" <<'PY'
 import json
 import os
 from pathlib import Path
+import shlex
 import shutil
 import signal
 import subprocess
@@ -49,11 +50,28 @@ try:
     if not helper.is_file() or not bundle.is_file():
         raise RuntimeError(f"Expected existing helper/bundle unavailable: {helper}; {bundle}")
 
+    # SwiftPM injects these SDK platform paths before loading Testing.framework.
+    # Set them on the inferior explicitly: launching via xcrun can strip DYLD
+    # variables from the debugger's own inherited environment on macOS.
+    platform = Path(subprocess.check_output(
+        ["xcrun", "--sdk", "macosx", "--show-sdk-platform-path"], text=True).strip())
+    runtime_paths = {
+        "DYLD_FRAMEWORK_PATH": [platform / "Developer/Library/Frameworks",
+                                platform / "Developer/Library/PrivateFrameworks"],
+        "DYLD_LIBRARY_PATH": [platform / "Developer/usr/lib"],
+    }
+    environment_values = []
+    for key, paths in runtime_paths.items():
+        values = ([os.environ[key]] if os.environ.get(key) else []) + [str(path) for path in paths]
+        environment_values.append(key + "=" + ":".join(values))
+    report["testRuntimePaths"] = {key: [str(path) for path in paths] for key, paths in runtime_paths.items()}
+
     # Launch the already-built Swift Testing bundle through the same helper used
     # by SwiftPM. Do not filter, rebuild, serialise, suppress or retry tests to pass.
     # LLDB's failure-only commands run after the debugger catches the native crash.
     command = ["xcrun", "lldb", "--no-lldbinit", "--batch",
                "--one-line", "settings set target.disable-aslr false",
+               "--one-line", "settings set target.env-vars " + " ".join(map(shlex.quote, environment_values)),
                "--one-line", "run",
                "--one-line-on-crash", "thread backtrace all",
                "--one-line-on-crash", "register read",
