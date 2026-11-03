@@ -1,6 +1,6 @@
 # Milestone 5 release preparation — 3 November 2026
 
-**Reviewable draft; blocked on hosted Apple runner availability and private-reporting activation.** The owner assigned
+**Reviewable draft; hosted Watch verification passes and private-reporting activation remains open.** The owner assigned
 Milestone 5 on 3 November 2026. This record supersedes earlier statements that
 the milestone is deferred, without rewriting historical qualification results.
 
@@ -39,7 +39,7 @@ exact configuration. A passing subset does not establish overall acceptance.
 | --- | --- |
 | Local build/library validation | [Swift 6.4.2 / explicit Swift Build](final-validation/README.md): clean/incremental debug and release builds pass; debug, release, full ASan and full TSan each execute 389 test declarations in 60 suites, with zero failures/skips. All 22 subprocess commands pass. These are four configurations of the same suite. |
 | CLI | [250 release process checks](final-cli/report.json) pass against the final local release binary. Earlier ASan CLI receipts retain their original source pins. |
-| Platform/toolchain CI | [Run 41601103725](https://github.com/raster-labs/SwiftJLI/actions/runs/41601103725) passes all 13 jobs at test-only candidate `a44e671`, whose shipping sources match f548. [Retained evidence](ci/test-isolation/README.md) includes both native macOS release suites, ASan/TSan, Linux/toolchain coverage, Apple SDK builds, four simulator suites and iOS predecessor comparisons. The original release crash and visionOS deadline-race failures remain separately retained. The dedicated Watch Release harness passes six tests and records; its initial post-check failed on a query-generated SQLite index. The [corrected verifier revalidates that genuine artefact](ci/watch-qualification/verifier-cache-fix/README.md); fresh hosted post-check validation remains unexecuted. At `07cc31e`, [run 41608951795](ci/watch-qualification/run-41608951795/README.md) completes seven jobs; six Apple jobs never execute after hosted runner acquisition fails and one bounded retry acquires no runner. The bounded operator cancellation is recorded separately from GitHub's initial capacity failure. |
+| Platform/toolchain CI | [Run 41601103725](https://github.com/raster-labs/SwiftJLI/actions/runs/41601103725) passes all 13 jobs at test-only candidate `a44e671`, whose shipping sources match f548. [Retained evidence](ci/test-isolation/README.md) includes both native macOS release suites, ASan/TSan, Linux/toolchain coverage, Apple SDK builds, four simulator suites and iOS predecessor comparisons. The original release crash and visionOS deadline-race failures remain separately retained. The dedicated Watch Release harness passes six tests and records; its initial post-check failed on a query-generated SQLite index. The [corrected verifier revalidates that genuine artefact](ci/watch-qualification/verifier-cache-fix/README.md); fresh [Intel Watch run 41622083807](ci/watch-qualification/intel-fallback/run-41622083807/README.md) at `8c1b965` now passes 389 library tests, six Release cases and the strict verifier on watchOS 26.5. This targeted dispatch executes Watch only; seven other job definitions are intentionally skipped. Earlier [capacity outcomes](ci/watch-qualification/run-41608951795/README.md) and the [owner-requested ARM retry](ci/watch-qualification/watch-only-retry-20261103/README.md) remain separately retained and unexecuted. |
 | Fresh URL consumer | [Final consumer](final-consumer-sbom/README.md) resolves exactly f548 from GitHub, with no sibling/local-path dependency. Clean/incremental debug and release Swift Build and both executions pass. The separately repaired [local-path consumer](local-consumer/report.json) retains its own earlier run. |
 | Build-associated SBOMs | [Separately labelled library and CLI derivatives](final-consumer-sbom/derived/README.md) pass both official JSON Schemas, SPDX SHACL and independent identity/licence checks. Exact transformations and deterministic replay are retained; raw SwiftPM failures remain unchanged. Observed native linkage supplements the package graph without claiming a complete Apple SDK/runtime inventory. [Upstream schema notices](schema-licences/README.md) preserve their separate terms. |
 | JPEG fidelity | [Final independent oracles](final-rgb/README.md): 8 subsampled decodes / 16 comparisons pass bound 3; 16 raw-RGB cases pass unchanged bounds 2/4; 210 predictive cases per direction and 48 DCT profiles in both directions pass. Allocating/padded storage outputs and recorded baseline outputs agree. |
@@ -59,21 +59,38 @@ administrator prerequisites are not converted into passes by documentation.
 Stable tagging, predecessor retirement and application cutover remain separate
 explicit tasks after their acceptance requirements are met.
 
-The [final handoff comparison](final-handoff.json) confirms shipping sources
-match f548, tests/examples match the all-13-passing a44 candidate, and executable
-sources, tests, examples, qualification scripts and workflow match `07cc31e`.
-The closing documentation/evidence-only commit uses `[skip ci]` to avoid
-enqueuing another unchanged matrix after the bounded infrastructure retry.
-It does not establish a fresh CI pass or waive the hosted-verifier gate.
+At the earlier `8d0f8b4` handoff, the [comparison](final-handoff.json) confirmed
+shipping sources matched f548, tests/examples matched the all-13-passing a44
+candidate, and executable sources, tests, examples, qualification scripts and
+workflow matched `07cc31e`. That documentation-only commit used `[skip ci]`
+and did not establish a fresh hosted-verifier pass.
+
+The owner then requested another Watch verification attempt. After the ARM
+capacity failure, `8c1b9655319771d1fcaaa7f03c2d165ec3e7a333` added a manual
+Watch-only Intel dispatch. The [workflow audit](ci/watch-qualification/intel-fallback/workflow-audit.json)
+confirms the ordinary thirteen-job PR/push matrix and all test/verifier steps
+remain unchanged. The successful hosted run retains the actual Intel host,
+Xcode 26.6 / Swift 6.3.3 and watchOS 26.5 simulator evidence.
+[Independent acceptance review](ci/watch-qualification/intel-fallback/run-41622083807/INDEPENDENT_REVIEW.md)
+verifies the counts, source identities, complete archive and original-result
+preservation without rerunning tests. The
+[updated handoff comparison](watch-retry-handoff.json) binds the current shipping
+source, tests, helpers and workflow to their tested revisions. The final
+documentation/evidence-only commit uses `[skip ci]`; it does not claim another
+full-matrix pass.
 
 The final source/evidence [audit](final-audit/README.md) confirms the frozen
 base, shipping-source identity and four full-hour campaign receipts. The
-[final security check](security-final-check.json) and earlier
-[follow-up](security-follow-up.json) retain the read-only API commands
+[post-Watch security check](security-watch-retry-final-check.json), earlier
+[handoff check](security-final-check.json) and [follow-up](security-follow-up.json)
+retain the read-only API commands
 and outcomes: private reporting is disabled and the current CLI account cannot
 administer the repository. A repository administrator must enable the prepared
 private reporting channel; the owner's confirmation that this can be done is
 not evidence that activation has occurred.
+The [administrator activation steps](../../../../SECURITY.md#administrator-activation)
+include a read-only command that must return `true` before this remaining task
+prerequisite can close.
 
 The owner-selected scope for this task is simulator qualification. Physical
 Watch and representative iPhone/iPad qualification remains a later stable-release

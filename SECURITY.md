@@ -16,7 +16,8 @@ security manager can enable the prepared channel:
 1. Open [repository Settings](https://github.com/raster-labs/SwiftJLI/settings).
 2. Under **Security and quality**, select **Advanced Security**.
 3. Beside **Private vulnerability reporting**, select **Enable**.
-4. Confirm that **Report a vulnerability** appears on the
+4. Confirm activation with the read-only command below. Researchers can then
+   use **Report a vulnerability** on the
    [Advisories page](https://github.com/raster-labs/SwiftJLI/security/advisories).
 
 These steps follow [GitHub's repository instructions](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository),

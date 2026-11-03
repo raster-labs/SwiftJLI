@@ -1,0 +1,164 @@
+{
+  "status": "passed",
+  "reviewedUTC": "2026-11-03T11:17:31.158300+00:00",
+  "scope": "Independent audit of retained terminal CI evidence only; no workflow action, codec build/test, benchmark, xcresulttool or simulator execution.",
+  "runID": 41622083807,
+  "jobID": 125870060668,
+  "headSHA": "8c1b9655319771d1fcaaa7f03c2d165ec3e7a333",
+  "shippingSHA": "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+  "testsExamplesSHA": "a44e671690251ffaa15144027688f9f48593752a",
+  "helperBaselineSHA": "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed",
+  "workflow": "One executed successful Intel Watch job; seven job definitions intentionally skipped, with no runner or steps. Normal PR/push matrix remains separately qualified.",
+  "host": {
+    "labels": [
+      "macos-26-intel"
+    ],
+    "runnerID": 1000004465,
+    "runnerName": "GitHub Actions 1000004465",
+    "architecture": "x86_64",
+    "image": "macos-26",
+    "imageVersion": "20260824.0517.1",
+    "osVersion": "macOS 26.6.1",
+    "osBuild": "25G76",
+    "inventoryURL": "https://github.com/actions/runner-images/blob/macos-26/20260824.0517/images/macos/macos-26-Readme.md",
+    "evidence": "job.log.gz decompressed lines10-19; simulator architecture independently present in library/watch xcresult summaries"
+  },
+  "compiler": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: x86_64-apple-macosx26.0",
+  "xcode": "Xcode 26.6\nBuild version 17F113",
+  "runtime": "com.apple.CoreSimulator.SimRuntime.watchOS-26-5",
+  "library": {
+    "configuration": "Debug",
+    "testsPassed": 389,
+    "suitesPassed": 60,
+    "failed": 0,
+    "skipped": 0,
+    "expectedFailures": 0,
+    "deviceEntries": 617,
+    "deviceEntryLimit": "Parameterized device entries are not added to the 389 top-level declarations."
+  },
+  "watch": {
+    "configuration": "Release",
+    "testsPassed": 6,
+    "suitesPassed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "expectedFailures": 0,
+    "uniqueRecords": 6,
+    "environment": "watch-simulator",
+    "budgetValues": {
+      "maximumCompressedBytes": 16777216,
+      "maximumDecodedBytes": 33554432,
+      "maximumWorkspaceBytes": 33554432,
+      "maximumMemoryBytes": 67108864,
+      "maximumWorkers": 2,
+      "deadlineSeconds": 30
+    },
+    "sourceFilesVerified": 49,
+    "helperSHA256": "f82c2a555e22f1e2abe2c8fa9183e8c7b1ccafe2057592a411049acc8a87264a",
+    "originalBundleFilesVerified": 51,
+    "copyFilesVerified": 52,
+    "onlyQueryCopyChange": "database.sqlite3 added"
+  },
+  "integrity": {
+    "archiveSHA256": "bd87cd83ccb3b1af70ed32d7fbfc5da261f56c6668f51eccaae47ac8938f64c0",
+    "archiveBytes": 1327654,
+    "digestMatchesGitHubMetadata": true,
+    "archiveEntriesVerified": 1401,
+    "readableCopiesVerified": 25,
+    "frozenInputFilesVerified": 42,
+    "captureIntegritySHA256": "78e816c58bf86c3eccd6b41762644f38b7b901741cb98c85b782b0d76a21e5b4",
+    "originalLibraryFilesVerified": 1273,
+    "localLibrarySummaryCopyFilesVerified": 1274,
+    "allFrozenInputsUnchanged": true
+  },
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "-rz",
+        "--full-tree",
+        "8c1b9655319771d1fcaaa7f03c2d165ec3e7a333",
+        "--",
+        "Sources",
+        "Package.swift",
+        "Examples/WatchQualification/Package.swift",
+        "Examples/WatchQualification/Tests/WatchQualificationTests/WatchQualificationTests.swift"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "ba433be2ec6a9330f1fe1eb94e1691570919946d9ace8ae671215ef3ff6f24cb",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+        "8c1b9655319771d1fcaaa7f03c2d165ec3e7a333",
+        "--",
+        "Sources",
+        "Package.swift"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "a44e671690251ffaa15144027688f9f48593752a",
+        "8c1b9655319771d1fcaaa7f03c2d165ec3e7a333",
+        "--",
+        "Tests",
+        "Examples"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed",
+        "8c1b9655319771d1fcaaa7f03c2d165ec3e7a333",
+        "--",
+        "Scripts/test-apple-simulator.py",
+        "Scripts/verify-watch-qualification.py"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "8c1b9655319771d1fcaaa7f03c2d165ec3e7a333:Scripts/test-apple-simulator.py"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "5b24053f251445d9aabefce1421b721a1bd1401ed62136e429dab02fa8022fbc",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "8c1b9655319771d1fcaaa7f03c2d165ec3e7a333:Scripts/verify-watch-qualification.py"
+      ],
+      "exitCode": 0,
+      "stdoutSHA256": "f82c2a555e22f1e2abe2c8fa9183e8c7b1ccafe2057592a411049acc8a87264a",
+      "stderr": ""
+    }
+  ],
+  "limits": [
+    "Hosted Watch simulator execution does not establish physical-device qualification or a system-RSS ceiling.",
+    "This successful manual Watch run does not turn earlier failed/cancelled jobs into successes or qualify the seven skipped definitions.",
+    "No performance inference; timing observations remain under hosted-run conditions."
+  ],
+  "findings": []
+}

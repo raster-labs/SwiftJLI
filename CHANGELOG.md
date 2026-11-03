@@ -1,6 +1,6 @@
 # Change log
 
-## Milestone 5 release preparation — external gates open, 3 November 2026
+## Milestone 5 release preparation — private-reporting activation pending, 3 November 2026
 
 - Retain synchronous host cancellation callbacks in an immutable task-local
   owner, addressing the observed native macOS release failure during callback
@@ -20,9 +20,11 @@
   cancellation test from a competing deadline. All 13 CI jobs pass at `a44e671`;
   the original failures remain retained. Four full-hour fuzz campaigns and the
   scoped matched performance check pass. Six Watch simulator Release tests pass;
-  the corrected verifier passes genuine-artefact revalidation, while its fresh
-  hosted check remains unexecuted because Apple runners are unavailable. Loaded timing
-  attempts remain excluded from performance acceptance.
+  fresh hosted Intel qualification also passes 389 library tests, six Release
+  cases and the strict verifier. ARM capacity failures remain separately
+  recorded. Loaded timing attempts remain excluded from performance acceptance.
+- Add manual Watch-only qualification on an Intel hosted runner; ordinary
+  pull requests and main pushes retain the same thirteen-job matrix.
 - Audit the current DICOMKit source and document its separate managed-workspace
   and synchronous-execution adoption requirements; no consumer cutover occurs.
 - Add failure-only macOS CI crash diagnostics. Release test failures remain

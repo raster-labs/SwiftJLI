@@ -1,5 +1,9 @@
 # Hosted runner capacity boundary
 
+This record covers attempts 1 and 2 at the initial handoff. The owner later
+requested a [single-job Watch retry, attempt 3](../watch-only-retry-20261103/README.md),
+whose terminal outcome and source binding are retained separately.
+
 [Run 41608951795](https://github.com/raster-labs/SwiftJLI/actions/runs/41608951795) targets head `07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed`, merge `084bf719eb441477711de7226844901afd160749`, and the owner-confirmed pinned base `8ae2762710d6279cd92222f5bb5ca95f042f694e`. Its final status is **cancelled: seven carried successful jobs and six Apple jobs cancelled before execution**. **Fresh hosted execution of the corrected Watch verifier remains unexecuted.** No further retry or monitoring is active.
 
 | Attempt | Outcome | Evidence |
