@@ -766,6 +766,11 @@ struct JLIDecoder: Sendable {
                     borrowed, width: w, height: h, predictor: predictor, half: half,
                     table: tables[0], reader: &reader, pointTransform: pt,
                     segmentRows: restartInterval > 0 ? restartInterval / w : h, lookup: lookup)
+            } else if count < 16384 {
+                try Self.losslessSmallGrayInto(
+                    borrowed, width: w, height: h, predictor: predictor, half: half,
+                    table: tables[0], reader: &reader, pointTransform: pt,
+                    segmentRows: restartInterval > 0 ? restartInterval / w : h)
             } else {
                 try Self.losslessGrayInto(
                     borrowed, width: w, height: h, predictor: predictor, half: half,
@@ -1156,6 +1161,73 @@ struct JLIDecoder: Sendable {
     /// Every slot is written on the first row of a restart segment before any
     /// subsequent row reads it. Neither pointer escapes this call.
     private static func losslessGrayInto(
+        _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
+        predictor: Int, half: Int32, table: HuffmanTable, reader: inout BitReader,
+        pointTransform pt: Int, segmentRows: Int
+    ) throws {
+        let bps = destination.bytesPerSample
+        guard bps == 1 || bps == 2, destination.rowBytes >= w * bps else {
+            throw JLIError.decodingFailed("invalid lossless destination layout")
+        }
+        let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: destination.rowBytes)
+        let (needed, overflow2) = rowOffset.addingReportingOverflow(w * bps)
+        guard !overflow1, !overflow2, needed <= destination.bytes.count,
+              let output = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+            throw JLIError.decodingFailed("lossless destination is too small")
+        }
+        let history = UnsafeMutableBufferPointer<Int32>.allocate(capacity: w)
+        defer { history.deallocate() }
+        // w >= 1 has already been validated by decodeLossless.
+        guard let row = history.baseAddress else { return }
+        for y in 0..<h {
+            try NativeOperation.check()
+            let segmentY = y % segmentRows
+            if y > 0, segmentY == 0 {
+                try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+            }
+            let outputRow = output + y * destination.rowBytes
+            if predictor == 1 {
+                // The left predictor only needs the preceding row's first
+                // sample. Avoid all other history loads/stores in this common
+                // scan mode, while retaining the identical entropy reader.
+                var value = segmentY == 0 ? half : row[0]
+                for x in 0..<w {
+                    value = (value + (try losslessDifference(table, &reader))) & 0xFFFF
+                    if x == 0 { row[0] = value }
+                    writeLosslessSample(value, outputRow, x, bps, pt)
+                }
+            } else {
+                var left = half, aboveLeft: Int32 = 0
+                for x in 0..<w {
+                    let above = segmentY == 0 ? half : row[x]
+                    let predicted: Int32
+                    if x == 0 { predicted = above }
+                    else if segmentY == 0 { predicted = left }
+                    else {
+                        switch predictor {
+                        case 2: predicted = above
+                        case 3: predicted = aboveLeft
+                        case 4: predicted = left + above - aboveLeft
+                        case 5: predicted = left + ((above - aboveLeft) >> 1)
+                        case 6: predicted = above + ((left - aboveLeft) >> 1)
+                        default: predicted = (left + above) >> 1
+                        }
+                    }
+                    let value = (predicted + (try losslessDifference(table, &reader))) & 0xFFFF
+                    row[x] = value
+                    left = value
+                    aboveLeft = above
+                    writeLosslessSample(value, outputRow, x, bps, pt)
+                }
+            }
+        }
+    }
+
+    // Keep the large scalar kernel's compiled shape independent of the extra
+    // polling state. This path is limited to fewer than 16384 total samples;
+    // both kernels use the same predictor, entropy and output arithmetic.
+    @inline(never)
+    private static func losslessSmallGrayInto(
         _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
         predictor: Int, half: Int32, table: HuffmanTable, reader: inout BitReader,
         pointTransform pt: Int, segmentRows: Int
