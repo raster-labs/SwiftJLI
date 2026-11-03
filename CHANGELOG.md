@@ -1,6 +1,6 @@
 # Change log
 
-## Milestone 5 release preparation — private-reporting activation pending, 3 November 2026
+## Milestone 5 release preparation — complete for the assigned scope, 3 November 2026
 
 - Retain synchronous host cancellation callbacks in an immutable task-local
   owner, addressing the observed native macOS release failure during callback
@@ -30,9 +30,11 @@
 - Add failure-only macOS CI crash diagnostics. Release test failures remain
   failures; debugger runs collect evidence without replacing their results.
 - The owner selected simulator testing because physical devices are unavailable.
-  Private reporting still needs administrator activation. See the
+  Verify administrator-enabled private reporting through authenticated and
+  independent public API checks. Milestone 5 is complete for the frozen candidate
+  and simulator scope; physical-device qualification remains separate. See the
   [Milestone 5 acceptance record](Documentation/Migration/Qualification/Milestone5/README.md)
-  for current progress and remaining release limits. No stable tag is published.
+  for acceptance evidence and remaining release limits. No stable tag is published.
 
 ## JLISwift 0.6.0 (`fb1e188`) parity assessment and sequential `DHT` `SOS`-snapshot fix — 15 October 2026
 

@@ -1,6 +1,6 @@
 # Milestone 5 release preparation — 3 November 2026
 
-**Reviewable draft; hosted Watch verification passes and private-reporting activation remains open.** The owner assigned
+**Complete for the owner-approved frozen candidate and simulator scope; stable-release device qualification remains open.** The owner assigned
 Milestone 5 on 3 November 2026. This record supersedes earlier statements that
 the milestone is deferred, without rewriting historical qualification results.
 
@@ -33,7 +33,7 @@ maintenance pins and fixture origins remain separate.
 ## Acceptance work
 
 The completed records below identify the f548 shipping source and each run's
-exact configuration. A passing subset does not establish overall acceptance.
+exact configuration. The [completion receipt](completion.json) records task acceptance within the agreed scope; physical-device and downstream release work remain separate.
 
 | Requirement | Current disposition |
 | --- | --- |
@@ -50,14 +50,15 @@ exact configuration. A passing subset does not establish overall acceptance.
 | Performance | [Matched callback-owner comparison](performance/controlled-summary.md) passes the finite PERF-03 screen: maximum median-latency increase 1.334%, maximum observed peak-RSS increase 3.003%, both below 5% in each round. All 24 pre-timing output comparisons are exact. Desktop activity, endpoint-only environment snapshots and noisy latency tails are explicit; this is not an exclusive-host or universal speed claim. |
 | DICOMKit readiness | [Current consumer audit and adoption plan](DICOMKitReadiness.md); managed-workspace/execution obligations remain separate, and actual DICOMKit integration is unexecuted. |
 | Physical devices | The owner confirms no Watch or iPhone/iPad is available and selects simulator testing for this task. Physical-device testing remains unexecuted; simulator and SDK runs do not establish device qualification. |
-| Private security reporting | The latest read-only GitHub check on 3 November returns disabled; the current CLI account has push access without administrator permission. An administrator can enable reporting, but activation is not verified. |
+| Private security reporting | Verified enabled on 3 November: [authenticated confirmation](security-activation-confirmed.json) and [independent public confirmation](security-activation-public-verification.json) both return `enabled: true` for `raster-labs/SwiftJLI`, repository ID `1373980250`. The current CLI account still lacks admin access; no settings were changed by the agent. |
 
 ## Release boundary
 
-Completion requires reviewed evidence for the required gates. Hardware and
-administrator prerequisites are not converted into passes by documentation.
-Stable tagging, predecessor retirement and application cutover remain separate
-explicit tasks after their acceptance requirements are met.
+Milestone 5 release preparation is complete for the agreed frozen candidate and
+simulator scope. Verified administrator activation closes the final task
+prerequisite. Physical-device qualification remains required before stable
+release. Stable tagging, predecessor retirement and application cutover remain
+separate explicit tasks after their acceptance requirements are met.
 
 At the earlier `8d0f8b4` handoff, the [comparison](final-handoff.json) confirmed
 shipping sources matched f548, tests/examples matched the all-13-passing a44
@@ -80,17 +81,17 @@ documentation/evidence-only commit uses `[skip ci]`; it does not claim another
 full-matrix pass.
 
 The final source/evidence [audit](final-audit/README.md) confirms the frozen
-base, shipping-source identity and four full-hour campaign receipts. The
-[post-Watch security check](security-watch-retry-final-check.json), earlier
-[handoff check](security-final-check.json) and [follow-up](security-follow-up.json)
-retain the read-only API commands
-and outcomes: private reporting is disabled and the current CLI account cannot
-administer the repository. A repository administrator must enable the prepared
-private reporting channel; the owner's confirmation that this can be done is
-not evidence that activation has occurred.
-The [administrator activation steps](../../../../SECURITY.md#administrator-activation)
-include a read-only command that must return `true` before this remaining task
-prerequisite can close.
+base, shipping-source identity and four full-hour campaign receipts. Earlier
+[post-Watch](security-watch-retry-final-check.json), [handoff](security-final-check.json)
+and [follow-up](security-follow-up.json) checks retain their disabled-state
+observations. After the administrator acted, the [recheck](security-activation-recheck.json),
+[authenticated confirmation](security-activation-confirmed.json) and
+[independent public confirmation](security-activation-public-verification.json)
+return `enabled: true` for the canonical repository. The transition is recorded
+without attributing it to a cache or propagation cause. No settings, permissions
+or security reports were changed by the agent. This closes the final task
+prerequisite; [administrator verification steps](../../../../SECURITY.md#administrator-activation)
+remain available for future maintenance.
 
 The owner-selected scope for this task is simulator qualification. Physical
 Watch and representative iPhone/iPad qualification remains a later stable-release

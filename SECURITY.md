@@ -4,14 +4,14 @@ Status: development codec implementation; [stable-release acceptance](Documentat
 
 ## Reporting
 
-The prepared reporting channel is [GitHub private vulnerability reporting](https://github.com/raster-labs/SwiftJLI/security/advisories/new), but repository-admin activation is still required before a stable release. The 3 November 2026 Milestone 5 read-only API check reports it disabled; the current CLI account has push access without admin access. The owner has confirmed that an administrator can enable reporting, superseding the earlier task deferral; activation has not yet been verified. Until activation, use an already established private channel to a repository maintainer. Do not assume the advisory link is accepting private reports. Do not post exploitable payloads, credentials or patient information in a public issue. No separate security mailbox or response-time guarantee is advertised.
+Use [GitHub private vulnerability reporting](https://github.com/raster-labs/SwiftJLI/security/advisories/new). Administrator activation was verified on 3 November 2026 through both [authenticated](Documentation/Migration/Qualification/Milestone5/security-activation-confirmed.json) and [independent public](Documentation/Migration/Qualification/Milestone5/security-activation-public-verification.json) API checks returning `enabled: true` for `raster-labs/SwiftJLI`. Earlier disabled-state observations remain in the qualification history. The agent made no settings or permission changes. Do not post exploitable payloads, credentials or patient information in a public issue. No separate security mailbox or response-time guarantee is advertised.
 
 Include affected version/commit, platform, a minimal safe reproducer, expected/actual behaviour and impact. Use synthetic data where possible. Keep the report private while maintainers reproduce the issue and prepare a correction. Coordinate disclosure through the private advisory thread.
 
 ### Administrator activation
 
-For this public repository, a repository administrator, organisation owner or
-security manager can enable the prepared channel:
+Activation is complete. If re-enabling is needed later, a repository
+administrator, organisation owner or security manager can use these steps:
 
 1. Open [repository Settings](https://github.com/raster-labs/SwiftJLI/settings).
 2. Under **Security and quality**, select **Advanced Security**.
@@ -27,9 +27,8 @@ checked on 3 November 2026. A read-only confirmation command is:
 gh api repos/raster-labs/SwiftJLI/private-vulnerability-reporting --jq .enabled
 ```
 
-Activation is verified only when that command succeeds and returns `true`.
-The Milestone 5 acceptance record must retain the successful check before
-closing this prerequisite.
+The command succeeded and returned `true` during Milestone 5 acceptance.
+Retain the timestamped result when rechecking this changeable repository setting.
 
 ## Supported versions
 
