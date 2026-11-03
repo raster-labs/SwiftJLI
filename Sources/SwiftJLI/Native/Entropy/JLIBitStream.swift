@@ -316,13 +316,15 @@ struct BitReader {
     }
 
     /// Resolves a complete AC run/value only when all its bits are buffered.
-    /// The same eight-bit refill threshold as ordinary symbol decoding keeps
-    /// byte offsets, stuffing, markers and truncated-input behaviour unchanged.
+    /// A wider prefetch uses only an FF-free bulk splice. Stuffed bytes, markers
+    /// and short input retain the ordinary eight-bit fill and fallback. Physical
+    /// byteOffset can advance over buffered bytes, but consumed bits and the
+    /// restart position recovered by alignToByte remain unchanged.
     /// Run overflow must fall back before consuming magnitude bits: the existing
     /// AC decoder stops after the Huffman symbol in that case.
     @inline(__always)
     mutating func fastDecodeAC(_ table: ACLookahead, remaining: Int) -> UInt32? {
-        if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+        if bitsAvailable < ACLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
         guard bitsAvailable >= ACLookahead.bits else { return nil }
         // Reader mutations bound the accumulator to 0...64 valid bits. After
         // the guard this shift is 0...51, so the masked form has identical

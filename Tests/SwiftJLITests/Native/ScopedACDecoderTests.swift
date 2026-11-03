@@ -84,7 +84,12 @@ import Testing
                 #expect(Array(actual[3..<67]) == expected)
                 #expect(actual.prefix(3).allSatisfy { $0 == 919 })
                 #expect(actual.suffix(4).allSatisfy { $0 == 919 })
-                #expect(reference.byteOffset == scoped.byteOffset)
+                // A combined lookup may prefetch additional FF-free bytes.
+                // Compare the consumed cursor after returning whole buffered
+                // bytes, rather than conflating prefetch with consumed input.
+                var referencePosition = reference, scopedPosition = scoped
+                referencePosition.alignToByte(); scopedPosition.alignToByte()
+                #expect(referencePosition.byteOffset == scopedPosition.byteOffset)
             }
         }
     }

@@ -66,4 +66,48 @@ import Testing
             #expect(hits > 0 && misses > 0)
         }
     }
+
+    @Test func widerPrefetchPreservesLogicalCursorAndMarkerBoundaries() throws {
+        let table = StandardHuffmanTables.acLuminance
+        let lookup = try #require(ACLookahead(table: table, blockCount: 512))
+        let tails: [[UInt8]] = [Array(repeating: 0xAA, count: 24), [], [0xFF],
+            [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+            [0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xFF, 0, 0xFF, 0xD0]]
+        for available in 8...12 { for (tailIndex, tail) in tails.enumerated() {
+            var fast = BitReader(data: Array(repeating: 0xAA, count: 8) + tail)
+            var referenceReader = fast
+            var consume = 64 - available
+            while consume > 0 {
+                let width = min(consume, 16)
+                #expect(try fast.readBits(width) == referenceReader.readBits(width))
+                consume -= width
+            }
+            let expected = try reference(&referenceReader, table, remaining: 63)
+            let actual: (Int, Int32)
+            if let entry = fast.fastDecodeAC(lookup, remaining: 63) {
+                actual = (Int((entry >> 16) & 0xFF), Int32(Int16(truncatingIfNeeded: entry)))
+            } else {
+                actual = try reference(&fast, table, remaining: 63)
+            }
+            #expect(actual.0 == expected.0 && actual.1 == expected.1)
+            if tailIndex == 0 {
+                // This case proves that the additional FF-free prefetch ran.
+                #expect(fast.byteOffset > referenceReader.byteOffset)
+            } else {
+                // A short or FF-containing next word must not be prefetched.
+                #expect(fast.byteOffset == referenceReader.byteOffset)
+            }
+            var fastAligned = fast, referenceAligned = referenceReader
+            fastAligned.alignToByte(); referenceAligned.alignToByte()
+            #expect(fastAligned.byteOffset == referenceAligned.byteOffset)
+            let nextFast = Result { try fast.readBits(16) }
+            let nextReference = Result { try referenceReader.readBits(16) }
+            switch (nextFast, nextReference) {
+            case (.success(let a), .success(let b)): #expect(a == b)
+            case (.failure(let a), .failure(let b)):
+                #expect(String(describing: a) == String(describing: b))
+            default: Issue.record("AC prefetch changed remaining entropy or its error")
+            }
+        } }
+    }
 }
