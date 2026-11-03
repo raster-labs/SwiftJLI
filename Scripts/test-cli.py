@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
 """Black-box CLI, codec payload verb, stream/format/resource/exit-status and staged manual installation regression checks."""
-import argparse, hashlib, json, os, re, shutil, signal, struct, subprocess, sys, tempfile, time
+import argparse, fcntl, hashlib, json, os, re, shutil, signal, struct, subprocess, sys, tempfile, time
 from pathlib import Path
 
 def make_nrrd_u16(width: int, height: int, endian: str = 'little', extra_headers: str = '') -> bytes:
@@ -485,17 +485,45 @@ def main():
                                 '--output-format',stalled_format,'--timeout','0.05']
                 wr_fd, ww_fd = os.pipe()
                 try:
+                    original_flags = fcntl.fcntl(ww_fd, fcntl.F_GETFL)
                     w_proc = subprocess.Popen(stalled_argv, stdout=ww_fd, stderr=subprocess.PIPE, text=True)
-                    os.close(ww_fd); ww_fd = -1
                     w_rc = w_proc.wait(timeout=5)
                     w_err = w_proc.stderr.read() if w_proc.stderr else ''
+                    restored_flags = fcntl.fcntl(ww_fd, fcntl.F_GETFL)
                 finally:
                     if ww_fd >= 0: os.close(ww_fd)
                     os.close(wr_fd)
                 report['commands'].append({'argv':stalled_argv,
                                            'condition':'timeout during stalled pipe write','exit_code':w_rc,
-                                           'expected_exit_code':5,'stderr':w_err});save()
-                assert w_rc == 5, (w_rc, w_err)
+                                           'expected_exit_code':5,'stderr':w_err,
+                                           'descriptor_flags_before':original_flags,
+                                           'descriptor_flags_after':restored_flags});save()
+                assert w_rc == 5 and (restored_flags & os.O_NONBLOCK) == (original_flags & os.O_NONBLOCK), (w_rc, w_err, original_flags, restored_flags)
+
+            # Successful output restores a blocking descriptor and preserves an
+            # already nonblocking one. Both ends stay owned by this test until
+            # the small output completes, avoiding pipe-capacity dependence.
+            for initially_nonblocking in [False, True]:
+                rd_fd, out_fd = os.pipe()
+                try:
+                    if initially_nonblocking:
+                        fcntl.fcntl(out_fd, fcntl.F_SETFL, fcntl.fcntl(out_fd, fcntl.F_GETFL) | os.O_NONBLOCK)
+                    original_flags = fcntl.fcntl(out_fd, fcntl.F_GETFL)
+                    argv = [str(binary), 'decode', '-i', str(jpg_16), '-o', '-', '--output-format', 'pgm']
+                    result = subprocess.run(argv, stdout=out_fd, stderr=subprocess.PIPE, timeout=5)
+                    restored_flags = fcntl.fcntl(out_fd, fcntl.F_GETFL)
+                    os.close(out_fd); out_fd = -1
+                    stream_payload = os.read(rd_fd, 4096)
+                finally:
+                    if out_fd >= 0: os.close(out_fd)
+                    os.close(rd_fd)
+                report['commands'].append({'argv':argv, 'condition':'successful pipe descriptor restoration',
+                                           'exit_code':result.returncode, 'expected_exit_code':0,
+                                           'initially_nonblocking':initially_nonblocking,
+                                           'descriptor_flags_before':original_flags,
+                                           'descriptor_flags_after':restored_flags});save()
+                assert result.returncode == 0 and (restored_flags & os.O_NONBLOCK) == (original_flags & os.O_NONBLOCK)
+                assert parse_netpbm(stream_payload) == ('P5', 17, 13, 65535, expected_u16)
 
             # Codec deadline sweep (5/10/15 ms twice) on normal 512x512 RGB progressive scalar encode:
             # allow completed-before-deadline exit 0 (with valid JPEG output) or deadline exit 5 (with no output),

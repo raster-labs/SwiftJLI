@@ -829,6 +829,35 @@ private func readBoundedInput(from path: String, maximumBytes: Int, context: Com
             try context.check()
             return buffer
         }
+        if !isStream {
+            // Most regular files end at their allocation hint. Confirm that
+            // with a single stack byte before allocating a 64 KiB growth
+            // buffer; a concurrent append still uses the bounded loop below.
+            var nextByte: UInt8 = 0
+            while true {
+                try context.check()
+                let count: Int
+                #if canImport(Darwin)
+                count = Darwin.read(fd, &nextByte, 1)
+                #else
+                count = Glibc.read(fd, &nextByte, 1)
+                #endif
+                if count == 0 {
+                    try context.check()
+                    return buffer
+                }
+                if count > 0 {
+                    guard buffer.count < maximumBytes else {
+                        throw CodecError(.resourceLimitExceeded, "Input stream exceeds the configured memory budget.")
+                    }
+                    buffer.append(nextByte)
+                    break
+                }
+                if errno != EINTR {
+                    throw FileIOError(message: "input I/O failure: read error.")
+                }
+            }
+        }
         var chunk = [UInt8](repeating: 0, count: chunkSize)
         while true {
             try context.check()
@@ -872,32 +901,31 @@ private func writeAllDescriptor(_ fd: Int32, data: Data, isStream: Bool, context
 }
 
 // The borrowed bytes remain owned by the caller until every synchronous write completes.
+// writeOutputAtomically configures stream flags for the complete output operation.
 private func writeAllDescriptor(
     _ fd: Int32, bytes raw: UnsafeRawBufferPointer, isStream: Bool, context: CommandExecutionContext
 ) throws {
-    try withNonBlockingDescriptor(fd, enabled: isStream) {
-        guard let baseAddress = raw.baseAddress else { return }
-        var offset = 0
-        while offset < raw.count {
+    guard let baseAddress = raw.baseAddress else { return }
+    var offset = 0
+    while offset < raw.count {
+        try context.check()
+        let chunkLength = min(64 * 1024, raw.count - offset)
+        let written: Int
+        #if canImport(Darwin)
+        written = Darwin.write(fd, baseAddress.advanced(by: offset), chunkLength)
+        #else
+        written = Glibc.write(fd, baseAddress.advanced(by: offset), chunkLength)
+        #endif
+        if written > 0 {
+            offset += written
+        } else if written < 0 && errno == EINTR {
             try context.check()
-            let chunkLength = min(64 * 1024, raw.count - offset)
-            let written: Int
-            #if canImport(Darwin)
-            written = Darwin.write(fd, baseAddress.advanced(by: offset), chunkLength)
-            #else
-            written = Glibc.write(fd, baseAddress.advanced(by: offset), chunkLength)
-            #endif
-            if written > 0 {
-                offset += written
-            } else if written < 0 && errno == EINTR {
-                try context.check()
-                continue
-            } else if written < 0 && isStream && (errno == EAGAIN || errno == EWOULDBLOCK) {
-                try waitForDescriptor(fd, event: Int16(POLLOUT), context: context)
-                continue
-            } else {
-                throw FileIOError(message: "output I/O failure: failed writing output stream.")
-            }
+            continue
+        } else if written < 0 && isStream && (errno == EAGAIN || errno == EWOULDBLOCK) {
+            try waitForDescriptor(fd, event: Int16(POLLOUT), context: context)
+            continue
+        } else {
+            throw FileIOError(message: "output I/O failure: failed writing output stream.")
         }
     }
 }
@@ -914,7 +942,11 @@ private func writeOutputAtomically(
 ) throws {
     try context.check()
     if path == "-" {
-        try writeBody(STDOUT_FILENO, true)
+        // Header and payload batches share one nonblocking scope, including
+        // restoration on cancellation, deadlines and write failures.
+        try withNonBlockingDescriptor(STDOUT_FILENO, enabled: true) {
+            try writeBody(STDOUT_FILENO, true)
+        }
         return
     }
     try preflightOutputDestination(path, overwrite: overwrite, context: context)
