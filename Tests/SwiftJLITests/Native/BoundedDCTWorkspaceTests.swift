@@ -114,7 +114,9 @@ import Testing
     @Test(arguments: [8, 12])
     func reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision: Int) throws {
         // 65 x 98 blocks span several 1024-block batches and do not divide
-        // evenly among three workers. The final block has partial rows/columns.
+        // evenly among two or three workers. The final block has partial rows/columns.
+        // Keep exact Float32 equality: changing vDSP batch dimensions can alter
+        // rounding even when the worker ranges do not overlap.
         let width = 513, height = 777, bps = precision == 8 ? 1 : 2
         var source = [UInt8](repeating: 0, count: width * height * bps)
         for y in 0..<height { for x in 0..<width {
@@ -135,7 +137,7 @@ import Testing
                 let expected = try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 1)) {
                     try JLIDecoder().decodeParsed(parsed, configuration: configuration).data
                 }
-                for workers in [1, 3] {
+                for workers in [1, 2, 3] {
                     let rowBytes = width * bps + 7
                     var destination = [UInt8](repeating: 0xA5, count: 3 + rowBytes * height + 5)
                     try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: workers)) {
@@ -146,8 +148,9 @@ import Testing
                         }
                     }
                     for y in 0..<height {
-                        #expect(destination[(3 + y * rowBytes)..<(3 + y * rowBytes + width * bps)]
-                            .elementsEqual(expected[(y * width * bps)..<((y + 1) * width * bps)]))
+                        let matches = destination[(3 + y * rowBytes)..<(3 + y * rowBytes + width * bps)]
+                            .elementsEqual(expected[(y * width * bps)..<((y + 1) * width * bps)])
+                        #expect(matches, "row \(y), workers \(workers), precision \(precision), Float32 \(floating), progressive \(progressive)")
                         #expect(destination[(3 + y * rowBytes + width * bps)..<(3 + (y + 1) * rowBytes)]
                             .allSatisfy { $0 == 0xA5 })
                     }

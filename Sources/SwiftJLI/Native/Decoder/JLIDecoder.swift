@@ -443,13 +443,16 @@ struct JLIDecoder: Sendable {
             var plane = [Float](unsafeUninitializedCapacity: compWidth * compHeight) {
                 _, c in c = compWidth * compHeight
             }
-            let chunks = min(NativeOperation.workerLimit,
-                             max(1, blockCount / JLIDecoder.reconstructMinBlocksPerChunk))
-            let span = (blockCount + chunks - 1) / chunks
-            let scratchStride = min(1024, span) * 64
+            let batchBlocks = 1024
+            let batchCount = (blockCount - 1) / batchBlocks + 1
+            let chunks = min(batchCount, min(NativeOperation.workerLimit,
+                             max(1, blockCount / JLIDecoder.reconstructMinBlocksPerChunk)))
+            let scratchStride = min(batchBlocks, blockCount) * 64
             // Every used slot is fully written before being read. Bounded
-            // slots replace two full-frame arrays without changing batch size,
-            // worker partition, IDCT arithmetic or sample ordering.
+            // slots replace two full-frame arrays. Partition whole global
+            // batches: vDSP can change floating-point rounding with matrix
+            // dimensions, so workers must retain the serial pass's boundaries
+            // and final batch size, including for exact Float32 output.
             let scratchCount = chunks * scratchStride
             var pixelsBuf = [Float](unsafeUninitializedCapacity: scratchCount) { _, c in c = scratchCount }
             var idctScratch = [Float](unsafeUninitializedCapacity: scratchCount) { _, c in c = scratchCount }
@@ -463,20 +466,20 @@ struct JLIDecoder: Sendable {
                                     px: pxb.baseAddress!, scratch: scb.baseAddress!,
                                     plane: plb.baseAddress!)
                                 if chunks <= 1 {
-                                    for base in stride(from: 0, to: blockCount, by: 1024) {
+                                    for base in stride(from: 0, to: blockCount, by: batchBlocks) {
                                         try NativeOperation.check()
                                         JLIDecoder.reconstructBlocks(
-                                            base..<min(base + 1024, blockCount), ptrs: ptrs, blocksH: blocksH,
+                                            base..<min(base + batchBlocks, blockCount), ptrs: ptrs, blocksH: blocksH,
                                             compWidth: compWidth, compHeight: compHeight,
                                             precision: frame.precision, scratchOffset: 0)
                                     }
                                 } else {
                                     try NativeOperation.perform(iterations: chunks) { c in
-                                        let lo = c * span, hi = min(lo + span, blockCount)
-                                        for base in stride(from: lo, to: hi, by: 1024) {
+                                        for batch in stride(from: c, to: batchCount, by: chunks) {
                                             try NativeOperation.check()
+                                            let base = batch * batchBlocks
                                             JLIDecoder.reconstructBlocks(
-                                                base..<min(base + 1024, hi), ptrs: ptrs, blocksH: blocksH,
+                                                base..<min(base + batchBlocks, blockCount), ptrs: ptrs, blocksH: blocksH,
                                                 compWidth: compWidth, compHeight: compHeight,
                                                 precision: frame.precision, scratchOffset: c * scratchStride)
                                         }
