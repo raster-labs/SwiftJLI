@@ -12,12 +12,20 @@ final class NativeCancellation: Sendable {
     }
 }
 
+/// Keep the task-local payload nominal. Swift 6.3 Release builds can fail while
+/// resolving metadata for the optional function payload during withValue.
+/// This immutable value retains the same Sendable callback without another
+/// heap owner or any change to the synchronous scope and joined-worker lifetime.
+private struct NativeSynchronousCancellationCheck: Sendable {
+    let body: @Sendable () throws -> Void
+}
+
 /// Context is explicitly installed in every joined worker. A worker never relies
 /// on inheriting Swift task locals or cancellation through a Dispatch thread.
 struct NativeOperation: Sendable {
     @TaskLocal static var current: NativeOperation?
     @TaskLocal private static var taskCancellation: NativeCancellation?
-    @TaskLocal private static var callerCancellationCheck: (@Sendable () throws -> Void)?
+    @TaskLocal private static var callerCancellationCheck: NativeSynchronousCancellationCheck?
     let started: ContinuousClock.Instant
     let seconds: Double
     let backend: Backend
@@ -30,7 +38,7 @@ struct NativeOperation: Sendable {
         self.seconds = seconds; self.backend = backend; self.started = started
         self.maximumWorkers = max(1, maximumWorkers)
         self.cancellation = Self.taskCancellation
-        self.synchronousCancellationCheck = Self.callerCancellationCheck
+        self.synchronousCancellationCheck = Self.callerCancellationCheck?.body
     }
 
     static func withCancellation<T: Sendable>(_ body: () throws -> T) async throws -> T {
@@ -47,7 +55,7 @@ struct NativeOperation: Sendable {
     static func withSynchronousCancellation<T>(
         _ check: @escaping @Sendable () throws -> Void, _ body: () throws -> T
     ) throws -> T {
-        try $callerCancellationCheck.withValue(check) {
+        try $callerCancellationCheck.withValue(NativeSynchronousCancellationCheck(body: check)) {
             try check()
             let result = try body()
             try check()

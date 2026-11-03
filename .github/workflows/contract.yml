@@ -68,6 +68,8 @@ jobs:
     name: macOS 26 / Xcode default Swift
     runs-on: macos-26
     timeout-minutes: 30
+    env:
+      SWIFT_BACKTRACE: enable=yes,interactive=no,color=no
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -84,6 +86,9 @@ jobs:
         run: swift test --scratch-path .build/tsan --sanitize thread
       - name: Validate Watch qualification harness on macOS (not device evidence)
         run: swift test --package-path Examples/WatchQualification -c release --disable-xctest -j 2
+      - name: Allow macOS crash reports to finish
+        if: failure()
+        run: sleep 10
       - name: Retain native test crash diagnostics
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -120,6 +125,8 @@ jobs:
     name: Native macOS 26 Intel runtime and CLI
     runs-on: macos-26-intel
     timeout-minutes: 30
+    env:
+      SWIFT_BACKTRACE: enable=yes,interactive=no,color=no
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -136,6 +143,9 @@ jobs:
         run: |
           command -v mandoc >/dev/null || brew install mandoc
           python3 Scripts/test-cli.py --binary "$PWD/.build/release/swiftjli-cli" --output "$RUNNER_TEMP/cli-intel"
+      - name: Allow macOS crash reports to finish
+        if: failure()
+        run: sleep 10
       - name: Retain native test crash diagnostics
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

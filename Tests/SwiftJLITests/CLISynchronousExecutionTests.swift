@@ -4,7 +4,57 @@ import Synchronization
 import Testing
 @testable import SwiftJLI
 
+private final class SynchronousPollState: Sendable {
+    let events = Mutex<[String]>([])
+    let releases = Mutex(0)
+}
+
+private final class SynchronousPollLifetime: Sendable {
+    let name: String
+    let state: SynchronousPollState
+    init(name: String, state: SynchronousPollState) {
+        self.name = name; self.state = state
+    }
+    func poll() { state.events.withLock { $0.append(name) } }
+    deinit { state.releases.withLock { $0 += 1 } }
+}
+
 @Suite struct CLISynchronousExecutionTests {
+    @Test func nestedHostCancellationRestoresOuterPollAndReleasesCapturesAfterThrow() throws {
+        enum Probe: Error { case stop }
+        let state = SynchronousPollState()
+        func invokeScopes() throws -> Int {
+            let outer = SynchronousPollLifetime(name: "outer", state: state)
+            return try NativeOperation.withSynchronousCancellation({ outer.poll() }) {
+                try NativeOperation.$current.withValue(.init(seconds: 120)) {
+                    try NativeOperation.check()
+                    do {
+                        let inner = SynchronousPollLifetime(name: "inner", state: state)
+                        try NativeOperation.withSynchronousCancellation({ inner.poll() }) {
+                            try NativeOperation.$current.withValue(.init(seconds: 120)) {
+                                try NativeOperation.check()
+                                throw Probe.stop
+                            }
+                        }
+                    } catch Probe.stop {}
+                    // The existing outer operation and a newly captured operation
+                    // must both recover the outer callback after the inner throw.
+                    try NativeOperation.check()
+                    try NativeOperation.$current.withValue(.init(seconds: 120)) {
+                        try NativeOperation.check()
+                    }
+                    return 42
+                }
+            }
+        }
+        #expect(try invokeScopes() == 42)
+        #expect(state.events.withLock { $0 } == ["outer", "outer", "inner", "inner", "outer", "outer", "outer"])
+        #expect(state.releases.withLock { $0 } == 2)
+        // No callback may remain attached to an operation created after the scope.
+        try NativeOperation.$current.withValue(.init(seconds: 120)) { try NativeOperation.check() }
+        #expect(state.events.withLock { $0.count } == 7)
+    }
+
     @Test(arguments: [false, true])
     func hostAdaptersPreserveBytesAndReports(lossy: Bool) async throws {
         let descriptor = try ImageDescriptor.greyscale16(width: 67, height: 33, meaningfulBits: 12)
