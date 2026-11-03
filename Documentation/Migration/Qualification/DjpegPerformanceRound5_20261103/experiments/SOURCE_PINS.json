@@ -136,6 +136,11 @@
       "revision": "f3a416307d4dc249cc914b8e056c3fb81c036113",
       "baseline": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
       "disposition": "Rejected scoped AC-table borrow after no DCT gain; lossless follow-up not run."
+    },
+    {
+      "revision": "fd4b2e1c272fcc7f60ce56e640580251d072091d",
+      "baseline": "14f35018d241666358480da2a8527d29ab047627",
+      "disposition": "Rejected initial SIMD compaction: exact local output but repeated roughly twofold dense/noise slowdown; no integration or later qualification."
     }
   ],
   "completedTrialAppend": {
@@ -166,5 +171,14 @@
     "rootRevision": "fd6e1a1530bf5584415aceef41125474ebfb26a3",
     "productionEquivalent": "14f35018d241666358480da2a8527d29ab047627",
     "qualification": "Local focused Release2tests/1suite/sixparametercases; corrected remote CI not qualified."
-  }
+  },
+  "pendingTrials": [
+    {
+      "revision": "f73aa9f2e97ff9028892db99ac43d097068ccb0b",
+      "parent": "fd4b2e1c272fcc7f60ce56e640580251d072091d",
+      "comparisonBaseline": "14f35018d241666358480da2a8527d29ab047627",
+      "frozenBaselineBuildRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+      "disposition": "Held pending, not integrated: local exactness checks and conditional lossless follow-up pass, but dense12-512 slows 2.7/4.2 percent while noise improves. No sanitizer/RSS/oracle qualification or accepted speed claim."
+    }
+  ]
 }
