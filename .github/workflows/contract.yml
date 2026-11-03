@@ -84,6 +84,26 @@ jobs:
         run: swift test --scratch-path .build/tsan --sanitize thread
       - name: Validate Watch qualification harness on macOS (not device evidence)
         run: swift test --package-path Examples/WatchQualification -c release --disable-xctest -j 2
+      - name: Retain native test crash diagnostics
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: macos-arm64-native-test-failure
+          path: |
+            ~/Library/Logs/DiagnosticReports/SwiftJLIPackageTests*.ips
+            ~/Library/Logs/DiagnosticReports/SwiftJLIPackageTests*.crash
+            ~/Library/Logs/DiagnosticReports/swiftpm-testing-helper*.ips
+            ~/Library/Logs/DiagnosticReports/swiftpm-testing-helper*.crash
+            /Library/Logs/DiagnosticReports/SwiftJLIPackageTests*.ips
+            /Library/Logs/DiagnosticReports/SwiftJLIPackageTests*.crash
+            /Library/Logs/DiagnosticReports/swiftpm-testing-helper*.ips
+            /Library/Logs/DiagnosticReports/swiftpm-testing-helper*.crash
+            .build/arm64-apple-macosx/release/SwiftJLIPackageTests.xctest
+            .build/arm64-apple-macosx/release/SwiftJLIPackageTests*.dSYM
+          # The explicitly scoped test bundle is inside the hidden .build directory.
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
 
   apple-sdk-builds:
     name: Apple device, simulator and Intel SDK compilation
@@ -116,6 +136,26 @@ jobs:
         run: |
           command -v mandoc >/dev/null || brew install mandoc
           python3 Scripts/test-cli.py --binary "$PWD/.build/release/swiftjli-cli" --output "$RUNNER_TEMP/cli-intel"
+      - name: Retain native test crash diagnostics
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: macos-intel-native-test-failure
+          path: |
+            ~/Library/Logs/DiagnosticReports/SwiftJLIPackageTests*.ips
+            ~/Library/Logs/DiagnosticReports/SwiftJLIPackageTests*.crash
+            ~/Library/Logs/DiagnosticReports/swiftpm-testing-helper*.ips
+            ~/Library/Logs/DiagnosticReports/swiftpm-testing-helper*.crash
+            /Library/Logs/DiagnosticReports/SwiftJLIPackageTests*.ips
+            /Library/Logs/DiagnosticReports/SwiftJLIPackageTests*.crash
+            /Library/Logs/DiagnosticReports/swiftpm-testing-helper*.ips
+            /Library/Logs/DiagnosticReports/swiftpm-testing-helper*.crash
+            .build/x86_64-apple-macosx/release/SwiftJLIPackageTests.xctest
+            .build/x86_64-apple-macosx/release/SwiftJLIPackageTests*.dSYM
+          # The explicitly scoped test bundle is inside the hidden .build directory.
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
 
   ios-simulator:
     name: iOS 26+ simulator runtime
