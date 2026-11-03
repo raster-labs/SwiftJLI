@@ -1,8 +1,40 @@
 // SPDX-License-Identifier: Apache-2.0
 import Testing
+import Synchronization
 @testable import SwiftJLI
 
 @Suite struct LosslessRowStorageTests {
+    @Test func narrowRowsObserveCancellationWithinBoundedSampleWork() throws {
+        let width = 19, height = 100
+        let image = try JLIImage(width: width, height: height, pixelFormat: .uint8,
+            colorModel: .grayscale, data: [UInt8](repeating: 42, count: width * height))
+        var configuration = JLIEncoderConfiguration(lossless: true)
+        configuration.losslessPrecision = 8
+        let jpeg = try JLIEncoder().encode(image, configuration: configuration)
+        var parser = MarkerReader(data: jpeg)
+        let parsed = try parser.parse()
+        let calls = Mutex(0)
+        var output = [UInt8](repeating: 0xA5, count: width * height)
+        #expect(throws: CancellationError.self) {
+            try output.withUnsafeMutableBytes { raw in
+                try NativeOperation.withSynchronousCancellation({
+                    let n = calls.withLock { $0 += 1; return $0 }
+                    if n >= 3 { throw CancellationError() }
+                }) {
+                    try NativeOperation.$current.withValue(.init(seconds: 60)) {
+                        try JLIDecoder().decodeSharedLossless(parsed, into: .init(
+                            bytes: raw, rowBytes: width, bytesPerSample: 1))
+                    }
+                }
+            }
+        }
+        // Cancellation after the first poll must stop partial decoding within
+        // one bounded unit; no output outside that unit may be touched.
+        let written = output.prefix(while: { $0 == 42 }).count
+        #expect(written > 0 && written <= 1024)
+        #expect(output.dropFirst(written).allSatisfy { $0 == 0xA5 })
+    }
+
     /// Decode into an offset, odd-stride borrow and verify every byte outside
     /// the sample payload, including the final row padding, remains untouched.
     private func borrowed(_ jpeg: [UInt8], width: Int, height: Int, bps: Int) throws -> [UInt8] {

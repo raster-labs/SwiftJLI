@@ -1171,8 +1171,17 @@ struct JLIDecoder: Sendable {
         defer { history.deallocate() }
         // w >= 1 has already been validated by decodeLossless.
         guard let row = history.baseAddress else { return }
+        // Narrow rows share a bounded polling unit of at most 1024 samples.
+        // Wider rows retain their existing per-row boundary. Publication still
+        // checks cancellation/deadline after this synchronous kernel returns.
+        let rowsPerCheck = max(1, 1024 / w)
+        var rowsUntilCheck = 0
         for y in 0..<h {
-            try NativeOperation.check()
+            if rowsUntilCheck == 0 {
+                try NativeOperation.check()
+                rowsUntilCheck = rowsPerCheck
+            }
+            rowsUntilCheck -= 1
             let segmentY = y % segmentRows
             if y > 0, segmentY == 0 {
                 try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)

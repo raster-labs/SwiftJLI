@@ -444,7 +444,7 @@ struct MarkerReader {
                 values.append(try readByte())
             }
 
-            let table = HuffmanTable(bits: bits, values: values)
+            let table = HuffmanTable(bits: bits, values: values, decodingOnly: true)
             tables.append((tableClass: tableClass, tableId: tableId, table: table))
         }
 

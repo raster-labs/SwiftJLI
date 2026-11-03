@@ -81,9 +81,14 @@ enum JPEGEnvelope {
                       try checkedMultiply(width, height) <= limits.maximumPixels else {
                     throw CodecError(.resourceLimitExceeded, "JPEG dimensions exceed operation limits.")
                 }
-                var ids = Set<UInt8>()
+                // Component IDs cover exactly 256 values. A bounded bit set
+                // avoids a heap-backed hash table for each small image.
+                var ids = SIMD4<UInt64>(repeating: 0)
                 for c in 0..<nc {
-                    guard ids.insert(b[start + 6 + c * 3]).inserted else { throw malformed() }
+                    let id = Int(b[start + 6 + c * 3])
+                    let lane = id >> 6, mask = UInt64(1) << (id & 63)
+                    guard ids[lane] & mask == 0 else { throw malformed() }
+                    ids[lane] |= mask
                 }
                 sawFrame = true; frameMarker = marker
             case 0xDA:
@@ -109,13 +114,17 @@ enum JPEGEnvelope {
                 }
                 guard q == end else { throw malformed() }
             case 0xC4:
-                var tableIDs = Set<UInt8>()
+                var tableIDs: UInt8 = 0
                 var q = start
                 while q < end {
                     guard end - q >= 17, b[q] >> 4 <= 1, b[q] & 15 <= 3 else { throw malformed() }
-                    guard tableIDs.insert(b[q]).inserted else {
+                    // The validated class (0/1) and ID (0...3) select one of
+                    // eight bits; redefinitions in later segments remain legal.
+                    let tableMask = UInt8(1) << ((b[q] >> 4) * 4 + (b[q] & 15))
+                    guard tableIDs & tableMask == 0 else {
                         throw CodecError(.unsupportedFeature, "Repeated table definitions in one DHT segment are unsupported.")
                     }
+                    tableIDs |= tableMask
                     var symbols = 0, slots = 1
                     for i in 1...16 {
                         slots = slots * 2 - Int(b[q + i])

@@ -3,6 +3,39 @@ import Testing
 @testable import SwiftJLI
 
 @Suite struct ValidatedEnvelopeTests {
+    @Test func componentAndTableIDsRemainDistinctAtBitBoundaries() throws {
+        func segment(_ marker: UInt8, _ body: [UInt8]) -> [UInt8] {
+            let length = body.count + 2
+            return [255, marker, UInt8(length >> 8), UInt8(length & 255)] + body
+        }
+        // Structural admission accepts distinct byte IDs before profile checks.
+        // Exercise the complete ID domain, including zero and each 64-bit edge.
+        let identifiers: [UInt8] = [0, 63, 64, 127, 128, 191, 192, 255]
+        let tables: [[UInt8]] = [0, 1, 2, 3, 16, 17, 18, 19].map {
+            [UInt8($0), 1] + [UInt8](repeating: 0, count: 15) + [0]
+        }
+        func jpeg(ids: [UInt8], definitions: [[UInt8]]) -> [UInt8] {
+            let frame: [UInt8] = [8, 0, 1, 0, 1, UInt8(ids.count)]
+                + ids.flatMap { [$0, 17, 0] }
+            let scan: [UInt8] = [UInt8(ids.count)] + ids.flatMap { [$0, 0] } + [1, 0, 0]
+            return [255, 216] + segment(195, frame)
+                + segment(196, definitions.flatMap { $0 }) + segment(218, scan) + [0, 255, 217]
+        }
+        _ = try JPEGEnvelope.validate(jpeg(ids: identifiers, definitions: tables), limits: .init())
+        for index in identifiers.indices.dropFirst() {
+            var repeated = identifiers
+            repeated[index] = identifiers[index - 1]
+            #expect(throws: CodecError.self) {
+                try JPEGEnvelope.validate(jpeg(ids: repeated, definitions: tables), limits: .init())
+            }
+        }
+        for table in tables {
+            #expect(throws: CodecError.self) {
+                try JPEGEnvelope.validate(jpeg(ids: identifiers, definitions: tables + [table]), limits: .init())
+            }
+        }
+    }
+
     @Test func reusedExtentsMatchIndependentMarkerTraversal() throws {
         // Existing independent cjpeg fixtures include stuffed bytes, restarts,
         // progressive scans and Huffman table redefinitions between scans.

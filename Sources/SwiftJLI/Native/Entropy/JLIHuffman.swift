@@ -40,10 +40,13 @@ struct HuffmanTable {
     /// - Parameters:
     ///   - bits: 16-element array, where `bits[i]` is the number of codes of length `i+1`.
     ///   - values: Symbol values in order of increasing code length.
-    init(bits: [UInt8], values: [UInt8]) {
+    init(bits: [UInt8], values: [UInt8], decodingOnly: Bool = false) {
         self.bits = bits
         self.values = values
-        var encoding = [(code: UInt16, length: UInt8)](repeating: (0, 0), count: 256)
+        // Parsed DHT tables are only consumed by decoders. Do not allocate an
+        // unused encoder map for each input table; encoder-created tables keep
+        // their complete map through the default constructor.
+        var encoding = [(code: UInt16, length: UInt8)](repeating: (0, 0), count: decodingOnly ? 0 : 256)
 
         var maxC = [Int32](repeating: -1, count: 17)
         var minC = [Int32](repeating: -1, count: 17)
@@ -65,7 +68,9 @@ struct HuffmanTable {
                 minC[bitLength] = Int32(code)
                 for _ in 0..<count where valueIndex < values.count {
                     let symbol = values[valueIndex]
-                    encoding[Int(symbol)] = (UInt16(truncatingIfNeeded: code), UInt8(bitLength))
+                    if !decodingOnly {
+                        encoding[Int(symbol)] = (UInt16(truncatingIfNeeded: code), UInt8(bitLength))
+                    }
                     // Fill every 8-bit lookahead slot whose top `bitLength` bits
                     // equal this code. A canonical code of length ≤8 is < 256,
                     // so `code << (8 - bitLength)` and its run stay in 0...255.
