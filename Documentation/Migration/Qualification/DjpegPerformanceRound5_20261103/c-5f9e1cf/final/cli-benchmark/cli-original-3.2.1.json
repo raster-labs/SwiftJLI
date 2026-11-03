@@ -1,0 +1,1536 @@
+{
+  "status": "passed",
+  "method": "Compare original and candidate SwiftJLI CLIs with djpeg on identical inputs.\n\nThe corpus is the synthetic November 2026 benchmark corpus. Timings include\nprocess launch, input reads, decode and PNM output to /dev/null. This is not an\nin-process codec benchmark. Correctness gates precede all accepted timings.\n",
+  "arguments": {
+    "baseline": "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+    "candidate": "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+    "djpeg": "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+    "fixtures": "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory",
+    "output": "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/cli-benchmark/cli-original-3.2.1.json",
+    "warmups": 5,
+    "iterations": 20,
+    "rounds": 2,
+    "matrix": "original",
+    "command_timeout": 60
+  },
+  "records": [
+    {
+      "round": 1,
+      "profile": "lossless16",
+      "size": 512,
+      "inputSHA256": "7690f836d0d50a8694f7e374410a4808402cbdfbeb22a5c14b73a159d7bfecaf",
+      "inputBytes": 290649,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 0,
+        "tolerance": 0,
+        "outputSHA256": {
+          "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+          "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+          "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-512.jpg"
+        ]
+      },
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.008492958,
+            0.008280917,
+            0.00903525,
+            0.009105416,
+            0.009133,
+            0.009158834,
+            0.008501167,
+            0.008916458,
+            0.008472292,
+            0.009293583,
+            0.00881575,
+            0.00873425,
+            0.00839275,
+            0.0090695,
+            0.007843917,
+            0.0082955,
+            0.008262666,
+            0.008106333,
+            0.008616792,
+            0.008015625
+          ],
+          "median": 0.008558979500000001,
+          "p95": 0.009158834,
+          "minimum": 0.007843917,
+          "maximum": 0.009293583
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7716864,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7716864,
+            7684096,
+            7782400,
+            7684096
+          ],
+          "median": 7684096.0,
+          "p95": 7716864,
+          "minimum": 7684096,
+          "maximum": 7782400
+        },
+        "medianMPixelsPerSecond": 30.627950446662474
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.008454209,
+            0.008701333,
+            0.008945959,
+            0.008950833,
+            0.009182459,
+            0.009354083,
+            0.00892825,
+            0.008384584,
+            0.00867775,
+            0.009147333,
+            0.00889025,
+            0.00903825,
+            0.008346833,
+            0.008374667,
+            0.008186083,
+            0.009016291,
+            0.009263,
+            0.008071458,
+            0.008624791,
+            0.009012709
+          ],
+          "median": 0.00890925,
+          "p95": 0.009263,
+          "minimum": 0.008071458,
+          "maximum": 0.009354083
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7700480,
+            7700480,
+            7782400,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7716864,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7716864,
+            7700480
+          ],
+          "median": 7700480.0,
+          "p95": 7716864,
+          "minimum": 7700480,
+          "maximum": 7782400
+        },
+        "medianMPixelsPerSecond": 29.4238011055925
+      },
+      "djpeg": {
+        "elapsedSeconds": {
+          "samples": [
+            0.006803417,
+            0.006496334,
+            0.007667209,
+            0.007257542,
+            0.007814916,
+            0.00708175,
+            0.006761875,
+            0.0072465,
+            0.006826334,
+            0.007385125,
+            0.007507084,
+            0.007590334,
+            0.007484958,
+            0.007806666,
+            0.007150334,
+            0.006966583,
+            0.007369333,
+            0.006996833,
+            0.007336917,
+            0.007257334
+          ],
+          "median": 0.007257438,
+          "p95": 0.007806666,
+          "minimum": 0.006496334,
+          "maximum": 0.007814916
+        },
+        "peakRSSBytes": {
+          "samples": [
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2981888,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120
+          ],
+          "median": 2949120.0,
+          "p95": 2949120,
+          "minimum": 2949120,
+          "maximum": 2981888
+        },
+        "medianMPixelsPerSecond": 36.1207357196851
+      }
+    },
+    {
+      "round": 1,
+      "profile": "lossless16",
+      "size": 2048,
+      "inputSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "inputBytes": 4647675,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 0,
+        "tolerance": 0,
+        "outputSHA256": {
+          "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+          "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+          "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-2048.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-2048.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-2048.jpg"
+        ]
+      },
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.022329542,
+            0.02310175,
+            0.023238875,
+            0.0238335,
+            0.023263834,
+            0.023046667,
+            0.023211666,
+            0.022540583,
+            0.022959667,
+            0.0223605,
+            0.02154225,
+            0.0234275,
+            0.023193917,
+            0.024020833,
+            0.021660834,
+            0.021941666,
+            0.023947833,
+            0.023317125,
+            0.024137959,
+            0.023612041
+          ],
+          "median": 0.0232027915,
+          "p95": 0.024020833,
+          "minimum": 0.02154225,
+          "maximum": 0.024137959
+        },
+        "peakRSSBytes": {
+          "samples": [
+            19988480,
+            19988480,
+            20004864,
+            19988480,
+            20004864,
+            19988480,
+            20004864,
+            20004864,
+            20021248,
+            20004864,
+            19988480,
+            20004864,
+            20004864,
+            20004864,
+            19988480,
+            19988480,
+            20004864,
+            20004864,
+            20004864,
+            20004864
+          ],
+          "median": 20004864.0,
+          "p95": 20004864,
+          "minimum": 19988480,
+          "maximum": 20021248
+        },
+        "medianMPixelsPerSecond": 180.76721501376247
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.023841458,
+            0.022206125,
+            0.023229459,
+            0.023636833,
+            0.024598875,
+            0.022372083,
+            0.023221125,
+            0.023198666,
+            0.023231,
+            0.022761958,
+            0.022380792,
+            0.025000208,
+            0.024774208,
+            0.022119625,
+            0.022545542,
+            0.023282208,
+            0.023183334,
+            0.023021625,
+            0.021871666,
+            0.023152542
+          ],
+          "median": 0.023191,
+          "p95": 0.024774208,
+          "minimum": 0.021871666,
+          "maximum": 0.025000208
+        },
+        "peakRSSBytes": {
+          "samples": [
+            20021248,
+            20004864,
+            20004864,
+            20004864,
+            20004864,
+            20037632,
+            20004864,
+            20037632,
+            20004864,
+            20004864,
+            20004864,
+            20021248,
+            20004864,
+            20004864,
+            20004864,
+            20004864,
+            20004864,
+            20004864,
+            20021248,
+            20004864
+          ],
+          "median": 20004864.0,
+          "p95": 20037632,
+          "minimum": 20004864,
+          "maximum": 20037632
+        },
+        "medianMPixelsPerSecond": 180.85912638523567
+      },
+      "djpeg": {
+        "elapsedSeconds": {
+          "samples": [
+            0.027871958,
+            0.028444833,
+            0.027521625,
+            0.028874875,
+            0.027084875,
+            0.028710083,
+            0.027841584,
+            0.026008666,
+            0.027478875,
+            0.028067083,
+            0.0273765,
+            0.0294165,
+            0.028654084,
+            0.02734275,
+            0.027378042,
+            0.02698925,
+            0.026554584,
+            0.026946208,
+            0.028195791,
+            0.029103875
+          ],
+          "median": 0.0276816045,
+          "p95": 0.029103875,
+          "minimum": 0.026008666,
+          "maximum": 0.0294165
+        },
+        "peakRSSBytes": {
+          "samples": [
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888
+          ],
+          "median": 2981888.0,
+          "p95": 2981888,
+          "minimum": 2981888,
+          "maximum": 2981888
+        },
+        "medianMPixelsPerSecond": 151.51954071159423
+      }
+    },
+    {
+      "round": 1,
+      "profile": "dct12",
+      "size": 512,
+      "inputSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "inputBytes": 200993,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 1,
+        "tolerance": 4,
+        "outputSHA256": {
+          "baseline": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+          "candidate": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+          "djpeg": "524d2c39dedbaafa9a5c6daaf8e0e30fa491961ce495a9fc52a8d97c0af0d294"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "-precision",
+          "12",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg"
+        ]
+      },
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.0093285,
+            0.010204917,
+            0.009061291,
+            0.009464625,
+            0.010608542,
+            0.0095,
+            0.009972333,
+            0.009375333,
+            0.009702584,
+            0.009729833,
+            0.009530333,
+            0.010052083,
+            0.010137209,
+            0.01001675,
+            0.009910541,
+            0.010257417,
+            0.009763375,
+            0.009476792,
+            0.010183834,
+            0.009411834
+          ],
+          "median": 0.009746603999999999,
+          "p95": 0.010257417,
+          "minimum": 0.009061291,
+          "maximum": 0.010608542
+        },
+        "peakRSSBytes": {
+          "samples": [
+            8830976,
+            8847360,
+            8847360,
+            8749056,
+            8749056,
+            8847360,
+            8749056,
+            8749056,
+            8749056,
+            8847360,
+            8863744,
+            8749056,
+            8749056,
+            8749056,
+            8847360,
+            8749056,
+            8830976,
+            8847360,
+            8781824,
+            8847360
+          ],
+          "median": 8806400.0,
+          "p95": 8847360,
+          "minimum": 8749056,
+          "maximum": 8863744
+        },
+        "medianMPixelsPerSecond": 26.89593216262813
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.009893708,
+            0.009762333,
+            0.0100625,
+            0.009240667,
+            0.009729458,
+            0.009597167,
+            0.010026,
+            0.00976825,
+            0.009391166,
+            0.009566083,
+            0.009196875,
+            0.009847166,
+            0.009451209,
+            0.009878292,
+            0.009530333,
+            0.010041875,
+            0.009656459,
+            0.009221666,
+            0.009344625,
+            0.010090125
+          ],
+          "median": 0.0096929585,
+          "p95": 0.0100625,
+          "minimum": 0.009196875,
+          "maximum": 0.010090125
+        },
+        "peakRSSBytes": {
+          "samples": [
+            8880128,
+            8798208,
+            8765440,
+            8765440,
+            8863744,
+            8765440,
+            8765440,
+            8765440,
+            8880128,
+            8781824,
+            8880128,
+            8765440,
+            8765440,
+            8880128,
+            8880128,
+            8863744,
+            8880128,
+            8880128,
+            8880128,
+            8880128
+          ],
+          "median": 8863744.0,
+          "p95": 8880128,
+          "minimum": 8765440,
+          "maximum": 8880128
+        },
+        "medianMPixelsPerSecond": 27.04478720299896
+      },
+      "djpeg": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007131541,
+            0.007578458,
+            0.007487834,
+            0.007664334,
+            0.007772375,
+            0.008134208,
+            0.007568417,
+            0.007877042,
+            0.007270792,
+            0.007618208,
+            0.007543041,
+            0.007068666,
+            0.008094458,
+            0.007332,
+            0.007487125,
+            0.008086959,
+            0.007666167,
+            0.007237208,
+            0.007878959,
+            0.007752792
+          ],
+          "median": 0.007598333,
+          "p95": 0.008094458,
+          "minimum": 0.007068666,
+          "maximum": 0.008134208
+        },
+        "peakRSSBytes": {
+          "samples": [
+            2326528,
+            2326528,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2293760,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144
+          ],
+          "median": 2310144.0,
+          "p95": 2326528,
+          "minimum": 2293760,
+          "maximum": 2326528
+        },
+        "medianMPixelsPerSecond": 34.50019892521162
+      }
+    },
+    {
+      "round": 2,
+      "profile": "lossless16",
+      "size": 512,
+      "inputSHA256": "7690f836d0d50a8694f7e374410a4808402cbdfbeb22a5c14b73a159d7bfecaf",
+      "inputBytes": 290649,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 0,
+        "tolerance": 0,
+        "outputSHA256": {
+          "baseline": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+          "candidate": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+          "djpeg": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-512.jpg"
+        ]
+      },
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.009695042,
+            0.009292083,
+            0.009822209,
+            0.009696875,
+            0.009400625,
+            0.008997583,
+            0.008940375,
+            0.008952459,
+            0.009900708,
+            0.009367292,
+            0.009054666,
+            0.008691666,
+            0.009283917,
+            0.009586209,
+            0.009299125,
+            0.008871208,
+            0.009276834,
+            0.009001166,
+            0.008973375,
+            0.008356708
+          ],
+          "median": 0.0092803755,
+          "p95": 0.009822209,
+          "minimum": 0.008356708,
+          "maximum": 0.009900708
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7684096,
+            7684096,
+            7782400,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7766016,
+            7782400,
+            7684096,
+            7684096,
+            7684096
+          ],
+          "median": 7684096.0,
+          "p95": 7782400,
+          "minimum": 7684096,
+          "maximum": 7782400
+        },
+        "medianMPixelsPerSecond": 28.247132888103504
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.009496292,
+            0.010045417,
+            0.009815416,
+            0.00945225,
+            0.00903575,
+            0.009416917,
+            0.009880917,
+            0.009721041,
+            0.009712042,
+            0.009104459,
+            0.008910417,
+            0.00938125,
+            0.009573541,
+            0.008603792,
+            0.009488959,
+            0.009075333,
+            0.009458041,
+            0.00892725,
+            0.008973667,
+            0.008567875
+          ],
+          "median": 0.0094345835,
+          "p95": 0.009880917,
+          "minimum": 0.008567875,
+          "maximum": 0.010045417
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7782400,
+            7684096,
+            7700480,
+            7782400,
+            7700480,
+            7782400,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7716864,
+            7700480,
+            7700480,
+            7700480,
+            7700480,
+            7716864,
+            7782400,
+            7700480,
+            7733248,
+            7700480
+          ],
+          "median": 7700480.0,
+          "p95": 7782400,
+          "minimum": 7684096,
+          "maximum": 7782400
+        },
+        "medianMPixelsPerSecond": 27.78543430136582
+      },
+      "djpeg": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007735916,
+            0.007978792,
+            0.007679166,
+            0.007364959,
+            0.0077385,
+            0.008078125,
+            0.00785,
+            0.007968792,
+            0.007787833,
+            0.007639375,
+            0.007760416,
+            0.00700425,
+            0.007837458,
+            0.0074195,
+            0.007618,
+            0.008124875,
+            0.007576708,
+            0.00767975,
+            0.007555708,
+            0.00729125
+          ],
+          "median": 0.007707833,
+          "p95": 0.008078125,
+          "minimum": 0.00700425,
+          "maximum": 0.008124875
+        },
+        "peakRSSBytes": {
+          "samples": [
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120,
+            2949120
+          ],
+          "median": 2949120.0,
+          "p95": 2949120,
+          "minimum": 2949120,
+          "maximum": 2949120
+        },
+        "medianMPixelsPerSecond": 34.010077800076886
+      }
+    },
+    {
+      "round": 2,
+      "profile": "lossless16",
+      "size": 2048,
+      "inputSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "inputBytes": 4647675,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 0,
+        "tolerance": 0,
+        "outputSHA256": {
+          "baseline": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+          "candidate": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+          "djpeg": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-2048.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-2048.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/lossless16-2048.jpg"
+        ]
+      },
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.022304041,
+            0.023957584,
+            0.024201833,
+            0.02264,
+            0.022415209,
+            0.024133709,
+            0.024449541,
+            0.024504542,
+            0.024480084,
+            0.023355958,
+            0.023040541,
+            0.022800416,
+            0.0239995,
+            0.022722958,
+            0.022867958,
+            0.023597917,
+            0.022337042,
+            0.022602042,
+            0.021966167,
+            0.023688958
+          ],
+          "median": 0.0231982495,
+          "p95": 0.024480084,
+          "minimum": 0.021966167,
+          "maximum": 0.024504542
+        },
+        "peakRSSBytes": {
+          "samples": [
+            19988480,
+            20004864,
+            19988480,
+            19988480,
+            20021248,
+            20021248,
+            20021248,
+            20021248,
+            19988480,
+            20004864,
+            19988480,
+            20021248,
+            19988480,
+            19988480,
+            19988480,
+            19988480,
+            19988480,
+            20004864,
+            19988480,
+            20004864
+          ],
+          "median": 19988480.0,
+          "p95": 20021248,
+          "minimum": 19988480,
+          "maximum": 20021248
+        },
+        "medianMPixelsPerSecond": 180.80260754157334
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.023964084,
+            0.023970625,
+            0.02291125,
+            0.022928416,
+            0.023648916,
+            0.023284666,
+            0.024105542,
+            0.024210667,
+            0.024063667,
+            0.023353708,
+            0.024258625,
+            0.02215175,
+            0.023551459,
+            0.022335084,
+            0.022165,
+            0.02279175,
+            0.022311208,
+            0.023053416,
+            0.022649375,
+            0.023994292
+          ],
+          "median": 0.023319186999999998,
+          "p95": 0.024210667,
+          "minimum": 0.02215175,
+          "maximum": 0.024258625
+        },
+        "peakRSSBytes": {
+          "samples": [
+            20004864,
+            20004864,
+            20004864,
+            20037632,
+            20004864,
+            20004864,
+            20004864,
+            20004864,
+            20004864,
+            20004864,
+            20004864,
+            20004864,
+            20037632,
+            20004864,
+            20004864,
+            20004864,
+            20037632,
+            20021248,
+            20004864,
+            20004864
+          ],
+          "median": 20004864.0,
+          "p95": 20037632,
+          "minimum": 20004864,
+          "maximum": 20037632
+        },
+        "medianMPixelsPerSecond": 179.86493268397393
+      },
+      "djpeg": {
+        "elapsedSeconds": {
+          "samples": [
+            0.028619291,
+            0.029135125,
+            0.0281255,
+            0.026699833,
+            0.027324166,
+            0.028741542,
+            0.028919458,
+            0.028569792,
+            0.029168334,
+            0.027610084,
+            0.027914333,
+            0.02769075,
+            0.028113917,
+            0.02844825,
+            0.027966875,
+            0.028320125,
+            0.026739959,
+            0.027298042,
+            0.026695541,
+            0.0292095
+          ],
+          "median": 0.0281197085,
+          "p95": 0.029168334,
+          "minimum": 0.026695541,
+          "maximum": 0.0292095
+        },
+        "peakRSSBytes": {
+          "samples": [
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2981888,
+            2998272,
+            2981888,
+            2981888,
+            2965504,
+            2998272,
+            2981888,
+            2981888
+          ],
+          "median": 2981888.0,
+          "p95": 2998272,
+          "minimum": 2965504,
+          "maximum": 2998272
+        },
+        "medianMPixelsPerSecond": 149.15887197052558
+      }
+    },
+    {
+      "round": 2,
+      "profile": "dct12",
+      "size": 512,
+      "inputSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "inputBytes": 200993,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 1,
+        "tolerance": 4,
+        "outputSHA256": {
+          "baseline": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+          "candidate": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+          "djpeg": "524d2c39dedbaafa9a5c6daaf8e0e30fa491961ce495a9fc52a8d97c0af0d294"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "-precision",
+          "12",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg"
+        ]
+      },
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.010157833,
+            0.009898166,
+            0.010298291,
+            0.010150042,
+            0.01034,
+            0.009618,
+            0.009552083,
+            0.010116292,
+            0.009904667,
+            0.010193042,
+            0.009857167,
+            0.009710833,
+            0.00958125,
+            0.009695083,
+            0.01057475,
+            0.009648959,
+            0.0094885,
+            0.009452333,
+            0.009263291,
+            0.009781459
+          ],
+          "median": 0.009819313,
+          "p95": 0.01034,
+          "minimum": 0.009263291,
+          "maximum": 0.01057475
+        },
+        "peakRSSBytes": {
+          "samples": [
+            8749056,
+            8732672,
+            8749056,
+            8749056,
+            8749056,
+            8847360,
+            8781824,
+            8749056,
+            8749056,
+            8749056,
+            8847360,
+            8847360,
+            8765440,
+            8830976,
+            8749056,
+            8847360,
+            8830976,
+            8847360,
+            8863744,
+            8749056
+          ],
+          "median": 8757248.0,
+          "p95": 8847360,
+          "minimum": 8732672,
+          "maximum": 8863744
+        },
+        "medianMPixelsPerSecond": 26.69677603718305
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.010038958,
+            0.009846292,
+            0.009497208,
+            0.010201583,
+            0.009244458,
+            0.010372792,
+            0.009746708,
+            0.00942825,
+            0.010374542,
+            0.009740167,
+            0.009651208,
+            0.009244625,
+            0.010270125,
+            0.009953042,
+            0.009835417,
+            0.009751041,
+            0.009819292,
+            0.009672041,
+            0.010115042,
+            0.01004575
+          ],
+          "median": 0.0098273545,
+          "p95": 0.010372792,
+          "minimum": 0.009244458,
+          "maximum": 0.010374542
+        },
+        "peakRSSBytes": {
+          "samples": [
+            8765440,
+            8765440,
+            8781824,
+            8781824,
+            8863744,
+            8863744,
+            8880128,
+            8880128,
+            8798208,
+            8765440,
+            8880128,
+            8880128,
+            8765440,
+            8880128,
+            8880128,
+            8765440,
+            8798208,
+            8880128,
+            8765440,
+            8765440
+          ],
+          "median": 8798208.0,
+          "p95": 8880128,
+          "minimum": 8765440,
+          "maximum": 8880128
+        },
+        "medianMPixelsPerSecond": 26.674930674374266
+      },
+      "djpeg": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007518541,
+            0.00802975,
+            0.00718925,
+            0.007360209,
+            0.007856084,
+            0.007789958,
+            0.007159458,
+            0.007938167,
+            0.007470375,
+            0.007886292,
+            0.008037291,
+            0.0077115,
+            0.00713025,
+            0.007346917,
+            0.007803667,
+            0.007469208,
+            0.007958375,
+            0.007617834,
+            0.007458375,
+            0.007146709
+          ],
+          "median": 0.0075681875,
+          "p95": 0.00802975,
+          "minimum": 0.00713025,
+          "maximum": 0.008037291
+        },
+        "peakRSSBytes": {
+          "samples": [
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2326528,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2310144,
+            2342912
+          ],
+          "median": 2310144.0,
+          "p95": 2326528,
+          "minimum": 2310144,
+          "maximum": 2342912
+        },
+        "medianMPixelsPerSecond": 34.637619641426696
+      }
+    }
+  ],
+  "excluded": [
+    {
+      "round": 1,
+      "profile": "rgb8",
+      "size": 512,
+      "inputSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+      "inputBytes": 219499,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 3,
+        "tolerance": 2,
+        "outputSHA256": {
+          "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+          "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+          "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg"
+        ]
+      },
+      "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+    },
+    {
+      "round": 1,
+      "profile": "progressiveRGB8",
+      "size": 512,
+      "inputSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+      "inputBytes": 219582,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 3,
+        "tolerance": 2,
+        "outputSHA256": {
+          "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+          "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+          "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg"
+        ]
+      },
+      "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+    },
+    {
+      "round": 2,
+      "profile": "rgb8",
+      "size": 512,
+      "inputSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+      "inputBytes": 219499,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 3,
+        "tolerance": 2,
+        "outputSHA256": {
+          "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+          "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+          "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg"
+        ]
+      },
+      "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+    },
+    {
+      "round": 2,
+      "profile": "progressiveRGB8",
+      "size": 512,
+      "inputSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+      "inputBytes": 219582,
+      "validation": {
+        "baselineCandidateExactSamples": true,
+        "baselineCandidateExactPNM": true,
+        "maximumDjpegSampleDifference": 3,
+        "tolerance": 2,
+        "outputSHA256": {
+          "baseline": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+          "candidate": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+          "djpeg": "74529a85b658c96c9f81dd206a197a9416ba9155b55f270e54b2e9066eff08f0"
+        }
+      },
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "djpeg": [
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg"
+        ]
+      },
+      "reason": "Predeclared sample tolerance exceeded; no accepted timing."
+    }
+  ],
+  "binarySHA256": {
+    "baseline": "2b9d5a67a25e8fed42be1f09f63d330e1e7cd4ba6cd5d018f425d6797e87cde5",
+    "candidate": "dfda666f9660b858743dc0008cc0c55217ff1426f3359cbca72e678c351fa5c8",
+    "djpeg": "6d0302f8018b3322521cae94de7f58ab484db40f0cc8e0f0cb6e92d456fd5088"
+  },
+  "djpegVersion": "libjpeg-turbo version 3.2.1 (build 20261026)"
+}

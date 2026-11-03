@@ -1,0 +1,214 @@
+{
+  "kind": "planned standalone C safety extension; NOT EXECUTED",
+  "createdUTC": "2026-11-03T16:23:09.456251+00:00",
+  "baselineHarness": {
+    "path": "/private/tmp/swiftjli-round5-evidence/c-ac-safety/ac_safety.c",
+    "sha256": "bc7ae28a20ee7e6e1d042acbb505b31a0aea940740f3b65c275d2a964e03e336",
+    "previousQualifiedSource": "3a5ef320c04fff03561a69b705355c0e9da2fc31"
+  },
+  "sources": [
+    {
+      "name": "combined-dct",
+      "worktree": "/private/tmp/swiftjli-round5-c-dct-block",
+      "revision": "1db53e8cf6ab4fbf99ad6efbd321d3fa45eba384",
+      "status": "historical design source; superseded for current emitted-code gate by 9f11312",
+      "files": {
+        "Sources/SwiftJLIEntropyC/ACBlock.c": {
+          "copy": "combined-dct-ACBlock.c",
+          "sha256": "64420dd4cab1cb70c213e68aafc00384a22892bef3b64ef66c480e221468beb7",
+          "bytes": 8694
+        },
+        "Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h": {
+          "copy": "combined-dct-SwiftJLIEntropyC.h",
+          "sha256": "3e15a1a5df42c431e4533dfff529d7a5d957edc4b16d10d9ec6e90ad69a9e98a",
+          "bytes": 2417
+        }
+      }
+    },
+    {
+      "name": "lossless-row",
+      "worktree": "/private/tmp/swiftjli-round5-c-lossless-row",
+      "revision": "06eff275d4a2b72b3497748064311a38b288aa7d",
+      "status": "source-only design; no compile or execution",
+      "files": {
+        "Sources/SwiftJLIEntropyC/ACBlock.c": {
+          "copy": "lossless-row-ACBlock.c",
+          "sha256": "7c8a497003728e0c51120897d366fecbd38bc0d58dcaa0a5aad367a3e4a3d0dc",
+          "bytes": 9676
+        },
+        "Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h": {
+          "copy": "lossless-row-SwiftJLIEntropyC.h",
+          "sha256": "4ff9f47fc896602081ee7b5b9676267463fced46783c7f16932910201cd7b498",
+          "bytes": 2837
+        }
+      }
+    },
+    {
+      "name": "combined-dct-inline-current",
+      "worktree": "/private/tmp/swiftjli-round5-c-dct-inline",
+      "revision": "9f11312eb43e1501f81fe6c4845934114099151c",
+      "parentRevision": "1db53e8cf6ab4fbf99ad6efbd321d3fa45eba384",
+      "status": "current planned target; source-only design; no compile or execution by this audit",
+      "changeScope": "Only local always_inline annotations on ac_body, symbol and read_bits; no logical or ABI change. Emitted-code sanitizer qualification must pin this revision.",
+      "files": {
+        "Sources/SwiftJLIEntropyC/ACBlock.c": {
+          "copy": "combined-dct-inline-ACBlock.c",
+          "sha256": "abe21709d69847034ea99fdec373c3405bb62e15ca81b529e0dc72af9b8dca45",
+          "bytes": 9021
+        },
+        "Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h": {
+          "copy": "combined-dct-inline-SwiftJLIEntropyC.h",
+          "sha256": "3e15a1a5df42c431e4533dfff529d7a5d957edc4b16d10d9ec6e90ad69a9e98a",
+          "bytes": 2417
+        }
+      }
+    }
+  ],
+  "builds": "Separate pinned builds first: the two headers expose different entrypoints/status sets. An integrated source requires its own later pin and receipt.",
+  "compileFlags": [
+    "-O2",
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fsanitize=address,undefined",
+    "-fno-sanitize-recover=all",
+    "-g"
+  ],
+  "seeds": {
+    "combinedDCT": "0xdca18b3725e6409f",
+    "losslessRow": "0x16a1f095bdc72863"
+  },
+  "prng": "xorshift64star",
+  "minimumRandomCasesPerEntrypoint": 1048576,
+  "randomInputBytes": [
+    0,
+    512
+  ],
+  "initialAvailableBits": [
+    0,
+    64
+  ],
+  "inputAlignments": [
+    0,
+    7
+  ],
+  "tableCodeLengths": [
+    1,
+    16
+  ],
+  "DCPrecisionCases": [
+    8,
+    12
+  ],
+  "DCCategoryCases": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    31,
+    32,
+    63,
+    64,
+    127,
+    255
+  ],
+  "ACCategories": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "losslessRowCategories": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    31,
+    32,
+    63,
+    64,
+    127,
+    255
+  ],
+  "rowSampleCountBoundaryCases": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9,
+    63,
+    64,
+    65,
+    255,
+    256,
+    257,
+    65534,
+    65535
+  ],
+  "rowSeedBoundaryCases": [
+    0,
+    1,
+    2048,
+    32767,
+    32768,
+    65534,
+    65535
+  ],
+  "runExitCode": null,
+  "diagnosticOutcome": null,
+  "performanceAcceptance": "not assessed",
+  "allocationPolicy": "Fixed static buffers only in harness; no per-case allocation, external codec, file I/O in leaf or concurrency.",
+  "currentTargets": {
+    "combinedDCT": "e0cfea0fa2f702cb558f6896db03501efcd0b463",
+    "losslessRow": "06eff275d4a2b72b3497748064311a38b288aa7d"
+  },
+  "harnessImplementation": {
+    "currentVersion": "v2-source",
+    "manifest": "v2-source/source-manifest.json",
+    "status": "source implemented; no C compilation or execution",
+    "preservedEarlierVersion": "v1-source",
+    "driver": "v2-source/run_safety.py"
+  }
+}

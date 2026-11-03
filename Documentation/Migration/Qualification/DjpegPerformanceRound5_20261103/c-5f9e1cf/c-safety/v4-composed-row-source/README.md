@@ -1,0 +1,13 @@
+# Composed code-zero row safety corpus, source version4
+
+Production pin: `5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd` from `/private/tmp/swiftjli-round5-c-row-composed`. All three C translation units, the private reader header and public header are copied byte-for-byte. Original generic06 results and v1/v2 snapshots remain unchanged.
+
+This extends the v2 fixed-buffer row corpus. Twenty-one independently constructed canonical Huffman models place category1...7 at code0/length1; remaining valid and invalid lossless categories use6-,9- or16-bit codes. All all-one codes remain unused. The primary entry is the code-zero row; every valid call is also compared with the exact composed generic row, including complete state, partial result, padding and output. This is a differential, not a second independent decoder. Independent checks still use encoded expected samples and an encoder bit-consumption ledger.
+
+Coverage includes all categories0...16 and invalid17/31/32/63/64/127/255, all available-bit counts0...64, length/offset boundaries, all256 short prefixes at eight offsets across21 tables, seeds/modulo wrap, rows up to65,535 samples, every truncation point of known streams, FF stuffing and markers, typed and odd raw byte offsets, output/state canaries, and10,000 allowed input/output alias cases. Alias checks compare a whole code-zero row against both repeated single-sample code-zero calls and a whole generic row on identical independently copied aliased buffers. State/table/result are always disjoint from input/output. At least1,048,576 deterministic random cases use seed `0xc0d0187a9b56e243`.
+
+ASan explicitly poisons logical input/output boundaries and verifies that poison is active. Production leaves perform no allocation; this harness uses fixed global/stack buffers. Undefined-behaviour sanitisation disables recovery. This is memory/error-sequencing evidence, not a benchmark, RSS measurement, external codec oracle or replacement for Swift differential/public lifecycle tests.
+
+At snapshot creation these sources are unexecuted. Execution receipts are stored in a new sibling directory and do not mutate this source snapshot. `run_safety.py --target row --receipt-dir NEW_PATH` prints the command; `--execute` requires an assigned CPU slot. The runner verifies every source hash and refuses to replace receipts. Build flags: `-O2 -g -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-sanitize-recover=all`.
+
+Version3 failed compilation before execution because a harness-only model-count replacement changed `trial%32` to `trial%DC_MODELS2`. Version4 corrects that single token; original failed sources/compile receipt remain intact. Production sources are unchanged.

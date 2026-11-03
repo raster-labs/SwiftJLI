@@ -1,0 +1,71 @@
+{
+  "kind": "completed local integration qualification",
+  "sourceRevision": "281f3635e003dde60819be21254e982a22b30f3d",
+  "productionEquivalentRevision": "e0cfea0fa2f702cb558f6896db03501efcd0b463",
+  "sourceAndPackageDiff": "empty, verified before and after gates",
+  "worktreeCleanAfterQualification": true,
+  "completedUTC": "2026-11-03T16:48:54.002979+00:00",
+  "phases": {
+    "release": {
+      "commandReceipt": "release-command.json",
+      "log": "release.log",
+      "exitCode": 0,
+      "tests": 447,
+      "suites": 76,
+      "firstAttempt": true,
+      "sanitizerDiagnostics": null
+    },
+    "asan": {
+      "commandReceipt": "asan-command.json",
+      "log": "asan.log",
+      "exitCode": 0,
+      "tests": 62,
+      "suites": 12,
+      "firstAttempt": true,
+      "sanitizerDiagnostics": 0
+    },
+    "tsan": {
+      "commandReceipt": "tsan-command.json",
+      "log": "tsan.log",
+      "exitCode": 0,
+      "tests": 62,
+      "suites": 12,
+      "firstAttempt": true,
+      "sanitizerDiagnostics": 0
+    }
+  },
+  "releaseProducts": {
+    "SwiftJLI.o": {
+      "path": "/private/tmp/swiftjli-round5-c-qualification-release-build/out/Products/Release/SwiftJLI.o",
+      "sha256": "16ed5ebc8146252116686b163ac078724e00156c2804ee450d5076003c760f4c",
+      "bytes": 1648152
+    },
+    "SwiftJLIEntropyC.o": {
+      "path": "/private/tmp/swiftjli-round5-c-qualification-release-build/out/Products/Release/SwiftJLIEntropyC.o",
+      "sha256": "1d28af2525dc540c81701a1e2b82d7dd7841acbf32075b1ed7775c90ce471dc8",
+      "bytes": 4440
+    }
+  },
+  "cObjectInstrumentation": "c-instrumentation.json",
+  "standaloneC": {
+    "receipt": "../c-extension-safety/qualification.json",
+    "combinedExactSource": "e0cfea0fa2f702cb558f6896db03501efcd0b463",
+    "combinedCases": 1393276,
+    "genericRowSeparateSource": "06eff275d4a2b72b3497748064311a38b288aa7d",
+    "genericRowCases": 1176591,
+    "note": "The row is a separately qualified standalone experiment, not part of this integration branch."
+  },
+  "covered": [
+    "C AC/DC+AC Swift differential corpus, category/precision limits, exact partial coefficients/cursor and malformed failure order.",
+    "Public integer/Float output, restart boundaries and caller padding through the selected C pipeline tests.",
+    "Joined pipeline producer cancellation/worker failure and internal scratch ownership/lifetime.",
+    "Compressed-input owner sharing, snapshots, concurrent reads and ordinary-scope release checks."
+  ],
+  "unexecuted": [
+    "Full-suite ASan/TSan: only the recorded focused filters ran with sanitizers.",
+    "New CLI/oracle/memory/performance benchmark gates in this CPU slot.",
+    "Linux, Intel, Swift6.2/6.3 or other platform/toolchain qualification.",
+    "Later code-zero/short-table row or SIMD transform experiments."
+  ],
+  "limits": "No sanitizer findings in these bounded runs is not a proof of all-input safety. Performance acceptance remains a separate root-owned decision. No shipping source was changed by this qualification task."
+}

@@ -102,6 +102,16 @@ swift run --package-path Examples/IndependentConsumer
 
 Set realistic ResourceLimits for compressed bytes, samples, metadata and workspace. Predictive working storage depends on the selected decode path, and DCT uses Float/coefficient workspace; required sharing eliminates a hand-off copy, not algorithm workspace. Conservative admission reservations and unmeasured peak fields are documented in the migration status. A preflight failure leaves an unwritten destination usable; failure after writing begins invalidates it.
 
+The internal `SwiftJLIEntropyC` target provides original bounded entropy kernels,
+with no external codec dependency or public API change. Automatic large UInt16
+left-predictor lossless rows with zero point transform can use portable C while
+continuing to report `scalarCPU`; explicit scalar policy retains the Swift path.
+Eligible accelerated greyscale DCT pipelines use a combined C DC/AC decoder.
+Input and table pointers remain scoped to the synchronous entropy producer;
+workers and output providers retain their existing ownership boundaries.
+See the [source-pinned qualification](Documentation/Migration/Qualification/DjpegPerformanceRound5_20261103/c-5f9e1cf/README.md)
+for exact sample, failure, copy, lifetime and platform evidence.
+
 ### Explicit memory admission
 
 Admission uses conservative reservations, not measured live workspace. For example,

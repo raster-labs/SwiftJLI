@@ -1,0 +1,29 @@
+{
+  "candidateRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "baseRevision": "281f3635e003dde60819be21254e982a22b30f3d",
+  "baseProductionEquivalent": "e0cfea0fa2f702cb558f6896db03501efcd0b463",
+  "rowOrigin": "b12f8ce9432975ddf6d271ae144d617d4dbf9216",
+  "status": "Source-only composed row; all new runtime qualification pending.",
+  "sourceSHA256": {
+    "Sources/SwiftJLI/JPEGCodec.swift": "4db105e225cdfd22bd19090810c02ce36f65e0df3ce9b1bf0cc0ac5c68c3b8b6",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "4e9f50b9580ab8c1a319ac8f829e1fe45eab087ce4e7c905f6e93b4743e5876f",
+    "Sources/SwiftJLI/Native/Entropy/CLosslessRowDecoder.swift": "a17651c4c7c8bbdb9899ded8d30f68cdf10ac84bd921853c9b2eef9fe3d33ca2",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": "bf3db4b56d0ea9602dac8700f5e0989d688e962a6b7f7da1673b048c09acdb83",
+    "Sources/SwiftJLIEntropyC/EntropyReader.h": "9031400c702b5d568f4e8abca08644ebfee255ae5e2a6df4082430f320c74293",
+    "Sources/SwiftJLIEntropyC/LosslessCodeZeroRow.c": "09b0c7a9f3d5848a7d6505246c16362fa3f5f0830a3823a7f419d7432dc1e40f",
+    "Sources/SwiftJLIEntropyC/LosslessRow.c": "5f24739af349177b581a5618d2d6c9511bdb6357ec8e9cbe0839f2ec0150bb94",
+    "Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h": "c5184b6712fa8ba16393937948beffa1f1c7d7fcf8d9d407082b4aecff030f82",
+    "Tests/SwiftJLITests/Native/CLosslessRowTests.swift": "243fe26efb9d5311a1c0a5f572e81c6104396850ed8420ee39d31961bf834906"
+  },
+  "changes": "Automatic-lossless flag passes directly through private decode parameters; TaskLocal context and AC/DC translation unit unchanged. Separate C row translation units retain qualified always_inline reader helpers. Existing row differential tests plus corrected provider-entry/partial-write/abort test.",
+  "sourceReview": "Independent source audit passed; no production correctness/ownership finding. Public failure-stage test corrected before pin.",
+  "unexecuted": [
+    "build",
+    "tests",
+    "performance",
+    "sanitizers",
+    "RSS",
+    "independent oracle",
+    "other platforms"
+  ]
+}

@@ -1,0 +1,750 @@
+{
+  "sourceRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "method": "Independent cjpeg/djpeg3.2.1 lossless sample oracles, both encoding directions. Synthetic12/16bit ramp and16bit noise; no point transform, predictor1, row-aligned restarts. CLI public decoding; full samples must equal source. Correctness only, not timing.",
+  "binarySHA256": "dfda666f9660b858743dc0008cc0c55217ff1426f3359cbca72e678c351fa5c8",
+  "cjpegSHA256": "99ec26a3a0d11e9ac925fa4cdfbda8b56660591d57a61e47ee7d7657f0611f69",
+  "djpegSHA256": "6d0302f8018b3322521cae94de7f58ab484db40f0cc8e0f0cb6e92d456fd5088",
+  "commands": [
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-swift.jpg",
+        "--mode",
+        "lossless",
+        "--predictor",
+        "1",
+        "--restart-interval",
+        "0"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.454320+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "12",
+        "-lossless",
+        "1,0",
+        "-optimize",
+        "-restart",
+        "0B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0.pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.794476+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-djpeg-swift.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.807469+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-swift.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-swift-swift.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.814881+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-djpeg-oracle.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.821254+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-oracle.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r0-swift-oracle.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.825344+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-swift.jpg",
+        "--mode",
+        "lossless",
+        "--predictor",
+        "1",
+        "--restart-interval",
+        "4096"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.836621+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "12",
+        "-lossless",
+        "1,0",
+        "-optimize",
+        "-restart",
+        "4096B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096.pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.843341+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-djpeg-swift.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.847134+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-swift.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-swift-swift.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.850881+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-djpeg-oracle.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.857386+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-oracle.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-12-2048x17-r4096-swift-oracle.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.861396+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-swift.jpg",
+        "--mode",
+        "lossless",
+        "--predictor",
+        "1",
+        "--restart-interval",
+        "0"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.872355+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "16",
+        "-lossless",
+        "1,0",
+        "-optimize",
+        "-restart",
+        "0B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0.pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.878900+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-djpeg-swift.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.882935+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-swift.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-swift-swift.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.887091+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-djpeg-oracle.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.893642+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-oracle.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r0-swift-oracle.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.897519+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-swift.jpg",
+        "--mode",
+        "lossless",
+        "--predictor",
+        "1",
+        "--restart-interval",
+        "4096"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.908465+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "16",
+        "-lossless",
+        "1,0",
+        "-optimize",
+        "-restart",
+        "4096B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096.pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.914783+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-djpeg-swift.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.918761+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-swift.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-swift-swift.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.922865+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-djpeg-oracle.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.929429+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-oracle.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/ramp-16-2048x17-r4096-swift-oracle.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.933859+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-swift.jpg",
+        "--mode",
+        "lossless",
+        "--predictor",
+        "1",
+        "--restart-interval",
+        "0"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.969255+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "16",
+        "-lossless",
+        "1,0",
+        "-optimize",
+        "-restart",
+        "0B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0.pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.977337+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-djpeg-swift.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.983426+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-swift.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-swift-swift.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.987978+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-djpeg-oracle.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:19.995555+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-oracle.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r0-swift-oracle.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:20.000639+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-swift.jpg",
+        "--mode",
+        "lossless",
+        "--predictor",
+        "1",
+        "--restart-interval",
+        "1026"
+      ],
+      "startedUTC": "2026-11-03T17:42:20.036845+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "16",
+        "-lossless",
+        "1,0",
+        "-optimize",
+        "-restart",
+        "1026B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026.pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:20.044674+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-djpeg-swift.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:20.050756+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-swift.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-swift-swift.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:20.055673+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-djpeg-oracle.pgm",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T17:42:20.063541+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-oracle.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/c-final-5f9e1cf/large-lossless-oracle/noise-16-513x257-r1026-swift-oracle.pgm",
+        "--output-format",
+        "pgm"
+      ],
+      "startedUTC": "2026-11-03T17:42:20.068774+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "profiles": [
+    {
+      "stem": "ramp-12-2048x17-r0",
+      "width": 2048,
+      "height": 17,
+      "bits": 12,
+      "restart": 0,
+      "sourceSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+      "outputs": [
+        {
+          "origin": "swift",
+          "jpegSHA256": "eb1ecfebaf8dd273df319966f0a1491bfb9dcfa85196f861ca34774dafab9756",
+          "djpegOutputSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+          "swiftOutputSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+          "samplesExact": true
+        },
+        {
+          "origin": "oracle",
+          "jpegSHA256": "eb1ecfebaf8dd273df319966f0a1491bfb9dcfa85196f861ca34774dafab9756",
+          "djpegOutputSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+          "swiftOutputSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+          "samplesExact": true
+        }
+      ]
+    },
+    {
+      "stem": "ramp-12-2048x17-r4096",
+      "width": 2048,
+      "height": 17,
+      "bits": 12,
+      "restart": 4096,
+      "sourceSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+      "outputs": [
+        {
+          "origin": "swift",
+          "jpegSHA256": "1aa87431462d95829c91d58e19c42bddf4476581fb593d8e79f17663b8031367",
+          "djpegOutputSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+          "swiftOutputSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+          "samplesExact": true
+        },
+        {
+          "origin": "oracle",
+          "jpegSHA256": "1aa87431462d95829c91d58e19c42bddf4476581fb593d8e79f17663b8031367",
+          "djpegOutputSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+          "swiftOutputSHA256": "b40faa841a41404d8c6cd645b98292aebd0dfba9c37f584bd60e39ba3ccf5eb9",
+          "samplesExact": true
+        }
+      ]
+    },
+    {
+      "stem": "ramp-16-2048x17-r0",
+      "width": 2048,
+      "height": 17,
+      "bits": 16,
+      "restart": 0,
+      "sourceSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+      "outputs": [
+        {
+          "origin": "swift",
+          "jpegSHA256": "a4332bb968a03cb9e9641aebe42bf2507b6b67f16676a552aa3bb87fe81ad97c",
+          "djpegOutputSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+          "swiftOutputSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+          "samplesExact": true
+        },
+        {
+          "origin": "oracle",
+          "jpegSHA256": "a4332bb968a03cb9e9641aebe42bf2507b6b67f16676a552aa3bb87fe81ad97c",
+          "djpegOutputSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+          "swiftOutputSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+          "samplesExact": true
+        }
+      ]
+    },
+    {
+      "stem": "ramp-16-2048x17-r4096",
+      "width": 2048,
+      "height": 17,
+      "bits": 16,
+      "restart": 4096,
+      "sourceSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+      "outputs": [
+        {
+          "origin": "swift",
+          "jpegSHA256": "23714fd2e7b5e1a1b75759949a8fe6c73e42453790d7a2feab52932f20cb41ab",
+          "djpegOutputSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+          "swiftOutputSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+          "samplesExact": true
+        },
+        {
+          "origin": "oracle",
+          "jpegSHA256": "23714fd2e7b5e1a1b75759949a8fe6c73e42453790d7a2feab52932f20cb41ab",
+          "djpegOutputSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+          "swiftOutputSHA256": "ce5c56f1b2b7398e5b2aab537c5ecde55e6f1211d5ac3a05b4d4857074298080",
+          "samplesExact": true
+        }
+      ]
+    },
+    {
+      "stem": "noise-16-513x257-r0",
+      "width": 513,
+      "height": 257,
+      "bits": 16,
+      "restart": 0,
+      "sourceSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+      "outputs": [
+        {
+          "origin": "swift",
+          "jpegSHA256": "12743b9672a298876fae21b4e41560eab8f390868c5b1f7a20babe156a2949e8",
+          "djpegOutputSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+          "swiftOutputSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+          "samplesExact": true
+        },
+        {
+          "origin": "oracle",
+          "jpegSHA256": "12743b9672a298876fae21b4e41560eab8f390868c5b1f7a20babe156a2949e8",
+          "djpegOutputSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+          "swiftOutputSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+          "samplesExact": true
+        }
+      ]
+    },
+    {
+      "stem": "noise-16-513x257-r1026",
+      "width": 513,
+      "height": 257,
+      "bits": 16,
+      "restart": 1026,
+      "sourceSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+      "outputs": [
+        {
+          "origin": "swift",
+          "jpegSHA256": "00106661808f513a71e6c93e6be7dd3d89805dc25fc69ee5d2d30db46e0b4ba4",
+          "djpegOutputSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+          "swiftOutputSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+          "samplesExact": true
+        },
+        {
+          "origin": "oracle",
+          "jpegSHA256": "00106661808f513a71e6c93e6be7dd3d89805dc25fc69ee5d2d30db46e0b4ba4",
+          "djpegOutputSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+          "swiftOutputSHA256": "9da738964915fbf6737e521461056a2255b2af3b0e5642b91791bba406033282",
+          "samplesExact": true
+        }
+      ]
+    }
+  ],
+  "status": "passed"
+}

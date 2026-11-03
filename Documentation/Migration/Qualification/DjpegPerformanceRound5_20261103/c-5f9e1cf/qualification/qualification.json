@@ -1,0 +1,77 @@
+{
+  "sourceRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "qualifiedBaseline": "281f3635e003dde60819be21254e982a22b30f3d",
+  "status": "completed local qualification; no production integration or performance acceptance inferred",
+  "worktreeUnchangedAndCleanAfterRuns": true,
+  "gates": [
+    {
+      "gate": "release",
+      "commandReceipt": "release-command.json",
+      "exitCode": 0,
+      "summary": {
+        "tests": 458,
+        "suites": 78,
+        "status": "passed"
+      }
+    },
+    {
+      "gate": "asan",
+      "commandReceipt": "asan-command.json",
+      "exitCode": 0,
+      "summary": {
+        "tests": 80,
+        "suites": 15,
+        "status": "passed"
+      }
+    },
+    {
+      "gate": "tsan",
+      "commandReceipt": "tsan-command.json",
+      "exitCode": 0,
+      "summary": {
+        "tests": 80,
+        "suites": 15,
+        "status": "passed"
+      }
+    }
+  ],
+  "unchangedQualifiedBoundaries": {
+    "Sources/SwiftJLI/NativeExecution.swift": true,
+    "Sources/SwiftJLIEntropyC/ACBlock.c": true
+  },
+  "cInstrumentationReceipt": "c-instrumentation.json",
+  "standalone": {
+    "receipt": "/private/tmp/swiftjli-round5-evidence/c-extension-safety/row-v4-composed-run1/command-receipt.json",
+    "cases": 1536287,
+    "compileExitCode": 0,
+    "runExitCode": 0,
+    "seed": "0xc0d0187a9b56e243",
+    "initialAttempt": "v3 compile exit1 before execution due harness-only trial%DC_MODELS2 substitution typo; retained separately; v4 corrects that single token",
+    "productionChangesDuringQualification": false
+  },
+  "releaseProducts": [
+    {
+      "path": "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/SwiftJLI.o",
+      "bytes": 1658840,
+      "sha256": "e2d04c7663b64c2a0d6d12efb527bb909a0aa6a8518e1be24102011eed6494f8",
+      "archive": "omit generated binary/object"
+    },
+    {
+      "path": "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/SwiftJLIEntropyC.o",
+      "bytes": 7584,
+      "sha256": "af98e78a51b1ee9a0bb05e209d0081e1f5201f3c977e659d342717f2331f6a36",
+      "archive": "omit generated binary/object"
+    }
+  ],
+  "notExecuted": [
+    "full-suite ASan/TSan",
+    "CLI/oracle checks in this slot",
+    "new performance or RSS measurements",
+    "cross-platform/remote CI",
+    "block-local IDCT/FMA composition qualification"
+  ],
+  "sourceAudit": {
+    "productionFindings": [],
+    "correctedTestCoverage": "Public invalid DHT category17 was preflight-only; source5f9e1cf instead uses admitted truncated entropy and records exact partial provider prefix, one borrow, one abort, no seal and write refusal. Native invalid-category sequencing remains covered."
+  }
+}

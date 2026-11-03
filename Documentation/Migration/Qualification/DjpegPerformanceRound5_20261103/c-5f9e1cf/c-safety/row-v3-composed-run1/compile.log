@@ -1,0 +1,8 @@
+/private/tmp/swiftjli-round5-evidence/c-extension-safety/v3-composed-row-source/row_safety.c:163:87: error: use of undeclared identifier 'DC_MODELS2'; did you mean 'DC_MODELS'?
+  163 |   size_t input_start=64+trial%8,input_count=(size_t)(random64()%129),samples=1+(trial%DC_MODELS2);
+      |                                                                                       ^~~~~~~~~~
+      |                                                                                       DC_MODELS
+/private/tmp/swiftjli-round5-evidence/c-extension-safety/v3-composed-row-source/safety_support.h:12:18: note: 'DC_MODELS' declared here
+   12 | enum { TABLES=8, DC_MODELS=21, RANDOM_CASES=1048576, INPUT_MAX=512, LARGE_INPUT=524288, BIT_CAPACITY=2097152 };
+      |                  ^
+1 error generated.

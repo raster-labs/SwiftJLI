@@ -2,6 +2,24 @@
 
 **Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
 
+**3 November 2026 C entropy follow-up:** source
+`5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd` adds original bounded C kernels
+for eligible DCT pipelines and automatic large UInt16 left-predictor lossless
+rows. Explicit scalar execution retains Swift. Public API, sample fidelity,
+resource ceilings, synchronous pointer borrows and joined-worker ownership are
+unchanged. Full local Release passes 458 tests in 78 suites; focused ASan and
+TSan each pass 80 tests in 15 suites, with all three C units instrumented.
+The standalone composed-row ASan/UBSan diagnostic passes 1,536,287 cases.
+CLI Release passes 252 checks; large independent lossless oracles pass 24 exact
+output comparisons, and 16 large DCT direction comparisons have maximum sample
+difference 1 within the unchanged 2/4 tolerances.
+[The source-pinned report](Qualification/DjpegPerformanceRound5_20261103/c-5f9e1cf/README.md)
+retains all commands, failed earlier experiments, provisional API/CLI timings,
+RSS and exclusions. Dense DCT and large ramp/noise decoding improve; small CLI,
+noisy/single-worker DCT and process-memory gaps keep the goal open. Current-source
+remote CI and additional platform gates remain pending. Smaller SIMD workspaces
+and serial C entropy trials remain unaccepted and are not included in this source.
+
 **3 November 2026 fifth performance follow-up:** source
 `14f35018d241666358480da2a8527d29ab047627` adds compact DC-only storage,
 canonical grouped reconstruction, and a joined entropy/reconstruction pipeline.

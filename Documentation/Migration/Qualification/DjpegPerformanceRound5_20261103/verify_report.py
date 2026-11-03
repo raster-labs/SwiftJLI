@@ -7,7 +7,7 @@ import runpy
 
 root = Path(__file__).resolve().parent
 runpy.run_path(str(root / "experiments" / "verify_archive.py"), run_name="__main__")
-for name in ("checkpoint-f4a05be", "pipeline-14f3501", "pipeline-cli-fd6e1a1"):
+for name in ("checkpoint-f4a05be", "pipeline-14f3501", "pipeline-cli-fd6e1a1", "c-5f9e1cf"):
     directory = root / name
     manifest = json.loads((directory / "manifest.json").read_text())
     entries = manifest["files"] + manifest.get("generatedFiles", [])
