@@ -142,8 +142,15 @@ struct BitWriter {
 /// stuffing-aware byte loads are only triggered to complete a read/symbol that
 /// then consumes them below 8 remaining bits). `alignToByte` relies on this to
 /// rewind `byteOffset` over buffered whole bytes exactly.
+/// Retains the immutable NSData owner for its cached buffer view. Every load
+/// explicitly extends that owner's lifetime. No Data-scoped pointer escapes,
+/// and workers construct local readers from retained, pointer-free owners.
 struct BitReader {
-    private let data: [UInt8]
+    private let data: JPEGBytes
+    // This pointer has NSData owner lifetime, not a scoped Data borrow lifetime.
+    // Every access below uses withExtendedLifetime(data). The reader is never
+    // Sendable or captured by a worker: each worker creates its own reader.
+    private let buffer: UnsafeRawBufferPointer
     /// Current byte position in the data buffer.
     private(set) var byteOffset: Int = 0
     /// Bit accumulator (MSB-first in the low `bitsAvailable` bits).
@@ -152,19 +159,30 @@ struct BitReader {
     private var bitsAvailable: Int = 0
 
     init(data: [UInt8]) {
+        self.init(data: JPEGBytes(data))
+    }
+
+    init(data: JPEGBytes) {
         self.data = data
+        self.buffer = data.ownedBuffer
     }
 
     /// Starts reading at `offset` — used by segment-parallel lossless decode,
     /// where each restart segment's reader begins just past its RST marker.
-    init(data: [UInt8], startingAt offset: Int) {
+    init(data: JPEGBytes, startingAt offset: Int) {
         self.data = data
-        self.byteOffset = min(max(0, offset), data.count)
+        self.buffer = data.ownedBuffer
+        self.byteOffset = min(max(0, offset), buffer.count)
+    }
+
+    @inline(__always)
+    private func byte(at index: Int) -> UInt8 {
+        withExtendedLifetime(data) { buffer[index] }
     }
 
     /// Whether there is more data to read.
     var hasMore: Bool {
-        byteOffset < data.count || bitsAvailable > 0
+        byteOffset < buffer.count || bitsAvailable > 0
     }
 
     /// Reads a single bit.
@@ -185,10 +203,9 @@ struct BitReader {
     /// ownership of both). Returns `false` when the bulk path doesn't apply.
     @inline(__always)
     private mutating func bulkRefill() -> Bool {
-        guard byteOffset + 8 <= data.count else { return false }
-        let word = data.withUnsafeBufferPointer { buf in
-            UInt64(bigEndian: UnsafeRawPointer(buf.baseAddress! + byteOffset)
-                .loadUnaligned(as: UInt64.self))
+        guard byteOffset + 8 <= buffer.count else { return false }
+        let word = withExtendedLifetime(data) {
+            UInt64(bigEndian: buffer.loadUnaligned(fromByteOffset: byteOffset, as: UInt64.self))
         }
         guard !Self.hasFFByte(word) else { return false }
         let k = (64 - bitsAvailable) >> 3          // whole bytes that fit (≥ 6 here)
@@ -323,11 +340,11 @@ struct BitReader {
     private mutating func fillBuffer(upTo target: Int) {
         if bitsAvailable < target, bulkRefill() { return }
         while bitsAvailable < target {
-            guard byteOffset < data.count else { return }
-            let byte = data[byteOffset]
+            guard byteOffset < buffer.count else { return }
+            let byte = self.byte(at: byteOffset)
             if byte == 0xFF {
-                guard byteOffset + 1 < data.count else { return }
-                if data[byteOffset + 1] != 0x00 { return }  // marker — leave for slow path
+                guard byteOffset + 1 < buffer.count else { return }
+                if self.byte(at: byteOffset + 1) != 0x00 { return }  // marker — leave for slow path
                 byteOffset += 2                               // consume the stuffed 0xFF 0x00
             } else {
                 byteOffset += 1
@@ -339,17 +356,17 @@ struct BitReader {
 
     /// Loads the next byte from the data, handling byte stuffing.
     private mutating func loadByte() throws {
-        guard byteOffset < data.count else {
+        guard byteOffset < buffer.count else {
             throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
         }
-        let byte = data[byteOffset]
+        let byte = self.byte(at: byteOffset)
         byteOffset += 1
 
         if byte == 0xFF {
-            guard byteOffset < data.count else {
+            guard byteOffset < buffer.count else {
                 throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
             }
-            let next = data[byteOffset]
+            let next = self.byte(at: byteOffset)
             if next == 0x00 {
                 // Byte stuffing — the 0xFF is a data byte
                 byteOffset += 1
@@ -385,20 +402,20 @@ struct BitReader {
     mutating func skipRestartMarker(expectedIndex: Int) throws {
         alignToByte()
         // Skip any 0xFF fill bytes that precede the marker.
-        while byteOffset < data.count - 1, data[byteOffset] == 0xFF,
-              data[byteOffset + 1] == 0xFF {
+        while byteOffset < buffer.count - 1, self.byte(at: byteOffset) == 0xFF,
+              self.byte(at: byteOffset + 1) == 0xFF {
             byteOffset += 1
         }
-        guard byteOffset + 1 < data.count else {
+        guard byteOffset + 1 < buffer.count else {
             throw JLIError.decodingFailed("Unexpected end of data expecting RST marker")
         }
-        guard data[byteOffset] == 0xFF else {
+        guard self.byte(at: byteOffset) == 0xFF else {
             throw JLIError.decodingFailed(
-                "Expected RST marker at offset \(byteOffset), got 0x\(String(format: "%02X", data[byteOffset]))"
+                "Expected RST marker at offset \(byteOffset), got 0x\(String(format: "%02X", self.byte(at: byteOffset)))"
             )
         }
         let expected = UInt8(0xD0 + (expectedIndex & 7))
-        let got = data[byteOffset + 1]
+        let got = self.byte(at: byteOffset + 1)
         guard got >= 0xD0 && got <= 0xD7 else {
             throw JLIError.decodingFailed(
                 "Expected RST\(expectedIndex & 7) (0xFF D\(expectedIndex & 7)), got 0xFF \(String(format: "%02X", got))"

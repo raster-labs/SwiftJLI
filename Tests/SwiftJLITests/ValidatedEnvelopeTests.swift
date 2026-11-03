@@ -46,7 +46,7 @@ import Testing
         let original = bytes
         let envelope = try JPEGEnvelope.validate(bytes, limits: .init())
         bytes.replaceSubrange(bytes.indices, with: [0, 1, 2])
-        #expect(envelope.bytes == original)
+        #expect(envelope.bytes.elementsEqual(original))
         var parser = MarkerReader(validated: envelope)
         let parsed = try parser.parse()
         #expect(parsed.frameInfo.width == 13 && parsed.frameInfo.height == 9)

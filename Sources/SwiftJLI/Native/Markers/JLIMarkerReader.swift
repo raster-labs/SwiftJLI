@@ -40,7 +40,7 @@ struct JPEGScanHeader: Sendable {
 /// A single scan's data extracted from the JPEG stream.
 struct JPEGScanData: Sendable {
     let header: JPEGScanHeader
-    let entropyData: [UInt8]
+    let entropyData: JPEGBytes
     /// Huffman tables in effect when this scan's SOS was parsed. Progressive
     /// JPEGs redefine DHT tables between scans, so each scan must use the
     /// snapshot active at its point in the stream, not a global merge.
@@ -85,20 +85,26 @@ struct ParsedJPEG: Sendable {
 
 /// Reads and parses JPEG marker segments from a byte buffer.
 struct MarkerReader {
-    private let data: [UInt8]
+    private let data: JPEGBytes
+    // Like BitReader, this synchronous non-Sendable parser retains an immutable
+    // NSData owner and explicitly extends its lifetime around every cached load.
+    private let buffer: UnsafeRawBufferPointer
     private var offset: Int = 0
     private let validatedEntropyRanges: [Range<Int>]?
     private var nextEntropyRange: Int = 0
 
     init(data: [UInt8]) {
-        self.data = data
+        let owned = JPEGBytes(data)
+        self.data = owned
+        self.buffer = owned.ownedBuffer
         self.validatedEntropyRanges = nil
     }
 
     /// Reuses entropy extents from structural admission of these exact bytes.
-    /// Both arrays remain owned values; no pointer or borrow escapes parsing.
+    /// The immutable owner is retained; no pointer or borrow escapes parsing.
     init(validated: JPEGEnvelope.Validated) {
         self.data = validated.bytes
+        self.buffer = validated.bytes.ownedBuffer
         self.validatedEntropyRanges = validated.entropyRanges
     }
 
@@ -108,7 +114,7 @@ struct MarkerReader {
 
         var frameInfo: JPEGFrameInfo?
 
-        while offset < data.count - 1 {
+        while offset < buffer.count - 1 {
             try NativeOperation.check()
             guard let marker = try nextMarker() else { break }
 
@@ -167,7 +173,7 @@ struct MarkerReader {
         var exifData: [UInt8]? = nil
         var iccChunks: [Int: [UInt8]] = [:]   // sequence number → chunk payload
 
-        while offset < data.count - 1 {
+        while offset < buffer.count - 1 {
             try NativeOperation.check()
             guard let marker = try nextMarker() else { break }
 
@@ -278,7 +284,7 @@ struct MarkerReader {
     // MARK: - Private Parsing Methods
 
     private mutating func validateSOI() throws {
-        guard data.count >= 2, data[0] == 0xFF, data[1] == 0xD8 else {
+        guard buffer.count >= 2, byte(at: 0) == 0xFF, byte(at: 1) == 0xD8 else {
             throw JLIError.invalidJPEGData
         }
         offset = 2
@@ -286,15 +292,15 @@ struct MarkerReader {
 
     /// Reads the next marker byte, skipping padding 0xFF bytes.
     private mutating func nextMarker() throws -> UInt8? {
-        while offset < data.count {
-            if data[offset] == 0xFF {
+        while offset < buffer.count {
+            if byte(at: offset) == 0xFF {
                 offset += 1
                 // Skip padding 0xFF bytes
-                while offset < data.count && data[offset] == 0xFF {
+                while offset < buffer.count && byte(at: offset) == 0xFF {
                     offset += 1
                 }
-                if offset < data.count && data[offset] != 0x00 {
-                    let marker = data[offset]
+                if offset < buffer.count && byte(at: offset) != 0x00 {
+                    let marker = byte(at: offset)
                     offset += 1
                     return marker
                 }
@@ -309,7 +315,7 @@ struct MarkerReader {
     private mutating func skipSegment() throws {
         let length = try readUInt16()
         let skip = Int(length) - 2
-        guard skip >= 0, offset + skip <= data.count else {
+        guard skip >= 0, offset + skip <= buffer.count else {
             throw JLIError.decodingFailed("Invalid segment length")
         }
         offset += skip
@@ -321,10 +327,10 @@ struct MarkerReader {
     private mutating func readSegmentBytes() throws -> [UInt8] {
         let length = try readUInt16()
         let n = Int(length) - 2
-        guard n >= 0, offset + n <= data.count else {
+        guard n >= 0, offset + n <= buffer.count else {
             throw JLIError.decodingFailed("Invalid segment length")
         }
-        let bytes = Array(data[offset..<offset + n])
+        let bytes = data.withUnsafeBytes { Array($0[offset..<offset + n]) }
         offset += n
         return bytes
     }
@@ -481,20 +487,19 @@ struct MarkerReader {
     /// stuffed `0xFF 0x00` pairs **and** restart markers (`0xFF 0xD0`–`0xFF 0xD7`).
     /// `BitReader` is the single point that performs unstuffing, and the decoder consumes
     /// restart markers explicitly at known MCU boundaries via `skipRestartMarker`.
-    private mutating func readEntropyData() throws -> [UInt8] {
+    private mutating func readEntropyData() throws -> JPEGBytes {
         // The segment is a verbatim slice (stuffed pairs and RST markers stay
         // in; `BitReader` unstuffs), so only the END needs finding: scan to the
         // first 0xFF whose successor is neither 0x00 (stuffing) nor 0xD0–0xD7
         // (RST0–7) — or a trailing lone 0xFF — leaving `offset` on the 0xFF for
-        // nextMarker(). One slice copy replaces the previous per-byte append
-        // (which paid an Array uniqueness check + growth per byte and showed up
-        // at ~7-9% of a whole lossless decode).
+        // nextMarker(). The slice retains the immutable compressed owner and
+        // rebases indices without copying entropy bytes.
         let start = offset
         let pos: Int
         if let ranges = validatedEntropyRanges {
             guard nextEntropyRange < ranges.count,
                   ranges[nextEntropyRange].lowerBound == start,
-                  ranges[nextEntropyRange].upperBound <= data.count else {
+                  ranges[nextEntropyRange].upperBound <= buffer.count else {
                 throw JLIError.decodingFailed("Validated entropy extent does not match scan")
             }
             try NativeOperation.check()
@@ -504,16 +509,21 @@ struct MarkerReader {
             pos = try JPEGEntropyBoundary.find(in: data, from: start)
         }
         offset = pos
-        return Array(data[start..<pos])
+        return data.rebasedSlice(start..<pos)
     }
 
     // MARK: - Byte Reading Primitives
 
+    @inline(__always)
+    private func byte(at index: Int) -> UInt8 {
+        withExtendedLifetime(data) { buffer[index] }
+    }
+
     private mutating func readByte() throws -> UInt8 {
-        guard offset < data.count else {
+        guard offset < buffer.count else {
             throw JLIError.decodingFailed("Unexpected end of JPEG data")
         }
-        let byte = data[offset]
+        let byte = self.byte(at: offset)
         offset += 1
         return byte
     }

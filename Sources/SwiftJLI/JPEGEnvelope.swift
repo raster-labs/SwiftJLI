@@ -7,21 +7,36 @@ import Foundation
 enum JPEGEnvelope {
     /// Owns the exact immutable bytes whose segment and entropy extents passed
     /// admission. The private constructor prevents a parser from mixing ranges
-    /// validated against one input with another input. Array value semantics
+    /// validated against one input with another input. Data value semantics
     /// retain the owner without making another full-input copy.
     struct Validated {
-        let bytes: [UInt8]
+        let bytes: JPEGBytes
         let adobeTransform: UInt8?
         let entropyRanges: [Range<Int>]
 
-        fileprivate init(bytes: [UInt8], adobeTransform: UInt8?, entropyRanges: [Range<Int>]) {
+        fileprivate init(bytes: JPEGBytes, adobeTransform: UInt8?, entropyRanges: [Range<Int>]) {
             self.bytes = bytes
             self.adobeTransform = adobeTransform
             self.entropyRanges = entropyRanges
         }
     }
 
-    static func validate(_ b: [UInt8], limits: ResourceLimits) throws -> Validated {
+    static func validate(_ bytes: [UInt8], limits: ResourceLimits) throws -> Validated {
+        try validate(JPEGBytes(bytes), limits: limits)
+    }
+
+    static func validate(_ data: Data, limits: ResourceLimits) throws -> Validated {
+        try validate(JPEGBytes(data), limits: limits)
+    }
+
+    private static func validate(_ bytes: JPEGBytes, limits: ResourceLimits) throws -> Validated {
+        try bytes.withUnsafeBytes { try validate($0, owner: bytes, limits: limits) }
+    }
+
+    /// Pointer access remains inside the owner's synchronous borrow. Only the
+    /// immutable owner and checked integer ranges are returned in Validated.
+    private static func validate(_ b: UnsafeRawBufferPointer, owner: JPEGBytes,
+                                 limits: ResourceLimits) throws -> Validated {
         func malformed() -> CodecError { .init(.malformedInput, "Invalid JPEG marker envelope.") }
         guard b.count >= 4, b[0] == 255, b[1] == 216 else { throw malformed() }
         var p = 2, sawFrame = false, sawScan = false, metadata = 0, iccBytes = 0
@@ -47,7 +62,7 @@ enum JPEGEnvelope {
                 if let adobeTransform, (frameMarker == 0xC3 ? adobeTransform != 0 : adobeTransform > 1) {
                     throw CodecError(.unsupportedFeature, "JPEG colour transform is unsupported for this frame.")
                 }
-                return Validated(bytes: b, adobeTransform: adobeTransform, entropyRanges: entropyRanges)
+                return Validated(bytes: owner, adobeTransform: adobeTransform, entropyRanges: entropyRanges)
             }
             guard marker != 0, marker != 216, !(208...215).contains(marker), p + 2 <= b.count else { throw malformed() }
             let length = Int(b[p]) * 256 + Int(b[p + 1])

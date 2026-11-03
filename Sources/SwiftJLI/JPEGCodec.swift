@@ -241,11 +241,10 @@ enum JPEGCodec {
 
     static func parse(_ data: Data, options: DecodeOptions, sourceColourModel: JPEGSourceColourModel? = nil) throws -> ParsedJPEG {
         let limits = options.resourceLimits
-        // Bound copies/table storage before materialising the array or parsing.
+        // Retain the existing conservative parser/table admission before parsing.
         let parserBudget = try checkedAdd(checkedMultiply(data.count, 64), 1_048_576)
         try admit(workspace: parserBudget, pixels: 0, compressed: data.count, metadata: 0, limits: limits)
-        let bytes = Array(data)
-        let envelope = try JPEGEnvelope.validate(bytes, limits: limits)
+        let envelope = try JPEGEnvelope.validate(data, limits: limits)
         let adobeTransform = envelope.adobeTransform
         var reader = MarkerReader(validated: envelope)
         var parsed = try reader.parse()
