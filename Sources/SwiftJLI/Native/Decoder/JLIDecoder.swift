@@ -1112,6 +1112,13 @@ struct JLIDecoder: Sendable {
     ) throws {
         try validateGreyscaleDestination(destination, width: width, height: height,
                                          precision: precision, floatOutput: floatOutput)
+        if plan.pipelined && NativeOperation.workerLimit > 1 {
+            try PipelinedGreyscaleDecoder.decode(reader: &reader,
+                dcTable: dcTable, acTable: acTable, lookup: lookup, quantTable: quantTable,
+                plan: plan, width: width, height: height, precision: precision,
+                restartInterval: restartInterval, floatOutput: floatOutput, destination: destination)
+            return
+        }
         if plan.parallelLanes > 1 {
             try ParallelSequentialGreyscaleDecoder.decode(reader: &reader,
                 dcTable: dcTable, acTable: acTable, lookup: lookup, quantTable: quantTable,

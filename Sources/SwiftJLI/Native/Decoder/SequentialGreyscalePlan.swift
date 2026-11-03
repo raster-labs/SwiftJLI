@@ -15,6 +15,7 @@ struct SequentialGreyscalePlan: Sendable {
     let blockCount: Int
     let batchBlocks: Int
     let parallelLanes: Int
+    let pipelined: Bool
     /// The selected scan-local AC table proves every AC coefficient is zero.
     let dcOnlyTable: Bool
     /// Payload of one Int32 coefficient/output batch and one Float IDCT scratch.
@@ -59,10 +60,11 @@ struct SequentialGreyscalePlan: Sendable {
         // A changing active-CPU count may execute fewer lanes, but cannot change
         // this allocation/admission decision based on the immutable ceiling.
         let serialThreshold = backend == .accelerated ? maximumAutomaticBlocks : maximumAutomaticScalarBlocks
+        let pipelined = !dcOnlyTable && backend == .accelerated && workerLimit >= 2 && blockCount >= 2048
         let parallelLanes: Int
         // Compact DC storage always uses one canonical batch, even for a
         // large image that would otherwise select a parallel window.
-        if dcOnlyTable || workerLimit == 1 || blockCount <= serialThreshold { parallelLanes = 1 }
+        if pipelined || dcOnlyTable || workerLimit == 1 || blockCount <= serialThreshold { parallelLanes = 1 }
         else {
             parallelLanes = min(maximumParallelLanes, min(workerLimit, blockCount / 2048))
             guard parallelLanes > 1 else { return nil }
@@ -70,9 +72,9 @@ struct SequentialGreyscalePlan: Sendable {
         let batchBlocks = min(try checkedMultiply(maximumBatchBlocks, parallelLanes), blockCount)
         let samples = try checkedMultiply(batchBlocks, dcOnlyTable ? 1 : 64)
         let bytesPerSample = try checkedAdd(MemoryLayout<Int32>.stride, MemoryLayout<Float>.stride)
-        let workspaceBytes = try checkedMultiply(samples, bytesPerSample)
+        let workspaceBytes = pipelined ? 786_432 : try checkedMultiply(samples, bytesPerSample)
         return Self(blocksPerRow: blocksPerRow, blockRows: blockRows,
                     blockCount: blockCount, batchBlocks: batchBlocks,
-                    parallelLanes: parallelLanes, dcOnlyTable: dcOnlyTable, workspaceBytes: workspaceBytes)
+                    parallelLanes: parallelLanes, pipelined: pipelined, dcOnlyTable: dcOnlyTable, workspaceBytes: workspaceBytes)
     }
 }

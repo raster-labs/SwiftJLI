@@ -211,12 +211,13 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
             let atThreshold = replacingGeometry(width: 8, height: threshold * 8)
             let plan = try #require(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend))
-            #expect(plan.blockCount == threshold && plan.batchBlocks == 1024 && plan.workspaceBytes == 524_288)
+            #expect(plan.blockCount == threshold && plan.batchBlocks == 1024)
+            #expect(plan.workspaceBytes == (backend == .accelerated ? 786_432 : 524_288))
             let aboveThreshold = replacingGeometry(width: 8, height: (threshold + 1) * 8)
             let above = try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend)
             if backend == .accelerated {
-                #expect(above?.parallelLanes == 2 && above?.batchBlocks == 2048 && above?.workspaceBytes == 1_048_576)
+                #expect(above?.pipelined == true && above?.batchBlocks == 1024 && above?.workspaceBytes == 786_432)
             } else { #expect(above == nil) }
             #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: backend)?.workspaceBytes == 524_288)
@@ -235,9 +236,11 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
             for workers in [1, 2, 3, 8, 64] {
                 let plan = try #require(try SequentialGreyscalePlan.make(parsed: large, configuration: .default,
                     hasDestination: true, normaliseXYBOutput: false, workerLimit: workers, backend: backend))
-                let lanes = min(workers, 8)
+                let pipeline = backend == .accelerated && workers > 1
+                let lanes = pipeline ? 1 : min(workers, 8)
+                #expect(plan.pipelined == pipeline)
                 #expect(plan.parallelLanes == lanes && plan.batchBlocks == lanes * 1024)
-                #expect(plan.workspaceBytes == lanes * 524_288)
+                #expect(plan.workspaceBytes == (pipeline ? 786_432 : lanes * 524_288))
             }
         }
     }
@@ -288,10 +291,12 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
             sampleStride: 1, pixelStride: 1, rowBytes: rowBytes, byteCount: 3 + rowBytes * height)
         let descriptor = try ImageDescriptor(width: width, height: height,
             sampleType: .unsignedInteger, storageBits: 8, meaningfulBits: 8, planes: [plane])
-        // 4225 blocks select two canonical groups: two 512 KiB windows.
-        let workspace = data.count * 64 + 1_048_576 + 1_048_576
-        let total = data.count + storageBytes + workspace
+        // Accelerated scans use two coefficient slots and one IDCT scratch;
+        // scalar scans retain the two-lane grouped reservation.
         for backend in Decoder.capabilities.availableBackends {
+            let payload = backend == .accelerated ? 786_432 : 1_048_576
+            let workspace = data.count * 64 + payload + 1_048_576
+            let total = data.count + storageBytes + workspace
             let storage = try WorkspaceObservedStorage(byteCount: storageBytes)
             let destination = try ImageDestination(descriptor: descriptor, storage: storage)
             expectWorkspaceDenial {

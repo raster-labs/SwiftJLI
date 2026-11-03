@@ -159,7 +159,7 @@ enum ParallelSequentialGreyscaleDecoder {
     /// The destination layout was checked before entering the decoder. Each
     /// group retains its original 4-byte coefficient slot; compacted byte tiles
     /// occupy its prefix. Copy only active rows/columns, preserving all padding.
-    private static func scatterWindow(_ coefficients: UnsafeMutableBufferPointer<Int32>,
+    static func scatterWindow(_ coefficients: UnsafeMutableBufferPointer<Int32>,
                                       firstBlock: Int, blocksPerRow: Int, width: Int, height: Int,
                                       destination: BorrowedSampleDestination) throws {
         let source = UnsafeRawPointer(coefficients.baseAddress!), bps = destination.bytesPerSample
