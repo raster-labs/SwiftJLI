@@ -1,0 +1,71 @@
+{
+  "sourceRevision": "0d56e447664b09ece1bcb0213c34e8b6c9922e31",
+  "commands": [
+    {
+      "command": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "-O3",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-target",
+        "arm64-apple-macos26.0",
+        "-isysroot",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+        "-I",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/include",
+        "-c",
+        "/private/tmp/swiftjli-round5-evidence/combined-prefill/owned-output/jpeg_bench.c",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/combined-prefill/owned-output/jpeg_bench.o"
+      ],
+      "exitCode": 0,
+      "log": "build-0.log"
+    },
+    {
+      "command": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+        "-O",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-strict-concurrency=complete",
+        "-target",
+        "arm64-apple-macos26.0",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+        "-I",
+        "/private/tmp/swiftjli-round5-build/out/Products/Release",
+        "-I",
+        "/private/tmp/swiftjli-round5-evidence/combined-prefill/owned-output",
+        "/private/tmp/swiftjli-round5-build/out/Products/Release/SwiftJLI.o",
+        "/private/tmp/swiftjli-round5-evidence/combined-prefill/owned-output/jpeg_bench.o",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/lib/libjpeg.a",
+        "-framework",
+        "Accelerate",
+        "/private/tmp/swiftjli-round5-evidence/combined-prefill/owned-output/Compare.swift",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/combined-prefill/owned-output/compare"
+      ],
+      "exitCode": 0,
+      "log": "build-1.log"
+    }
+  ],
+  "sourceSHA256": {
+    "Compare.swift": "ef66fdbf6b2202c75da5b4e036b695889effe4af05cf8a88e6c38cccc44f5ce6",
+    "jpeg_bench.c": "6679359f5de61cbcf838cdfad15b0730420db230a56e883f8bd907bd4fa218d0",
+    "jpeg_bench.h": "79acda76a528f8246626628a34c0183d72d166903c7c6b838d51ef5c43cd3b09",
+    "module.modulemap": "25ec4ff0430e3904d36b1d8ce3608eeae79ac5aa608951ca29b5d34203991c07",
+    "build.py": "bb2ebca667772793a0fe2d44c9c760ed2bbf40bcb2bd97371b8558fb7d5a1921",
+    "run.py": "acf4c53bcc100906b21a14d84f268fceeebd94e63ec9f94128e5988a43b4afc1"
+  },
+  "SwiftJLIObjectSHA256": "6f63f19eb9114972662acf66e7ada1dcbf3a1f22df10cbd0eaf12dbdd5dfc0fb",
+  "libjpegArchive": "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/lib/libjpeg.a",
+  "libjpegArchiveSHA256": "6442fb105eea6691a2e1eec07b21ab49c65d8813eff22791a6f204f264e914ef",
+  "jpeglibHeaderSHA256": "dc3e8220f34b7e9f9e48620f5cb8dc070834feb3214bb12bbad78478ebb29e60",
+  "compilerSHA256": "448457da9a8a56741f2c8c4b8931e85b7377fc009c16918cd8ac1a8a3210ea1f",
+  "compilerVersion": "swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)\nTarget: arm64-apple-macosx27.0.0\n",
+  "binarySHA256": "82461fd42ac9583fe80940b0b93424879481c69b8de840afaa31345953eca65b",
+  "loadedLibraries": "/private/tmp/swiftjli-round5-evidence/combined-prefill/owned-output/compare:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.40.3)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5027.1.8)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.1.8)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/swift/libswiftAccelerate.dylib (compatibility version 1.0.0, current version 82.0.0, weak)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)\n\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1605.40.4)\n\t/usr/lib/swift/libswiftIOKit.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 383.1.0, weak)\n\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 973.1.0, weak)\n\t/usr/lib/swift/libswiftSynchronization.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 167.0.2, weak)\n\t/usr/lib/swift/libswift_Builtin_float.dylib (compatibility version 0.0.0, current version 0.0.0, weak)\n\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1090.40.3, weak)\n\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 25.0.0, weak)\n"
+}

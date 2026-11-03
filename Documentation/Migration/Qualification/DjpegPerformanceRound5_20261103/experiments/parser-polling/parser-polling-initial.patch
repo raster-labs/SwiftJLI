@@ -1,0 +1,197 @@
+diff --git a/Sources/SwiftJLI/JPEGEnvelope.swift b/Sources/SwiftJLI/JPEGEnvelope.swift
+index de816ef..e0a55d2 100644
+--- a/Sources/SwiftJLI/JPEGEnvelope.swift
++++ b/Sources/SwiftJLI/JPEGEnvelope.swift
+@@ -81,9 +81,14 @@ enum JPEGEnvelope {
+                       try checkedMultiply(width, height) <= limits.maximumPixels else {
+                     throw CodecError(.resourceLimitExceeded, "JPEG dimensions exceed operation limits.")
+                 }
+-                var ids = Set<UInt8>()
++                // Component IDs cover exactly 256 values. A bounded bit set
++                // avoids a heap-backed hash table for each small image.
++                var ids = SIMD4<UInt64>(repeating: 0)
+                 for c in 0..<nc {
+-                    guard ids.insert(b[start + 6 + c * 3]).inserted else { throw malformed() }
++                    let id = Int(b[start + 6 + c * 3])
++                    let lane = id >> 6, mask = UInt64(1) << (id & 63)
++                    guard ids[lane] & mask == 0 else { throw malformed() }
++                    ids[lane] |= mask
+                 }
+                 sawFrame = true; frameMarker = marker
+             case 0xDA:
+@@ -109,13 +114,17 @@ enum JPEGEnvelope {
+                 }
+                 guard q == end else { throw malformed() }
+             case 0xC4:
+-                var tableIDs = Set<UInt8>()
++                var tableIDs: UInt8 = 0
+                 var q = start
+                 while q < end {
+                     guard end - q >= 17, b[q] >> 4 <= 1, b[q] & 15 <= 3 else { throw malformed() }
+-                    guard tableIDs.insert(b[q]).inserted else {
++                    // The validated class (0/1) and ID (0...3) select one of
++                    // eight bits; redefinitions in later segments remain legal.
++                    let tableMask = UInt8(1) << ((b[q] >> 4) * 4 + (b[q] & 15))
++                    guard tableIDs & tableMask == 0 else {
+                         throw CodecError(.unsupportedFeature, "Repeated table definitions in one DHT segment are unsupported.")
+                     }
++                    tableIDs |= tableMask
+                     var symbols = 0, slots = 1
+                     for i in 1...16 {
+                         slots = slots * 2 - Int(b[q + i])
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index db3a779..2dd56fc 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -1171,8 +1171,17 @@ struct JLIDecoder: Sendable {
+         defer { history.deallocate() }
+         // w >= 1 has already been validated by decodeLossless.
+         guard let row = history.baseAddress else { return }
++        // Narrow rows share a bounded polling unit of at most 1024 samples.
++        // Wider rows retain their existing per-row boundary. Publication still
++        // checks cancellation/deadline after this synchronous kernel returns.
++        let rowsPerCheck = max(1, 1024 / w)
++        var rowsUntilCheck = 0
+         for y in 0..<h {
+-            try NativeOperation.check()
++            if rowsUntilCheck == 0 {
++                try NativeOperation.check()
++                rowsUntilCheck = rowsPerCheck
++            }
++            rowsUntilCheck -= 1
+             let segmentY = y % segmentRows
+             if y > 0, segmentY == 0 {
+                 try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift b/Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift
+index fec3dbc..6018f52 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift
+@@ -40,10 +40,13 @@ struct HuffmanTable {
+     /// - Parameters:
+     ///   - bits: 16-element array, where `bits[i]` is the number of codes of length `i+1`.
+     ///   - values: Symbol values in order of increasing code length.
+-    init(bits: [UInt8], values: [UInt8]) {
++    init(bits: [UInt8], values: [UInt8], decodingOnly: Bool = false) {
+         self.bits = bits
+         self.values = values
+-        var encoding = [(code: UInt16, length: UInt8)](repeating: (0, 0), count: 256)
++        // Parsed DHT tables are only consumed by decoders. Do not allocate an
++        // unused encoder map for each input table; encoder-created tables keep
++        // their complete map through the default constructor.
++        var encoding = [(code: UInt16, length: UInt8)](repeating: (0, 0), count: decodingOnly ? 0 : 256)
+ 
+         var maxC = [Int32](repeating: -1, count: 17)
+         var minC = [Int32](repeating: -1, count: 17)
+@@ -65,7 +68,9 @@ struct HuffmanTable {
+                 minC[bitLength] = Int32(code)
+                 for _ in 0..<count where valueIndex < values.count {
+                     let symbol = values[valueIndex]
+-                    encoding[Int(symbol)] = (UInt16(truncatingIfNeeded: code), UInt8(bitLength))
++                    if !decodingOnly {
++                        encoding[Int(symbol)] = (UInt16(truncatingIfNeeded: code), UInt8(bitLength))
++                    }
+                     // Fill every 8-bit lookahead slot whose top `bitLength` bits
+                     // equal this code. A canonical code of length ≤8 is < 256,
+                     // so `code << (8 - bitLength)` and its run stay in 0...255.
+diff --git a/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift b/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
+index 6b99b98..7a8f09e 100644
+--- a/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
++++ b/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
+@@ -444,7 +444,7 @@ struct MarkerReader {
+                 values.append(try readByte())
+             }
+ 
+-            let table = HuffmanTable(bits: bits, values: values)
++            let table = HuffmanTable(bits: bits, values: values, decodingOnly: true)
+             tables.append((tableClass: tableClass, tableId: tableId, table: table))
+         }
+ 
+diff --git a/Tests/SwiftJLITests/Native/LosslessRowStorageTests.swift b/Tests/SwiftJLITests/Native/LosslessRowStorageTests.swift
+index 48c1d2a..e7bde09 100644
+--- a/Tests/SwiftJLITests/Native/LosslessRowStorageTests.swift
++++ b/Tests/SwiftJLITests/Native/LosslessRowStorageTests.swift
+@@ -1,8 +1,40 @@
+ // SPDX-License-Identifier: Apache-2.0
+ import Testing
++import Synchronization
+ @testable import SwiftJLI
+ 
+ @Suite struct LosslessRowStorageTests {
++    @Test func narrowRowsObserveCancellationWithinBoundedSampleWork() throws {
++        let width = 19, height = 100
++        let image = try JLIImage(width: width, height: height, pixelFormat: .uint8,
++            colorModel: .grayscale, data: [UInt8](repeating: 42, count: width * height))
++        var configuration = JLIEncoderConfiguration(lossless: true)
++        configuration.losslessPrecision = 8
++        let jpeg = try JLIEncoder().encode(image, configuration: configuration)
++        var parser = MarkerReader(data: jpeg)
++        let parsed = try parser.parse()
++        let calls = Mutex(0)
++        var output = [UInt8](repeating: 0xA5, count: width * height)
++        #expect(throws: CancellationError.self) {
++            try output.withUnsafeMutableBytes { raw in
++                try NativeOperation.withSynchronousCancellation({
++                    let n = calls.withLock { $0 += 1; return $0 }
++                    if n >= 3 { throw CancellationError() }
++                }) {
++                    try NativeOperation.$current.withValue(.init(seconds: 60)) {
++                        try JLIDecoder().decodeSharedLossless(parsed, into: .init(
++                            bytes: raw, rowBytes: width, bytesPerSample: 1))
++                    }
++                }
++            }
++        }
++        // Cancellation after the first poll must stop partial decoding within
++        // one bounded unit; no output outside that unit may be touched.
++        let written = output.prefix(while: { $0 == 42 }).count
++        #expect(written > 0 && written <= 1024)
++        #expect(output.dropFirst(written).allSatisfy { $0 == 0xA5 })
++    }
++
+     /// Decode into an offset, odd-stride borrow and verify every byte outside
+     /// the sample payload, including the final row padding, remains untouched.
+     private func borrowed(_ jpeg: [UInt8], width: Int, height: Int, bps: Int) throws -> [UInt8] {
+diff --git a/Tests/SwiftJLITests/ValidatedEnvelopeTests.swift b/Tests/SwiftJLITests/ValidatedEnvelopeTests.swift
+index 7081911..5faa059 100644
+--- a/Tests/SwiftJLITests/ValidatedEnvelopeTests.swift
++++ b/Tests/SwiftJLITests/ValidatedEnvelopeTests.swift
+@@ -3,6 +3,39 @@ import Testing
+ @testable import SwiftJLI
+ 
+ @Suite struct ValidatedEnvelopeTests {
++    @Test func componentAndTableIDsRemainDistinctAtBitBoundaries() throws {
++        func segment(_ marker: UInt8, _ body: [UInt8]) -> [UInt8] {
++            let length = body.count + 2
++            return [255, marker, UInt8(length >> 8), UInt8(length & 255)] + body
++        }
++        // Structural admission accepts distinct byte IDs before profile checks.
++        // Exercise the complete ID domain, including zero and each 64-bit edge.
++        let identifiers: [UInt8] = [0, 63, 64, 127, 128, 191, 192, 255]
++        let tables: [[UInt8]] = [0, 1, 2, 3, 16, 17, 18, 19].map {
++            [UInt8($0), 1] + [UInt8](repeating: 0, count: 15) + [0]
++        }
++        func jpeg(ids: [UInt8], definitions: [[UInt8]]) -> [UInt8] {
++            let frame: [UInt8] = [8, 0, 1, 0, 1, UInt8(ids.count)]
++                + ids.flatMap { [$0, 17, 0] }
++            let scan: [UInt8] = [UInt8(ids.count)] + ids.flatMap { [$0, 0] } + [1, 0, 0]
++            return [255, 216] + segment(195, frame)
++                + segment(196, definitions.flatMap { $0 }) + segment(218, scan) + [0, 255, 217]
++        }
++        _ = try JPEGEnvelope.validate(jpeg(ids: identifiers, definitions: tables), limits: .init())
++        for index in identifiers.indices.dropFirst() {
++            var repeated = identifiers
++            repeated[index] = identifiers[index - 1]
++            #expect(throws: CodecError.self) {
++                try JPEGEnvelope.validate(jpeg(ids: repeated, definitions: tables), limits: .init())
++            }
++        }
++        for table in tables {
++            #expect(throws: CodecError.self) {
++                try JPEGEnvelope.validate(jpeg(ids: identifiers, definitions: tables + [table]), limits: .init())
++            }
++        }
++    }
++
+     @Test func reusedExtentsMatchIndependentMarkerTraversal() throws {
+         // Existing independent cjpeg fixtures include stuffed bytes, restarts,
+         // progressive scans and Huffman table redefinitions between scans.

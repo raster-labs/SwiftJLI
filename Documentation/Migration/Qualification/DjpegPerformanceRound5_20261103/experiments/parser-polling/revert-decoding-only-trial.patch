@@ -1,0 +1,44 @@
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift b/Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift
+index 6018f52..fec3dbc 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift
+@@ -40,13 +40,10 @@ struct HuffmanTable {
+     /// - Parameters:
+     ///   - bits: 16-element array, where `bits[i]` is the number of codes of length `i+1`.
+     ///   - values: Symbol values in order of increasing code length.
+-    init(bits: [UInt8], values: [UInt8], decodingOnly: Bool = false) {
++    init(bits: [UInt8], values: [UInt8]) {
+         self.bits = bits
+         self.values = values
+-        // Parsed DHT tables are only consumed by decoders. Do not allocate an
+-        // unused encoder map for each input table; encoder-created tables keep
+-        // their complete map through the default constructor.
+-        var encoding = [(code: UInt16, length: UInt8)](repeating: (0, 0), count: decodingOnly ? 0 : 256)
++        var encoding = [(code: UInt16, length: UInt8)](repeating: (0, 0), count: 256)
+ 
+         var maxC = [Int32](repeating: -1, count: 17)
+         var minC = [Int32](repeating: -1, count: 17)
+@@ -68,9 +65,7 @@ struct HuffmanTable {
+                 minC[bitLength] = Int32(code)
+                 for _ in 0..<count where valueIndex < values.count {
+                     let symbol = values[valueIndex]
+-                    if !decodingOnly {
+-                        encoding[Int(symbol)] = (UInt16(truncatingIfNeeded: code), UInt8(bitLength))
+-                    }
++                    encoding[Int(symbol)] = (UInt16(truncatingIfNeeded: code), UInt8(bitLength))
+                     // Fill every 8-bit lookahead slot whose top `bitLength` bits
+                     // equal this code. A canonical code of length ≤8 is < 256,
+                     // so `code << (8 - bitLength)` and its run stay in 0...255.
+diff --git a/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift b/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
+index 7a8f09e..6b99b98 100644
+--- a/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
++++ b/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
+@@ -444,7 +444,7 @@ struct MarkerReader {
+                 values.append(try readByte())
+             }
+ 
+-            let table = HuffmanTable(bits: bits, values: values, decodingOnly: true)
++            let table = HuffmanTable(bits: bits, values: values)
+             tables.append((tableClass: tableClass, tableId: tableId, table: table))
+         }
+ 

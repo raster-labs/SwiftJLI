@@ -1,0 +1,26 @@
+{
+  "baselineSource": "0a8acd72ddeac6fb1911457ae28b689eef0e9db1 (production identical atbbb0b1a)",
+  "candidateSource": "bcd0903",
+  "status": "read-only codegen finding; timing confirmation pending",
+  "objects": {
+    "baseline": {
+      "path": "/private/tmp/swiftjli-round4-build/out/Products/Release/SwiftJLI.o",
+      "sha256": "c98eeb52d679a6879d84dc91ce1ca313e89d2dc003e70e5f666f2c16f436e9cf"
+    },
+    "candidate": {
+      "path": "/private/tmp/swiftjli-round5-build/out/Products/Release/SwiftJLI.o",
+      "sha256": "4b9ac659d9e9b91ad93be66a0c9111be11e33c9001f4d29d78e35b4f50d57904"
+    }
+  },
+  "binaries": {
+    "baseline": {
+      "path": "/private/tmp/swiftjli-round5-evidence/isolated-small-kernel/native-baseline",
+      "sha256": "1a48cf9a5194368a717bffe73bc042edd9a14a00cbfa727d6b4f73e876eaf51f"
+    },
+    "candidate": {
+      "path": "/private/tmp/swiftjli-round5-evidence/isolated-small-kernel/native-candidate",
+      "sha256": "22e7a83f5b48b6409b85c9c0a6fbb879c097b856bb38b4fd1c1109af523de6b7"
+    }
+  },
+  "finding": "Candidate outlined losslessGrayInto loses validated point-transform range propagation and 16-bit store fusion; baseline has bounded lsl/clamp/sturh, candidate repeats general signed-shift bounds and two byte stores. Existing per-sample losslessDifference calls are present in both."
+}

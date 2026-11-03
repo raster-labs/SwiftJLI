@@ -1,0 +1,30 @@
+{
+  "sourceRevision": "bbb0b1a9a602807643fc254fb4e0d54a162d5ae8",
+  "compileToolchain": "Apple Swift 6.3.3 / Xcode 26.6 (CI)",
+  "localRuntimeNote": "Local Xcode 27.2 / Swift 6.4.2 and macOS 27.0.1; cannot establish CI acceptance.",
+  "command": [
+    "/usr/bin/xcrun",
+    "lldb",
+    "--batch",
+    "-o",
+    "settings set target.env-vars DYLD_FRAMEWORK_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+    "-o",
+    "run",
+    "-k",
+    "register read x0 x1 x2 x25 pc",
+    "-k",
+    "thread backtrace",
+    "-k",
+    "disassemble -n swift_task_localValuePushImpl -c 24",
+    "--",
+    "/private/tmp/swiftjli-round5-evidence/ci-41602314446/local-runner/swiftpm-testing-helper",
+    "--test-bundle-path",
+    "/private/tmp/swiftjli-round5-evidence/ci-41602314446/arm64-artifact/Users/runner/work/SwiftJLI/SwiftJLI/.build/arm64-apple-macosx/release/SwiftJLIPackageTests.xctest/Contents/MacOS/SwiftJLIPackageTests",
+    "--testing-library",
+    "swift-testing",
+    "--filter",
+    "CLISynchronousExecutionTests/hostDeadlineAndMalformedCategoriesRemainDistinct"
+  ],
+  "timeoutSeconds": 60,
+  "resourceNote": "Fixture resource bundle copied from the local build of the same tracked resources; helper copied into a temporary directory so Bundle.main resolves them without modifying Xcode."
+}

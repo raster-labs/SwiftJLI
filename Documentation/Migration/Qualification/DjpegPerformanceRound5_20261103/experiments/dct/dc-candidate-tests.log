@@ -1,0 +1,221 @@
+Building for production...
+[Pre-planning 1 / 154]
+[Planning deferred tasks]
+[1 / 4]
+[2 / 5] SwiftJLI
+[3 / 6] SwiftJLI
+[17 / 29] SwiftJLITests-product
+[17 / 29] swiftjli-cli-product
+[20 / 31] swiftjli-cli-product
+[22 / 31] swiftjli-cli-product
+/private/tmp/swiftjli-round5-dct/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-round5-dct/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:37:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 35 |                     var reader = BitReader(data: writer.data)
+ 36 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 37 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 38 |                     try destination.withUnsafeMutableBufferPointer {
+ 39 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+[22 / 31] SwiftJLITests-product
+[26 / 30] SwiftJLITests-product
+[28 / 30] SwiftJLITests-product
+[29 / 29] swiftjli-cli-product
+Build complete! (48.94 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Float32 decode output" started.
+◇ Suite "Progressive JPEG decode" started.
+◇ Suite BoundedDCTWorkspaceTests started.
+◇ Suite SharedDCTStorageTests started.
+◇ Suite JPEGDecodeParityTests started.
+◇ Suite ScaledDecodeTests started.
+◇ Suite AdvancedDCTTests started.
+◇ Suite DCOnlyDCTTests started.
+◇ Suite "DCT – Forward and Inverse Discrete Cosine Transform" started.
+◇ Suite "Encoder & Decoder – Full JPEG Pipeline" started.
+◇ Test "Progressive encode round-trips identically to baseline (grayscale)" started.
+◇ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() started.
+◇ Test "12-bit grayscale float32 rounds to the uint16 value (carries sub-integer precision)" started.
+◇ Test "Lossless float32 is rejected (use the bit-exact integer output)" started.
+◇ Test laterEntropyFailureInvalidatesStreamedDestination() started.
+◇ Test "Progressive decode matches baseline decode pixel-for-pixel" started.
+◇ Test "8-bit grayscale float32 == round to the uint8 output, per sample" started.
+◇ Test "Progressive JPEG is detected by inspect" started.
+◇ Test publicAdaptiveProfilesMatchNative(components:jpegli:) started.
+◇ Test "Setting .float32 no longer throws (latent bufferSizeMismatch fixed)" started.
+◇ Test previewsStillAdmitFullFrameWorkspace() started.
+◇ Test "Progressive successive-approximation encode round-trips identically (color)" started.
+◇ Test "Progressive encode round-trips identically to baseline (color)" started.
+◇ Test independentChroma(_:) started.
+◇ Test centredChromaAgreesAcrossWorkerLimits() started.
+◇ Test sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() started.
+◇ Test "YCbCr color float32 is rejected with a clear error" started.
+◇ Test "Progressive successive-approximation encode round-trips identically (grayscale)" started.
+◇ Test amplifiedExtremesTailsAndMixedACKeepExactOutput() started.
+◇ Test borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test rawRGBAdobe(precision:) started.
+◇ Test "Progressive + restart round-trips identically to no-restart and is djpeg-shaped" started.
+◇ Test "DCT preserves energy (Parseval's theorem)" started.
+◇ Test adaptiveOptionsRejectInapplicableCombinations() started.
+◇ Test case passing 1 argument precision → 8 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test rawRGBIdentifiersAndSourceOverride() started.
+◇ Test scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test "Batched inverse DCT matches per-block inverse DCT" started.
+◇ Test case passing 1 argument precision → 12 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test boundedCompleteCodestreamAndPadding() started.
+◇ Test "Forward then inverse DCT round-trips correctly" started.
+◇ Test "Cosine matrix is orthonormal" started.
+◇ Test "Forward DCT of constant block concentrates energy in DC" started.
+◇ Test "Encode then decode produces image with correct dimensions" started.
+◇ Test everyUnclippedTwelveBitDCAmplitudeKeepsFloatBits() started.
+◇ Test "Batched forward DCT matches per-block forward DCT" started.
+◇ Test "Encoder handles non-multiple-of-8 dimensions" started.
+◇ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test "Inverse DCT of all-zero block returns all zeros" started.
+◇ Test "12-bit grayscale round-trips with sub-1% error and outputs uint16" started.
+◇ Test "Forward DCT of all-zero block returns all zeros" started.
+◇ Test "Grayscale encode-decode round-trip" started.
+◇ Test "Restart markers round-trip identically to no-restart and emit DRI + RSTn" started.
+◇ Test case passing 1 argument fixture → baseline_422_64x18 to independentChroma(_:) started.
+◇ Test "Higher quality produces larger output" started.
+◇ Test case passing 2 arguments components → 1, jpegli → false to publicAdaptiveProfilesMatchNative(components:jpegli:) started.
+◇ Test "Encoder handles 1×1 pixel image" started.
+◇ Test "12-bit JPEG reports precision 12 via inspect" started.
+◇ Test "float32 input clamps out-of-range values to [0,1]" started.
+◇ Test "Decoder inspect rejects non-JPEG data" started.
+◇ Test case passing 2 arguments components → 1, jpegli → true to publicAdaptiveProfilesMatchNative(components:jpegli:) started.
+◇ Test case passing 1 argument fixture → baseline_422_63x19 to independentChroma(_:) started.
+◇ Test "1/8 scaled decode handles non-multiple dims and 12-bit grayscale" started.
+◇ Test case passing 2 arguments components → 3, jpegli → false to publicAdaptiveProfilesMatchNative(components:jpegli:) started.
+◇ Test "Encoder handles grayscale images" started.
+◇ Test "Encoder rejects invalid quality" started.
+◇ Test "1/2 & 1/4 scaled decode equal the box-average of the full decode (color 4:4:4)" started.
+◇ Test case passing 1 argument fixture → baseline_422_3x5 to independentChroma(_:) started.
+◇ Test "12-bit color round-trips and outputs uint16 RGB" started.
+◇ Test case passing 1 argument fixture → baseline_422_7x5 to independentChroma(_:) started.
+◇ Test "1/2 & 1/4 scaled decode: grayscale (8/12-bit) box-average + non-multiple dims" started.
+◇ Test "Larger distance produces smaller output (monotonic rate)" started.
+◇ Test case passing 2 arguments components → 3, jpegli → true to publicAdaptiveProfilesMatchNative(components:jpegli:) started.
+◇ Test "12-bit preserves more precision than 8-bit on a fine gradient" started.
+◇ Test case passing 1 argument fixture → baseline_422_4x3 to independentChroma(_:) started.
+◇ Test "Parallel Step-7 reconstruction is bit-identical to serial (large image)" started.
+◇ Test case passing 1 argument fixture → baseline_422_1x1 to independentChroma(_:) started.
+◇ Test "Encode-decode round-trip preserves pixel values within JPEG tolerance" started.
+◇ Test "1/8 scaled decode yields a block-average thumbnail (color)" started.
+◇ Test "Adaptive quant field changes the output and round-trips (4:4:4)" started.
+◇ Test "Inspect returns correct metadata for encoded JPEG" started.
+◇ Test "Encoder handles 4:2:0 subsampling" started.
+◇ Test "Encoder rejects negative distance" started.
+◇ Test "float32 input ([0,1]) encodes identically to its 8-bit quantization" started.
+◇ Test case passing 1 argument fixture → baseline_420_64x18 to independentChroma(_:) started.
+◇ Test "Distance overrides quality when both are set" started.
+◇ Test "Parallel trellis + AC-count encode is deterministic and round-trips (large image)" started.
+◇ Test case passing 1 argument fixture → baseline_420_63x19 to independentChroma(_:) started.
+◇ Test "Encoder produces valid JPEG starting with SOI" started.
+◇ Test case passing 1 argument fixture → baseline_420_7x5 to independentChroma(_:) started.
+◇ Test "Decoder rejects non-JPEG data" started.
+◇ Test case passing 1 argument fixture → baseline_420_3x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_4x3 to independentChroma(_:) started.
+◇ Test case passing 1 argument precision → 8 to rawRGBAdobe(precision:) started.
+◇ Test case passing 1 argument fixture → baseline_420_1x1 to independentChroma(_:) started.
+◇ Test case passing 2 arguments precision → 8, components → 3 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 2 arguments precision → 8, components → 1 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 1 argument fixture → progressive_422_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → progressive_420_63x19 to independentChroma(_:) started.
+◇ Test case passing 2 arguments precision → 12, components → 1 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 1 argument fixture → baseline_444_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument precision → 12 to rawRGBAdobe(precision:) started.
+◇ Test case passing 2 arguments precision → 12, components → 3 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 2 arguments bits → 8, components → 1 to scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test case passing 2 arguments bits → 8, components → 3 to scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test case passing 2 arguments bits → 12, components → 1 to scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test case passing 2 arguments bits → 12, components → 3 to scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+✔ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) with 2 test cases passed after 0.004 seconds.
+◇ Test case passing 1 argument precision → 8 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test case passing 1 argument precision → 12 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+✔ Test "Progressive JPEG is detected by inspect" passed after 0.005 seconds.
+✔ Test "Setting .float32 no longer throws (latent bufferSizeMismatch fixed)" passed after 0.005 seconds.
+✔ Test "Progressive decode matches baseline decode pixel-for-pixel" passed after 0.005 seconds.
+✔ Test "Progressive encode round-trips identically to baseline (grayscale)" passed after 0.005 seconds.
+✔ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() passed after 0.006 seconds.
+✔ Test "12-bit grayscale float32 rounds to the uint16 value (carries sub-integer precision)" passed after 0.006 seconds.
+✔ Test "Lossless float32 is rejected (use the bit-exact integer output)" passed after 0.006 seconds.
+✔ Test "Progressive successive-approximation encode round-trips identically (grayscale)" passed after 0.006 seconds.
+✔ Test "YCbCr color float32 is rejected with a clear error" passed after 0.006 seconds.
+✔ Test previewsStillAdmitFullFrameWorkspace() passed after 0.006 seconds.
+✔ Test "Progressive successive-approximation encode round-trips identically (color)" passed after 0.006 seconds.
+✔ Test independentChroma(_:) with 15 test cases passed after 0.006 seconds.
+✔ Test "Progressive encode round-trips identically to baseline (color)" passed after 0.006 seconds.
+✔ Test centredChromaAgreesAcrossWorkerLimits() passed after 0.007 seconds.
+✔ Test "8-bit grayscale float32 == round to the uint8 output, per sample" passed after 0.007 seconds.
+✔ Test "DCT preserves energy (Parseval's theorem)" passed after 0.007 seconds.
+✔ Test adaptiveOptionsRejectInapplicableCombinations() passed after 0.007 seconds.
+✔ Test rawRGBAdobe(precision:) with 2 test cases passed after 0.007 seconds.
+✔ Test "Batched inverse DCT matches per-block inverse DCT" passed after 0.007 seconds.
+✔ Test rawRGBIdentifiersAndSourceOverride() passed after 0.007 seconds.
+✔ Test boundedCompleteCodestreamAndPadding() passed after 0.007 seconds.
+✔ Test "Forward then inverse DCT round-trips correctly" passed after 0.007 seconds.
+✔ Test "Cosine matrix is orthonormal" passed after 0.007 seconds.
+✔ Test scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) with 4 test cases passed after 0.007 seconds.
+✔ Test "Forward DCT of constant block concentrates energy in DC" passed after 0.007 seconds.
+✔ Test "Encode then decode produces image with correct dimensions" passed after 0.007 seconds.
+✔ Test "Batched forward DCT matches per-block forward DCT" passed after 0.007 seconds.
+✔ Test "Encoder handles non-multiple-of-8 dimensions" passed after 0.007 seconds.
+✔ Test "Inverse DCT of all-zero block returns all zeros" passed after 0.007 seconds.
+✔ Test "Progressive + restart round-trips identically to no-restart and is djpeg-shaped" passed after 0.007 seconds.
+✔ Test laterEntropyFailureInvalidatesStreamedDestination() passed after 0.007 seconds.
+✔ Test "Forward DCT of all-zero block returns all zeros" passed after 0.007 seconds.
+✔ Test "12-bit grayscale round-trips with sub-1% error and outputs uint16" passed after 0.007 seconds.
+✔ Test "Grayscale encode-decode round-trip" passed after 0.007 seconds.
+✔ Test "Encoder handles 1×1 pixel image" passed after 0.007 seconds.
+✔ Test "12-bit JPEG reports precision 12 via inspect" passed after 0.007 seconds.
+✔ Test "Higher quality produces larger output" passed after 0.007 seconds.
+✔ Test "Decoder inspect rejects non-JPEG data" passed after 0.007 seconds.
+✔ Test "float32 input clamps out-of-range values to [0,1]" passed after 0.007 seconds.
+✔ Test "Encoder handles grayscale images" passed after 0.007 seconds.
+✔ Test "Encoder rejects invalid quality" passed after 0.007 seconds.
+✔ Test "1/8 scaled decode handles non-multiple dims and 12-bit grayscale" passed after 0.007 seconds.
+✔ Test "12-bit color round-trips and outputs uint16 RGB" passed after 0.006 seconds.
+✔ Test "Restart markers round-trip identically to no-restart and emit DRI + RSTn" passed after 0.007 seconds.
+✔ Test "1/2 & 1/4 scaled decode equal the box-average of the full decode (color 4:4:4)" passed after 0.007 seconds.
+✔ Test "1/2 & 1/4 scaled decode: grayscale (8/12-bit) box-average + non-multiple dims" passed after 0.006 seconds.
+✔ Test "12-bit preserves more precision than 8-bit on a fine gradient" passed after 0.006 seconds.
+✔ Test "1/8 scaled decode yields a block-average thumbnail (color)" passed after 0.006 seconds.
+✔ Test "Encode-decode round-trip preserves pixel values within JPEG tolerance" passed after 0.006 seconds.
+✔ Test "Inspect returns correct metadata for encoded JPEG" passed after 0.006 seconds.
+✔ Test "Encoder rejects negative distance" passed after 0.006 seconds.
+✔ Test "Encoder handles 4:2:0 subsampling" passed after 0.006 seconds.
+✔ Test "float32 input ([0,1]) encodes identically to its 8-bit quantization" passed after 0.006 seconds.
+✔ Test sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() passed after 0.007 seconds.
+✔ Test "Larger distance produces smaller output (monotonic rate)" passed after 0.007 seconds.
+✔ Test "Decoder rejects non-JPEG data" passed after 0.006 seconds.
+✔ Test "Encoder produces valid JPEG starting with SOI" passed after 0.006 seconds.
+✔ Suite "Float32 decode output" passed after 0.008 seconds.
+✔ Suite ScaledDecodeTests passed after 0.008 seconds.
+✔ Suite "DCT – Forward and Inverse Discrete Cosine Transform" passed after 0.008 seconds.
+✔ Suite "Progressive JPEG decode" passed after 0.008 seconds.
+✔ Test "Distance overrides quality when both are set" passed after 0.006 seconds.
+✔ Suite JPEGDecodeParityTests passed after 0.008 seconds.
+✔ Test "Adaptive quant field changes the output and round-trips (4:4:4)" passed after 0.007 seconds.
+✔ Test publicAdaptiveProfilesMatchNative(components:jpegli:) with 4 test cases passed after 0.011 seconds.
+✔ Suite AdvancedDCTTests passed after 0.011 seconds.
+✔ Test amplifiedExtremesTailsAndMixedACKeepExactOutput() passed after 0.015 seconds.
+✔ Test borrowedPixelsMatchPackedKernels(precision:components:) with 4 test cases passed after 0.016 seconds.
+✔ Suite SharedDCTStorageTests passed after 0.016 seconds.
+✔ Test everyUnclippedTwelveBitDCAmplitudeKeepsFloatBits() passed after 0.020 seconds.
+✔ Suite DCOnlyDCTTests passed after 0.021 seconds.
+✔ Test "Parallel trellis + AC-count encode is deterministic and round-trips (large image)" passed after 0.042 seconds.
+✔ Test "Parallel Step-7 reconstruction is bit-identical to serial (large image)" passed after 0.046 seconds.
+✔ Suite "Encoder & Decoder – Full JPEG Pipeline" passed after 0.047 seconds.
+✔ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) with 2 test cases passed after 0.094 seconds.
+✔ Suite BoundedDCTWorkspaceTests passed after 0.094 seconds.
+✔ Test run with 67 tests in 10 suites passed after 0.094 seconds.

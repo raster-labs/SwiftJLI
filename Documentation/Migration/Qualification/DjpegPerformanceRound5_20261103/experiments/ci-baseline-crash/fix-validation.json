@@ -1,0 +1,74 @@
+{
+  "failedWorkflowRun": 41602314446,
+  "failedSourceRevision": "bbb0b1a9a602807643fc254fb4e0d54a162d5ae8",
+  "fixRevisions": {
+    "canonicalBatches": "52fea2d1c4f92ccedbcec5e784de16b008fc8dad",
+    "nominalTaskLocal": "c74a2c65e823febe30e2c9fb2a5ebeebf87a18e3"
+  },
+  "checks": [
+    {
+      "sourceRevision": "52fea2d1c4f92ccedbcec5e784de16b008fc8dad",
+      "command": [
+        "swift",
+        "test",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round5-ci-build",
+        "--filter",
+        "BoundedDCTWorkspaceTests|StreamingWorkspaceAdmissionTests|NativeExecutionTests|parallelDecodeDeterministic"
+      ],
+      "cwd": "/private/tmp/swiftjli-round5-ci",
+      "environmentOverrides": {
+        "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+      },
+      "log": "fix-arm64-release.log",
+      "exitCode": 0,
+      "passedTests": 16,
+      "passedSuites": 4
+    },
+    {
+      "sourceRevision": "c74a2c65e823febe30e2c9fb2a5ebeebf87a18e3",
+      "command": [
+        "swift",
+        "test",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round5-ci-build",
+        "--filter",
+        "CLISynchronousExecutionTests|NativeExecutionTests|BoundedDCTWorkspaceTests|StreamingWorkspaceAdmissionTests|CancellationPublicationTests|parallelDecodeDeterministic"
+      ],
+      "cwd": "/private/tmp/swiftjli-round5-ci",
+      "environmentOverrides": {
+        "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+      },
+      "log": "wrapper-arm64-release.log",
+      "exitCode": 0,
+      "passedTests": 22,
+      "passedSuites": 5
+    }
+  ],
+  "runtimeReproduction": {
+    "compiledBinary": "Swift6.3.3 Release CI artifact13214624515",
+    "localToolchainRuntime": "Swift6.4.2 / Xcode27.2 / macOS27.0.1; differs fromCI",
+    "fullSuiteStackLog": "retained-bundle-with-resources-lldb.log",
+    "isolatedStackLog": "retained-bundle-filtered-lldb.log",
+    "isolatedTest": "CLISynchronousExecutionTests/hostDeadlineAndMalformedCategoriesRemainDistinct",
+    "observation": "EXC_BAD_ACCESS at address0xfffffffffffffff8 during TaskLocal push for synchronous cancellation; zero-byte Data, before JPEG decoding. Metadata argument copied from incoming x2 to x19 to x25; x25 is zero at the fault.",
+    "lldbProcessExitCode": 0,
+    "inferiorOutcome": "stopped on crash; debugger exit0 is NOT a test pass",
+    "earlierSetupFailures": [
+      "retained-bundle-lldb.log: missing Testing.framework",
+      "retained-bundle-localframework-lldb.log: missing fixture resource bundle"
+    ]
+  },
+  "unavailableGates": [
+    "Rosetta Swift test driver: installed swift and swiftpm-testing-helper are arm64-only; arch launch exit1, no tests executed.",
+    "Fresh Swift6.3 compilation and affected native/simulator CI pending at receipt creation."
+  ]
+}

@@ -1,0 +1,236 @@
+
+/private/tmp/swiftjli-round5-evidence/left-uint16/native-specialised:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+000000010003b4dc <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ>:
+10003b4dc:     	sub	sp, sp, #0x90
+10003b4e0:     	str	x28, [sp, #0x30]
+10003b4e4:     	stp	x27, x26, [sp, #0x40]
+10003b4e8:     	stp	x25, x24, [sp, #0x50]
+10003b4ec:     	stp	x23, x22, [sp, #0x60]
+10003b4f0:     	stp	x20, x19, [sp, #0x70]
+10003b4f4:     	stp	x29, x30, [sp, #0x80]
+10003b4f8:     	add	x29, sp, #0x80
+10003b4fc:     	mov	x9, #0x21               ; =33
+10003b500:     	movk	x9, #0xd000, lsl #48
+10003b504:     	sub	x13, x4, #0x1
+10003b508:     	adrp	x8, 0x100089000 <_vImageConvert_RGB888toPlanar8+0x100089000>
+10003b50c:     	add	x8, x8, #0x580
+10003b510:     	sub	x8, x8, #0x20
+10003b514:     	orr	x20, x9, #0x2
+10003b518:     	mov	w10, #0xfffe            ; =65534
+10003b51c:     	cmp	x13, x10
+10003b520:     	b.hi	0x10003b800 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x324>
+10003b524:     	sub	x10, x5, #0x1
+10003b528:     	mov	w11, #0xfffe            ; =65534
+10003b52c:     	cmp	x10, x11
+10003b530:     	b.hi	0x10003b800 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x324>
+10003b534:     	ldr	x27, [x29, #0x18]
+10003b538:     	cmp	x27, #0x1
+10003b53c:     	b.lt	0x10003b800 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x324>
+10003b540:     	cmp	x3, #0x2
+10003b544:     	b.ne	0x10003b800 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x324>
+10003b548:     	mov	x24, x4
+10003b54c:     	mov	x25, x2
+10003b550:     	lsl	x11, x4, #1
+10003b554:     	cmp	x2, x11
+10003b558:     	b.ge	0x10003b564 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x88>
+10003b55c:     	add	x20, x9, #0x2
+10003b560:     	b	0x10003b800 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x324>
+10003b564:     	mul	x8, x10, x25
+10003b568:     	smulh	x9, x10, x25
+10003b56c:     	cmp	x9, x8, asr #63
+10003b570:     	cset	w12, ne
+10003b574:     	adds	x9, x8, x11
+10003b578:     	cset	w10, vs
+10003b57c:     	adrp	x8, 0x100089000 <_vImageConvert_RGB888toPlanar8+0x100089000>
+10003b580:     	add	x8, x8, #0x5b0
+10003b584:     	sub	x8, x8, #0x20
+10003b588:     	tbnz	w12, #0x0, 0x10003b7f8 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x31c>
+10003b58c:     	tbnz	w10, #0x0, 0x10003b7f8 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x31c>
+10003b590:     	cbz	x0, 0x10003b7f8 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x31c>
+10003b594:     	sub	x10, x1, x0
+10003b598:     	cmp	x10, x9
+10003b59c:     	mov	x20, #0x21              ; =33
+10003b5a0:     	movk	x20, #0xd000, lsl #48
+10003b5a4:     	b.lt	0x10003b800 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x324>
+10003b5a8:     	mov	x19, x7
+10003b5ac:     	mov	x28, x6
+10003b5b0:     	stp	x13, x0, [sp, #0x10]
+10003b5b4:     	mov	x26, #0x0               ; =0
+10003b5b8:     	add	x8, x0, #0x2
+10003b5bc:     	str	x8, [sp, #0x38]
+10003b5c0:     	ldr	x20, [x29, #0x10]
+10003b5c4:     	str	w6, [sp, #0x2c]
+10003b5c8:     	stp	x27, x5, [sp]
+10003b5cc:     	b	0x10003b5f0 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x114>
+10003b5d0:     	add	x26, x26, #0x1
+10003b5d4:     	ldr	x8, [sp, #0x38]
+10003b5d8:     	add	x8, x8, x25
+10003b5dc:     	str	x8, [sp, #0x38]
+10003b5e0:     	ldp	x27, x5, [sp]
+10003b5e4:     	cmp	x26, x5
+10003b5e8:     	mov	x28, x22
+10003b5ec:     	b.eq	0x10003b840 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x364>
+10003b5f0:     	bl	0x10007cc88 <_$s8SwiftJLI15NativeOperationV5checkyyKFZTf4d_n>
+10003b5f4:     	cbnz	x21, 0x10003b840 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x364>
+10003b5f8:     	udiv	x8, x26, x27
+10003b5fc:     	msub	x23, x8, x27, x26
+10003b600:     	cbz	x26, 0x10003b618 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x13c>
+10003b604:     	cbnz	x23, 0x10003b618 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x13c>
+10003b608:     	sub	w8, w8, #0x1
+10003b60c:     	and	x0, x8, #0x7
+10003b610:     	bl	0x100063620 <_$s8SwiftJLI9BitReaderV17skipRestartMarker13expectedIndexySi_tKF>
+10003b614:     	cbnz	x21, 0x10003b840 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x364>
+10003b618:     	mul	x22, x26, x25
+10003b61c:     	smulh	x8, x26, x25
+10003b620:     	cmp	x8, x22, asr #63
+10003b624:     	b.ne	0x10003b868 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x38c>
+10003b628:     	mov	x27, x21
+10003b62c:     	cmp	x23, #0x0
+10003b630:     	ldr	w8, [sp, #0x2c]
+10003b634:     	csel	w23, w28, w8, eq
+10003b638:     	ldr	x8, [x20, #0x38]
+10003b63c:     	cmp	x8, #0x7
+10003b640:     	str	x22, [sp, #0x20]
+10003b644:     	b.gt	0x10003b65c <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x180>
+10003b648:     	mov	w0, #0x8                ; =8
+10003b64c:     	bl	0x100064764 <_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF>
+10003b650:     	ldr	x8, [x20, #0x38]
+10003b654:     	cmp	x8, #0x8
+10003b658:     	b.lt	0x10003b6e4 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x208>
+10003b65c:     	sub	x10, x8, #0x8
+10003b660:     	ldr	x9, [x20, #0x30]
+10003b664:     	lsr	x10, x9, x10
+10003b668:     	and	x10, x10, #0xff
+10003b66c:     	cmp	x8, #0x47
+10003b670:     	csel	x10, xzr, x10, hi
+10003b674:     	ldr	x11, [x19, #0x30]
+10003b678:     	ldr	x12, [x11, #0x10]
+10003b67c:     	cmp	x10, x12
+10003b680:     	b.hs	0x10003b86c <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x390>
+10003b684:     	add	x11, x11, x10
+10003b688:     	ldrb	w11, [x11, #0x20]
+10003b68c:     	cbz	x11, 0x10003b6e4 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x208>
+10003b690:     	ldr	x12, [x19, #0x38]
+10003b694:     	ldr	x13, [x12, #0x10]
+10003b698:     	cmp	x10, x13
+10003b69c:     	b.hs	0x10003b870 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x394>
+10003b6a0:     	add	x10, x12, x10
+10003b6a4:     	ldrb	w10, [x10, #0x20]
+10003b6a8:     	tst	w10, #0xffffffef
+10003b6ac:     	b.ne	0x10003b6d4 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x1f8>
+10003b6b0:     	mov	x21, x27
+10003b6b4:     	sub	x8, x8, x11
+10003b6b8:     	str	x8, [x20, #0x38]
+10003b6bc:     	cmp	w10, #0x0
+10003b6c0:     	mov	w8, #-0x8000            ; =-32768
+10003b6c4:     	csel	w1, wzr, w8, eq
+10003b6c8:     	adds	w8, w23, w1
+10003b6cc:     	b.vc	0x10003b754 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x278>
+10003b6d0:     	b	0x10003b7f4 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x318>
+10003b6d4:     	cmp	w10, #0xf
+10003b6d8:     	add	x11, x10, x11
+10003b6dc:     	ccmp	x8, x11, #0x0, ls
+10003b6e0:     	b.hs	0x10003b7a8 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x2cc>
+10003b6e4:     	mov	x0, x19
+10003b6e8:     	bl	0x1000646b8 <_$s8SwiftJLI9BitReaderV16fastDecodeSymbolys5UInt8VSgAA12HuffmanTableVF>
+10003b6ec:     	and	w8, w0, #0xff00
+10003b6f0:     	cmp	w8, #0x100
+10003b6f4:     	b.ne	0x10003b718 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x23c>
+10003b6f8:     	mov	x0, x20
+10003b6fc:     	mov	x1, x19
+10003b700:     	mov	x21, x27
+10003b704:     	bl	0x100066638 <_$s8SwiftJLI14HuffmanDecoderO017decodeSymbolBitByG04from5tables5UInt8VAA0G6ReaderVz_AA0C5TableVtKFZTf4nnd_n>
+10003b708:     	cbnz	x21, 0x10003b840 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x364>
+10003b70c:     	ands	w1, w0, #0xff
+10003b710:     	b.ne	0x10003b724 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x248>
+10003b714:     	b	0x10003b74c <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x270>
+10003b718:     	mov	x21, x27
+10003b71c:     	ands	w1, w0, #0xff
+10003b720:     	b.eq	0x10003b74c <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x270>
+10003b724:     	cmp	w1, #0x10
+10003b728:     	b.ne	0x10003b73c <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x260>
+10003b72c:     	mov	w1, #-0x8000            ; =-32768
+10003b730:     	adds	w8, w23, w1
+10003b734:     	b.vc	0x10003b754 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x278>
+10003b738:     	b	0x10003b7f4 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x318>
+10003b73c:     	mov	x0, x20
+10003b740:     	bl	0x1000667a8 <_$s8SwiftJLI14HuffmanDecoderO11decodeValue4from8categorys5Int32VAA9BitReaderVz_SitKFZTf4nnd_n>
+10003b744:     	cbnz	x21, 0x10003b840 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x364>
+10003b748:     	mov	x1, x0
+10003b74c:     	adds	w8, w23, w1
+10003b750:     	b.vs	0x10003b7f4 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x318>
+10003b754:     	mov	x22, x28
+10003b758:     	and	w23, w8, #0xffff
+10003b75c:     	ldp	x9, x10, [sp, #0x18]
+10003b760:     	strh	w8, [x9, x10]
+10003b764:     	ldr	x27, [sp, #0x38]
+10003b768:     	ldr	x28, [sp, #0x10]
+10003b76c:     	str	w23, [sp, #0x2c]
+10003b770:     	cmp	x24, #0x1
+10003b774:     	b.eq	0x10003b5d0 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0xf4>
+10003b778:     	cbz	x28, 0x10003b860 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x384>
+10003b77c:     	mov	x0, x19
+10003b780:     	mov	x1, x20
+10003b784:     	bl	0x10003d920 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ>
+10003b788:     	cbnz	x21, 0x10003b840 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x364>
+10003b78c:     	adds	w8, w23, w0
+10003b790:     	b.vs	0x10003b864 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x388>
+10003b794:     	and	w23, w8, #0xffff
+10003b798:     	strh	w8, [x27], #0x2
+10003b79c:     	subs	x28, x28, #0x1
+10003b7a0:     	b.ne	0x10003b778 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x29c>
+10003b7a4:     	b	0x10003b5d0 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0xf4>
+10003b7a8:     	sub	x8, x8, x11
+10003b7ac:     	str	x8, [x20, #0x38]
+10003b7b0:     	lsr	x9, x9, x8
+10003b7b4:     	mov	x11, #-0x1              ; =-1
+10003b7b8:     	lsl	x11, x11, x10
+10003b7bc:     	cmp	x8, #0x3f
+10003b7c0:     	csel	w8, wzr, w9, hi
+10003b7c4:     	bic	w8, w8, w11
+10003b7c8:     	sub	w9, w10, #0x1
+10003b7cc:     	mov	w11, #0x1               ; =1
+10003b7d0:     	lsl	w9, w11, w9
+10003b7d4:     	cmp	w9, w8
+10003b7d8:     	mov	w9, #-0x1               ; =-1
+10003b7dc:     	lsl	w9, w9, w10
+10003b7e0:     	add	w9, w9, w8
+10003b7e4:     	csinc	w1, w8, w9, le
+10003b7e8:     	mov	x21, x27
+10003b7ec:     	adds	w8, w23, w1
+10003b7f0:     	b.vc	0x10003b754 <_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ+0x278>
+10003b7f4:     	brk	#0x1
+10003b7f8:     	mov	x20, #0x21              ; =33
+10003b7fc:     	movk	x20, #0xd000, lsl #48
+10003b800:     	orr	x22, x8, #0x8000000000000000
+10003b804:     	bl	0x100019180 <_$s8SwiftJLI8JLIErrorOACs5ErrorAAWl>
+10003b808:     	mov	x1, x0
+10003b80c:     	adrp	x0, 0x100097000 <_$s8SwiftJLI14SRGBICCProfileO4data_WZTv_r+0x758>
+10003b810:     	add	x0, x0, #0x990
+10003b814:     	mov	x2, #0x0                ; =0
+10003b818:     	mov	w3, #0x0                ; =0
+10003b81c:     	bl	0x100083e0c <_vImageConvert_RGB888toPlanar8+0x100083e0c>
+10003b820:     	mov	x19, x0
+10003b824:     	stp	x20, x22, [x1]
+10003b828:     	stp	xzr, xzr, [x1, #0x10]
+10003b82c:     	mov	w8, #0x6                ; =6
+10003b830:     	strb	w8, [x1, #0x20]
+10003b834:     	mov	x21, x0
+10003b838:     	bl	0x100084040 <_vImageConvert_RGB888toPlanar8+0x100084040>
+10003b83c:     	mov	x21, x19
+10003b840:     	ldp	x29, x30, [sp, #0x80]
+10003b844:     	ldp	x20, x19, [sp, #0x70]
+10003b848:     	ldp	x23, x22, [sp, #0x60]
+10003b84c:     	ldp	x25, x24, [sp, #0x50]
+10003b850:     	ldp	x27, x26, [sp, #0x40]
+10003b854:     	ldr	x28, [sp, #0x30]
+10003b858:     	add	sp, sp, #0x90
+10003b85c:     	ret
+10003b860:     	brk	#0x1
+10003b864:     	brk	#0x1
+10003b868:     	brk	#0x1
+10003b86c:     	brk	#0x1
+10003b870:     	brk	#0x1

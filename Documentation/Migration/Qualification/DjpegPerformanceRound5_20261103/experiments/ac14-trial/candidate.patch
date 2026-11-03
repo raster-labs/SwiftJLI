@@ -1,0 +1,55 @@
+diff --git a/Sources/SwiftJLI/Native/Entropy/ACLookahead.swift b/Sources/SwiftJLI/Native/Entropy/ACLookahead.swift
+index 876a0ab..87aef65 100644
+--- a/Sources/SwiftJLI/Native/Entropy/ACLookahead.swift
++++ b/Sources/SwiftJLI/Native/Entropy/ACLookahead.swift
+@@ -4,13 +4,13 @@
+ /// Each entry stores consumed bits, coefficient advance and signed value. An
+ /// advance of zero denotes EOB; ZRL advances sixteen and writes an existing zero.
+ struct ACLookahead {
+-    static let bits = 13
++    static let bits = 14
+     static let count = 1 << bits
+     let entries: [UInt32]
+ 
+     init?(table: HuffmanTable, blockCount: Int) {
+         // Amortise construction over a substantial plane. At most three active
+-        // component tables occupy 96 KiB of the decoder's 1 MiB scratch reserve.
++        // component tables occupy 192 KiB of the decoder's 1 MiB scratch reserve.
+         guard blockCount >= 512 else { return nil }
+         var covered = 0, hasCoveredMagnitude = false
+         for prefix in 0..<256 {
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index d5497e6..015895f 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -327,7 +327,7 @@ struct BitReader {
+         if bitsAvailable < ACLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
+         guard bitsAvailable >= ACLookahead.bits else { return nil }
+         // Reader mutations bound the accumulator to 0...64 valid bits. After
+-        // the guard this shift is 0...51, so the masked form has identical
++        // the guard this shift is 0...50, so the masked form has identical
+         // semantics without a general signed-width check per coefficient.
+         let prefix = Int((bitBuffer &>> (bitsAvailable - ACLookahead.bits)) & UInt64(ACLookahead.count - 1))
+         let entry = table.entries[prefix]
+diff --git a/Tests/SwiftJLITests/Native/ACLookaheadTests.swift b/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
+index 5f69207..bdb5dc0 100644
+--- a/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
++++ b/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
+@@ -17,7 +17,7 @@ import Testing
+     @Test func allocationAndCoverageDispatchAreBounded() throws {
+         #expect(ACLookahead(table: StandardHuffmanTables.acLuminance, blockCount: 511) == nil)
+         let lookup = try #require(ACLookahead(table: StandardHuffmanTables.acLuminance, blockCount: 512))
+-        #expect(lookup.entries.count * MemoryLayout<UInt32>.size == 32768)
++        #expect(lookup.entries.count * MemoryLayout<UInt32>.size == 65536)
+         let long = HuffmanTable(bits: [1] + Array(repeating: 0, count: 15), values: [0x0F])
+         #expect(ACLookahead(table: long, blockCount: 65536) == nil)
+         let flat = HuffmanTable(bits: [1] + Array(repeating: 0, count: 15), values: [0])
+@@ -73,7 +73,7 @@ import Testing
+         let tails: [[UInt8]] = [Array(repeating: 0xAA, count: 24), [], [0xFF],
+             [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+             [0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xFF, 0, 0xFF, 0xD0]]
+-        for available in 8...12 { for (tailIndex, tail) in tails.enumerated() {
++        for available in 8..<ACLookahead.bits { for (tailIndex, tail) in tails.enumerated() {
+             var fast = BitReader(data: Array(repeating: 0xAA, count: 8) + tail)
+             var referenceReader = fast
+             var consume = 64 - available

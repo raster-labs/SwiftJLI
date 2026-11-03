@@ -1,0 +1,294 @@
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index 713738d..2631630 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -1105,12 +1105,14 @@ struct JLIDecoder: Sendable {
+                 try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
+                     dcTable: dcTable, acTable: acTable, lookup: lookup,
+                     blocksPerRow: plan.blocksPerRow, blockRows: plan.blockRows,
+-                    precision: precision, restartInterval: restartInterval) { coefficients, first in
++                    precision: precision, restartInterval: restartInterval) { coefficients, first, zeroACGroups in
+                     let sampleCount = coefficients.count, blockCount = sampleCount / 64
+                     let base = coefficients.baseAddress!
+-                    let dcOnly = AccelerateDSP.prepareDCOnlyDCTBatch(zigzag: UnsafePointer(base),
+-                        quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount)
++                    let dcOnly = zeroACGroups & 1 != 0
+                     if dcOnly {
++                        _ = AccelerateDSP.prepareDCOnlyDCTBatch(zigzag: UnsafePointer(base),
++                            quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount,
++                            knownZeroAC: true)
+                         var center = Float(1 << (precision - 1))
+                         var low: Float = 0, high = Float((1 << precision) - 1)
+                         jliDSP_vsadd(sc.baseAddress!, 1, &center, sc.baseAddress!, 1, blockCount)
+diff --git a/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift b/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift
+index cb81f03..ff05dc5 100644
+--- a/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift
++++ b/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift
+@@ -5,15 +5,20 @@ extension HuffmanDecoder {
+     /// The caller retains that plane until this synchronous call finishes.
+     /// All 64 slots are cleared, including on a later entropy failure, exactly
+     /// as in the retained array implementation used by the reference path.
++    /// Returns true only when all 63 decoded AC values are zero. The flag is
++    /// published only after successful decoding; a throw preserves the same
++    /// cleared/partially written coefficients and error as the reference.
++    @discardableResult
+     static func decodeAC(
+         from reader: inout BitReader, table: HuffmanTable,
+         into output: UnsafeMutableBufferPointer<Int32>
+-    ) throws {
++    ) throws -> Bool {
+         guard output.count == 64, let coefficients = output.baseAddress else {
+             throw JLIError.decodingFailed("Invalid AC coefficient destination")
+         }
+         coefficients.update(repeating: 0, count: 64)
+         var index = 1
++        var nonzero: Int32 = 0
+         while index < 64 {
+             let symbol = try decodeSymbol(from: &reader, table: table)
+             if symbol == 0x00 { break }
+@@ -23,28 +28,35 @@ extension HuffmanDecoder {
+             }
+             index += Int(symbol >> 4)
+             guard index < 64 else { break }
+-            coefficients[index] = try decodeValue(from: &reader, category: Int(symbol & 0x0F))
++            let value = try decodeValue(from: &reader, category: Int(symbol & 0x0F))
++            coefficients[index] = value
++            nonzero |= value
+             index += 1
+         }
++        return nonzero == 0
+     }
+ 
+     /// The lookup is chosen once per block, outside the coefficient loop.
+     /// Uncovered codes and boundary cases retain the ordinary decoder below.
++    @discardableResult
+     static func decodeAC(
+         from reader: inout BitReader, table: HuffmanTable, lookup: ACLookahead,
+         into output: UnsafeMutableBufferPointer<Int32>
+-    ) throws {
++    ) throws -> Bool {
+         guard output.count == 64, let coefficients = output.baseAddress else {
+             throw JLIError.decodingFailed("Invalid AC coefficient destination")
+         }
+         coefficients.update(repeating: 0, count: 64)
+         var index = 1
++        var nonzero: Int32 = 0
+         while index < 64 {
+             if let entry = reader.fastDecodeAC(lookup, remaining: 64 - index) {
+                 let advance = Int((entry >> 16) & 0xFF)
+                 if advance == 0 { break }
+                 index += advance
+-                coefficients[index - 1] = Int32(Int16(truncatingIfNeeded: entry))
++                let value = Int32(Int16(truncatingIfNeeded: entry))
++                coefficients[index - 1] = value
++                nonzero |= value
+                 continue
+             }
+             let symbol = try decodeSymbol(from: &reader, table: table)
+@@ -55,8 +67,11 @@ extension HuffmanDecoder {
+             }
+             index += Int(symbol >> 4)
+             guard index < 64 else { break }
+-            coefficients[index] = try decodeValue(from: &reader, category: Int(symbol & 0x0F))
++            let value = try decodeValue(from: &reader, category: Int(symbol & 0x0F))
++            coefficients[index] = value
++            nonzero |= value
+             index += 1
+         }
++        return nonzero == 0
+     }
+ }
+diff --git a/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift
+index 4b63ce7..930d0bd 100644
+--- a/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift
++++ b/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift
+@@ -20,6 +20,22 @@ enum SequentialGreyscaleDecoder {
+         lookup: ACLookahead?, blocksPerRow: Int, blockRows: Int,
+         precision: Int, restartInterval: Int,
+         consume: (UnsafeMutableBufferPointer<Int32>, Int) throws -> Void
++    ) throws {
++        try decodeBatches(reader: &reader, dcTable: dcTable, acTable: acTable,
++            lookup: lookup, blocksPerRow: blocksPerRow, blockRows: blockRows,
++            precision: precision, restartInterval: restartInterval) { coefficients, first, _ in
++            try consume(coefficients, first)
++        }
++    }
++
++    /// The final argument marks canonical 1024-block groups whose decoded AC
++    /// values are all exactly zero. Bits are published only for complete groups
++    /// (including the final partial group); an entropy error publishes nothing.
++    static func decodeBatches(
++        reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable,
++        lookup: ACLookahead?, blocksPerRow: Int, blockRows: Int,
++        precision: Int, restartInterval: Int,
++        consume: (UnsafeMutableBufferPointer<Int32>, Int, UInt8) throws -> Void
+     ) throws {
+         let (blocks, overflow) = blocksPerRow.multipliedReportingOverflow(by: blockRows)
+         let (_, countOverflow) = blocks.multipliedReportingOverflow(by: 64)
+@@ -36,6 +52,7 @@ enum SequentialGreyscaleDecoder {
+             for first in stride(from: 0, to: blocks, by: 1024) {
+                 let end = min(first + 1024, blocks)
+                 var index = first
++                var zeroAC = true
+                 while index < end {
+                     try NativeOperation.check()
+                     let rowEnd = min(end, index + blocksPerRow - index % blocksPerRow)
+@@ -52,16 +69,18 @@ enum SequentialGreyscaleDecoder {
+                         }
+                         previousDC = Int32(dc)
+                         let block = UnsafeMutableBufferPointer(start: base + (index - first) * 64, count: 64)
++                        let blockZeroAC: Bool
+                         if let lookup {
+-                            try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
++                            blockZeroAC = try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
+                         } else {
+-                            try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
++                            blockZeroAC = try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
+                         }
++                        zeroAC = zeroAC && blockZeroAC
+                         block[0] = previousDC
+                         index += 1
+                     }
+                 }
+-                try consume(UnsafeMutableBufferPointer(start: base, count: (end - first) * 64), first)
++                try consume(UnsafeMutableBufferPointer(start: base, count: (end - first) * 64), first, zeroAC ? 1 : 0)
+             }
+         }
+     }
+diff --git a/Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift b/Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift
+index 357b811..eeedfc5 100644
+--- a/Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift
++++ b/Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift
+@@ -280,16 +280,20 @@ enum AccelerateDSP {
+     /// the original GEMM shapes and arithmetic. On success scratch holds one
+     /// Float per block and all coefficient reads are complete. Input and
+     /// scratch have distinct, correctly bound storage for this borrow.
++    /// `knownZeroAC` may bypass the scan only with an exact zero-AC flag from
++    /// successful entropy decoding of this same coefficient range.
+     static func prepareDCOnlyDCTBatch(
+         zigzag: UnsafePointer<Int32>, quantTable: UnsafePointer<Float>,
+-        scratch: UnsafeMutablePointer<Float>, blockCount: Int
++        scratch: UnsafeMutablePointer<Float>, blockCount: Int, knownZeroAC: Bool = false
+     ) -> Bool {
+         guard blockCount > 0 else { return false }
+-        for block in 0..<blockCount {
+-            let coefficients = zigzag + block * 64
+-            var nonzero: Int32 = 0
+-            for index in 1..<64 { nonzero |= coefficients[index] }
+-            if nonzero != 0 { return false }
++        if !knownZeroAC {
++            for block in 0..<blockCount {
++                let coefficients = zigzag + block * 64
++                var nonzero: Int32 = 0
++                for index in 1..<64 { nonzero |= coefficients[index] }
++                if nonzero != 0 { return false }
++            }
+         }
+         let basis = dctMatrix[0]
+         for block in 0..<blockCount {
+diff --git a/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift b/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
+index 7699eb0..3a9ee06 100644
+--- a/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
++++ b/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
+@@ -4,13 +4,13 @@ import Testing
+ 
+ @Suite struct ScopedACDecoderTests {
+     private func pointerDecode(_ reader: inout BitReader, table: HuffmanTable,
+-                               lookup: ACLookahead? = nil, output: inout [Int32]) throws {
++                               lookup: ACLookahead? = nil, output: inout [Int32]) throws -> Bool {
+         try output.withUnsafeMutableBufferPointer { storage in
+             let block = UnsafeMutableBufferPointer(rebasing: storage[3..<67])
+             if let lookup {
+-                try HuffmanDecoder.decodeAC(from: &reader, table: table, lookup: lookup, into: block)
++                return try HuffmanDecoder.decodeAC(from: &reader, table: table, lookup: lookup, into: block)
+             } else {
+-                try HuffmanDecoder.decodeAC(from: &reader, table: table, into: block)
++                return try HuffmanDecoder.decodeAC(from: &reader, table: table, into: block)
+             }
+         }
+     }
+@@ -44,9 +44,10 @@ import Testing
+                 var expected = [Int32](repeating: 919, count: 64)
+                 var actual = [Int32](repeating: 919, count: 71)
+                 try HuffmanDecoder.decodeAC(from: &reference, table: table, into: &expected)
+-                try pointerDecode(&scoped, table: table, lookup: lookup, output: &actual)
++                let dcOnly = try pointerDecode(&scoped, table: table, lookup: lookup, output: &actual)
+                 #expect(expected == block)
+                 #expect(Array(actual[3..<67]) == expected)
++                #expect(dcOnly == block.dropFirst().allSatisfy { $0 == 0 })
+                 #expect(actual.prefix(3).allSatisfy { $0 == 919 })
+                 #expect(actual.suffix(4).allSatisfy { $0 == 919 })
+             }
+@@ -76,7 +77,8 @@ import Testing
+                 let lhs = Result { try HuffmanDecoder.decodeAC(from: &reference, table: table, into: &expected) }
+                 let rhs = Result { try pointerDecode(&scoped, table: table, lookup: lookup, output: &actual) }
+                 switch (lhs, rhs) {
+-                case (.success, .success): break
++                case (.success, .success(let dcOnly)):
++                    #expect(dcOnly == expected.dropFirst().allSatisfy { $0 == 0 })
+                 case (.failure(let left), .failure(let right)):
+                     #expect(String(describing: left) == String(describing: right))
+                 default: Issue.record("Scoped AC error behaviour differs from array reference")
+@@ -94,6 +96,25 @@ import Testing
+         }
+     }
+ 
++    @Test(arguments: [false, true])
++    func zeroRunsStillReportExactDCOnly(combined: Bool) throws {
++        let table = StandardHuffmanTables.acLuminance
++        let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
++        for runs in 0...3 {
++            var writer = BitWriter()
++            let zrl = table.encodingTable[0xF0], eob = table.encodingTable[0]
++            for _ in 0..<runs { writer.writeBits(UInt32(zrl.code), count: Int(zrl.length)) }
++            writer.writeBits(UInt32(eob.code), count: Int(eob.length))
++            writer.flush()
++            var reader = BitReader(data: writer.data)
++            var output = [Int32](repeating: 919, count: 71)
++            #expect(try pointerDecode(&reader, table: table, lookup: lookup, output: &output))
++            #expect(output[3..<67].allSatisfy { $0 == 0 })
++            #expect(output.prefix(3).allSatisfy { $0 == 919 })
++            #expect(output.suffix(4).allSatisfy { $0 == 919 })
++        }
++    }
++
+     @Test func invalidDestinationIsRejectedBeforeWriting() {
+         var reader = BitReader(data: [])
+         var output = [Int32](repeating: 919, count: 63)
+diff --git a/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift b/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift
+index bbc533e..76d77df 100644
+--- a/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift
++++ b/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift
+@@ -3,6 +3,32 @@ import Testing
+ @testable import SwiftJLI
+ 
+ @Suite struct SequentialGreyscaleDecoderTests {
++    @Test(arguments: [false, true])
++    func entropyDCProofResetsAtCanonicalBatchBoundaries(combined: Bool) throws {
++        let dcTable = StandardHuffmanTables.dcLuminance, acTable = StandardHuffmanTables.acLuminance
++        var writer = BitWriter()
++        for index in 0..<2050 {
++            var block = [Int32](repeating: 0, count: 64)
++            if index == 1300 { block[63] = -7 }
++            HuffmanEncoder.encodeDC(0, table: dcTable, writer: &writer)
++            HuffmanEncoder.encodeAC(block, table: acTable, writer: &writer)
++        }
++        writer.flush()
++        let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 2050)) : nil
++        var reader = BitReader(data: writer.data), firstBlocks: [Int] = [], proofs: [UInt8] = []
++        try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
++            dcTable: dcTable, acTable: acTable, lookup: lookup, blocksPerRow: 41,
++            blockRows: 50, precision: 8, restartInterval: 0) { coefficients, first, zeroGroups in
++            firstBlocks.append(first); proofs.append(zeroGroups)
++            let allACZero = coefficients.enumerated().allSatisfy { $0.offset % 64 == 0 || $0.element == 0 }
++            #expect((zeroGroups & 1 != 0) == allACZero)
++            // The consumer may destroy the evidence after it has been captured.
++            coefficients.baseAddress!.update(repeating: 123456, count: coefficients.count)
++        }
++        #expect(firstBlocks == [0, 1024, 2048])
++        #expect(proofs == [1, 0, 1])
++    }
++
+     @Test(arguments: [8, 12])
+     func scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision: Int) throws {
+         let dcTable = StandardHuffmanTables.dcLuminance

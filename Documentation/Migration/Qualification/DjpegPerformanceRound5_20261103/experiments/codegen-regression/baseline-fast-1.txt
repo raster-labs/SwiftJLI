@@ -1,0 +1,80 @@
+
+/private/tmp/swiftjli-round4-build/out/Products/Release/SwiftJLI.o:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+0000000000063410 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF>:
+   63410:      	stp	x20, x19, [sp, #-0x20]!
+   63414:      	stp	x29, x30, [sp, #0x10]
+   63418:      	add	x29, sp, #0x10
+   6341c:      	mov	x19, x0
+   63420:      	ldr	x8, [x20, #0x38]
+   63424:      	cmp	x8, #0x7
+   63428:      	b.gt	0x63440 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x30>
+   6342c:      	mov	w0, #0x8                ; =8
+   63430:      	bl	0x63430 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x20>
+   63434:      	ldr	x8, [x20, #0x38]
+   63438:      	cmp	x8, #0x8
+   6343c:      	b.lt	0x634c4 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xb4>
+   63440:      	sub	x10, x8, #0x8
+   63444:      	ldr	x9, [x20, #0x30]
+   63448:      	lsr	x10, x9, x10
+   6344c:      	and	x10, x10, #0xff
+   63450:      	cmp	x8, #0x47
+   63454:      	csel	x10, xzr, x10, hi
+   63458:      	ldr	x11, [x19, #0x30]
+   6345c:      	ldr	x12, [x11, #0x10]
+   63460:      	cmp	x10, x12
+   63464:      	b.hs	0x63530 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x120>
+   63468:      	add	x11, x11, x10
+   6346c:      	ldrb	w11, [x11, #0x20]
+   63470:      	cbz	x11, 0x634c4 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xb4>
+   63474:      	ldr	x12, [x19, #0x38]
+   63478:      	ldr	x13, [x12, #0x10]
+   6347c:      	cmp	x10, x13
+   63480:      	b.hs	0x63534 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x124>
+   63484:      	add	x10, x12, x10
+   63488:      	ldrb	w10, [x10, #0x20]
+   6348c:      	tst	w10, #0xffffffef
+   63490:      	b.ne	0x634b0 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xa0>
+   63494:      	mov	x9, #0x0                ; =0
+   63498:      	sub	x8, x8, x11
+   6349c:      	str	x8, [x20, #0x38]
+   634a0:      	mov	w8, #-0x8000            ; =-32768
+   634a4:      	cmp	w10, #0x0
+   634a8:      	csel	w8, wzr, w8, eq
+   634ac:      	b	0x634cc <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xbc>
+   634b0:      	cmp	w10, #0xf
+   634b4:      	b.hi	0x634c4 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xb4>
+   634b8:      	add	x11, x10, x11
+   634bc:      	subs	x8, x8, x11
+   634c0:      	b.hs	0x634e0 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xd0>
+   634c4:      	mov	w8, #0x0                ; =0
+   634c8:      	mov	x9, #0x100000000        ; =4294967296
+   634cc:      	mov	w8, w8
+   634d0:      	orr	x0, x9, x8
+   634d4:      	ldp	x29, x30, [sp, #0x10]
+   634d8:      	ldp	x20, x19, [sp], #0x20
+   634dc:      	ret
+   634e0:      	str	x8, [x20, #0x38]
+   634e4:      	lsr	x9, x9, x8
+   634e8:      	mov	x11, #-0x1              ; =-1
+   634ec:      	lsl	x11, x11, x10
+   634f0:      	cmp	x8, #0x3f
+   634f4:      	csel	w8, wzr, w9, hi
+   634f8:      	bic	w8, w8, w11
+   634fc:      	sub	w9, w10, #0x1
+   63500:      	mov	w11, #0x1               ; =1
+   63504:      	lsl	w9, w11, w9
+   63508:      	cmp	w9, w8
+   6350c:      	b.le	0x63528 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x118>
+   63510:      	mov	x9, #0x0                ; =0
+   63514:      	mov	w11, #-0x1              ; =-1
+   63518:      	lsl	w10, w11, w10
+   6351c:      	add	w8, w10, w8
+   63520:      	add	w8, w8, #0x1
+   63524:      	b	0x634cc <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xbc>
+   63528:      	mov	x9, #0x0                ; =0
+   6352c:      	b	0x634cc <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xbc>
+   63530:      	brk	#0x1
+   63534:      	brk	#0x1

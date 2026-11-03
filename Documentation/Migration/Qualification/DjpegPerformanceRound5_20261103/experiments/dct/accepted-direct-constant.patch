@@ -1,0 +1,211 @@
+commit 4277947911d357f8c7c364051bcef14e89fc1368
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 19:11:37 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 19:11:37 2026 +0530
+
+    Write constant DCT tiles directly with exact shared sample conversion
+
+diff --git a/Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift b/Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift
+index c6b3643..c46807e 100644
+--- a/Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift
++++ b/Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift
+@@ -294,6 +294,54 @@ enum SharedDCTStorage {
+         }
+     }
+ 
++    /// A DC-only block has one already shifted/clipped sample. Convert it using
++    /// the same integer rounding or Float-bit writer as a full block, then copy
++    /// the repeated byte pattern into its active rows. The 32-byte temporary is
++    /// scoped to this synchronous call; caller memory never enters other work.
++    /// The caller validates geometry just as for writeGreyscaleBlocks.
++    static func writeGreyscaleConstantBlocks(_ values: UnsafeBufferPointer<Float>,
++                                             firstBlock: Int, blocksPerRow: Int,
++                                             width: Int, height: Int, precision: Int,
++                                             floatOutput: Bool, into destination: BorrowedSampleDestination) throws {
++        let bps = destination.bytesPerSample
++        guard floatOutput ? bps == 4 : (bps == 1 && precision <= 8) || bps == 2,
++              let base = values.baseAddress,
++              let bytes = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
++            throw JLIError.unsupportedJPEGFeature("Invalid greyscale destination")
++        }
++        let maximum = Float((1 << precision) - 1)
++        try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: 32) { pattern in
++            pattern.initialize(repeating: 0)
++            let tile = pattern.baseAddress!
++            for index in 0..<values.count {
++                if index % 64 == 0 { try NativeOperation.check() }
++                let block = firstBlock + index
++                let x = (block % blocksPerRow) * 8, y = (block / blocksPerRow) * 8
++                guard x < width, y < height else { continue }
++                try writeGreyscaleRun(base + index, into: tile, count: 1,
++                    bytesPerSample: bps, maximum: maximum, floatOutput: floatOutput)
++                for sample in 1..<8 { for byte in 0..<bps {
++                    tile[sample * bps + byte] = tile[byte]
++                } }
++                let payload = min(8, width - x) * bps
++                let rows = min(8, height - y)
++                let destinationRow = bytes + y * destination.rowBytes + x * bps
++                // Constant memcpy lengths permit unaligned fixed-size stores;
++                // partial edge rows retain a bounded variable-length copy.
++                switch payload {
++                case 8:
++                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, 8) }
++                case 16:
++                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, 16) }
++                case 32:
++                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, 32) }
++                default:
++                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, payload) }
++                }
++            }
++        }
++    }
++
+     @inline(__always)
+     private static func writeGreyscaleRun(_ src: UnsafePointer<Float>, into dst: UnsafeMutablePointer<UInt8>,
+                                           count: Int, bytesPerSample: Int, maximum: Float,
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index 778a49d..713738d 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -1110,20 +1110,25 @@ struct JLIDecoder: Sendable {
+                     let base = coefficients.baseAddress!
+                     let dcOnly = AccelerateDSP.prepareDCOnlyDCTBatch(zigzag: UnsafePointer(base),
+                         quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount)
+-                    if !dcOnly {
+-                        AccelerateDSP.packDequantizedDCTBatch(zigzag: UnsafePointer(base),
+-                            quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount)
++                    if dcOnly {
++                        var center = Float(1 << (precision - 1))
++                        var low: Float = 0, high = Float((1 << precision) - 1)
++                        jliDSP_vsadd(sc.baseAddress!, 1, &center, sc.baseAddress!, 1, blockCount)
++                        jliDSP_vclip(sc.baseAddress!, 1, &low, &high, sc.baseAddress!, 1, blockCount)
++                        try SharedDCTStorage.writeGreyscaleConstantBlocks(
++                            UnsafeBufferPointer(start: sc.baseAddress!, count: blockCount),
++                            firstBlock: first, blocksPerRow: plan.blocksPerRow,
++                            width: width, height: height, precision: precision,
++                            floatOutput: floatOutput, into: destination)
++                        return
+                     }
++                    AccelerateDSP.packDequantizedDCTBatch(zigzag: UnsafePointer(base),
++                        quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount)
+                     // Plan admission proves matching stride/alignment. Packing
+                     // has finished all coefficient reads before changing binding.
+                     try base.withMemoryRebound(to: Float.self, capacity: sampleCount) { pixels in
+-                        if dcOnly {
+-                            AccelerateDSP.writeDCOnlyDCTBatch(values: UnsafePointer(sc.baseAddress!),
+-                                output: pixels, blockCount: blockCount)
+-                        } else {
+-                            AccelerateDSP.inverseDCTBatchPacked(output: pixels, scratch: sc.baseAddress!,
+-                                blockCount: blockCount)
+-                        }
++                        AccelerateDSP.inverseDCTBatchPacked(output: pixels, scratch: sc.baseAddress!,
++                            blockCount: blockCount)
+                         try writeReconstructedGreyscaleBatch(pixels: pixels, firstBlock: first,
+                             blockCount: blockCount, blocksPerRow: plan.blocksPerRow,
+                             width: width, height: height, precision: precision,
+diff --git a/Tests/SwiftJLITests/Native/ConstantDCTWriterTests.swift b/Tests/SwiftJLITests/Native/ConstantDCTWriterTests.swift
+new file mode 100644
+index 0000000..54d28ea
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/ConstantDCTWriterTests.swift
+@@ -0,0 +1,98 @@
++// SPDX-License-Identifier: Apache-2.0
++import Testing
++@testable import SwiftJLI
++
++@Suite struct ConstantDCTWriterTests {
++    @Test(arguments: [8, 12])
++    func constantTilesMatchExpandedSamplesIncludingPaddingAndFloatBits(precision: Int) throws {
++        let maximum = Float((1 << precision) - 1)
++        let samples: [Float] = [-0.0, 0.5, 1.5, 2.5, 0.499, maximum - 0.5, maximum, maximum + 1]
++        for (width, height) in [(1, 1), (2, 9), (3, 17), (7, 9), (8, 17), (9, 9),
++                                (15, 17), (16, 9), (19, 17), (513, 257)] {
++            let blocksPerRow = (width + 7) / 8
++            let blockCount = blocksPerRow * ((height + 7) / 8)
++            let values = (0..<blockCount).map { samples[$0 % samples.count] }
++            let expanded = values.flatMap { [Float](repeating: $0, count: 64) }
++            for floating in [false, true] {
++                let bps = floating ? 4 : precision == 8 ? 1 : 2
++                let rowBytes = width * bps + 5
++                var expected = [UInt8](repeating: 0xA5, count: 3 + rowBytes * height + 7)
++                var actual = expected
++                try expected.withUnsafeMutableBytes { raw in
++                    let output = UnsafeMutableRawBufferPointer(rebasing: raw[3..<(raw.count - 7)])
++                    try expanded.withUnsafeBufferPointer {
++                        try SharedDCTStorage.writeGreyscaleBlocks($0, firstBlock: 0,
++                            blocksPerRow: blocksPerRow, width: width, height: height,
++                            precision: precision, floatOutput: floating,
++                            into: .init(bytes: output, rowBytes: rowBytes, bytesPerSample: bps))
++                    }
++                }
++                try actual.withUnsafeMutableBytes { raw in
++                    let output = UnsafeMutableRawBufferPointer(rebasing: raw[3..<(raw.count - 7)])
++                    try values.withUnsafeBufferPointer { source in
++                        // Small splits cross block rows; the large case also
++                        // reaches two full1024 batches and an odd final tail.
++                        let chunk = blockCount > 1024 ? 1024 : 5
++                        for first in stride(from: 0, to: blockCount, by: chunk) {
++                            let end = min(first + chunk, blockCount)
++                            try SharedDCTStorage.writeGreyscaleConstantBlocks(
++                                UnsafeBufferPointer(rebasing: source[first..<end]), firstBlock: first,
++                                blocksPerRow: blocksPerRow, width: width, height: height,
++                                precision: precision, floatOutput: floating,
++                                into: .init(bytes: output, rowBytes: rowBytes, bytesPerSample: bps))
++                        }
++                    }
++                }
++                #expect(actual == expected)
++                #expect(actual.prefix(3).allSatisfy { $0 == 0xA5 })
++                #expect(actual.suffix(7).allSatisfy { $0 == 0xA5 })
++                if floating { #expect(Array(actual[3..<7]) == [0, 0, 0, 128]) }
++            }
++        }
++    }
++
++    @Test func nonFiniteConstantIsRejectedBeforeDestinationWrites() throws {
++        for invalid: Float in [.nan, .infinity, -.infinity] {
++            for bps in [1, 2, 4] {
++                var bytes = [UInt8](repeating: 0xA5, count: 64 * bps)
++                #expect(throws: JLIError.self) {
++                    try bytes.withUnsafeMutableBytes { raw in
++                        try [invalid].withUnsafeBufferPointer {
++                            try SharedDCTStorage.writeGreyscaleConstantBlocks($0, firstBlock: 0,
++                                blocksPerRow: 1, width: 8, height: 8, precision: bps == 1 ? 8 : 12,
++                                floatOutput: bps == 4,
++                                into: .init(bytes: raw, rowBytes: 8 * bps, bytesPerSample: bps))
++                        }
++                    }
++                }
++                #expect(bytes.allSatisfy { $0 == 0xA5 })
++            }
++        }
++    }
++
++    @Test func levelShiftAndClipKeepBitsWhenEachDCIsProcessedOnce() {
++        let basis = AccelerateDSP.dctMatrix[0]
++        for backend in Decoder.capabilities.availableBackends {
++            NativeOperation.$current.withValue(.init(seconds: 120, backend: backend, maximumWorkers: 1)) {
++                for precision in [8, 12] {
++                    for first in stride(from: -16384, through: 16384, by: 1024) {
++                        let count = min(1024, 16385 - first)
++                        var values = (0..<count).map { (Float(first + $0) * basis) * basis }
++                        var expanded = values.flatMap { [Float](repeating: $0, count: 64) }
++                        var center = Float(1 << (precision - 1)), low: Float = 0
++                        var high = Float((1 << precision) - 1)
++                        values.withUnsafeMutableBufferPointer { v in
++                            jliDSP_vsadd(v.baseAddress!, 1, &center, v.baseAddress!, 1, v.count)
++                            jliDSP_vclip(v.baseAddress!, 1, &low, &high, v.baseAddress!, 1, v.count)
++                        }
++                        expanded.withUnsafeMutableBufferPointer { e in
++                            jliDSP_vsadd(e.baseAddress!, 1, &center, e.baseAddress!, 1, e.count)
++                            jliDSP_vclip(e.baseAddress!, 1, &low, &high, e.baseAddress!, 1, e.count)
++                        }
++                        #expect(expanded.indices.allSatisfy { expanded[$0].bitPattern == values[$0 / 64].bitPattern })
++                    }
++                }
++            }
++        }
++    }
++}

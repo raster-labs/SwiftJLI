@@ -1,0 +1,102 @@
+commit 7d26cd0d6926a3e055c974228d2584be8b1b9a80
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 18:59:33 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 18:59:33 2026 +0530
+
+    Prefetch bounded AC lookahead through FF-free entropy words
+
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index b7dfc29..d5497e6 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -316,13 +316,15 @@ struct BitReader {
+     }
+ 
+     /// Resolves a complete AC run/value only when all its bits are buffered.
+-    /// The same eight-bit refill threshold as ordinary symbol decoding keeps
+-    /// byte offsets, stuffing, markers and truncated-input behaviour unchanged.
++    /// A wider prefetch uses only an FF-free bulk splice. Stuffed bytes, markers
++    /// and short input retain the ordinary eight-bit fill and fallback. Physical
++    /// byteOffset can advance over buffered bytes, but consumed bits and the
++    /// restart position recovered by alignToByte remain unchanged.
+     /// Run overflow must fall back before consuming magnitude bits: the existing
+     /// AC decoder stops after the Huffman symbol in that case.
+     @inline(__always)
+     mutating func fastDecodeAC(_ table: ACLookahead, remaining: Int) -> UInt32? {
+-        if bitsAvailable < 8 { fillBuffer(upTo: 8) }
++        if bitsAvailable < ACLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
+         guard bitsAvailable >= ACLookahead.bits else { return nil }
+         // Reader mutations bound the accumulator to 0...64 valid bits. After
+         // the guard this shift is 0...51, so the masked form has identical
+diff --git a/Tests/SwiftJLITests/Native/ACLookaheadTests.swift b/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
+index 916cffd..5f69207 100644
+--- a/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
++++ b/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
+@@ -66,4 +66,48 @@ import Testing
+             #expect(hits > 0 && misses > 0)
+         }
+     }
++
++    @Test func widerPrefetchPreservesLogicalCursorAndMarkerBoundaries() throws {
++        let table = StandardHuffmanTables.acLuminance
++        let lookup = try #require(ACLookahead(table: table, blockCount: 512))
++        let tails: [[UInt8]] = [Array(repeating: 0xAA, count: 24), [], [0xFF],
++            [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
++            [0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xFF, 0, 0xFF, 0xD0]]
++        for available in 8...12 { for (tailIndex, tail) in tails.enumerated() {
++            var fast = BitReader(data: Array(repeating: 0xAA, count: 8) + tail)
++            var referenceReader = fast
++            var consume = 64 - available
++            while consume > 0 {
++                let width = min(consume, 16)
++                #expect(try fast.readBits(width) == referenceReader.readBits(width))
++                consume -= width
++            }
++            let expected = try reference(&referenceReader, table, remaining: 63)
++            let actual: (Int, Int32)
++            if let entry = fast.fastDecodeAC(lookup, remaining: 63) {
++                actual = (Int((entry >> 16) & 0xFF), Int32(Int16(truncatingIfNeeded: entry)))
++            } else {
++                actual = try reference(&fast, table, remaining: 63)
++            }
++            #expect(actual.0 == expected.0 && actual.1 == expected.1)
++            if tailIndex == 0 {
++                // This case proves that the additional FF-free prefetch ran.
++                #expect(fast.byteOffset > referenceReader.byteOffset)
++            } else {
++                // A short or FF-containing next word must not be prefetched.
++                #expect(fast.byteOffset == referenceReader.byteOffset)
++            }
++            var fastAligned = fast, referenceAligned = referenceReader
++            fastAligned.alignToByte(); referenceAligned.alignToByte()
++            #expect(fastAligned.byteOffset == referenceAligned.byteOffset)
++            let nextFast = Result { try fast.readBits(16) }
++            let nextReference = Result { try referenceReader.readBits(16) }
++            switch (nextFast, nextReference) {
++            case (.success(let a), .success(let b)): #expect(a == b)
++            case (.failure(let a), .failure(let b)):
++                #expect(String(describing: a) == String(describing: b))
++            default: Issue.record("AC prefetch changed remaining entropy or its error")
++            }
++        } }
++    }
+ }
+diff --git a/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift b/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
+index 6be0b25..7699eb0 100644
+--- a/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
++++ b/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
+@@ -84,7 +84,12 @@ import Testing
+                 #expect(Array(actual[3..<67]) == expected)
+                 #expect(actual.prefix(3).allSatisfy { $0 == 919 })
+                 #expect(actual.suffix(4).allSatisfy { $0 == 919 })
+-                #expect(reference.byteOffset == scoped.byteOffset)
++                // A combined lookup may prefetch additional FF-free bytes.
++                // Compare the consumed cursor after returning whole buffered
++                // bytes, rather than conflating prefetch with consumed input.
++                var referencePosition = reference, scopedPosition = scoped
++                referencePosition.alignToByte(); scopedPosition.alignToByte()
++                #expect(referencePosition.byteOffset == scopedPosition.byteOffset)
+             }
+         }
+     }

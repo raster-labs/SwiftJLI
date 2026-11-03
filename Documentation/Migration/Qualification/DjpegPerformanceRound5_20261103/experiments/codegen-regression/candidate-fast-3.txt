@@ -1,0 +1,88 @@
+
+/private/tmp/swiftjli-round5-build/out/Products/Release/SwiftJLI.o:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+0000000000063038 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF>:
+   63038:      	stp	x20, x19, [sp, #-0x20]!
+   6303c:      	stp	x29, x30, [sp, #0x10]
+   63040:      	add	x29, sp, #0x10
+   63044:      	mov	x19, x0
+   63048:      	ldr	x8, [x20, #0x38]
+   6304c:      	cmp	x8, #0xc
+   63050:      	b.gt	0x630f0 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0xb8>
+   63054:      	ldr	x9, [x20, #0x28]
+   63058:      	adds	x11, x9, #0x8
+   6305c:      	b.vs	0x63168 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x130>
+   63060:      	ldr	x10, [x20, #0x18]
+   63064:      	cbz	x10, 0x630d4 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x9c>
+   63068:      	ldr	x12, [x20, #0x20]
+   6306c:      	sub	x12, x12, x10
+   63070:      	cmp	x12, x11
+   63074:      	b.lt	0x630dc <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0xa4>
+   63078:      	ldr	x10, [x10, x9]
+   6307c:      	rev	x11, x10
+   63080:      	mov	x10, #-0x101010101010102 ; =-72340172838076674
+   63084:      	sub	x10, x10, x11
+   63088:      	and	x10, x11, x10
+   6308c:      	tst	x10, #0x8080808080808080
+   63090:      	b.ne	0x630dc <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0xa4>
+   63094:      	mov	w10, #0x40              ; =64
+   63098:      	subs	x10, x10, x8
+   6309c:      	b.vs	0x63170 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x138>
+   630a0:      	cbz	x8, 0x63128 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0xf0>
+   630a4:      	and	x12, x10, #0xfffffffffffffff8
+   630a8:      	mov	w13, #0x40              ; =64
+   630ac:      	subs	x13, x13, x12
+   630b0:      	b.vs	0x6317c <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x144>
+   630b4:      	ldr	x14, [x20, #0x30]
+   630b8:      	and	x15, x10, #0x38
+   630bc:      	lsl	x14, x14, x15
+   630c0:      	and	x13, x13, #0x38
+   630c4:      	lsr	x11, x11, x13
+   630c8:      	orr	x11, x14, x11
+   630cc:      	str	x11, [x20, #0x30]
+   630d0:      	b	0x63130 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0xf8>
+   630d4:      	cmp	x11, #0x1
+   630d8:      	b.lt	0x6316c <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x134>
+   630dc:      	mov	w0, #0x8                ; =8
+   630e0:      	bl	0x630e0 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0xa8>
+   630e4:      	ldr	x8, [x20, #0x38]
+   630e8:      	cmp	x8, #0xd
+   630ec:      	b.lt	0x63154 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x11c>
+   630f0:      	ldr	x9, [x20, #0x30]
+   630f4:      	add	w10, w8, #0x33
+   630f8:      	lsr	x9, x9, x10
+   630fc:      	and	x9, x9, #0x1fff
+   63100:      	ldr	x10, [x19, #0x10]
+   63104:      	cmp	x9, x10
+   63108:      	b.hs	0x63164 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x12c>
+   6310c:      	add	x9, x19, x9, lsl #2
+   63110:      	ldr	w9, [x9, #0x20]
+   63114:      	cbz	w9, 0x63154 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x11c>
+   63118:      	sub	x8, x8, x9, lsr #16
+   6311c:      	str	x8, [x20, #0x38]
+   63120:      	sxth	w0, w9
+   63124:      	b	0x63158 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x120>
+   63128:      	str	x11, [x20, #0x30]
+   6312c:      	mov	w12, #0x40              ; =64
+   63130:      	adds	x8, x8, x12
+   63134:      	b.vs	0x63174 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x13c>
+   63138:      	asr	x10, x10, #3
+   6313c:      	str	x8, [x20, #0x38]
+   63140:      	adds	x9, x9, x10
+   63144:      	b.vs	0x63178 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0x140>
+   63148:      	str	x9, [x20, #0x28]
+   6314c:      	cmp	x8, #0xd
+   63150:      	b.ge	0x630f0 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA0G9LookaheadVF+0xb8>
+   63154:      	mov	x0, #0x100000000        ; =4294967296
+   63158:      	ldp	x29, x30, [sp, #0x10]
+   6315c:      	ldp	x20, x19, [sp], #0x20
+   63160:      	ret
+   63164:      	brk	#0x1
+   63168:      	brk	#0x1
+   6316c:      	brk	#0x1
+   63170:      	brk	#0x1
+   63174:      	brk	#0x1
+   63178:      	brk	#0x1
+   6317c:      	brk	#0x1

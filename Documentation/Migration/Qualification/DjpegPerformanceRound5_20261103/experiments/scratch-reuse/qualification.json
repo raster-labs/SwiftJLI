@@ -1,0 +1,66 @@
+{
+  "baselineRevision": "9346db04103be92bfae2a7b7ffaff8c3e69309cc",
+  "candidateRevision": "06b51f408db183c6211f849dca163a46d57eb6b3",
+  "originalDCRevision": "9ae11dc13d2b4a69329f40540e8a3ef3fac8d69b",
+  "candidateWorktree": "/private/tmp/swiftjli-round5-scratch",
+  "candidateBuild": "/private/tmp/swiftjli-round5-scratch-build",
+  "sourceManifestSHA256": "234b0d08e0f1cb0d5c367ea55cfed80b558b444d448ca5ec9a8fd4e880d12567",
+  "baselineObjectSHA256": "4b9ac659d9e9b91ad93be66a0c9111be11e33c9001f4d29d78e35b4f50d57904",
+  "candidateObjectSHA256": "356ab7b7b2a2fc8ed34306007a6d25f856b969be37d19e50ab570551e6839a1d",
+  "releaseTests": {
+    "exitCode": 0,
+    "tests": 24,
+    "suites": 6
+  },
+  "publicationFollowup": {
+    "command": [
+      "swift",
+      "test",
+      "-c",
+      "release",
+      "--skip-build",
+      "--jobs",
+      "4",
+      "--scratch-path",
+      "/private/tmp/swiftjli-round5-scratch-build",
+      "--filter",
+      "cancellationInProviderFinalisationPreventsPublication"
+    ],
+    "exitCode": 0,
+    "environment": {
+      "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+    },
+    "tests": 1,
+    "testCases": 2
+  },
+  "benchmarkAttribution": "Combined accepted DC-only shortcut plus scratch reuse vs9346; allocation reduction is separately source-proved.",
+  "nativeBenchmark": {
+    "exitCode": 0,
+    "fixtures": 12,
+    "pairedRounds": 2,
+    "outputsExact": true,
+    "command": [
+      "python3",
+      "/private/tmp/swiftjli-round2-final-dct-benchmark.py",
+      "--baseline-products",
+      "/private/tmp/swiftjli-round5-pre-scratch-products",
+      "--candidate-products",
+      "/private/tmp/swiftjli-round5-scratch-build/out/Products/Release",
+      "--output",
+      "/private/tmp/swiftjli-round5-evidence/scratch-reuse/native-dct.json",
+      "--rounds",
+      "2"
+    ]
+  },
+  "memoryBenchmark": {
+    "exitCode": 0,
+    "cases": 4,
+    "pairedTrials": 3,
+    "command": [
+      "python3",
+      "/private/tmp/swiftjli-round5-evidence/scratch-reuse/run-one-shot-memory.py"
+    ]
+  },
+  "sanitizers": "Deferred to integrated final ASan/TSan gate by parent; not run for this candidate.",
+  "hostContention": "Foreign SwiftJXL tests and system indexing were active near benchmark start; snapshot retained. Small timing differences are provisional."
+}
