@@ -96,7 +96,10 @@
     "723d5a9a90a7f9a0c56670405987ca200cbbcc01": "b4c40918d618be68d016215126d651f8b4689e98",
     "a89859dc299a63178438340f32d2075ea47f8fc4": "425bfa4b996c39b6fde727af4bdd795b62cc4652",
     "69aa3d2350d102d138ae1091ec8cfce24d7e7c6d": "d39529fd05610f174667fa9ac14ccf8a47d6e3f1",
-    "704ddae1bafea95d8a48c01ce35887c5b6413c0d": "fe5d267bcc2e7d45f397aa648c1c14ea3da85226"
+    "704ddae1bafea95d8a48c01ce35887c5b6413c0d": "fe5d267bcc2e7d45f397aa648c1c14ea3da85226",
+    "1273d183f2fad8387679ea36a75946076ad6a41d": "fa67939216b2b0a1cda0d8facb7dc42018d7fd4d",
+    "93e5a38adaea746ae6edcfd1cbaf12eb9b4fceab": "99dc51c166977788bd2fa453172014c42ba598d3",
+    "396ddd100f240f496b7cd7ac1c712545f11b9cf6": "fd6e1a1530bf5584415aceef41125474ebfb26a3"
   },
   "rejectedTrials": [
     {
@@ -123,6 +126,16 @@
       "revision": "3f18c9fc44d4c2bcb9cc978d566859658d2ce63a",
       "baseline": "14f35018d241666358480da2a8527d29ab047627",
       "disposition": "Rejected narrow640 pipeline: exact samples and 58/11 focused tests, but repeated DCT latency regressions; RSS not measured."
+    },
+    {
+      "revision": "df14ad6f0f237ca1686d1cc457b12b1461f4936b",
+      "baseline": "14f35018d241666358480da2a8527d29ab047627",
+      "disposition": "Rejected partial FF-free AC prefix refill after repeated dense12-512 slowdown; exact output retained."
+    },
+    {
+      "revision": "f3a416307d4dc249cc914b8e056c3fb81c036113",
+      "baseline": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+      "disposition": "Rejected scoped AC-table borrow after no DCT gain; lossless follow-up not run."
     }
   ],
   "completedTrialAppend": {
@@ -147,5 +160,11 @@
       "objectSHA256": "9604e96a89586c07368942799ce1c29fa835fcdfc466c0b1e20074a76d6de9ed",
       "disposition": "Read-only stack sampling diagnosis; no production change or performance acceptance."
     }
-  ]
+  ],
+  "latestTestOnlyCorrection": {
+    "testedRevision": "396ddd100f240f496b7cd7ac1c712545f11b9cf6",
+    "rootRevision": "fd6e1a1530bf5584415aceef41125474ebfb26a3",
+    "productionEquivalent": "14f35018d241666358480da2a8527d29ab047627",
+    "qualification": "Local focused Release2tests/1suite/sixparametercases; corrected remote CI not qualified."
+  }
 }
