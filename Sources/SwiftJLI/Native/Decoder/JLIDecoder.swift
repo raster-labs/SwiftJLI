@@ -1160,6 +1160,10 @@ struct JLIDecoder: Sendable {
     /// live; `aboveLeft` saves the previous-row sample before its slot is reused.
     /// Every slot is written on the first row of a restart segment before any
     /// subsequent row reads it. Neither pointer escapes this call.
+    // Preserve caller specialisation of the large scalar loop. Without this
+    // boundary, adding a separate tiny-image path can make the optimiser
+    // outline this loop and retain general-case work for every sample.
+    @inline(__always)
     private static func losslessGrayInto(
         _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
         predictor: Int, half: Int32, table: HuffmanTable, reader: inout BitReader,
