@@ -122,16 +122,32 @@ metadata bytes, the current reservations are:
 | Parsing | `64 × B + 1,048,576` |
 | Predictive decode | `64 × B + 8 × N + 1,048,576` |
 | DCT decode, except eligible greyscale streaming | `64 × B + 128 × N + 1,048,576` |
-| Eligible full-resolution greyscale DCT streaming | `64 × B + 768 × min(1024, ceil(width/8) × ceil(height/8)) + 1,048,576` |
+| Eligible full-resolution greyscale DCT streaming | `64 × B + 512 × min(1024 × L, K) + 1,048,576` |
+| Table-proven DC-only greyscale streaming | `64 × B + 8 × min(1024, K) + 1,048,576` |
 
-Streaming requires a single sequential 8/12-bit greyscale scan with 1×1 sampling
-and compatible integer or raw Float output. It applies to explicit
-`maximumWorkers: 1`, or at most 4,096 blocks with the accelerated backend and
-2,048 blocks with the scalar backend. Public allocated-output and caller-storage
-decode use the same admission/dispatch plan. Larger default decodes and reduced
-scales retain the conservative full coefficient reservation. Resource ceilings
-are unchanged; the smaller reservation allows qualifying operations to fit
-budgets that previously rejected them. See [source-pinned tests and measurements](Documentation/Migration/Qualification/DjpegPerformanceRound4_20261103/README.md).
+Here `K = ceil(width/8) × ceil(height/8)` counts padded blocks and `L` is the
+immutable logical lane count chosen by admission and dispatch. Streaming requires
+a single sequential 8/12-bit greyscale scan with 1×1 sampling and compatible
+integer or raw Float output. An explicit worker ceiling of one uses one lane;
+small scans use one lane up to 4,096 accelerated or 2,048 scalar blocks. Larger
+scans use `min(8, maximumWorkers, floor(K/2048))` lanes when that permits at least
+two; otherwise the conservative full-plane reservation applies. The generic
+streaming payload is therefore at most 4 MiB. Each lane reconstructs canonical
+1,024-block groups, preserving the Float arithmetic grouping across worker counts.
+Workers use internal buffers; the calling thread copies finished tiles into the
+borrowed destination after all workers join.
+
+If the selected scan-local AC Huffman table contains only zero magnitude
+categories, the compact path retains just one Int32 DC coefficient and one Float
+value per block. It always uses one batch of at most 1,024 blocks, for an 8 KiB
+payload, independently of the worker ceiling. It preserves full resolution and
+precision; this is not reduced-scale decoding.
+
+Public allocated-output and caller-storage decode share these plans. Reduced
+scales, progressive/colour scans and unsupported layouts retain their existing
+reservations. Resource ceilings are unchanged; lower reservations allow eligible
+operations to fit budgets that previously rejected them. See the
+[source-pinned grouped and compact trials](Documentation/Migration/Qualification/DjpegPerformanceRound5_20261103/experiments/INDEX.md).
 
 Admission also counts supplied/final pixel storage, compressed data or the encode
 output bound, and metadata against `maximumMemoryBytes`. Padding counts as storage.
