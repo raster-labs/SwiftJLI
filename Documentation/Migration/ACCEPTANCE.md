@@ -10,7 +10,7 @@ bounded owning buffers. All five eligible large lossless cases beat both pinned
 djpeg 3.2.0 and 3.2.1 by more than 5% in both rounds, including the original
 mixed2048 case (12.2% / 12.5% lower latency). Small CLI cases, DCT12 CLI latency
 and process memory still favour djpeg; the overall optimisation goal remains
-active. Final validation passes 388 release/ASan tests, 250 release/ASan CLI
+open. Final validation passes 388 release/ASan tests, 250 release/ASan CLI
 checks, 45 focused TSan tests, 210 lossless oracle cases per direction, 48 DCT
 profiles in both directions and 36 additional independent large zero-category
 fixtures. Decoded bytes match the preceding Swift revision; fidelity and

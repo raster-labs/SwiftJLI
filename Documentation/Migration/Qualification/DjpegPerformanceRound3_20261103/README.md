@@ -126,4 +126,4 @@ Experiment receipts and the initial oversized test-fixture rejection are retaine
 
 ## Remaining work
 
-The goal remains active: small CLI decodes and DCT12 CLI latency still trail djpeg, and process RSS remains substantially higher. Swift/Foundation process startup remains a measured source of overhead from the preceding investigation; native library improvements do not remove it. Further work must preserve the same fidelity, resource and failure behaviour. This round qualifies local macOS only; Swift 6.2, Linux, simulators, physical devices and stable-release acceptance were not newly qualified.
+The goal remains open: small CLI decodes and DCT12 CLI latency still trail djpeg, and process RSS remains substantially higher. Swift/Foundation process startup remains a measured source of overhead from the preceding investigation; native library improvements do not remove it. Further work must preserve the same fidelity, resource and failure behaviour. This round qualifies local macOS only; Swift 6.2, Linux, simulators, physical devices and stable-release acceptance were not newly qualified.
