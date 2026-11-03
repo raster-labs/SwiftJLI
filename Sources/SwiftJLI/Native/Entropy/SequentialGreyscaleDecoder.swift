@@ -7,8 +7,11 @@
 enum SequentialGreyscaleDecoder {
     /// Serial scan with bounded coefficient storage. The consumer completes
     /// synchronously before the same slot is reused. The consumer must not let
-    /// the pointer escape or use it concurrently. It may overwrite consumed
-    /// coefficients, including through temporary scoped rebinding, but must
+    /// the pointer escape. Joined workers may own disjoint canonical groups,
+    /// provided every worker finishes before the consumer returns or throws.
+    /// The caller must not access a group while its worker owns it. The consumer
+    /// may overwrite consumed coefficients through temporary scoped rebinding,
+    /// but must
     /// restore the Int32 binding on return or throw. Each following block is
     /// fully initialised by decodeAC and its DC assignment before it is read;
     /// no coefficient value carries between batches. The production consumer
@@ -19,26 +22,30 @@ enum SequentialGreyscaleDecoder {
         reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable,
         lookup: ACLookahead?, blocksPerRow: Int, blockRows: Int,
         precision: Int, restartInterval: Int,
+        windowBlocks: Int = SequentialGreyscalePlan.maximumBatchBlocks,
         consume: (UnsafeMutableBufferPointer<Int32>, Int) throws -> Void
     ) throws {
         let (blocks, overflow) = blocksPerRow.multipliedReportingOverflow(by: blockRows)
         let (_, countOverflow) = blocks.multipliedReportingOverflow(by: 64)
         guard blocksPerRow > 0, blockRows > 0, !overflow, !countOverflow,
-              (8...12).contains(precision), restartInterval >= 0 else {
+              (8...12).contains(precision), restartInterval >= 0,
+              windowBlocks > 0, windowBlocks <= SequentialGreyscalePlan.maximumWindowBlocks,
+              windowBlocks >= blocks || windowBlocks % 1024 == 0 else {
             throw JLIError.decodingFailed("Invalid sequential coefficient destination")
         }
-        let capacity = min(1024, blocks) * 64
+        let capacity = min(windowBlocks, blocks) * 64
         var coefficients = [Int32](unsafeUninitializedCapacity: capacity) { _, count in count = capacity }
         var previousDC: Int32 = 0
         var restartIndex = 0
         try coefficients.withUnsafeMutableBufferPointer { buffer in
             let base = buffer.baseAddress!
-            for first in stride(from: 0, to: blocks, by: 1024) {
-                let end = min(first + 1024, blocks)
+            for first in stride(from: 0, to: blocks, by: windowBlocks) {
+                let end = min(first + windowBlocks, blocks)
                 var index = first
                 while index < end {
                     try NativeOperation.check()
-                    let rowEnd = min(end, index + blocksPerRow - index % blocksPerRow)
+                    let canonicalEnd = index + 1024 - index % 1024
+                    let rowEnd = min(end, min(index + blocksPerRow - index % blocksPerRow, canonicalEnd))
                     while index < rowEnd {
                         if restartInterval > 0, index > 0, index % restartInterval == 0 {
                             try reader.skipRestartMarker(expectedIndex: restartIndex)

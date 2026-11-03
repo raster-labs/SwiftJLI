@@ -5,6 +5,8 @@
 /// planes. Resource admission must not infer streaming from geometry alone.
 struct SequentialGreyscalePlan: Sendable {
     static let maximumBatchBlocks = 1024
+    static let maximumParallelLanes = 8
+    static let maximumWindowBlocks = maximumBatchBlocks * maximumParallelLanes
     static let maximumAutomaticBlocks = 4096
     static let maximumAutomaticScalarBlocks = 2048
 
@@ -12,6 +14,7 @@ struct SequentialGreyscalePlan: Sendable {
     let blockRows: Int
     let blockCount: Int
     let batchBlocks: Int
+    let parallelLanes: Int
     /// Payload of one Int32 coefficient/output batch and one Float IDCT scratch.
     /// This is a conservative reservation component, not measured peak memory.
     let workspaceBytes: Int
@@ -42,17 +45,23 @@ struct SequentialGreyscalePlan: Sendable {
         let blocksPerRow = try checkedAdd(frame.width, 7) / 8
         let blockRows = try checkedAdd(frame.height, 7) / 8
         let blockCount = try checkedMultiply(blocksPerRow, blockRows)
-        // The large-image parallel path remains faster on the qualified host.
-        // A worker limit is a ceiling: small images use the measured serial path.
-        guard workerLimit == 1 || blockCount <= maximumAutomaticBlocks else { return nil }
-        // Preserve the scalar parallel reconstruction threshold above 2048 blocks.
-        guard workerLimit == 1 || backend == .accelerated
-                || blockCount <= maximumAutomaticScalarBlocks else { return nil }
-        let batchBlocks = min(maximumBatchBlocks, blockCount)
+        // Small images retain their measured serial path. A large window uses
+        // whole canonical transforms and never exceeds eight logical lanes.
+        // A changing active-CPU count may execute fewer lanes, but cannot change
+        // this allocation/admission decision based on the immutable ceiling.
+        let serialThreshold = backend == .accelerated ? maximumAutomaticBlocks : maximumAutomaticScalarBlocks
+        let parallelLanes: Int
+        if workerLimit == 1 || blockCount <= serialThreshold { parallelLanes = 1 }
+        else {
+            parallelLanes = min(maximumParallelLanes, min(workerLimit, blockCount / 2048))
+            guard parallelLanes > 1 else { return nil }
+        }
+        let batchBlocks = min(try checkedMultiply(maximumBatchBlocks, parallelLanes), blockCount)
         let samples = try checkedMultiply(batchBlocks, 64)
         let bytesPerSample = try checkedAdd(MemoryLayout<Int32>.stride, MemoryLayout<Float>.stride)
         let workspaceBytes = try checkedMultiply(samples, bytesPerSample)
         return Self(blocksPerRow: blocksPerRow, blockRows: blockRows,
-                    blockCount: blockCount, batchBlocks: batchBlocks, workspaceBytes: workspaceBytes)
+                    blockCount: blockCount, batchBlocks: batchBlocks,
+                    parallelLanes: parallelLanes, workspaceBytes: workspaceBytes)
     }
 }

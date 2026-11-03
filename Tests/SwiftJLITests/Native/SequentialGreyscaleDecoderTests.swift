@@ -3,6 +3,52 @@ import Testing
 @testable import SwiftJLI
 
 @Suite struct SequentialGreyscaleDecoderTests {
+    @Test func invalidWindowExtentsRejectBeforeReadingEntropy() throws {
+        for window in [-1, 0, 1023, 1025, 8193, Int.max] {
+            var reader = BitReader(data: []), calls = 0
+            #expect(throws: JLIError.self) {
+                try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
+                    dcTable: StandardHuffmanTables.dcLuminance, acTable: StandardHuffmanTables.acLuminance,
+                    lookup: nil, blocksPerRow: 4100, blockRows: 2, precision: 12, restartInterval: 0,
+                    windowBlocks: window) { _, _ in calls += 1 }
+            }
+            #expect(calls == 0 && reader.byteOffset == 0)
+        }
+    }
+
+    @Test(arguments: [2048, 8192])
+    func groupedWindowsPreserveRestartPredictionAndFullyResetSlots(window: Int) throws {
+        let dcTable = StandardHuffmanTables.dcLuminance, acTable = StandardHuffmanTables.acLuminance
+        for interval in [1023, 2048, 8193] {
+            var writer = BitWriter(), previous: Int32 = 0
+            var expected: [Int32] = []
+            for index in 0..<8200 {
+                if index > 0 && index % interval == 0 {
+                    writer.emitRestartMarker((index / interval - 1) & 7); previous = 0
+                }
+                var block = [Int32](repeating: 0, count: 64)
+                block[0] = Int32(index % 511 - 255)
+                if index % 3 == 0 { block[63] = 7 }
+                HuffmanEncoder.encodeDC(block[0] - previous, table: dcTable, writer: &writer)
+                HuffmanEncoder.encodeAC(block, table: acTable, writer: &writer)
+                previous = block[0]; expected += block
+            }
+            writer.flush()
+            var reader = BitReader(data: writer.data), received = 0
+            let lookup = try #require(ACLookahead(table: acTable, blockCount: 8200))
+            try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
+                dcTable: dcTable, acTable: acTable, lookup: lookup,
+                blocksPerRow: 4100, blockRows: 2, precision: 12, restartInterval: interval,
+                windowBlocks: window) { coefficients, first in
+                #expect(first == received / 64 && first % 1024 == 0)
+                #expect(coefficients.elementsEqual(expected[received..<(received + coefficients.count)]))
+                received += coefficients.count
+                coefficients.baseAddress!.update(repeating: 123456, count: coefficients.count)
+            }
+            #expect(received == expected.count)
+        }
+    }
+
     @Test(arguments: [8, 12])
     func scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision: Int) throws {
         let dcTable = StandardHuffmanTables.dcLuminance

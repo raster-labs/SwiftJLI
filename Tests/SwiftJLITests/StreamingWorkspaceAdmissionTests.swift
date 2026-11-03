@@ -175,8 +175,11 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend))
             #expect(plan.blockCount == threshold && plan.batchBlocks == 1024 && plan.workspaceBytes == 524_288)
             let aboveThreshold = replacingGeometry(width: 8, height: (threshold + 1) * 8)
-            #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
-                hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend) == nil)
+            let above = try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
+                hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend)
+            if backend == .accelerated {
+                #expect(above?.parallelLanes == 2 && above?.batchBlocks == 2048 && above?.workspaceBytes == 1_048_576)
+            } else { #expect(above == nil) }
             #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: backend)?.workspaceBytes == 524_288)
             #expect(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
@@ -188,6 +191,52 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
                     try SequentialGreyscalePlan.make(parsed: replacingGeometry(width: dimensions.0, height: dimensions.1),
                         configuration: .default, hasDestination: true, normaliseXYBOutput: false,
                         workerLimit: 1, backend: backend)
+                }
+            }
+            let large = replacingGeometry(width: 2048, height: 2048)
+            for workers in [1, 2, 3, 8, 64] {
+                let plan = try #require(try SequentialGreyscalePlan.make(parsed: large, configuration: .default,
+                    hasDestination: true, normaliseXYBOutput: false, workerLimit: workers, backend: backend))
+                let lanes = min(workers, 8)
+                #expect(plan.parallelLanes == lanes && plan.batchBlocks == lanes * 1024)
+                #expect(plan.workspaceBytes == lanes * 524_288)
+            }
+        }
+    }
+
+    @Test func groupedReservationIncludesBothWindowsAndDeniesBeforeBorrow() throws {
+        let width = 513, height = 513, rowBytes = width + 7
+        let data = try Self.jpeg(width: width, height: height)
+        let storageBytes = 3 + rowBytes * height + 5
+        let plane = try PlaneDescriptor(width: width, height: height, offset: 3,
+            sampleStride: 1, pixelStride: 1, rowBytes: rowBytes, byteCount: 3 + rowBytes * height)
+        let descriptor = try ImageDescriptor(width: width, height: height,
+            sampleType: .unsignedInteger, storageBits: 8, meaningfulBits: 8, planes: [plane])
+        // 4225 blocks select two canonical groups: two 512 KiB windows.
+        let workspace = data.count * 64 + 1_048_576 + 1_048_576
+        let total = data.count + storageBytes + workspace
+        for backend in Decoder.capabilities.availableBackends {
+            let storage = try WorkspaceObservedStorage(byteCount: storageBytes)
+            let destination = try ImageDestination(descriptor: descriptor, storage: storage)
+            expectWorkspaceDenial {
+                _ = try JPEGCodec.decode(data, into: destination, configuration: .init(),
+                    options: .init(resourceLimits: try ResourceLimits(maximumCompressedBytes: data.count,
+                        maximumDecodedBytes: storageBytes, maximumWorkspaceBytes: workspace - 1,
+                        maximumWorkers: 8, maximumMemoryBytes: total), executionPolicy: .required(backend)))
+            }
+            #expect(storage.writes.withLock { $0 } == 0)
+            let result = try JPEGCodec.decode(data, into: destination, configuration: .init(),
+                options: .init(resourceLimits: try ResourceLimits(maximumCompressedBytes: data.count,
+                    maximumDecodedBytes: storageBytes, maximumWorkspaceBytes: workspace,
+                    maximumWorkers: 8, maximumMemoryBytes: total), executionPolicy: .required(backend)))
+            #expect(storage.writes.withLock { $0 } == 1)
+            #expect(result.report.pixelAllocationCount == 0 && result.report.copyEvents.isEmpty)
+            try result.image.storage.withUnsafeBytes { bytes in
+                #expect(bytes.prefix(3).allSatisfy { $0 == 0xA5 })
+                #expect(bytes.suffix(5).allSatisfy { $0 == 0xA5 })
+                for row in 0..<height {
+                    #expect(bytes[(3 + row * rowBytes + width)..<(3 + (row + 1) * rowBytes)]
+                        .allSatisfy { $0 == 0xA5 })
                 }
             }
         }

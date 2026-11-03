@@ -4,8 +4,9 @@ import Testing
 @testable import SwiftJLI
 
 @Suite struct BoundedDCTWorkspaceTests {
-    @Test func laterEntropyFailureInvalidatesStreamedDestination() throws {
-        let width = 511, height = 509
+    @Test(arguments: [(511, 509), (513, 777)])
+    func laterEntropyFailureInvalidatesStreamedDestination(dimensions: (Int, Int)) throws {
+        let (width, height) = dimensions
         let image = try JLIImage(width: width, height: height, pixelFormat: .uint8,
             colorModel: .grayscale, data: [UInt8](repeating: 128, count: width * height))
         let encoded = try JLIEncoder().encode(image)

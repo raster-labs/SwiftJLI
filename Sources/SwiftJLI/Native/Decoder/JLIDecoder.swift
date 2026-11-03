@@ -1103,6 +1103,13 @@ struct JLIDecoder: Sendable {
     ) throws {
         try validateGreyscaleDestination(destination, width: width, height: height,
                                          precision: precision, floatOutput: floatOutput)
+        if plan.parallelLanes > 1 {
+            try ParallelSequentialGreyscaleDecoder.decode(reader: &reader,
+                dcTable: dcTable, acTable: acTable, lookup: lookup, quantTable: quantTable,
+                plan: plan, width: width, height: height, precision: precision,
+                restartInterval: restartInterval, floatOutput: floatOutput, destination: destination)
+            return
+        }
         let scratchCount = plan.batchBlocks * 64
         var scratch = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
         try quantTable.withUnsafeBufferPointer { qt in
