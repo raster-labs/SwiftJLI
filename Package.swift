@@ -11,7 +11,8 @@ let package = Package(
     products: [.library(name: "SwiftJLI", targets: ["SwiftJLI"]),
                .executable(name: "swiftjli-cli", targets: ["SwiftJLICLI"])],
     targets: [
-        .target(name: "SwiftJLI"),
+        .target(name: "SwiftJLIEntropyC", publicHeadersPath: "include"),
+        .target(name: "SwiftJLI", dependencies: ["SwiftJLIEntropyC"]),
         .executableTarget(name: "SwiftJLICLI", dependencies: ["SwiftJLI"]),
         .testTarget(name: "SwiftJLITests", dependencies: ["SwiftJLI"], resources: [.copy("Fixtures")])
     ],

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2024 Raster Lab. All rights reserved.
+import SwiftJLIEntropyC
 
 /// Bit-level writer for constructing JPEG entropy-coded data.
 ///
@@ -334,6 +335,36 @@ struct BitReader {
         guard entry != 0, Int((entry >> 16) & 0xFF) <= remaining else { return nil }
         bitsAvailable -= Int(entry >> 24)
         return entry
+    }
+
+    /// The imported leaf synchronously borrows this reader's immutable input
+    /// owner, the scan-local tables and exactly 64 writable coefficients. All
+    /// storage is disjoint. No input/table pointer reaches a pipeline worker.
+    /// Commit cursor and partial bits before translating an entropy error.
+    mutating func decodeAC(using kernel: CACKernel, into output: UnsafeMutableBufferPointer<Int32>) throws {
+        guard output.count == 64, let destination = output.baseAddress else {
+            throw JLIError.decodingFailed("Invalid AC coefficient destination")
+        }
+        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
+                               available: UInt32(bitsAvailable), marker: 0)
+        let status = withExtendedLifetime(data) {
+            sjli_ac_decode_block(buffer.baseAddress?.assumingMemoryBound(to: UInt8.self), buffer.count,
+                &state, kernel.table, kernel.lookup, 8192, destination, output.count)
+        }
+        // The C input-count checks prove this offset remains within Int range.
+        byteOffset = state.byte_offset
+        bitBuffer = state.accumulator
+        bitsAvailable = Int(state.available)
+        switch status {
+        case SJLI_AC_OK: return
+        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
+        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
+        case SJLI_AC_MARKER:
+            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
+        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
+        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
+        default: throw JLIError.decodingFailed("Invalid C AC kernel arguments")
+        }
     }
 
     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the

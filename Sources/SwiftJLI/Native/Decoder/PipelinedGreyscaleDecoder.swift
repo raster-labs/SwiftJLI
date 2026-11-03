@@ -96,39 +96,44 @@ enum PipelinedGreyscaleDecoder {
                             firstBlock: batch * 1024, blocksPerRow: plan.blocksPerRow,
                             width: width, height: height, destination: destination)
                     }
-                    var previousDC: Int32 = 0, restartIndex = 0
-                    for batch in 0..<batches {
-                        if batch >= 2 { try scatterCompleted(batch - 2) }
-                        if let error = state.progress.withLock({ $0.error }) { throw error }
-                        let first = batch * 1024, end = min(first + 1024, blocks)
-                        let slot = base + (batch & 1) * slotSamples
-                        var index = first
-                        while index < end {
-                            try NativeOperation.check()
-                            let rowEnd = min(end, index + plan.blocksPerRow - index % plan.blocksPerRow)
-                            while index < rowEnd {
-                                if restartInterval > 0, index > 0, index % restartInterval == 0 {
-                                    try reader.skipRestartMarker(expectedIndex: restartIndex)
-                                    restartIndex = (restartIndex + 1) & 7
-                                    previousDC = 0
+                    try CACKernel.withBorrowed(table: acTable, lookup: lookup,
+                        enabled: NativeOperation.current?.backend == .accelerated) { kernel in
+                        var previousDC: Int32 = 0, restartIndex = 0
+                        for batch in 0..<batches {
+                            if batch >= 2 { try scatterCompleted(batch - 2) }
+                            if let error = state.progress.withLock({ $0.error }) { throw error }
+                            let first = batch * 1024, end = min(first + 1024, blocks)
+                            let slot = base + (batch & 1) * slotSamples
+                            var index = first
+                            while index < end {
+                                try NativeOperation.check()
+                                let rowEnd = min(end, index + plan.blocksPerRow - index % plan.blocksPerRow)
+                                while index < rowEnd {
+                                    if restartInterval > 0, index > 0, index % restartInterval == 0 {
+                                        try reader.skipRestartMarker(expectedIndex: restartIndex)
+                                        restartIndex = (restartIndex + 1) & 7
+                                        previousDC = 0
+                                    }
+                                    let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
+                                    let dc = Int64(previousDC) + Int64(difference)
+                                    guard abs(dc) <= (1 << (precision + 2)) else {
+                                        throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
+                                    }
+                                    previousDC = Int32(dc)
+                                    let block = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: 64)
+                                    if let kernel {
+                                        try reader.decodeAC(using: kernel, into: block)
+                                    } else if let lookup {
+                                        try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
+                                    } else {
+                                        try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
+                                    }
+                                    block[0] = previousDC
+                                    index += 1
                                 }
-                                let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
-                                let dc = Int64(previousDC) + Int64(difference)
-                                guard abs(dc) <= (1 << (precision + 2)) else {
-                                    throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
-                                }
-                                previousDC = Int32(dc)
-                                let block = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: 64)
-                                if let lookup {
-                                    try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
-                                } else {
-                                    try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
-                                }
-                                block[0] = previousDC
-                                index += 1
                             }
+                            state.ready.signal()
                         }
-                        state.ready.signal()
                     }
                     for batch in max(0, batches - 2)..<batches { try scatterCompleted(batch) }
                 }
