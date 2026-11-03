@@ -1,0 +1,63 @@
+{
+  "status": "failed",
+  "sourceRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "baselineRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "startedUTC": "2026-11-03T18:12:43.557557+00:00",
+  "scope": "Newly admitted cases only, separate from unchanged-eligibility CLI timing. No timing or RSS claim. Full 16-bit sample equality to original source and djpeg3.2.1.",
+  "limits": "Unmodified default CLI limits: 512 MiB maximumWorkspaceBytes and 1 GiB maximumMemoryBytes, with existing CLI reservations deducted. No command passes a resource override.",
+  "pinnedInputs": {
+    "/private/tmp/swiftjli-round5-evidence/parser-reservation/run-admission.py": "aeb4433d355f8861a9b660d439206a28db181a0a9b6d3226547ce043608a50e0",
+    "/private/tmp/swiftjli-round5-evidence/parser-reservation/source.json": "a1a5030644156b9e58849d3e83bd1c9d067390a86f7c46d435804fea17b57369",
+    "/private/tmp/swiftjli-round5-parser-reservation/Sources/SwiftJLI/Options.swift": "dd43c63592bf4d74c53626374fb4494b0815315f0f64bc1a2831f9c066b5d787",
+    "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli": "dfda666f9660b858743dc0008cc0c55217ff1426f3359cbca72e678c351fa5c8",
+    "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli": "39a684f56965f0a6c86bd37c2189ae7376b915672973476780a17abf345a97eb",
+    "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg": "6d0302f8018b3322521cae94de7f58ab484db40f0cc8e0f0cb6e92d456fd5088",
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg": "2dfe60717780915e9ce381c49a4968be8d93f67aa48e6557bc0df7bfdfa9d230",
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.raw": "66ba755ac94405df57861b8b50fd1ff5ce47552806795e28a93e61f6213a7d57"
+  },
+  "commands": [
+    {
+      "label": "djpeg-version",
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-version"
+      ],
+      "expectedExitCode": 0,
+      "startedUTC": "2026-11-03T18:12:43.559743+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T18:12:43.570339+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "fa9e74d8ec23674a4104f8e612bcdf425c27b6dd90644f652614348fdfc8e2b9"
+    },
+    {
+      "label": "noise-2048-baseline",
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-1/noise-2048-baseline.pgm",
+        "--output-format",
+        "pnm"
+      ],
+      "expectedExitCode": 5,
+      "startedUTC": "2026-11-03T18:12:43.577590+00:00",
+      "exitCode": 2,
+      "finishedUTC": "2026-11-03T18:12:43.588859+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "0be9aaf62fbfc70859a5d46b8474669fdbcd11bfd67c9c1b9dfadae30ed87bde"
+    }
+  ],
+  "comparisons": [],
+  "cases": [
+    {
+      "case": "noise-2048",
+      "inputBytes": 8421567,
+      "outputs": {}
+    }
+  ],
+  "failure": "AssertionError(('noise-2048-baseline', 2, 'swiftjli-cli: Declared --output-format conflicts with output file extension.\\n'))",
+  "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/swiftjli-round5-evidence/parser-reservation/run-admission.py\", line 60, in <module>\n    _,err=command(cmd,stem+'-'+name,5 if name=='baseline' else 0)\n          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/swiftjli-round5-evidence/parser-reservation/run-admission.py\", line 28, in command\n    assert code==expected,(label,code,err.decode(errors='replace'))\n           ^^^^^^^^^^^^^^\nAssertionError: ('noise-2048-baseline', 2, 'swiftjli-cli: Declared --output-format conflicts with output file extension.\\n')\n",
+  "finishedUTC": "2026-11-03T18:12:43.596771+00:00"
+}

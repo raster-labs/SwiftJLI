@@ -1,0 +1,663 @@
+commit ca0c1e874177f429ed199f3ed8ef6ac1315ee66a
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 23:35:20 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 23:35:20 2026 +0530
+
+    Trial structural JPEG parser workspace admission
+
+diff --git a/Sources/SwiftJLI/JPEGCodec.swift b/Sources/SwiftJLI/JPEGCodec.swift
+index ed85794..dbdda56 100644
+--- a/Sources/SwiftJLI/JPEGCodec.swift
++++ b/Sources/SwiftJLI/JPEGCodec.swift
+@@ -241,9 +241,8 @@ enum JPEGCodec {
+ 
+     static func parse(_ data: Data, options: DecodeOptions, sourceColourModel: JPEGSourceColourModel? = nil) throws -> ParsedJPEG {
+         let limits = options.resourceLimits
+-        // Retain the existing conservative parser/table admission before parsing.
+-        let parserBudget = try checkedAdd(checkedMultiply(data.count, 64), 1_048_576)
+-        try admit(workspace: parserBudget, pixels: 0, compressed: data.count, metadata: 0, limits: limits)
++        // Envelope admission gates a possible input copy before the bridge,
++        // then expanded parser allocations using counts from the same traversal.
+         let envelope = try JPEGEnvelope.validate(data, limits: limits)
+         let adobeTransform = envelope.adobeTransform
+         var reader = MarkerReader(validated: envelope)
+@@ -366,10 +365,13 @@ enum JPEGCodec {
+                 let imageWorkspace: Int
+                 if let streaming { imageWorkspace = streaming.workspaceBytes }
+                 else { imageWorkspace = try checkedMultiply(sampleCount, isDCT ? 128 : 8) }
+-                // Retain the compressed/parser reservation and fixed table,
+-                // allocator and backend reserve. All independent ceilings still
+-                // apply; the reservation is not reported as measured workspace.
+-                let workspace = try checkedAdd(checkedAdd(checkedMultiply(data.count, 64), imageWorkspace), 1_048_576)
++                // The parser reservation belongs to the same immutable input
++                // whose scans are decoded. It already includes a possible bridge
++                // copy and the fixed table/allocator/backend reserve.
++                guard parsed.parserWorkspaceBytes > 0 else {
++                    throw CodecError(.internalFailure, "JPEG parser admission is missing.")
++                }
++                let workspace = try checkedAdd(parsed.parserWorkspaceBytes, imageWorkspace)
+                 let metadataSize = try information.metadata.validate(limits: options.resourceLimits, additionalBytes: source.iccProfile?.count ?? 0)
+                 try admit(workspace: workspace, pixels: supplied?.storage.byteCount ?? descriptor.requiredByteCount,
+                           compressed: data.count, metadata: metadataSize, limits: options.resourceLimits)
+diff --git a/Sources/SwiftJLI/JPEGEnvelope.swift b/Sources/SwiftJLI/JPEGEnvelope.swift
+index e0a55d2..2f337aa 100644
+--- a/Sources/SwiftJLI/JPEGEnvelope.swift
++++ b/Sources/SwiftJLI/JPEGEnvelope.swift
+@@ -1,46 +1,57 @@
+ // SPDX-License-Identifier: Apache-2.0
+ import Foundation
+ 
+-/// Allocation-free structural admission before the predecessor table parser.
++/// Bounded structural admission before the predecessor table parser.
+ /// Each segment must fit its own declared extent; bytes in the next segment
+ /// cannot satisfy a truncated SOF/SOS/table. Entropy is scanned, never decoded.
+ enum JPEGEnvelope {
+     /// Owns the exact immutable bytes whose segment and entropy extents passed
+     /// admission. The private constructor prevents a parser from mixing ranges
+-    /// validated against one input with another input. Data value semantics
+-    /// retain the owner without making another full-input copy.
++    /// validated against one input with another input. The initial bridge may
++    /// copy; all readers and scan slices then retain this same immutable owner.
+     struct Validated {
+         let bytes: JPEGBytes
+         let adobeTransform: UInt8?
+         let entropyRanges: [Range<Int>]
++        let parserWorkspaceBytes: Int
+ 
+-        fileprivate init(bytes: JPEGBytes, adobeTransform: UInt8?, entropyRanges: [Range<Int>]) {
++        fileprivate init(bytes: JPEGBytes, adobeTransform: UInt8?, entropyRanges: [Range<Int>],
++                         parserWorkspaceBytes: Int) {
+             self.bytes = bytes
+             self.adobeTransform = adobeTransform
+             self.entropyRanges = entropyRanges
++            self.parserWorkspaceBytes = parserWorkspaceBytes
+         }
+     }
+ 
+     static func validate(_ bytes: [UInt8], limits: ResourceLimits) throws -> Validated {
+-        try validate(JPEGBytes(bytes), limits: limits)
++        // The convenience path can briefly hold both Array -> Data and bridge
++        // copies. Its original array is charged separately as compressed input.
++        let bootstrap = try JPEGParserReservation.bootstrap(compressedBytes: bytes.count, inputCopies: 2)
++        try JPEGCodec.admit(workspace: bootstrap, pixels: 0, compressed: bytes.count, metadata: 0, limits: limits)
++        return try validate(JPEGBytes(bytes), limits: limits, inputCopies: 2)
+     }
+ 
+     static func validate(_ data: Data, limits: ResourceLimits) throws -> Validated {
+-        try validate(JPEGBytes(data), limits: limits)
++        let bootstrap = try JPEGParserReservation.bootstrap(compressedBytes: data.count)
++        try JPEGCodec.admit(workspace: bootstrap, pixels: 0, compressed: data.count, metadata: 0, limits: limits)
++        return try validate(JPEGBytes(data), limits: limits)
+     }
+ 
+-    private static func validate(_ bytes: JPEGBytes, limits: ResourceLimits) throws -> Validated {
+-        try bytes.withUnsafeBytes { try validate($0, owner: bytes, limits: limits) }
++    private static func validate(_ bytes: JPEGBytes, limits: ResourceLimits, inputCopies: Int = 1) throws -> Validated {
++        try bytes.withUnsafeBytes { try validate($0, owner: bytes, limits: limits, inputCopies: inputCopies) }
+     }
+ 
+     /// Pointer access remains inside the owner's synchronous borrow. Only the
+     /// immutable owner and checked integer ranges are returned in Validated.
+     private static func validate(_ b: UnsafeRawBufferPointer, owner: JPEGBytes,
+-                                 limits: ResourceLimits) throws -> Validated {
++                                 limits: ResourceLimits, inputCopies: Int) throws -> Validated {
+         func malformed() -> CodecError { .init(.malformedInput, "Invalid JPEG marker envelope.") }
+         guard b.count >= 4, b[0] == 255, b[1] == 216 else { throw malformed() }
+         var p = 2, sawFrame = false, sawScan = false, metadata = 0, iccBytes = 0
+         var frameMarker: UInt8 = 0, scanCount = 0
++        var huffmanDefinitions = 0, quantisationDefinitions = 0
++        var frameComponents = 0, scanComponents = 0
+         var adobeTransform: UInt8?
+         var entropyRanges: [Range<Int>] = []
+         var iccCount: Int?, iccSequences = Set<Int>(), sawExif = false
+@@ -62,7 +73,18 @@ enum JPEGEnvelope {
+                 if let adobeTransform, (frameMarker == 0xC3 ? adobeTransform != 0 : adobeTransform > 1) {
+                     throw CodecError(.unsupportedFeature, "JPEG colour transform is unsupported for this frame.")
+                 }
+-                return Validated(bytes: owner, adobeTransform: adobeTransform, entropyRanges: entropyRanges)
++                let workspace = try JPEGParserReservation.workspace(compressedBytes: b.count,
++                    huffmanDefinitions: huffmanDefinitions, quantisationDefinitions: quantisationDefinitions,
++                    scans: scanCount, frameComponents: frameComponents,
++                    scanComponents: scanComponents, metadataBytes: metadata, inputCopies: inputCopies)
++                // All expanded tables, scan snapshots and metadata copies in
++                // MarkerReader remain after this gate. Envelope storage itself
++                // is bounded by 128 ranges and 255 ICC sequence entries, covered
++                // by bootstrap before the input owner was constructed.
++                try JPEGCodec.admit(workspace: workspace, pixels: 0, compressed: b.count,
++                                    metadata: 0, limits: limits)
++                return Validated(bytes: owner, adobeTransform: adobeTransform,
++                    entropyRanges: entropyRanges, parserWorkspaceBytes: workspace)
+             }
+             guard marker != 0, marker != 216, !(208...215).contains(marker), p + 2 <= b.count else { throw malformed() }
+             let length = Int(b[p]) * 256 + Int(b[p + 1])
+@@ -90,6 +112,7 @@ enum JPEGEnvelope {
+                     guard ids[lane] & mask == 0 else { throw malformed() }
+                     ids[lane] |= mask
+                 }
++                frameComponents = nc
+                 sawFrame = true; frameMarker = marker
+             case 0xDA:
+                 scanCount += 1
+@@ -100,6 +123,7 @@ enum JPEGEnvelope {
+                 guard sawFrame, length >= 6 else { throw malformed() }
+                 let nc = Int(b[start])
+                 guard nc > 0, length == 6 + nc * 2 else { throw malformed() }
++                scanComponents = try checkedAdd(scanComponents, nc)
+                 sawScan = true
+             case 0xDD:
+                 guard !sawScan else { throw CodecError(.unsupportedFeature, "Changing restart intervals between scans is unsupported.") }
+@@ -110,7 +134,10 @@ enum JPEGEnvelope {
+                 while q < end {
+                     let precision = b[q] >> 4
+                     guard precision <= 1, b[q] & 15 <= 3 else { throw malformed() }
+-                    q += 1 + (precision == 0 ? 64 : 128)
++                    let definitionBytes = 1 + (precision == 0 ? 64 : 128)
++                    guard definitionBytes <= end - q else { throw malformed() }
++                    q += definitionBytes
++                    quantisationDefinitions = try checkedAdd(quantisationDefinitions, 1)
+                 }
+                 guard q == end else { throw malformed() }
+             case 0xC4:
+@@ -133,6 +160,7 @@ enum JPEGEnvelope {
+                     }
+                     guard symbols > 0, symbols <= 256, symbols <= end - q - 17 else { throw malformed() }
+                     q += 17 + symbols
++                    huffmanDefinitions = try checkedAdd(huffmanDefinitions, 1)
+                 }
+             case 0xE0...0xEF, 0xFE:
+                 metadata = try checkedAdd(metadata, length - 2)
+diff --git a/Sources/SwiftJLI/JPEGParserReservation.swift b/Sources/SwiftJLI/JPEGParserReservation.swift
+new file mode 100644
+index 0000000..cff5f17
+--- /dev/null
++++ b/Sources/SwiftJLI/JPEGParserReservation.swift
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: Apache-2.0
++
++/// Conservative parser admission, not measured allocator or RSS telemetry.
++/// Entropy ranges retain the compressed owner without expanding its payload.
++/// Definitions are counted even when a later definition replaces the same ID.
++enum JPEGParserReservation {
++    static let fixedReserve = 1_048_576
++
++    /// Must pass before constructing an immutable Foundation input owner.
++    /// Data may require one bridge copy; the array convenience first makes Data.
++    static func bootstrap(compressedBytes: Int, inputCopies: Int = 1) throws -> Int {
++        guard compressedBytes >= 0, inputCopies == 1 || inputCopies == 2 else {
++            throw CodecError(.resourceLimitExceeded, "Invalid JPEG parser reservation.")
++        }
++        return try checkedAdd(checkedMultiply(compressedBytes, inputCopies), fixedReserve)
++    }
++
++    /// The fixed reserve retains the existing allocator/backend allowance.
++    /// A decoder-only Huffman table has at most 1,056 bytes of logical array
++    /// payload; 4 KiB also covers headers, growth and DHT tuples. A quantiser
++    /// has 512 bytes of Int payload plus its tuple/growth allowance. Each scan
++    /// retains two at-most-four-key dictionary snapshots and small records.
++    /// Frame/scan components occupy 32/24 bytes on supported 64-bit ABIs.
++    /// Four times APP payload covers segment/chunk/assembly and later Data
++    /// metadata copies. These allowances deliberately overcount released tables
++    /// and skipped APP0 data. No resource ceiling is inferred from these counts.
++    static func workspace(compressedBytes: Int, huffmanDefinitions: Int,
++                          quantisationDefinitions: Int, scans: Int,
++                          frameComponents: Int, scanComponents: Int,
++                          metadataBytes: Int, inputCopies: Int = 1) throws -> Int {
++        guard huffmanDefinitions >= 0, quantisationDefinitions >= 0, scans >= 0,
++              frameComponents >= 0, scanComponents >= 0, metadataBytes >= 0 else {
++            throw CodecError(.resourceLimitExceeded, "Invalid JPEG parser reservation.")
++        }
++        // Keep the array convenience's second input-copy allowance through
++        // parsing rather than depending on temporary Foundation release timing.
++        var bytes = try bootstrap(compressedBytes: compressedBytes, inputCopies: inputCopies)
++        bytes = try checkedAdd(bytes, checkedMultiply(huffmanDefinitions, 4096))
++        bytes = try checkedAdd(bytes, checkedMultiply(quantisationDefinitions, 1024))
++        bytes = try checkedAdd(bytes, checkedMultiply(scans, 4096))
++        bytes = try checkedAdd(bytes, checkedMultiply(checkedAdd(frameComponents, scanComponents), 64))
++        return try checkedAdd(bytes, checkedMultiply(metadataBytes, 4))
++    }
++}
+diff --git a/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift b/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
+index 7a8f09e..d30c6d9 100644
+--- a/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
++++ b/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
+@@ -63,6 +63,9 @@ struct ParsedJPEG: Sendable {
+     let iccProfile: [UInt8]?
+     /// Exif payload (APP1 body after the `Exif\0\0` identifier), or nil.
+     let exif: [UInt8]?
++    /// Reservation validated before expanded parsing of this immutable input.
++    /// Zero identifies the internal, unadmitted native parser convenience path.
++    let parserWorkspaceBytes: Int
+     var adobeTransform: UInt8? = nil
+     /// Explicit interpretation supplied by a caller for an unmarked DCT stream.
+     var sourceColorModel: JLIColorModel? = nil
+@@ -91,6 +94,7 @@ struct MarkerReader {
+     private let buffer: UnsafeRawBufferPointer
+     private var offset: Int = 0
+     private let validatedEntropyRanges: [Range<Int>]?
++    private let parserWorkspaceBytes: Int
+     private var nextEntropyRange: Int = 0
+ 
+     init(data: [UInt8]) {
+@@ -98,6 +102,7 @@ struct MarkerReader {
+         self.data = owned
+         self.buffer = owned.ownedBuffer
+         self.validatedEntropyRanges = nil
++        self.parserWorkspaceBytes = 0
+     }
+ 
+     /// Reuses entropy extents from structural admission of these exact bytes.
+@@ -106,6 +111,7 @@ struct MarkerReader {
+         self.data = validated.bytes
+         self.buffer = validated.bytes.ownedBuffer
+         self.validatedEntropyRanges = validated.entropyRanges
++        self.parserWorkspaceBytes = validated.parserWorkspaceBytes
+     }
+ 
+     /// Reads JPEG info without full decode.
+@@ -277,7 +283,8 @@ struct MarkerReader {
+             scans: scans,
+             restartInterval: restartInterval,
+             iccProfile: iccProfile,
+-            exif: exifData, adobeTransform: adobeTransform
++            exif: exifData, parserWorkspaceBytes: parserWorkspaceBytes,
++            adobeTransform: adobeTransform
+         )
+     }
+ 
+diff --git a/Tests/SwiftJLITests/ParserReservationTests.swift b/Tests/SwiftJLITests/ParserReservationTests.swift
+new file mode 100644
+index 0000000..2a2f238
+--- /dev/null
++++ b/Tests/SwiftJLITests/ParserReservationTests.swift
+@@ -0,0 +1,320 @@
++// SPDX-License-Identifier: Apache-2.0
++import Foundation
++import Synchronization
++import Testing
++@testable import SwiftJLI
++
++private final class ParserObservedStorage: WritableImageStorage {
++    private let owner: OwnedImageStorage
++    let borrows = Mutex(0)
++    init(byteCount: Int) throws { owner = try OwnedImageStorage(byteCount: byteCount) }
++    var byteCount: Int { owner.byteCount }
++    var allocationID: UUID { owner.allocationID }
++    func reserveWrite() throws -> StorageWriteLease { try owner.reserveWrite() }
++    func withUnsafeMutableBytes<R>(lease: StorageWriteLease,
++        _ body: (UnsafeMutableRawBufferPointer) throws -> R) throws -> R {
++        try owner.withUnsafeMutableBytes(lease: lease) { bytes in
++            borrows.withLock { $0 += 1 }
++            return try body(bytes)
++        }
++    }
++    func finishAndSeal(lease: StorageWriteLease) throws -> any ReadOnlyImageStorage {
++        try owner.finishAndSeal(lease: lease)
++    }
++    func abortAndInvalidate(lease: StorageWriteLease) throws {
++        try owner.abortAndInvalidate(lease: lease)
++    }
++}
++
++private func expectParserError(_ category: CodecError.Category, _ body: () throws -> Void) {
++    do { try body(); Issue.record("Expected parser admission failure") }
++    catch let error as CodecError { #expect(error.category == category) }
++    catch { Issue.record("Unexpected parser error: \(error)") }
++}
++
++@Suite struct ParserReservationTests {
++    private static func segment(_ marker: UInt8, _ payload: [UInt8]) -> [UInt8] {
++        let length = payload.count + 2
++        precondition(length <= 65535)
++        return [255, marker, UInt8(length >> 8), UInt8(length & 255)] + payload
++    }
++
++    private static func table(_ id: UInt8 = 0, value: UInt8 = 0) -> [UInt8] {
++        [id, 1] + Array(repeating: 0, count: 15) + [value]
++    }
++
++    private static func lossless(components: Int = 1, quantisers: Int = 0,
++                                 metadata: [UInt8] = [], entropy: [UInt8] = [0]) -> Data {
++        let ids = (0..<components).map { UInt8($0) }
++        var bytes: [UInt8] = [255, 216]
++        bytes += metadata
++        bytes += segment(0xC3, [8, 0, 1, 0, 1, UInt8(components)] + ids.flatMap { [$0, 17, 0] })
++        if quantisers > 0 {
++            var definitions: [UInt8] = []
++            for index in 0..<quantisers {
++                definitions += [0] + Array(repeating: UInt8(index % 255 + 1), count: 64)
++            }
++            bytes += segment(0xDB, definitions)
++        }
++        bytes += segment(0xC4, table())
++        bytes += segment(0xDA, [UInt8(components)] + ids.flatMap { [$0, 0] } + [1, 0, 0])
++        bytes += entropy
++        bytes += [255, 217]
++        return Data(bytes)
++    }
++
++    @Test func bootstrapPrecedesStructuralReadsAndArrayCopyIsChargedSeparately() throws {
++        let malformed = Data(repeating: 0, count: 17)
++        let firstGate = 1_048_576 + malformed.count
++        expectParserError(.resourceLimitExceeded) {
++            _ = try JPEGEnvelope.validate(malformed,
++                limits: .init(maximumWorkspaceBytes: firstGate - 1))
++        }
++        expectParserError(.malformedInput) {
++            _ = try JPEGEnvelope.validate(malformed,
++                limits: .init(maximumWorkspaceBytes: firstGate))
++        }
++        expectParserError(.resourceLimitExceeded) {
++            _ = try JPEGEnvelope.validate(malformed,
++                limits: .init(maximumWorkspaceBytes: firstGate,
++                    maximumMemoryBytes: firstGate + malformed.count - 1))
++        }
++        expectParserError(.malformedInput) {
++            _ = try JPEGEnvelope.validate(malformed,
++                limits: .init(maximumWorkspaceBytes: firstGate,
++                    maximumMemoryBytes: firstGate + malformed.count))
++        }
++        expectParserError(.resourceLimitExceeded) {
++            _ = try JPEGEnvelope.validate(malformed,
++                limits: .init(maximumCompressedBytes: malformed.count - 1))
++        }
++        expectParserError(.resourceLimitExceeded) {
++            _ = try JPEGEnvelope.validate(Array(malformed),
++                limits: .init(maximumWorkspaceBytes: firstGate))
++        }
++        expectParserError(.malformedInput) {
++            _ = try JPEGEnvelope.validate(Array(malformed),
++                limits: .init(maximumWorkspaceBytes: firstGate + malformed.count))
++        }
++    }
++
++    @Test func invalidAndOverflowingReservationsThrowBeforeAnyAllocation() throws {
++        for copies in [0, 3] {
++            expectParserError(.resourceLimitExceeded) {
++                _ = try JPEGParserReservation.bootstrap(compressedBytes: 1, inputCopies: copies)
++            }
++        }
++        expectParserError(.resourceLimitExceeded) {
++            _ = try JPEGParserReservation.bootstrap(compressedBytes: -1)
++        }
++        for copies in [1, 2] {
++            #expect(throws: CodecError.self) {
++                _ = try JPEGParserReservation.bootstrap(compressedBytes: Int.max, inputCopies: copies)
++            }
++        }
++        for count in [-1, Int.max] {
++            #expect(throws: CodecError.self) {
++                _ = try JPEGParserReservation.workspace(compressedBytes: 0,
++                    huffmanDefinitions: count, quantisationDefinitions: 0, scans: 0,
++                    frameComponents: 0, scanComponents: 0, metadataBytes: 0)
++            }
++            #expect(throws: CodecError.self) {
++                _ = try JPEGParserReservation.workspace(compressedBytes: 0,
++                    huffmanDefinitions: 0, quantisationDefinitions: 0, scans: 0,
++                    frameComponents: count, scanComponents: 1, metadataBytes: 0)
++            }
++            #expect(throws: CodecError.self) {
++                _ = try JPEGParserReservation.workspace(compressedBytes: 0,
++                    huffmanDefinitions: 0, quantisationDefinitions: 0, scans: 0,
++                    frameComponents: 0, scanComponents: 0, metadataBytes: count)
++            }
++        }
++    }
++
++    @Test func exactParserAndDecodeLimitsRejectBeforeProviderEntryAndPermitReuse() throws {
++        let data = Self.lossless()
++        // One DC definition, one scan, one frame and one scan component.
++        let parser = data.count + 1_048_576 + 4096 + 4096 + 128
++        for limits in [
++            try ResourceLimits(maximumWorkspaceBytes: parser - 1),
++            try ResourceLimits(maximumWorkspaceBytes: parser, maximumMemoryBytes: parser + data.count - 1),
++            try ResourceLimits(maximumCompressedBytes: data.count - 1)
++        ] {
++            expectParserError(.resourceLimitExceeded) {
++                _ = try JPEGCodec.parse(data, options: .init(resourceLimits: limits))
++            }
++        }
++        let exact = try ResourceLimits(maximumWorkspaceBytes: parser, maximumMemoryBytes: parser + data.count)
++        let parsed = try JPEGCodec.parse(data, options: .init(resourceLimits: exact))
++        #expect(parsed.parserWorkspaceBytes == parser)
++        var native = MarkerReader(data: Array(data))
++        #expect(try native.parse().parserWorkspaceBytes == 0)
++        let plane = try PlaneDescriptor(width: 1, height: 1, sampleStride: 1, pixelStride: 1, rowBytes: 1, byteCount: 1)
++        let descriptor = try ImageDescriptor(width: 1, height: 1, storageBits: 8, meaningfulBits: 8, planes: [plane])
++        let storage = try ParserObservedStorage(byteCount: 1)
++        let destination = try ImageDestination(descriptor: descriptor, storage: storage)
++        let workspace = parser + 8, total = workspace + data.count + 1
++        for limits in [
++            try ResourceLimits(maximumWorkspaceBytes: parser - 1),
++            try ResourceLimits(maximumWorkspaceBytes: workspace - 1),
++            try ResourceLimits(maximumWorkspaceBytes: workspace, maximumMemoryBytes: total - 1)
++        ] {
++            expectParserError(.resourceLimitExceeded) {
++                _ = try JPEGCodec.decode(data, into: destination, configuration: .init(),
++                    options: .init(resourceLimits: limits))
++            }
++            #expect(storage.borrows.withLock { $0 } == 0)
++        }
++        let decoded = try JPEGCodec.decode(data, into: destination, configuration: .init(),
++            options: .init(resourceLimits: try ResourceLimits(maximumWorkspaceBytes: workspace, maximumMemoryBytes: total)))
++        #expect(storage.borrows.withLock { $0 } == 1)
++        #expect(try decoded.image.storage.withUnsafeBytes { Array($0) } == [128])
++        #expect(decoded.report.pixelAllocationCount == 0 && decoded.report.copyEvents.isEmpty)
++        #expect(decoded.report.peakWorkspaceBytes == nil)
++    }
++
++    @Test func arrayCopyAllowanceTravelsWithTheRetainedParsedOwner() throws {
++        let data = Self.lossless()
++        let fromData = try JPEGEnvelope.validate(data, limits: .init())
++        let fromArray = try JPEGEnvelope.validate(Array(data), limits: .init())
++        #expect(fromArray.parserWorkspaceBytes == fromData.parserWorkspaceBytes + data.count)
++        var reader = MarkerReader(validated: fromArray)
++        let parsed = try reader.parse()
++        #expect(parsed.parserWorkspaceBytes == fromArray.parserWorkspaceBytes)
++        #expect(parsed.scans[0].entropyData.elementsEqual([0]))
++    }
++
++    @Test func everyProgressiveTableVersionAndScanSnapshotIsCounted() throws {
++        var bytes: [UInt8] = [255, 216]
++        bytes += Self.segment(0xC2, [8, 0, 1, 0, 1, 1, 0, 17, 0])
++        bytes += Self.segment(0xDB, [0] + Array(repeating: 1, count: 64))
++        for scan in 0..<128 {
++            let definitions = [0, 1, 2, 3, 16, 17, 18, 19].flatMap {
++                Self.table(UInt8($0), value: UInt8(scan % 2))
++            }
++            bytes += Self.segment(0xC4, definitions)
++            bytes += Self.segment(0xDA, [1, 0, 0, 0, 0, 0]) + [0]
++        }
++        bytes += [255, 217]
++        let data = Data(bytes)
++        let expected = data.count + 1_048_576 + 1024 * 4096 + 1024 + 128 * 4096 + 129 * 64
++        expectParserError(.resourceLimitExceeded) {
++            _ = try JPEGEnvelope.validate(data, limits: .init(maximumWorkspaceBytes: expected - 1))
++        }
++        let admitted = try JPEGEnvelope.validate(data, limits: .init(maximumWorkspaceBytes: expected))
++        var reader = MarkerReader(validated: admitted)
++        let parsed = try reader.parse()
++        #expect(parsed.parserWorkspaceBytes == expected && parsed.scans.count == 128)
++        for (index, scan) in parsed.scans.enumerated() {
++            #expect(scan.dcTables.count == 4 && scan.acTables.count == 4)
++            #expect(scan.dcTables[0]?.values == [UInt8(index % 2)])
++            #expect(scan.acTables[3]?.values == [UInt8(index % 2)])
++        }
++        // The structural bound does not make this repeated initial-DC script a
++        // valid progressive sequence; existing semantic validation still rejects.
++        #expect(throws: CodecError.self) { try JPEGCodec.validateDCT(parsed) }
++        bytes.removeLast(2)
++        bytes += Self.segment(0xDA, [1, 0, 0, 0, 0, 0]) + [0, 255, 217]
++        expectParserError(.resourceLimitExceeded) {
++            _ = try JPEGEnvelope.validate(Data(bytes), limits: .init())
++        }
++    }
++
++    @Test func repeatedQuantisersUseDefinitionCountNotFourFinalIDs() throws {
++        let data = Self.lossless(quantisers: 1008)
++        let expected = data.count + 1_048_576 + 4096 + 1008 * 1024 + 4096 + 128
++        expectParserError(.resourceLimitExceeded) {
++            _ = try JPEGCodec.parse(data, options: .init(resourceLimits: try .init(maximumWorkspaceBytes: expected - 1)))
++        }
++        let parsed = try JPEGCodec.parse(data,
++            options: .init(resourceLimits: try .init(maximumWorkspaceBytes: expected)))
++        #expect(parsed.parserWorkspaceBytes == expected && parsed.quantTables.count == 4)
++        #expect(parsed.quantTables[0] == Array(repeating: 1007 % 255 + 1, count: 64))
++        let bad = [UInt8](Self.lossless().prefix(2)) + Self.segment(0xDB, [0] + Array(repeating: 1, count: 63))
++            + Array(Self.lossless().dropFirst(2))
++        expectParserError(.malformedInput) { _ = try JPEGEnvelope.validate(Data(bad), limits: .init()) }
++    }
++
++    @Test func allComponentEntriesAreChargedBeforeUnsupportedProfileRejection() throws {
++        let data = Self.lossless(components: 255)
++        let expected = data.count + 1_048_576 + 4096 + 4096 + 510 * 64
++        let parsed = try JPEGCodec.parse(data,
++            options: .init(resourceLimits: try .init(maximumWorkspaceBytes: expected)))
++        #expect(parsed.frameInfo.components.count == 255 && parsed.scans[0].header.components.count == 255)
++        #expect(parsed.parserWorkspaceBytes == expected)
++        expectParserError(.unsupportedFeature) {
++            _ = try JPEGCodec.inspect(data, options: .init(resourceLimits: try .init(maximumWorkspaceBytes: expected)))
++        }
++    }
++
++    @Test func maximumExifAndAllICCSequenceSlotsAreCountedAndReassembled() throws {
++        let exif = Array(repeating: UInt8(37), count: 65527)
++        var metadata = Self.segment(0xE0, [1, 2, 3])
++        metadata += Self.segment(0xE1, [69, 120, 105, 102, 0, 0] + exif)
++        let identifier = Array("ICC_PROFILE\0".utf8)
++        for sequence in (1...255).reversed() {
++            metadata += Self.segment(0xE2, identifier + [UInt8(sequence), 255, UInt8(sequence)])
++        }
++        let payloadBytes = 3 + 65533 + 255 * 15
++        let data = Self.lossless(metadata: metadata)
++        let expected = data.count + 1_048_576 + 4096 + 4096 + 128 + 4 * payloadBytes
++        let limits = try ResourceLimits(maximumWorkspaceBytes: expected,
++            maximumMetadataBytes: payloadBytes, maximumICCBytes: 255)
++        let parsed = try JPEGCodec.parse(data, options: .init(resourceLimits: limits))
++        #expect(parsed.parserWorkspaceBytes == expected && parsed.exif == exif)
++        #expect(parsed.iccProfile == (1...255).map { UInt8($0) })
++        let info = try JPEGCodec.inspect(data, options: .init(resourceLimits: limits))
++        #expect(info.metadata.entries["Exif"] == Data(exif))
++        for denied in [
++            try ResourceLimits(maximumMetadataBytes: payloadBytes - 1),
++            try ResourceLimits(maximumICCBytes: 254),
++            try ResourceLimits(maximumWorkspaceBytes: expected - 1)
++        ] {
++            expectParserError(.resourceLimitExceeded) {
++                _ = try JPEGCodec.parse(data, options: .init(resourceLimits: denied))
++            }
++        }
++    }
++
++    @Test func entropyTraversalStillPollsCancellationAndRejectsTruncatedExtents() throws {
++        let data = Self.lossless(entropy: Array(repeating: 0, count: 128 * 1024))
++        let polls = Mutex(0)
++        #expect(throws: CancellationError.self) {
++            try NativeOperation.withSynchronousCancellation({
++                if polls.withLock({ $0 += 1; return $0 }) == 10 { throw CancellationError() }
++            }) {
++                try NativeOperation.$current.withValue(.init(seconds: 120)) {
++                    _ = try JPEGEnvelope.validate(data, limits: .init())
++                }
++            }
++        }
++        #expect(polls.withLock { $0 } == 10)
++        expectParserError(.malformedInput) {
++            _ = try JPEGEnvelope.validate(Data(data.dropLast()), limits: .init())
++        }
++    }
++
++    @Test func validNoisyInputUsesItsBoundedWorkspaceAndRetainsExactSamples() throws {
++        let width = 513, height = 257, count = width * height
++        var seed: UInt32 = 0x6B291A3F, bytes = [UInt8](repeating: 0, count: count * 2)
++        for index in 0..<count {
++            seed = seed &* 1664525 &+ 1013904223
++            let sample = (seed >> 8) & 65535
++            bytes[index * 2] = UInt8(truncatingIfNeeded: sample)
++            bytes[index * 2 + 1] = UInt8(sample >> 8)
++        }
++        let image = try JLIImage(width: width, height: height, pixelFormat: .uint16, colorModel: .grayscale, data: bytes)
++        let data = try NativeOperation.$current.withValue(.init(seconds: 120, maximumWorkers: 1)) {
++            Data(try JLIEncoder().encode(image, configuration: .init(lossless: true)))
++        }
++        let parsed = try JPEGCodec.parse(data, options: .init())
++        let workspace = parsed.parserWorkspaceBytes + count * 8
++        #expect(workspace < data.count * 64 + count * 8 + 1_048_576)
++        let limits = try ResourceLimits(maximumWorkspaceBytes: workspace,
++            maximumWorkers: 1, maximumMemoryBytes: workspace + data.count + bytes.count)
++        let decoded = try JPEGCodec.decode(data, into: nil, configuration: .init(), options: .init(resourceLimits: limits))
++        #expect(try decoded.image.storage.withUnsafeBytes { Array($0) } == bytes)
++        #expect(decoded.report.fidelity == .exactSamples && decoded.report.pixelAllocationCount == 1)
++        #expect(decoded.report.copyEvents.isEmpty && decoded.report.peakWorkspaceBytes == nil)
++    }
++}
+diff --git a/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift b/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift
+index 7ae6b20..4fc3847 100644
+--- a/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift
++++ b/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift
+@@ -60,7 +60,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+         let native = JLIDecoderConfiguration(outputPixelFormat: floating ? .float32 : nil)
+         // 9 x 8 padded blocks; shared coefficient/output and one scratch batch.
+         // This boundary deliberately includes block padding, not width*height.
+-        let workspace = data.count * 64 + (flat ? 576 : 36_864) + 1_048_576
++        let workspace = parsed.parserWorkspaceBytes + (flat ? 576 : 36_864)
+         let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
+             hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: .scalarCPU))
+         #expect(plan.dcOnlyTable == flat)
+@@ -139,7 +139,8 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+                 huffmanDCTables: parsed.huffmanDCTables, huffmanACTables: finalTables,
+                 scans: [.init(header: header, entropyData: scan.entropyData,
+                     dcTables: scan.dcTables, acTables: scanTables)],
+-                restartInterval: 0, iccProfile: nil, exif: nil)
++                restartInterval: 0, iccProfile: nil, exif: nil,
++                parserWorkspaceBytes: parsed.parserWorkspaceBytes)
+         }
+         for id in [0, 1, 7] {
+             for compact in [false, true] {
+@@ -181,8 +182,8 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+             let storage = try WorkspaceObservedStorage(byteCount: info.descriptor.requiredByteCount)
+             let destination = try ImageDestination(descriptor: info.descriptor, storage: storage)
+             let frame = parsed.frameInfo
+-            let workspace = data.count * 64 + frame.width * frame.height * frame.components.count
+-                * (frame.isLossless ? 8 : 128) + 1_048_576
++            let workspace = parsed.parserWorkspaceBytes + frame.width * frame.height * frame.components.count
++                * (frame.isLossless ? 8 : 128)
+             expectWorkspaceDenial {
+                 _ = try JPEGCodec.decode(data, into: destination, configuration: configuration,
+                     options: .init(resourceLimits: try ResourceLimits(maximumWorkspaceBytes: workspace - 1,
+@@ -204,7 +205,8 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+                 components: frame.components, isProgressive: false), quantTables: parsed.quantTables,
+                 huffmanDCTables: parsed.huffmanDCTables, huffmanACTables: parsed.huffmanACTables,
+                 scans: parsed.scans, restartInterval: parsed.restartInterval,
+-                iccProfile: parsed.iccProfile, exif: parsed.exif)
++                iccProfile: parsed.iccProfile, exif: parsed.exif,
++                parserWorkspaceBytes: parsed.parserWorkspaceBytes)
+         }
+         let thresholds: [(Backend, Int)] = [(.scalarCPU, 2048), (.accelerated, 4096)]
+         for (backend, threshold) in thresholds {
+@@ -254,7 +256,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+         let configuration = DecoderConfiguration(sampleFormat: floating ? .float32RawSamples : .nativeInteger)
+         let bps = floating ? 4 : precision == 8 ? 1 : 2
+         let outputBytes = width * height * bps
+-        let workspace = data.count * 64 + 8192 + 1_048_576
++        let workspace = parsed.parserWorkspaceBytes + 8192
+         for backend in Decoder.capabilities.availableBackends {
+             let expected = try NativeOperation.$current.withValue(.init(seconds: 120,
+                 backend: backend, maximumWorkers: 1)) {
+@@ -286,6 +288,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+     @Test func groupedReservationIncludesBothWindowsAndDeniesBeforeBorrow() throws {
+         let width = 513, height = 513, rowBytes = width + 7
+         let data = try Self.jpeg(width: width, height: height)
++        let parsed = try JPEGCodec.parse(data, options: .init())
+         let storageBytes = 3 + rowBytes * height + 5
+         let plane = try PlaneDescriptor(width: width, height: height, offset: 3,
+             sampleStride: 1, pixelStride: 1, rowBytes: rowBytes, byteCount: 3 + rowBytes * height)
+@@ -295,7 +298,7 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+         // scalar scans retain the two-lane grouped reservation.
+         for backend in Decoder.capabilities.availableBackends {
+             let payload = backend == .accelerated ? 786_432 : 1_048_576
+-            let workspace = data.count * 64 + payload + 1_048_576
++            let workspace = parsed.parserWorkspaceBytes + payload
+             let total = data.count + storageBytes + workspace
+             let storage = try WorkspaceObservedStorage(byteCount: storageBytes)
+             let destination = try ImageDestination(descriptor: descriptor, storage: storage)

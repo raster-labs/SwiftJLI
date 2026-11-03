@@ -2,6 +2,25 @@
 
 **Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
 
+**4 November 2026 parser admission follow-up:** tested source
+`ca0c1e874177f429ed199f3ed8ef6ac1315ee66a`, integrated as `0dc6730` with
+byte-identical Sources, Tests and Package.swift, replaces the blanket compressed
+byte multiplier with checked table/scan/component/metadata reservations.
+Bootstrap admission precedes possible input copies; expanded admission precedes
+parsing, and final image admission still precedes provider borrowing. Every
+resource ceiling, sample policy and lifetime boundary remains unchanged.
+Full Release passes 468 tests in 79 suites; focused ASan and TSan each pass
+71 tests in 11 suites; CLI Release passes 252 checks. Native DCT/lossless
+comparisons retain exact output and have no repeated regression over 5%.
+Noise2048, noise3072 and mixed3072 now decode at default limits and match every
+original sample. All three beat both djpeg 3.2.0 and 3.2.1 in both provisional
+rounds, while process RSS still favours djpeg. The
+[separate report](Qualification/DjpegPerformanceRound5_20261103/parser-ca0c1e8/README.md)
+retains the initial harness-only extension mismatch, all raw measurements and
+source pins. These new cases are not pooled with earlier-source CLI wins.
+Current-source remote CI and remaining competitive gaps are open; the FMA
+workspace and serial-C trials remain unselected after retained regressions.
+
 **3 November 2026 C entropy follow-up:** source
 `5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd` adds original bounded C kernels
 for eligible DCT pipelines and automatic large UInt16 left-predictor lossless

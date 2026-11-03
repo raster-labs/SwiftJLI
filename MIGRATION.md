@@ -129,12 +129,25 @@ metadata bytes, the current reservations are:
 | --- | --- |
 | Predictive encode | `64 × N + 4 × M + 1,048,576` |
 | DCT encode | `192 × N + 4 × M + 1,048,576` |
-| Parsing | `64 × B + 1,048,576` |
-| Predictive decode | `64 × B + 8 × N + 1,048,576` |
-| DCT decode, except eligible greyscale streaming | `64 × B + 128 × N + 1,048,576` |
-| Eligible full-resolution greyscale DCT streaming | `64 × B + 512 × min(1024 × L, K) + 1,048,576` |
-| Accelerated greyscale pipeline, at least 2,048 blocks and two permitted workers | `64 × B + 786,432 + 1,048,576` |
-| Table-proven DC-only greyscale streaming | `64 × B + 8 × min(1024, K) + 1,048,576` |
+| Parsing | `P` (structural reservation below) |
+| Predictive decode | `P + 8 × N` |
+| DCT decode, except eligible greyscale streaming | `P + 128 × N` |
+| Eligible full-resolution greyscale DCT streaming | `P + 512 × min(1024 × L, K)` |
+| Accelerated greyscale pipeline, at least 2,048 blocks and two permitted workers | `P + 786,432` |
+| Table-proven DC-only greyscale streaming | `P + 8 × min(1024, K)` |
+
+For public `Data` input, the parser reservation is
+`P = B + 1,048,576 + 4096 × H + 1024 × Q + 4096 × S + 64 × (F + T) + 4 × A`.
+`H` and `Q` count every Huffman and quantisation definition, including replacements;
+`S` counts scans; `F` is the frame component count; `T` sums scan component entries;
+and `A` counts accepted APP payload bytes. A `B + 1 MiB` bootstrap gate precedes
+the possible Foundation input copy. The existing envelope pass computes `P`,
+which must pass before expanded table/metadata parsing. The internal array
+convenience uses `2 × B` in both reservations to retain a conservative allowance
+for Array-to-Data and bridge copies. Compressed input remains separately charged
+in total-memory admission. These estimates replace `64 × B + 1 MiB`; they do not
+raise any limit or claim a measured RSS reduction. See the
+[parser qualification and newly admitted cases](Documentation/Migration/Qualification/DjpegPerformanceRound5_20261103/parser-ca0c1e8/README.md).
 
 Here `K = ceil(width/8) × ceil(height/8)` counts padded blocks and `L` is the
 immutable logical lane count chosen by admission and dispatch. Streaming requires

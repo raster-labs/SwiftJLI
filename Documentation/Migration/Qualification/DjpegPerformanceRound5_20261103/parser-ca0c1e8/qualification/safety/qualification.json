@@ -1,0 +1,52 @@
+{
+  "sourceRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "createdUTC": "2026-11-03T18:26:11.476256+00:00",
+  "status": "requested-parser-only-safety-gates-passed",
+  "initialQualificationSHA256": "a0f6e181f1e4dd0605abf98b1dcc3b472115f7a714f9616b8bd6875847f7a5ff",
+  "gates": {
+    "asan": {
+      "receipt": "/private/tmp/swiftjli-round5-evidence/parser-reservation/safety/asan-1/command.json",
+      "receiptSHA256": "7bac0d9e41f165b223dc858f6eb5b52dc49da88f55cb2541c6ef0446feccf90e",
+      "exitCode": 0,
+      "summary": {
+        "tests": 71,
+        "suites": 11
+      },
+      "elapsedSeconds": 54.05247974998201,
+      "sourceUnchanged": true
+    },
+    "tsan": {
+      "receipt": "/private/tmp/swiftjli-round5-evidence/parser-reservation/safety/tsan-1/command.json",
+      "receiptSHA256": "a5cd97425c9142da18a2f6c5974bc8ae457dbd65dd3fc0bb037a9c20f78b5339",
+      "exitCode": 0,
+      "summary": {
+        "tests": 71,
+        "suites": 11
+      },
+      "elapsedSeconds": 58.82139429199742,
+      "sourceUnchanged": true
+    },
+    "cli": {
+      "receipt": "/private/tmp/swiftjli-round5-evidence/parser-reservation/safety/cli-1/command.json",
+      "receiptSHA256": "f2d7a6e51f97d7b905362956ad72048e10c4f9fb4df1cd54935ae035fd4cb008",
+      "exitCode": 0,
+      "summary": {
+        "checks": 252,
+        "status": "passed"
+      },
+      "elapsedSeconds": 3.2030885420099366,
+      "sourceUnchanged": true
+    }
+  },
+  "cInstrumentationReceiptSHA256": "a37dde68fc5cd6657c23688e5b14697041eef42565f6b5b78ee67a750ae11bde",
+  "productionChangesDuringQualification": false,
+  "failedSafetyAttempts": 0,
+  "limitations": [
+    "Focused ASan/TSan only, not the whole suite under sanitizers.",
+    "CLI252 uses the unchanged Release binary, not a sanitizer CLI run.",
+    "No other OS, architecture or Swift6.2-floor CI qualification in this continuation.",
+    "No additional performance or RSS run in this CPU grant.",
+    "Newly admitted CLI timing has a separate method and parent-owned receipts; it is not pooled with the former same-eligibility benchmark.",
+    "Optional joint2717e42 remains unbuilt/unselected due to its parent FMA regression."
+  ]
+}
