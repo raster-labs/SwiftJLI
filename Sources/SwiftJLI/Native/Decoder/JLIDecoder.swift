@@ -179,52 +179,63 @@ struct JLIDecoder: Sendable {
                 ACLookahead(table: table, blockCount: componentZigzag[index].count / 64)
             }
 
-            for mcuY in 0..<mcuCountV {
-                try NativeOperation.check()
-                for mcuX in 0..<mcuCountH {
-                    // Every `restartInterval` MCUs, skip the RST0–RST7 marker
-                    // (cycled) and reset DC predictors.
-                    if restartInterval > 0 && mcuCount > 0
-                        && mcuCount % restartInterval == 0 {
-                        try bitReader.skipRestartMarker(expectedIndex: restartIndex)
-                        restartIndex = (restartIndex + 1) & 7
-                        for i in 0..<numComponents { prevDC[i] = 0 }
-                    }
-                    mcuCount += 1
+            if numComponents == 1, components[0].horizontalSampling == 1,
+               components[0].verticalSampling == 1 {
+                try componentZigzag[0].withUnsafeMutableBufferPointer { coefficients in
+                    try SequentialGreyscaleDecoder.decode(
+                        reader: &bitReader, dcTable: compDCTables[0], acTable: compACTables[0],
+                        lookup: compACLookups[0], coefficients: coefficients,
+                        blocksPerRow: mcuCountH, blockRows: mcuCountV,
+                        precision: frame.precision, restartInterval: restartInterval)
+                }
+            } else {
+                for mcuY in 0..<mcuCountV {
+                    try NativeOperation.check()
+                    for mcuX in 0..<mcuCountH {
+                        // Every `restartInterval` MCUs, skip the RST0–RST7 marker
+                        // (cycled) and reset DC predictors.
+                        if restartInterval > 0 && mcuCount > 0
+                            && mcuCount % restartInterval == 0 {
+                            try bitReader.skipRestartMarker(expectedIndex: restartIndex)
+                            restartIndex = (restartIndex + 1) & 7
+                            for i in 0..<numComponents { prevDC[i] = 0 }
+                        }
+                        mcuCount += 1
 
-                    for compIdx in 0..<numComponents {
-                        let comp = components[compIdx]
-                        let dcTable = compDCTables[compIdx]
-                        let acTable = compACTables[compIdx]
-                        let blocksPerRow = componentBlocksPerRow[compIdx]
+                        for compIdx in 0..<numComponents {
+                            let comp = components[compIdx]
+                            let dcTable = compDCTables[compIdx]
+                            let acTable = compACTables[compIdx]
+                            let blocksPerRow = componentBlocksPerRow[compIdx]
 
-                        for by in 0..<comp.verticalSampling {
-                            for bx in 0..<comp.horizontalSampling {
-                                let blockX = mcuX * comp.horizontalSampling + bx
-                                let blockY = mcuY * comp.verticalSampling + by
-                                let blockIndex = blockY * blocksPerRow + blockX
-                                let dst = blockIndex * 64
+                            for by in 0..<comp.verticalSampling {
+                                for bx in 0..<comp.horizontalSampling {
+                                    let blockX = mcuX * comp.horizontalSampling + bx
+                                    let blockY = mcuY * comp.verticalSampling + by
+                                    let blockIndex = blockY * blocksPerRow + blockX
+                                    let dst = blockIndex * 64
 
-                                let dcDiff = try HuffmanDecoder.decodeDC(
-                                    from: &bitReader, table: dcTable
-                                )
-                                let dc = Int64(prevDC[compIdx]) + Int64(dcDiff)
-                                guard abs(dc) <= (1 << (frame.precision + 2)) else {
-                                    throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
-                                }
-                                prevDC[compIdx] = Int32(dc)
-
-                                // Decode directly into the coefficient plane.
-                                // One scoped borrow replaces per-coefficient
-                                // array uniqueness checks and a block copy.
-                                try componentZigzag[compIdx].withUnsafeMutableBufferPointer { zz in
-                                    let block = UnsafeMutableBufferPointer(rebasing: zz[dst..<(dst + 64)])
-                                    if let lookup = compACLookups[compIdx] {
-                                        try HuffmanDecoder.decodeAC(from: &bitReader, table: acTable, lookup: lookup, into: block)
-                                    } else {
-                                        try HuffmanDecoder.decodeAC(from: &bitReader, table: acTable, into: block)
+                                    let dcDiff = try HuffmanDecoder.decodeDC(
+                                        from: &bitReader, table: dcTable
+                                    )
+                                    let dc = Int64(prevDC[compIdx]) + Int64(dcDiff)
+                                    guard abs(dc) <= (1 << (frame.precision + 2)) else {
+                                        throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
                                     }
-                                    block[0] = prevDC[compIdx]
+                                    prevDC[compIdx] = Int32(dc)
+
+                                    // Decode directly into the coefficient plane.
+                                    // One scoped borrow replaces per-coefficient
+                                    // array uniqueness checks and a block copy.
+                                    try componentZigzag[compIdx].withUnsafeMutableBufferPointer { zz in
+                                        let block = UnsafeMutableBufferPointer(rebasing: zz[dst..<(dst + 64)])
+                                        if let lookup = compACLookups[compIdx] {
+                                            try HuffmanDecoder.decodeAC(from: &bitReader, table: acTable, lookup: lookup, into: block)
+                                        } else {
+                                            try HuffmanDecoder.decodeAC(from: &bitReader, table: acTable, into: block)
+                                        }
+                                        block[0] = prevDC[compIdx]
+                                    }
                                 }
                             }
                         }
@@ -1099,7 +1110,10 @@ struct JLIDecoder: Sendable {
                 // scan mode, while retaining the identical entropy reader.
                 var value = segmentY == 0 ? half : row[0]
                 for x in 0..<w {
-                    value = (value + (try losslessLookupDifference(table, &reader, lookup))) & 0xFFFF
+                    let difference: Int32
+                    if let decoded = reader.fastDecodeLosslessDifference(lookup) { difference = decoded }
+                    else { difference = try losslessDifference(table, &reader) }
+                    value = (value + difference) & 0xFFFF
                     if x == 0 { row[0] = value }
                     writeLosslessSample(value, outputRow, x, bps, pt)
                 }
@@ -1120,7 +1134,10 @@ struct JLIDecoder: Sendable {
                         default: predicted = (left + above) >> 1
                         }
                     }
-                    let value = (predicted + (try losslessLookupDifference(table, &reader, lookup))) & 0xFFFF
+                    let difference: Int32
+                    if let decoded = reader.fastDecodeLosslessDifference(lookup) { difference = decoded }
+                    else { difference = try losslessDifference(table, &reader) }
+                    let value = (predicted + difference) & 0xFFFF
                     row[x] = value
                     left = value
                     aboveLeft = above
@@ -1128,14 +1145,6 @@ struct JLIDecoder: Sendable {
                 }
             }
         }
-    }
-
-    @inline(__always)
-    private static func losslessLookupDifference(
-        _ table: HuffmanTable, _ reader: inout BitReader, _ lookup: LosslessLookahead
-    ) throws -> Int32 {
-        if let difference = reader.fastDecodeLosslessDifference(lookup) { return difference }
-        return try losslessDifference(table, &reader)
     }
 
     /// Grayscale (single-component) lossless scan — the clinical hot loop.

@@ -192,7 +192,14 @@ struct BitReader {
         }
         guard !Self.hasFFByte(word) else { return false }
         let k = (64 - bitsAvailable) >> 3          // whole bytes that fit (≥ 6 here)
-        bitBuffer = (bitBuffer << (8 * k)) | (word >> (64 - 8 * k))
+        // Refill callers have 0...15 buffered bits. With an empty buffer,
+        // all eight bytes replace it; otherwise both shifts are within 1...63.
+        // Handle the 64-bit splice explicitly before using masked shifts.
+        if bitsAvailable == 0 {
+            bitBuffer = word
+        } else {
+            bitBuffer = (bitBuffer &<< (8 * k)) | (word &>> (64 - 8 * k))
+        }
         bitsAvailable += 8 * k
         byteOffset += k
         return true
@@ -266,7 +273,10 @@ struct BitReader {
     mutating func fastDecodeLosslessDifference(_ table: LosslessLookahead) -> Int32? {
         if bitsAvailable < LosslessLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
         guard bitsAvailable >= LosslessLookahead.bits else { return nil }
-        let prefix = Int((bitBuffer >> (bitsAvailable - LosslessLookahead.bits)) & UInt64(LosslessLookahead.count - 1))
+        // All reader mutations keep bitsAvailable in 0...64. The guard
+        // bounds this shift to 0...51, so masking preserves the checked
+        // shift's value without its general-purpose signed-width branches.
+        let prefix = Int((bitBuffer &>> (bitsAvailable - LosslessLookahead.bits)) & UInt64(LosslessLookahead.count - 1))
         let entry = table.entries[prefix]
         guard entry != 0 else { return nil }
         bitsAvailable -= Int(entry >> 16)

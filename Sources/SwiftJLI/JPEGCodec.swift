@@ -245,8 +245,9 @@ enum JPEGCodec {
         let parserBudget = try checkedAdd(checkedMultiply(data.count, 64), 1_048_576)
         try admit(workspace: parserBudget, pixels: 0, compressed: data.count, metadata: 0, limits: limits)
         let bytes = Array(data)
-        let adobeTransform = try JPEGEnvelope.validate(bytes, limits: limits)
-        var reader = MarkerReader(data: bytes)
+        let envelope = try JPEGEnvelope.validate(bytes, limits: limits)
+        let adobeTransform = envelope.adobeTransform
+        var reader = MarkerReader(validated: envelope)
         var parsed = try reader.parse()
         let f = parsed.frameInfo
         if let sourceColourModel {

@@ -5,12 +5,29 @@ import Foundation
 /// Each segment must fit its own declared extent; bytes in the next segment
 /// cannot satisfy a truncated SOF/SOS/table. Entropy is scanned, never decoded.
 enum JPEGEnvelope {
-    @discardableResult static func validate(_ b: [UInt8], limits: ResourceLimits) throws -> UInt8? {
+    /// Owns the exact immutable bytes whose segment and entropy extents passed
+    /// admission. The private constructor prevents a parser from mixing ranges
+    /// validated against one input with another input. Array value semantics
+    /// retain the owner without making another full-input copy.
+    struct Validated {
+        let bytes: [UInt8]
+        let adobeTransform: UInt8?
+        let entropyRanges: [Range<Int>]
+
+        fileprivate init(bytes: [UInt8], adobeTransform: UInt8?, entropyRanges: [Range<Int>]) {
+            self.bytes = bytes
+            self.adobeTransform = adobeTransform
+            self.entropyRanges = entropyRanges
+        }
+    }
+
+    static func validate(_ b: [UInt8], limits: ResourceLimits) throws -> Validated {
         func malformed() -> CodecError { .init(.malformedInput, "Invalid JPEG marker envelope.") }
         guard b.count >= 4, b[0] == 255, b[1] == 216 else { throw malformed() }
         var p = 2, sawFrame = false, sawScan = false, metadata = 0, iccBytes = 0
         var frameMarker: UInt8 = 0, scanCount = 0
         var adobeTransform: UInt8?
+        var entropyRanges: [Range<Int>] = []
         var iccCount: Int?, iccSequences = Set<Int>(), sawExif = false
         let iccID = Array("ICC_PROFILE\0".utf8), exifID: [UInt8] = [69,120,105,102,0,0]
         while p < b.count {
@@ -30,7 +47,7 @@ enum JPEGEnvelope {
                 if let adobeTransform, (frameMarker == 0xC3 ? adobeTransform != 0 : adobeTransform > 1) {
                     throw CodecError(.unsupportedFeature, "JPEG colour transform is unsupported for this frame.")
                 }
-                return adobeTransform
+                return Validated(bytes: b, adobeTransform: adobeTransform, entropyRanges: entropyRanges)
             }
             guard marker != 0, marker != 216, !(208...215).contains(marker), p + 2 <= b.count else { throw malformed() }
             let length = Int(b[p]) * 256 + Int(b[p + 1])
@@ -131,6 +148,7 @@ enum JPEGEnvelope {
             p = end
             if marker == 0xDA {
                 p = try JPEGEntropyBoundary.find(in: b, from: p)
+                entropyRanges.append(end..<p)
             }
         }
         throw malformed()

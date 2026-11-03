@@ -87,9 +87,19 @@ struct ParsedJPEG: Sendable {
 struct MarkerReader {
     private let data: [UInt8]
     private var offset: Int = 0
+    private let validatedEntropyRanges: [Range<Int>]?
+    private var nextEntropyRange: Int = 0
 
     init(data: [UInt8]) {
         self.data = data
+        self.validatedEntropyRanges = nil
+    }
+
+    /// Reuses entropy extents from structural admission of these exact bytes.
+    /// Both arrays remain owned values; no pointer or borrow escapes parsing.
+    init(validated: JPEGEnvelope.Validated) {
+        self.data = validated.bytes
+        self.validatedEntropyRanges = validated.entropyRanges
     }
 
     /// Reads JPEG info without full decode.
@@ -480,7 +490,19 @@ struct MarkerReader {
         // (which paid an Array uniqueness check + growth per byte and showed up
         // at ~7-9% of a whole lossless decode).
         let start = offset
-        let pos = try JPEGEntropyBoundary.find(in: data, from: start)
+        let pos: Int
+        if let ranges = validatedEntropyRanges {
+            guard nextEntropyRange < ranges.count,
+                  ranges[nextEntropyRange].lowerBound == start,
+                  ranges[nextEntropyRange].upperBound <= data.count else {
+                throw JLIError.decodingFailed("Validated entropy extent does not match scan")
+            }
+            try NativeOperation.check()
+            pos = ranges[nextEntropyRange].upperBound
+            nextEntropyRange += 1
+        } else {
+            pos = try JPEGEntropyBoundary.find(in: data, from: start)
+        }
         offset = pos
         return Array(data[start..<pos])
     }

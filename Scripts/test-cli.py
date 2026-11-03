@@ -162,6 +162,24 @@ def main():
                     if e.startswith(str(temp)):assert not Path(e).exists()
 
             # 1. NRRD 16-bit greyscale lossless round-trip (little-endian, big-endian, and spatial kinds).
+            # Regular-file preallocation and the pipe reader must agree across
+            # the 64 KiB read boundary. Padding is a legal Netpbm comment, so
+            # inputs of each geometry describe the same pixels and JPEG bytes.
+            reference_chunk_jpegs = {}
+            for byte_count in [65535, 65536, 65537, 131073]:
+                height = 256 if byte_count < 131000 else 512
+                prefix = b'P5\n#'
+                suffix = f'\n255 {height}\n255\n'.encode('ascii') + b'\x81' * (255 * height)
+                source = prefix + b'x' * (byte_count - len(prefix) - len(suffix)) + suffix
+                chunk_input = temp / f'chunk-{byte_count}.pgm'
+                chunk_input.write_bytes(source)
+                common = ['--input-format', 'pgm', '-o', '-', '--output-format', 'jpeg']
+                regular = run_bytes([binary, 'encode', '-i', chunk_input, *common])
+                streamed = run_bytes([binary, 'encode', '-i', '-', *common], stdin_bytes=source)
+                assert regular.stdout == streamed.stdout and not regular.stderr and not streamed.stderr
+                reference_chunk_jpegs.setdefault(height, regular.stdout)
+                assert regular.stdout == reference_chunk_jpegs[height]
+
             nrrd_le = temp/'source_le.nrrd'
             nrrd_be = temp/'source_be.nrrd'
             nrrd_le.write_bytes(make_nrrd_u16(17, 13, 'little', 'kinds: domain domain\n'))

@@ -748,10 +748,12 @@ private func readBoundedInput(from path: String, maximumBytes: Int, context: Com
     let fd: Int32
     let closeWhenDone: Bool
     let isStream: Bool
+    let initialByteCount: Int
     if path == "-" {
         fd = STDIN_FILENO
         closeWhenDone = false
         isStream = true
+        initialByteCount = 0
     } else {
         var st = stat()
         guard stat(path, &st) == 0 else {
@@ -776,6 +778,11 @@ private func readBoundedInput(from path: String, maximumBytes: Int, context: Com
             _ = close(fd)
             throw FileIOError(message: "input I/O failure: opened input descriptor is not a regular file.")
         }
+        guard openedStat.st_size >= 0, openedStat.st_size <= Int64(maximumBytes) else {
+            _ = close(fd)
+            throw CodecError(.resourceLimitExceeded, "Input file size exceeds the configured memory budget.")
+        }
+        initialByteCount = Int(openedStat.st_size)
         let flags = fcntl(fd, F_GETFL, 0)
         if flags >= 0 && (flags & O_NONBLOCK) != 0 {
             _ = fcntl(fd, F_SETFL, flags & ~O_NONBLOCK)
@@ -788,8 +795,40 @@ private func readBoundedInput(from path: String, maximumBytes: Int, context: Com
     }
 
     return try withNonBlockingDescriptor(fd, enabled: isStream) {
-        var buffer = Data()
         let chunkSize = 64 * 1024
+        // A regular file provides a bounded allocation hint. Read directly into
+        // that owning Data instead of repeatedly copying and growing it through
+        // an intermediate chunk. The size is not trusted as an EOF promise:
+        // shrinkage trims the result, and growth uses the bounded stream loop.
+        var buffer = Data(count: initialByteCount)
+        var filled = 0
+        var reachedEnd = false
+        try buffer.withUnsafeMutableBytes { raw in
+            guard let base = raw.baseAddress else { return }
+            while filled < raw.count {
+                try context.check()
+                let requested = min(chunkSize, raw.count - filled)
+                let count: Int
+                #if canImport(Darwin)
+                count = Darwin.read(fd, base.advanced(by: filled), requested)
+                #else
+                count = Glibc.read(fd, base.advanced(by: filled), requested)
+                #endif
+                if count > 0 {
+                    filled += count
+                } else if count == 0 {
+                    reachedEnd = true
+                    break
+                } else if errno != EINTR {
+                    throw FileIOError(message: "input I/O failure: read error.")
+                }
+            }
+        }
+        if filled < buffer.count { buffer.count = filled }
+        if reachedEnd {
+            try context.check()
+            return buffer
+        }
         var chunk = [UInt8](repeating: 0, count: chunkSize)
         while true {
             try context.check()
