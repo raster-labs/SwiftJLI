@@ -1322,8 +1322,10 @@ struct JLIDecoder: Sendable {
             output[x] = UInt8(clamping: Int(value) << pt)
         } else {
             let shifted = UInt16(clamping: Int(value) << pt)
-            output[x * 2] = UInt8(truncatingIfNeeded: shifted)
-            output[x * 2 + 1] = UInt8(shifted >> 8)
+            // The raw store supports odd addresses, as in the zero-run kernel.
+            // The destination preflight covers both sample bytes of every pixel.
+            UnsafeMutableRawPointer(output).storeBytes(
+                of: shifted.littleEndian, toByteOffset: x * 2, as: UInt16.self)
         }
     }
 
