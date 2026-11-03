@@ -360,7 +360,7 @@ enum JPEGCodec {
                 // replaces full-frame coefficient/reconstruction reservations.
                 let streaming = try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
                     hasDestination: true, normaliseXYBOutput: normaliseXYBOutput,
-                    workerLimit: context.maximumWorkers)
+                    workerLimit: context.maximumWorkers, backend: context.backend)
                 let frame = parsed.frameInfo
                 let sampleCount = try checkedMultiply(checkedMultiply(frame.width, frame.height), frame.components.count)
                 let imageWorkspace: Int

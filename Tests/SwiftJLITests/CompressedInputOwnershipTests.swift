@@ -30,7 +30,8 @@ private func compressedAutoreleasePool<R>(_ body: () throws -> R) rethrows -> R 
         try JPEGCodec.parse(data, options: .init())
     }
 
-    private static func retainedParsedInput(_ releases: CompressedAllocationReleases) throws -> ParsedJPEG {
+    private static func retainedParsedInput(_ releases: CompressedAllocationReleases) throws
+        -> (parsed: ParsedJPEG, sharesOriginalAllocation: Bool) {
         let bytes = largeFixture()
         let pointer = UnsafeMutableRawPointer.allocate(byteCount: bytes.count, alignment: 16)
         bytes.withUnsafeBytes { source in
@@ -40,17 +41,27 @@ private func compressedAutoreleasePool<R>(_ body: () throws -> R) rethrows -> R 
             pointer.deallocate()
             releases.count.withLock { $0 += 1 }
         })
-        return try parse(data)
+        let parsed = try parse(data)
+        let scan = try #require(parsed.scans.first)
+        let originalStart = UInt(bitPattern: pointer)
+        // A bridge may retain or copy the input. Record the actual representation
+        // while both allocations are alive; the caller Data is not returned.
+        let sharesOriginalAllocation = withExtendedLifetime(data) {
+            let scanStart = scan.entropyData.withUnsafeBytes { UInt(bitPattern: $0.baseAddress) }
+            return (originalStart..<(originalStart + UInt(bytes.count))).contains(scanStart)
+        }
+        return (parsed, sharesOriginalAllocation)
     }
 
     @inline(never)
     private static func consumeAndDropParsedInput(_ releases: CompressedAllocationReleases,
                                                  previousReleases: Int) throws {
-        let parsed = try retainedParsedInput(releases)
+        let (parsed, sharesOriginalAllocation) = try retainedParsedInput(releases)
         let decoded = try JLIDecoder().decodeParsed(parsed)
         #expect(!decoded.data.isEmpty)
         withExtendedLifetime(parsed) {
-            #expect(releases.count.withLock { $0 } == previousReleases)
+            let expected = previousReleases + (sharesOriginalAllocation ? 0 : 1)
+            #expect(releases.count.withLock { $0 } == expected)
         }
     }
 
@@ -66,19 +77,25 @@ private func compressedAutoreleasePool<R>(_ body: () throws -> R) rethrows -> R 
     }
 
     @Test(arguments: [0, 17])
-    func largeDataScansShareTheInputAllocationWithRebasedIndices(origin: Int) throws {
+    func largeDataScansShareOneOwnerWithRebasedIndices(origin: Int) throws {
         let jpeg = Self.largeFixture()
         let container = Data([UInt8](repeating: 0xA5, count: origin) + jpeg + [0xA5, 0xA5])
         let data = container[origin..<(origin + jpeg.count)]
         #expect(data.startIndex == origin)
-        let inputAddress = data.withUnsafeBytes { UInt(bitPattern: $0.baseAddress) }
         let envelope = try JPEGEnvelope.validate(data, limits: .init())
+        let ownerAddress = envelope.bytes.withUnsafeBytes { UInt(bitPattern: $0.baseAddress) }
+        #if canImport(ObjectiveC)
+        // Apple bridge zero-copy is separately qualified. Other Foundation
+        // implementations may copy while preserving all ownership semantics.
+        let inputAddress = data.withUnsafeBytes { UInt(bitPattern: $0.baseAddress) }
+        #expect(ownerAddress == inputAddress)
+        #endif
         var parser = MarkerReader(validated: envelope)
         let parsed = try parser.parse()
         for (scan, range) in zip(parsed.scans, envelope.entropyRanges) {
             #expect(scan.entropyData.startIndex == 0 && scan.entropyData.count == range.count)
             let scanAddress = scan.entropyData.withUnsafeBytes { UInt(bitPattern: $0.baseAddress) }
-            #expect(scanAddress == inputAddress + UInt(range.lowerBound))
+            #expect(scanAddress == ownerAddress + UInt(range.lowerBound))
             #expect(scan.entropyData.elementsEqual(jpeg[range]))
             // Ordinary Collection slices preserve indices; explicit scan views rebase.
             if scan.entropyData.count > 4 {
@@ -111,14 +128,15 @@ private func compressedAutoreleasePool<R>(_ body: () throws -> R) rethrows -> R 
         #expect(try JLIDecoder().decodeParsed(parsed).data == expected)
     }
 
-    @Test func parsedScansRetainAndReleaseTheOriginalAllocationExactlyOnce() throws {
+    @Test func parsedScansPreserveBytesAndReleaseTheOriginalAllocationExactlyOnce() throws {
         let releases = CompressedAllocationReleases()
         try compressedAutoreleasePool {
-            let parsed = try Self.retainedParsedInput(releases)
-            #expect(releases.count.withLock { $0 } == 0)
+            let (parsed, sharesOriginalAllocation) = try Self.retainedParsedInput(releases)
+            let expectedWhileRetained = sharesOriginalAllocation ? 0 : 1
+            #expect(releases.count.withLock { $0 } == expectedWhileRetained)
             let expected = try JLIDecoder().decode(from: LosslessTests.ll16).data
             #expect(try JLIDecoder().decodeParsed(parsed).data == expected)
-            withExtendedLifetime(parsed) { #expect(releases.count.withLock { $0 } == 0) }
+            withExtendedLifetime(parsed) { #expect(releases.count.withLock { $0 } == expectedWhileRetained) }
         }
         #expect(releases.count.withLock { $0 } == 1)
     }
@@ -155,7 +173,8 @@ private func compressedAutoreleasePool<R>(_ body: () throws -> R) rethrows -> R 
     @Test func joinedReadersShareOnlyTheOwnerAndReleaseAfterCompletion() throws {
         let releases = CompressedAllocationReleases()
         try compressedAutoreleasePool {
-            let parsed = try Self.retainedParsedInput(releases)
+            let (parsed, sharesOriginalAllocation) = try Self.retainedParsedInput(releases)
+            let expectedWhileRetained = sharesOriginalAllocation ? 0 : 1
             let expected = try JLIDecoder().decode(from: LosslessTests.ll16).data
             let results = Mutex<[Bool]>([])
             DispatchQueue.concurrentPerform(iterations: 8) { _ in
@@ -168,7 +187,7 @@ private func compressedAutoreleasePool<R>(_ body: () throws -> R) rethrows -> R 
                 }
             }
             #expect(results.withLock { $0.count == 8 && $0.allSatisfy { $0 } })
-            withExtendedLifetime(parsed) { #expect(releases.count.withLock { $0 } == 0) }
+            withExtendedLifetime(parsed) { #expect(releases.count.withLock { $0 } == expectedWhileRetained) }
         }
         #expect(releases.count.withLock { $0 } == 1)
     }

@@ -34,9 +34,10 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
 }
 
 @Suite struct StreamingWorkspaceAdmissionTests {
-    private static func jpeg(precision: Int = 8, progressive: Bool = false,
+    private static func jpeg(width: Int = 65, height: Int = 57,
+                             precision: Int = 8, progressive: Bool = false,
                              colour: Bool = false) throws -> Data {
-        let width = 65, height = 57, bps = precision == 8 ? 1 : 2, components = colour ? 3 : 1
+        let bps = precision == 8 ? 1 : 2, components = colour ? 3 : 1
         var bytes = [UInt8](repeating: 0, count: width * height * components * bps)
         for i in 0..<(width * height * components) {
             let value = (i * 151 + i / width * 17 + 117) & ((1 << precision) - 1)
@@ -124,17 +125,20 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
     }
 
     @Test func nonStreamingOperationsRetainTheirFullReservations() throws {
-        let profiles: [(Data, DecoderConfiguration)] = [
-            (try Self.jpeg(progressive: true), .init()),
-            (try Self.jpeg(), .init(scale: 2)),
-            (try Self.jpeg(colour: true), .init()),
-            (Data(LosslessTests.ll16), .init())
+        let profiles: [(Data, DecoderConfiguration, Int)] = [
+            (try Self.jpeg(progressive: true), .init(), 1),
+            (try Self.jpeg(), .init(scale: 2), 1),
+            (try Self.jpeg(colour: true), .init(), 1),
+            (Data(LosslessTests.ll16), .init(), 1),
+            // Exactly 2049 blocks: automatic scalar reconstruction keeps full planes.
+            (try Self.jpeg(width: 24, height: 5464), .init(), 8)
         ]
-        for (data, configuration) in profiles {
+        for (data, configuration, workers) in profiles {
             let parsed = try JPEGCodec.parse(data, options: .init())
             let native = JLIDecoderConfiguration(scale: configuration.scale)
             #expect(try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
-                hasDestination: true, normaliseXYBOutput: false, workerLimit: 1) == nil)
+                hasDestination: true, normaliseXYBOutput: false,
+                workerLimit: workers, backend: .scalarCPU) == nil)
             let info = try JPEGCodec.info(parsed, scale: configuration.scale, decodedOutput: true, options: .init())
             let storage = try WorkspaceObservedStorage(byteCount: info.descriptor.requiredByteCount)
             let destination = try ImageDestination(descriptor: info.descriptor, storage: storage)
@@ -144,12 +148,12 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
             expectWorkspaceDenial {
                 _ = try JPEGCodec.decode(data, into: destination, configuration: configuration,
                     options: .init(resourceLimits: try ResourceLimits(maximumWorkspaceBytes: workspace - 1,
-                        maximumWorkers: 1), executionPolicy: .scalarCPU))
+                        maximumWorkers: workers), executionPolicy: .scalarCPU))
             }
             #expect(storage.writes.withLock { $0 } == 0)
             _ = try JPEGCodec.decode(data, into: destination, configuration: configuration,
                 options: .init(resourceLimits: try ResourceLimits(maximumWorkspaceBytes: workspace,
-                    maximumWorkers: 1), executionPolicy: .scalarCPU))
+                    maximumWorkers: workers), executionPolicy: .scalarCPU))
             #expect(storage.writes.withLock { $0 } == 1)
         }
     }
@@ -164,23 +168,27 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
                 scans: parsed.scans, restartInterval: parsed.restartInterval,
                 iccProfile: parsed.iccProfile, exif: parsed.exif)
         }
-        let atThreshold = replacingGeometry(width: 512, height: 512)
-        let plan = try #require(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
-            hasDestination: true, normaliseXYBOutput: false, workerLimit: 8))
-        #expect(plan.blockCount == 4096 && plan.batchBlocks == 1024 && plan.workspaceBytes == 786_432)
-        let aboveThreshold = replacingGeometry(width: 8, height: 4097 * 8)
-        #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
-            hasDestination: true, normaliseXYBOutput: false, workerLimit: 8) == nil)
-        #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
-            hasDestination: true, normaliseXYBOutput: false, workerLimit: 1)?.workspaceBytes == 786_432)
-        #expect(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
-            hasDestination: false, normaliseXYBOutput: false, workerLimit: 1) == nil)
-        #expect(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
-            hasDestination: true, normaliseXYBOutput: true, workerLimit: 1) == nil)
-        for dimensions in [(Int.max, 1), (Int.max - 7, Int.max - 7)] {
-            #expect(throws: CodecError.self) {
-                try SequentialGreyscalePlan.make(parsed: replacingGeometry(width: dimensions.0, height: dimensions.1),
-                    configuration: .default, hasDestination: true, normaliseXYBOutput: false, workerLimit: 1)
+        let thresholds: [(Backend, Int)] = [(.scalarCPU, 2048), (.accelerated, 4096)]
+        for (backend, threshold) in thresholds {
+            let atThreshold = replacingGeometry(width: 8, height: threshold * 8)
+            let plan = try #require(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
+                hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend))
+            #expect(plan.blockCount == threshold && plan.batchBlocks == 1024 && plan.workspaceBytes == 786_432)
+            let aboveThreshold = replacingGeometry(width: 8, height: (threshold + 1) * 8)
+            #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
+                hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend) == nil)
+            #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
+                hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: backend)?.workspaceBytes == 786_432)
+            #expect(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
+                hasDestination: false, normaliseXYBOutput: false, workerLimit: 1, backend: backend) == nil)
+            #expect(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
+                hasDestination: true, normaliseXYBOutput: true, workerLimit: 1, backend: backend) == nil)
+            for dimensions in [(Int.max, 1), (Int.max - 7, Int.max - 7)] {
+                #expect(throws: CodecError.self) {
+                    try SequentialGreyscalePlan.make(parsed: replacingGeometry(width: dimensions.0, height: dimensions.1),
+                        configuration: .default, hasDestination: true, normaliseXYBOutput: false,
+                        workerLimit: 1, backend: backend)
+                }
             }
         }
     }

@@ -6,6 +6,7 @@
 struct SequentialGreyscalePlan: Sendable {
     static let maximumBatchBlocks = 1024
     static let maximumAutomaticBlocks = 4096
+    static let maximumAutomaticScalarBlocks = 2048
 
     let blocksPerRow: Int
     let blockRows: Int
@@ -15,13 +16,14 @@ struct SequentialGreyscalePlan: Sendable {
     /// This is a conservative reservation component, not measured peak memory.
     let workspaceBytes: Int
 
-    /// `workerLimit` is the immutable operation ceiling used by both admission
-    /// and dispatch. Actual joined work may clamp it to currently active CPUs.
+    /// `workerLimit` and `backend` are the immutable operation choices used by
+    /// both admission and dispatch. Actual joined work may clamp the worker
+    /// ceiling to currently active CPUs.
     /// Re-reading a changing CPU count here could otherwise select different
     /// allocation paths before and after admission.
     static func make(parsed: ParsedJPEG, configuration: JLIDecoderConfiguration,
                      hasDestination: Bool, normaliseXYBOutput: Bool,
-                     workerLimit: Int) throws -> Self? {
+                     workerLimit: Int, backend: Backend) throws -> Self? {
         let frame = parsed.frameInfo
         guard hasDestination, !frame.isLossless, !frame.isProgressive,
               configuration.scale == 1, frame.components.count == 1,
@@ -41,6 +43,9 @@ struct SequentialGreyscalePlan: Sendable {
         // The large-image parallel path remains faster on the qualified host.
         // A worker limit is a ceiling: small images use the measured serial path.
         guard workerLimit == 1 || blockCount <= maximumAutomaticBlocks else { return nil }
+        // Preserve the scalar parallel reconstruction threshold above 2048 blocks.
+        guard workerLimit == 1 || backend == .accelerated
+                || blockCount <= maximumAutomaticScalarBlocks else { return nil }
         let batchBlocks = min(maximumBatchBlocks, blockCount)
         let samples = try checkedMultiply(batchBlocks, 64)
         let bytesPerSample = try checkedAdd(MemoryLayout<Int32>.stride,

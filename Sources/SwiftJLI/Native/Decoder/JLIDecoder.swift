@@ -116,7 +116,8 @@ struct JLIDecoder: Sendable {
         // coefficient/scratch capacity. Unsupported paths retain full planes.
         let streamingPlan = try SequentialGreyscalePlan.make(parsed: parsed, configuration: configuration,
             hasDestination: borrowedDestination != nil, normaliseXYBOutput: normaliseXYBOutput,
-            workerLimit: NativeOperation.current?.maximumWorkers ?? NativeOperation.workerLimit)
+            workerLimit: NativeOperation.current?.maximumWorkers ?? NativeOperation.workerLimit,
+            backend: NativeOperation.current?.backend ?? (NativeDSP.usesAccelerate ? .accelerated : .scalarCPU))
         let directGreyscale = scale == 1 && numComponents == 1 && NativeOperation.workerLimit == 1
             && !parsed.isXYB && !parsed.isRawRGB && !normaliseXYBOutput
             && configuration.outputColorModel == nil
