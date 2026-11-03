@@ -324,7 +324,10 @@ struct BitReader {
     mutating func fastDecodeAC(_ table: ACLookahead, remaining: Int) -> UInt32? {
         if bitsAvailable < 8 { fillBuffer(upTo: 8) }
         guard bitsAvailable >= ACLookahead.bits else { return nil }
-        let prefix = Int((bitBuffer >> (bitsAvailable - ACLookahead.bits)) & UInt64(ACLookahead.count - 1))
+        // Reader mutations bound the accumulator to 0...64 valid bits. After
+        // the guard this shift is 0...51, so the masked form has identical
+        // semantics without a general signed-width check per coefficient.
+        let prefix = Int((bitBuffer &>> (bitsAvailable - ACLookahead.bits)) & UInt64(ACLookahead.count - 1))
         let entry = table.entries[prefix]
         guard entry != 0, Int((entry >> 16) & 0xFF) <= remaining else { return nil }
         bitsAvailable -= Int(entry >> 24)
