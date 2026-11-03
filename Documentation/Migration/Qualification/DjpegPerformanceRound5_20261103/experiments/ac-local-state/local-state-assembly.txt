@@ -1,0 +1,191 @@
+
+/private/tmp/swiftjli-round5-evidence/ac-local-state/dct-candidate:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+000000010006fa0c <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF>:
+10006fa0c: d10183ff    	sub	sp, sp, #0x60
+10006fa10: a9016ffc    	stp	x28, x27, [sp, #0x10]
+10006fa14: a90267fa    	stp	x26, x25, [sp, #0x20]
+10006fa18: a9035ff8    	stp	x24, x23, [sp, #0x30]
+10006fa1c: a9044ff6    	stp	x22, x19, [sp, #0x40]
+10006fa20: a9057bfd    	stp	x29, x30, [sp, #0x50]
+10006fa24: 910143fd    	add	x29, sp, #0x50
+10006fa28: aa1503f3    	mov	x19, x21
+10006fa2c: aa0203f6    	mov	x22, x2
+10006fa30: aa0103f7    	mov	x23, x1
+10006fa34: aa0003f8    	mov	x24, x0
+10006fa38: 6f00e400    	movi.2d	v0, #0000000000000000
+10006fa3c: ad070040    	stp	q0, q0, [x2, #0xe0]
+10006fa40: ad060040    	stp	q0, q0, [x2, #0xc0]
+10006fa44: ad050040    	stp	q0, q0, [x2, #0xa0]
+10006fa48: ad040040    	stp	q0, q0, [x2, #0x80]
+10006fa4c: ad030040    	stp	q0, q0, [x2, #0x60]
+10006fa50: ad020040    	stp	q0, q0, [x2, #0x40]
+10006fa54: ad010040    	stp	q0, q0, [x2, #0x20]
+10006fa58: d1001048    	sub	x8, x2, #0x4
+10006fa5c: f90007e8    	str	x8, [sp, #0x8]
+10006fa60: ad000040    	stp	q0, q0, [x2]
+10006fa64: 9100803b    	add	x27, x1, #0x20
+10006fa68: 52800039    	mov	w25, #0x1               ; =1
+10006fa6c: 5280081c    	mov	w28, #0x40              ; =64
+10006fa70: a9432289    	ldp	x9, x8, [x20, #0x30]
+10006fa74: 14000005    	b	0x10006fa88 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x7c>
+10006fa78: 91004339    	add	x25, x25, #0x10
+10006fa7c: a9432289    	ldp	x9, x8, [x20, #0x30]
+10006fa80: f101033f    	cmp	x25, #0x40
+10006fa84: 5400112a    	b.ge	0x10006fca8 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x29c>
+10006fa88: f100311f    	cmp	x8, #0xc
+10006fa8c: 540004ac    	b.gt	0x10006fb20 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x114>
+10006fa90: a9032289    	stp	x9, x8, [x20, #0x30]
+10006fa94: f940168a    	ldr	x10, [x20, #0x28]
+10006fa98: b100214c    	adds	x12, x10, #0x8
+10006fa9c: 540011c6    	b.vs	0x10006fcd4 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2c8>
+10006faa0: f9400e8b    	ldr	x11, [x20, #0x18]
+10006faa4: b400030b    	cbz	x11, 0x10006fb04 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0xf8>
+10006faa8: f940128d    	ldr	x13, [x20, #0x20]
+10006faac: cb0b01ad    	sub	x13, x13, x11
+10006fab0: eb0c01bf    	cmp	x13, x12
+10006fab4: 540002cb    	b.lt	0x10006fb0c <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x100>
+10006fab8: f86a696b    	ldr	x11, [x11, x10]
+10006fabc: dac00d6c    	rev	x12, x11
+10006fac0: b207dbeb    	mov	x11, #-0x101010101010102 ; =-72340172838076674
+10006fac4: cb0c016b    	sub	x11, x11, x12
+10006fac8: 8a0b018b    	and	x11, x12, x11
+10006facc: f201c17f    	tst	x11, #0x8080808080808080
+10006fad0: 540001e1    	b.ne	0x10006fb0c <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x100>
+10006fad4: eb08038b    	subs	x11, x28, x8
+10006fad8: 54001046    	b.vs	0x10006fce0 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2d4>
+10006fadc: b40004c8    	cbz	x8, 0x10006fb74 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x168>
+10006fae0: 927df16d    	and	x13, x11, #0xfffffffffffffff8
+10006fae4: eb0d038e    	subs	x14, x28, x13
+10006fae8: 54001026    	b.vs	0x10006fcec <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2e0>
+10006faec: 927d096f    	and	x15, x11, #0x38
+10006faf0: 9acf2129    	lsl	x9, x9, x15
+10006faf4: 927d09ce    	and	x14, x14, #0x38
+10006faf8: 9ace258c    	lsr	x12, x12, x14
+10006fafc: aa090189    	orr	x9, x12, x9
+10006fb00: 1400001f    	b	0x10006fb7c <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x170>
+10006fb04: f100059f    	cmp	x12, #0x1
+10006fb08: 54000eab    	b.lt	0x10006fcdc <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2d0>
+10006fb0c: 52800100    	mov	w0, #0x8                ; =8
+10006fb10: 97fffee3    	bl	0x10006f69c <_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF>
+10006fb14: a9432289    	ldp	x9, x8, [x20, #0x30]
+10006fb18: f100351f    	cmp	x8, #0xd
+10006fb1c: 5400044b    	b.lt	0x10006fba4 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x198>
+10006fb20: 1100cd0a    	add	w10, w8, #0x33
+10006fb24: 9aca252a    	lsr	x10, x9, x10
+10006fb28: 9240314a    	and	x10, x10, #0x1fff
+10006fb2c: f9400aeb    	ldr	x11, [x23, #0x10]
+10006fb30: eb0b015f    	cmp	x10, x11
+10006fb34: 54000cc2    	b.hs	0x10006fccc <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2c0>
+10006fb38: b86a7b6a    	ldr	w10, [x27, x10, lsl #2]
+10006fb3c: d3505d4b    	ubfx	x11, x10, #16, #8
+10006fb40: cb19038c    	sub	x12, x28, x25
+10006fb44: 7100015f    	cmp	w10, #0x0
+10006fb48: fa4b1188    	ccmp	x12, x11, #0x8, ne
+10006fb4c: 5400006a    	b.ge	0x10006fb58 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x14c>
+10006fb50: a9032289    	stp	x9, x8, [x20, #0x30]
+10006fb54: 1400001d    	b	0x10006fbc8 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x1bc>
+10006fb58: cb4a6108    	sub	x8, x8, x10, lsr #24
+10006fb5c: 34000a6b    	cbz	w11, 0x10006fca8 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x29c>
+10006fb60: 8b0b0339    	add	x25, x25, x11
+10006fb64: 13003d4a    	sxth	w10, w10
+10006fb68: f94007eb    	ldr	x11, [sp, #0x8]
+10006fb6c: b839796a    	str	w10, [x11, x25, lsl #2]
+10006fb70: 17ffffc4    	b	0x10006fa80 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x74>
+10006fb74: 5280080d    	mov	w13, #0x40              ; =64
+10006fb78: aa0c03e9    	mov	x9, x12
+10006fb7c: f9001a89    	str	x9, [x20, #0x30]
+10006fb80: ab0d0108    	adds	x8, x8, x13
+10006fb84: 54000b06    	b.vs	0x10006fce4 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2d8>
+10006fb88: 9343fd6b    	asr	x11, x11, #3
+10006fb8c: f9001e88    	str	x8, [x20, #0x38]
+10006fb90: ab0b014a    	adds	x10, x10, x11
+10006fb94: 54000aa6    	b.vs	0x10006fce8 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2dc>
+10006fb98: f900168a    	str	x10, [x20, #0x28]
+10006fb9c: f100351f    	cmp	x8, #0xd
+10006fba0: 54fffc0a    	b.ge	0x10006fb20 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x114>
+10006fba4: a9032289    	stp	x9, x8, [x20, #0x30]
+10006fba8: f1001d1f    	cmp	x8, #0x7
+10006fbac: 540000ec    	b.gt	0x10006fbc8 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x1bc>
+10006fbb0: 52800100    	mov	w0, #0x8                ; =8
+10006fbb4: 97fffeba    	bl	0x10006f69c <_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF>
+10006fbb8: f9401e88    	ldr	x8, [x20, #0x38]
+10006fbbc: f100211f    	cmp	x8, #0x8
+10006fbc0: 540002eb    	b.lt	0x10006fc1c <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x210>
+10006fbc4: f9401a89    	ldr	x9, [x20, #0x30]
+10006fbc8: d100210a    	sub	x10, x8, #0x8
+10006fbcc: 9aca2529    	lsr	x9, x9, x10
+10006fbd0: 92401d29    	and	x9, x9, #0xff
+10006fbd4: f1011d1f    	cmp	x8, #0x47
+10006fbd8: 9a8983e9    	csel	x9, xzr, x9, hi
+10006fbdc: f9401b0a    	ldr	x10, [x24, #0x30]
+10006fbe0: f940094b    	ldr	x11, [x10, #0x10]
+10006fbe4: eb0b013f    	cmp	x9, x11
+10006fbe8: 54000742    	b.hs	0x10006fcd0 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2c4>
+10006fbec: 8b09014a    	add	x10, x10, x9
+10006fbf0: 3940814a    	ldrb	w10, [x10, #0x20]
+10006fbf4: b400014a    	cbz	x10, 0x10006fc1c <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x210>
+10006fbf8: cb0a0108    	sub	x8, x8, x10
+10006fbfc: f9001e88    	str	x8, [x20, #0x38]
+10006fc00: f9401f08    	ldr	x8, [x24, #0x38]
+10006fc04: f940090a    	ldr	x10, [x8, #0x10]
+10006fc08: eb0a013f    	cmp	x9, x10
+10006fc0c: 54000662    	b.hs	0x10006fcd8 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2cc>
+10006fc10: 8b090108    	add	x8, x8, x9
+10006fc14: 39408100    	ldrb	w0, [x8, #0x20]
+10006fc18: 14000007    	b	0x10006fc34 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x228>
+10006fc1c: aa1403e0    	mov	x0, x20
+10006fc20: aa1803e1    	mov	x1, x24
+10006fc24: aa1303f5    	mov	x21, x19
+10006fc28: 9400070b    	bl	0x100071854 <_$s8SwiftJLI14HuffmanDecoderO017decodeSymbolBitByG04from5tables5UInt8VAA0G6ReaderVz_AA0C5TableVtKFZTf4nnd_n>
+10006fc2c: aa1503f3    	mov	x19, x21
+10006fc30: b50003f5    	cbnz	x21, 0x10006fcac <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2a0>
+10006fc34: 12001c08    	and	w8, w0, #0xff
+10006fc38: 7103c11f    	cmp	w8, #0xf0
+10006fc3c: 54fff1e0    	b.eq	0x10006fa78 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x6c>
+10006fc40: 34000328    	cbz	w8, 0x10006fca4 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x298>
+10006fc44: 53041c08    	ubfx	w8, w0, #4, #4
+10006fc48: 8b08033a    	add	x26, x25, x8
+10006fc4c: f100ff5f    	cmp	x26, #0x3f
+10006fc50: 540002ac    	b.gt	0x10006fca4 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x298>
+10006fc54: 72000c1f    	tst	w0, #0xf
+10006fc58: 540001e0    	b.eq	0x10006fc94 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x288>
+10006fc5c: 92400c19    	and	x25, x0, #0xf
+10006fc60: aa1903e0    	mov	x0, x25
+10006fc64: aa1303f5    	mov	x21, x19
+10006fc68: 97fffbd1    	bl	0x10006ebac <_$s8SwiftJLI9BitReaderV8readBitsys6UInt32VSiKF>
+10006fc6c: aa1503f3    	mov	x19, x21
+10006fc70: b50001f5    	cbnz	x21, 0x10006fcac <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x2a0>
+10006fc74: 51000728    	sub	w8, w25, #0x1
+10006fc78: 1ac82408    	lsr	w8, w0, w8
+10006fc7c: 350000e8    	cbnz	w8, 0x10006fc98 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x28c>
+10006fc80: 12800008    	mov	w8, #-0x1               ; =-1
+10006fc84: 1ad92108    	lsl	w8, w8, w25
+10006fc88: 0b080008    	add	w8, w0, w8
+10006fc8c: 11000500    	add	w0, w8, #0x1
+10006fc90: 14000002    	b	0x10006fc98 <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x28c>
+10006fc94: 52800000    	mov	w0, #0x0                ; =0
+10006fc98: b83a7ac0    	str	w0, [x22, x26, lsl #2]
+10006fc9c: 91000759    	add	x25, x26, #0x1
+10006fca0: 17ffff77    	b	0x10006fa7c <_$s8SwiftJLI9BitReaderV13decodeACBlock5table6lookup12coefficientsyAA12HuffmanTableV_AA11ACLookaheadVSpys5Int32VGtKF+0x70>
+10006fca4: a9432289    	ldp	x9, x8, [x20, #0x30]
+10006fca8: a9032289    	stp	x9, x8, [x20, #0x30]
+10006fcac: aa1303f5    	mov	x21, x19
+10006fcb0: a9457bfd    	ldp	x29, x30, [sp, #0x50]
+10006fcb4: a9444ff6    	ldp	x22, x19, [sp, #0x40]
+10006fcb8: a9435ff8    	ldp	x24, x23, [sp, #0x30]
+10006fcbc: a94267fa    	ldp	x26, x25, [sp, #0x20]
+10006fcc0: a9416ffc    	ldp	x28, x27, [sp, #0x10]
+10006fcc4: 910183ff    	add	sp, sp, #0x60
+10006fcc8: d65f03c0    	ret
+10006fccc: d4200020    	brk	#0x1
+10006fcd0: d4200020    	brk	#0x1
+10006fcd4: d4200020    	brk	#0x1
+10006fcd8: d4200020    	brk	#0x1
+10006fcdc: d4200020    	brk	#0x1
+10006fce0: d4200020    	brk	#0x1
+10006fce4: d4200020    	brk	#0x1
+10006fce8: d4200020    	brk	#0x1
+10006fcec: d4200020    	brk	#0x1

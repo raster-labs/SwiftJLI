@@ -1,0 +1,239 @@
+{
+  "candidateRevision": "d972c4b35a76dfc5635b1a46155bde8dafe7cd38",
+  "baselineRevision": "14f35018d241666358480da2a8527d29ab047627",
+  "baselineFrozenProduction": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "decision": "Rejected; do not integrate",
+  "scope": "Only private BitReader.bulkRefill bounds arithmetic, with local invariant proof. FF mask, source-word load, stuffing/marker fallback and prefetch semantics unchanged.",
+  "sourceReview": "Independent read-only review confirmed current private callers supply0...15 buffered bits and bounded cursor state. This proof depends on those private call-site constraints.",
+  "tests": {
+    "exitCode": 0,
+    "tests": 45,
+    "suites": 7,
+    "receipt": "tests.json",
+    "newCoverage": "All0...15 pending-bit states, short tails0...17, FF at each loaded-word position, stuffed bytes, markers, truncated FF, extreme starting offsets/read widths, independent bytewise expected values/errors/aligned cursors."
+  },
+  "nativeDCT": {
+    "exitCode": 0,
+    "fixtures": 12,
+    "rounds": 2,
+    "warmups": 5,
+    "samples": 20,
+    "quality": "Every complete output SHA256 and byte count matched baseline."
+  },
+  "nativeLossless": {
+    "exitCode": 0,
+    "fixtures": 16,
+    "rounds": 2,
+    "warmups": 5,
+    "samples": 20,
+    "quality": "Every decoded output matched the original fixture samples."
+  },
+  "performance": "Repeated regressions outweigh small/flat gains: DCT12-2048 +4.75/+5.24%,noise8-512 +5.88/+5.00%,noise12-512 +5.81/+4.00%; lossless ramp2048 +5.12/+8.03%,mixed512 +6.80/+9.29%,mixed2048 +8.68/+9.45%,mixed3072 +8.57/+8.90%.",
+  "codegen": "Linked decodeAC shows the intended simplification: overflow branches5to0, instructions207to191, trap instructions10to4. This is not end-to-end performance acceptance; causal attribution of the slowdown is unproven.",
+  "timingStatus": "Provisional shared-host measurements; full raw samples, reverse round order and contemporaneous host activity preserved. No concurrent agent CPU work during the slot.",
+  "skipped": "No RSS, full-suite, sanitizer, independent oracle or CLI follow-up after the failed performance gate.",
+  "productionStatus": "Isolated trial only. Main shipping source remains unchanged.",
+  "changes": {
+    "dct": [
+      {
+        "fixture": "dct12-512.jpg",
+        "latencyChangePercent": [
+          -6.739529819907297,
+          11.208681052944524
+        ]
+      },
+      {
+        "fixture": "dct12-2048.jpg",
+        "latencyChangePercent": [
+          4.754532796101074,
+          5.244545753717578
+        ]
+      },
+      {
+        "fixture": "rgb8-512.jpg",
+        "latencyChangePercent": [
+          3.850583675328245,
+          -1.4545441516060742
+        ]
+      },
+      {
+        "fixture": "rgb8-2048.jpg",
+        "latencyChangePercent": [
+          3.2489013495856867,
+          3.280314424470765
+        ]
+      },
+      {
+        "fixture": "progressiveRGB8-512.jpg",
+        "latencyChangePercent": [
+          1.7132772489324655,
+          2.4333930112071522
+        ]
+      },
+      {
+        "fixture": "progressiveRGB8-2048.jpg",
+        "latencyChangePercent": [
+          1.50566514650059,
+          3.0075738228189097
+        ]
+      },
+      {
+        "fixture": "xyb8-512.jpg",
+        "latencyChangePercent": [
+          0.6195369410137541,
+          -0.7454045639682105
+        ]
+      },
+      {
+        "fixture": "xyb8-2048.jpg",
+        "latencyChangePercent": [
+          1.551133215634093,
+          -0.17165547440246565
+        ]
+      },
+      {
+        "fixture": "flat-8-512.jpg",
+        "latencyChangePercent": [
+          -3.425597803530933,
+          -7.199176967659859
+        ]
+      },
+      {
+        "fixture": "flat-12-512.jpg",
+        "latencyChangePercent": [
+          -0.8502732240437183,
+          4.477499755718095
+        ]
+      },
+      {
+        "fixture": "noise-8-512.jpg",
+        "latencyChangePercent": [
+          5.883237339186631,
+          5.003166561114636
+        ]
+      },
+      {
+        "fixture": "noise-12-512.jpg",
+        "latencyChangePercent": [
+          5.8067708119204475,
+          3.996197092823306
+        ]
+      }
+    ],
+    "lossless": [
+      {
+        "case": "flat-19",
+        "latencyChangePercent": [
+          -20.910409865796154,
+          -10.166809520669872
+        ]
+      },
+      {
+        "case": "flat-512",
+        "latencyChangePercent": [
+          -4.067358145210475,
+          -1.287919559645545
+        ]
+      },
+      {
+        "case": "flat-2048",
+        "latencyChangePercent": [
+          -3.1803189622842676,
+          -6.8956466876971545
+        ]
+      },
+      {
+        "case": "flat-3072",
+        "latencyChangePercent": [
+          5.035378578414784,
+          -3.841291801702862
+        ]
+      },
+      {
+        "case": "ramp-19",
+        "latencyChangePercent": [
+          -0.9849906191369495,
+          -15.871105762802518
+        ]
+      },
+      {
+        "case": "ramp-512",
+        "latencyChangePercent": [
+          -2.7755186537921195,
+          -2.046119597936147
+        ]
+      },
+      {
+        "case": "ramp-2048",
+        "latencyChangePercent": [
+          5.11611632264537,
+          8.033476563772602
+        ]
+      },
+      {
+        "case": "ramp-3072",
+        "latencyChangePercent": [
+          4.428373951618436,
+          1.1622315776001146
+        ]
+      },
+      {
+        "case": "noise-19",
+        "latencyChangePercent": [
+          -1.47695803450969,
+          4.99475026248688
+        ]
+      },
+      {
+        "case": "noise-512",
+        "latencyChangePercent": [
+          4.71687145937183,
+          2.8771754978666797
+        ]
+      },
+      {
+        "case": "noise-2048",
+        "latencyChangePercent": [
+          5.389292928369405,
+          5.227891242508953
+        ]
+      },
+      {
+        "case": "noise-3072",
+        "latencyChangePercent": [
+          6.531400725276737,
+          4.556421335816596
+        ]
+      },
+      {
+        "case": "mixed-19",
+        "latencyChangePercent": [
+          20.373156786036727,
+          2.9525538801610463
+        ]
+      },
+      {
+        "case": "mixed-512",
+        "latencyChangePercent": [
+          6.800731372847801,
+          9.287963209902305
+        ]
+      },
+      {
+        "case": "mixed-2048",
+        "latencyChangePercent": [
+          8.67757615074185,
+          9.450159642391887
+        ]
+      },
+      {
+        "case": "mixed-3072",
+        "latencyChangePercent": [
+          8.568744626246172,
+          8.89983165767061
+        ]
+      }
+    ]
+  },
+  "finishedUTC": "2026-11-03T15:39:00.673560+00:00"
+}

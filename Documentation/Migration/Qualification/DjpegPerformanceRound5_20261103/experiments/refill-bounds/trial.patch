@@ -1,0 +1,191 @@
+commit d972c4b35a76dfc5635b1a46155bde8dafe7cd38
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 21:02:13 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 21:02:13 2026 +0530
+
+    Trial bounded arithmetic in the private entropy refill
+
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index d5497e6..b551a6b 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -203,22 +203,30 @@ struct BitReader {
+     /// ownership of both). Returns `false` when the bulk path doesn't apply.
+     @inline(__always)
+     private mutating func bulkRefill() -> Bool {
+-        guard byteOffset + 8 <= buffer.count else { return false }
++        // The cursor starts clamped to 0...count. Loads/restart skips advance
++        // only within that range, and alignment rewinds at most bytes already
++        // read. Subtract after checking count so this guard cannot overflow.
++        guard buffer.count >= 8, byteOffset <= buffer.count - 8 else { return false }
+         let word = withExtendedLifetime(data) {
+             UInt64(bigEndian: buffer.loadUnaligned(fromByteOffset: byteOffset, as: UInt64.self))
+         }
+         guard !Self.hasFFByte(word) else { return false }
+-        let k = (64 - bitsAvailable) >> 3          // whole bytes that fit (≥ 6 here)
+-        // Refill callers have 0...15 buffered bits. With an empty buffer,
+-        // all eight bytes replace it; otherwise both shifts are within 1...63.
+-        // Handle the 64-bit splice explicitly before using masked shifts.
++        // Every caller refills below 16 bits: readBits validates its width,
++        // fillBuffer targets eight, and both wider lookups target thirteen.
++        // Thus bitsAvailable is 0...15, appendedBits is 48, 56 or 64, and
++        // their sum is 57...64. The guard also proves cursor + appendedBits/8
++        // is <= count. These private-state operations cannot wrap; spelling
++        // that proof explicitly avoids overflow branches in each inlined refill.
++        let appendedBits = (64 &- bitsAvailable) & ~7
++        // An empty accumulator takes all eight bytes; otherwise both splice
++        // shifts remain within 1...63, retaining the existing masked semantics.
+         if bitsAvailable == 0 {
+             bitBuffer = word
+         } else {
+-            bitBuffer = (bitBuffer &<< (8 * k)) | (word &>> (64 - 8 * k))
++            bitBuffer = (bitBuffer &<< appendedBits) | (word &>> (64 &- appendedBits))
+         }
+-        bitsAvailable += 8 * k
+-        byteOffset += k
++        bitsAvailable &+= appendedBits
++        byteOffset &+= appendedBits >> 3
+         return true
+     }
+ 
+diff --git a/Tests/SwiftJLITests/Native/BitReaderRefillBoundsTests.swift b/Tests/SwiftJLITests/Native/BitReaderRefillBoundsTests.swift
+new file mode 100644
+index 0000000..ebb7244
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/BitReaderRefillBoundsTests.swift
+@@ -0,0 +1,134 @@
++// SPDX-License-Identifier: Apache-2.0
++import Foundation
++import Testing
++@testable import SwiftJLI
++
++@Suite struct BitReaderRefillBoundsTests {
++    /// Independent byte-at-a-time reader. It never prefetches a complete word,
++    /// so successful reads retain fewer than eight pending bits.
++    private struct BytewiseReader {
++        let data: [UInt8]
++        var offset: Int
++        var accumulator: UInt32 = 0
++        var available = 0
++
++        mutating func read(_ count: Int) throws -> UInt32 {
++            while available < count {
++                guard offset < data.count else {
++                    throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
++                }
++                let byte = data[offset]
++                offset += 1
++                if byte == 0xFF {
++                    guard offset < data.count else {
++                        throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
++                    }
++                    let next = data[offset]
++                    guard next == 0 else {
++                        throw JLIError.decodingFailed(
++                            "Unexpected marker 0xFF\(String(format: "%02X", next)) in entropy data")
++                    }
++                    offset += 1
++                }
++                accumulator = (accumulator << 8) | UInt32(byte)
++                available += 8
++            }
++            available -= count
++            return (accumulator >> available) & ((1 << count) - 1)
++        }
++    }
++
++    @discardableResult
++    private func compare(_ width: Int, actual: inout BitReader,
++                         reference: inout BytewiseReader) -> Bool {
++        let expected = Result { try reference.read(width) }
++        let observed = Result { try actual.readBits(width) }
++        #expect(actual.byteOffset >= 0 && actual.byteOffset <= reference.data.count)
++        switch (expected, observed) {
++        case (.success(let expected), .success(let observed)):
++            #expect(observed == expected)
++            var aligned = actual
++            aligned.alignToByte()
++            #expect(aligned.byteOffset == reference.offset)
++            return true
++        case (.failure(let expected), .failure(let observed)):
++            #expect(String(describing: observed) == String(describing: expected))
++            return false
++        default:
++            Issue.record("Bulk refill differs from bytewise input handling")
++            return false
++        }
++    }
++
++    @Test func allRefillBitCountsAndShortTailsMatchBytewiseReads() throws {
++        for pending in 0...15 { for tailCount in 0...17 {
++            let bytes = (0..<(8 + tailCount)).map { UInt8($0 * 7 + 3) }
++            var reader = BitReader(data: bytes)
++            var reference = BytewiseReader(data: bytes, offset: 0)
++            var prefix = 64 - pending
++            while prefix > 0 {
++                let width = min(prefix, 16)
++                let matched = compare(width, actual: &reader, reference: &reference)
++                #expect(matched)
++                prefix -= width
++            }
++            // The first read reaches bulkRefill with every possible 0...15
++            // pending-bit count and zero through seventeen source bytes left.
++            for width in [16, 1, 15, 8, 16, 3, 13, 16, 16, 16, 16] {
++                if !compare(width, actual: &reader, reference: &reference) { break }
++            }
++        } }
++    }
++
++    @Test func ffAtEveryLoadedWordPositionKeepsStuffingAndTruncationErrors() {
++        for pending in 0...15 { for position in 0..<8 { for kind in 0..<4 {
++            var tail = [UInt8](repeating: 0x35, count: position)
++            if kind == 3 {
++                tail.append(0xFF) // A final marker prefix must still throw.
++            } else {
++                tail += [0xFF, [UInt8(0), 0xD0, 0xD9][kind]]
++                tail += [UInt8](repeating: 0x53, count: 12)
++            }
++            let bytes = [UInt8](repeating: 0xA5, count: 8) + tail
++            var reader = BitReader(data: bytes)
++            var reference = BytewiseReader(data: bytes, offset: 0)
++            var prefix = 64 - pending
++            while prefix > 0 {
++                let width = min(prefix, 16)
++                let matched = compare(width, actual: &reader, reference: &reference)
++                #expect(matched)
++                prefix -= width
++            }
++            for width in [16, 8, 16, 1, 7, 16, 16, 16, 16, 16] {
++                if !compare(width, actual: &reader, reference: &reference) { break }
++            }
++        } } }
++    }
++
++    @Test func externalOffsetsAndReadWidthsRemainChecked() throws {
++        for count in 0...17 {
++            let bytes = (0..<count).map { UInt8($0 + 1) }
++            let owner = JPEGBytes(bytes)
++            for offset in [Int.min, -1, 0, 1, max(0, count - 1), count, count + 1, Int.max] {
++                let start = min(max(offset, 0), count)
++                var reader = BitReader(data: owner, startingAt: offset)
++                var reference = BytewiseReader(data: bytes, offset: start)
++                #expect(reader.byteOffset == start)
++                #expect(try reader.readBits(0) == 0)
++                for width in [1, 16, 7, 8, 16, 16, 16, 16, 16, 16] {
++                    if !compare(width, actual: &reader, reference: &reference) { break }
++                }
++            }
++        }
++        for width in [Int.min, -1, 17, Int.max] {
++            var reader = BitReader(data: [UInt8](repeating: 0x5A, count: 16))
++            _ = try reader.readBits(7)
++            var expected = reader
++            #expect(throws: JLIError.self) { try reader.readBits(width) }
++            let actualNext = try reader.readBits(16)
++            let expectedNext = try expected.readBits(16)
++            #expect(actualNext == expectedNext)
++            #expect(reader.byteOffset == expected.byteOffset)
++        }
++    }
++}
