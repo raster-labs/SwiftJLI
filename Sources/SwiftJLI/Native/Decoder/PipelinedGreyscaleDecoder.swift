@@ -48,9 +48,9 @@ enum PipelinedGreyscaleDecoder {
                     let buffers = Buffers(coefficients: base, scratch: workspace, quantiser: quantiser)
                     let state = State(), batches = (blocks - 1) / 1024 + 1
                     let context = NativeOperation.current, bps = destination.bytesPerSample
-                    state.joined.enter()
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        defer { state.joined.leave() }
+                    // The group covers the entire submitted work item, rather
+                    // than an early signal from inside the worker body.
+                    DispatchQueue.global(qos: .userInitiated).async(group: state.joined) {
                         do {
                             try NativeOperation.$current.withValue(context) {
                                 for batch in 0..<batches {
