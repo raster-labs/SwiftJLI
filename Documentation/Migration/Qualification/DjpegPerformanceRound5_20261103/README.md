@@ -1,6 +1,10 @@
 # JPEG optimisation — fifth round, 3 November 2026
 
-**The overall djpeg goal remains open.** This is the completed `f4a05be` checkpoint; later pipeline experiments are being qualified separately. All timings are provisional under unrelated host activity.
+**The overall djpeg goal remains open.** The latest completed local evidence is the [joined pipeline checkpoint at `14f3501`](pipeline-14f3501/README.md): 436 Release tests, focused ASan/TSan, CLI checks, DCT oracle and provisional native/API comparisons. Its production-equivalent tested source is `704ddae`. [Verify the report archives](verify_report.py) without rebuilding.
+
+## Retained f4a05be checkpoint
+
+The following report and tables remain pinned to `f4a05be`. They are historical evidence, including the latest whole-process CLI benchmark matrix; they are not silently relabelled as pipeline measurements. All timings are provisional under unrelated host activity.
 
 Source: `f4a05be9f3003a48adaa840abd48fcf6071f009d`; baseline: `bbb0b1a9a602807643fc254fb4e0d54a162d5ae8` (production equivalent to `0a8acd72ddeac6fb1911457ae28b689eef0e9db1`). Suite policy **0.10.0**, Apple OS **26.0** floor, Swift **6.2** manifest minimum and Swift **6.4** primary toolchain are unchanged. The executed host used Apple Swift **6.4.2**, Xcode **27.2**, macOS **27.0.1**, M4 Max, 16 cores and 64 GiB RAM.
 
@@ -112,4 +116,4 @@ The original `lossless16-2048` and expanded `mixed-2048` inputs are byte-identic
 
 ## Remaining work
 
-Dense-image DCT latency, DCT memory and small-process CLI overhead remain competitive gaps. Later bounded pipeline trials are being evaluated against this pinned checkpoint, with exact output, cancellation/lifetime tests and fresh paired comparisons. No completed goal, universal performance superiority, stable release, physical-device or medical/regulatory claim is made.
+Dense-image DCT latency, DCT memory and small-process CLI overhead remain competitive gaps. The later [joined pipeline checkpoint](pipeline-14f3501/README.md) records its own exact output, cancellation/lifetime tests and paired API comparisons against this source. No completed goal, universal performance superiority, stable release, physical-device or medical/regulatory claim is made.

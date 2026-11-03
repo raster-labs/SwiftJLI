@@ -1,0 +1,5269 @@
+{
+  "status": "passed",
+  "startedUTC": "2026-11-03T14:45:34.101126+00:00",
+  "binarySHA256": "55ba9e51a983a8c6e4b23d7dbd641fadeb2ed31753602a96e51fedf06c639e81",
+  "method": "Diagnostic allocated-output API comparison, not a replacement for CLI results. Both decoder paths use the same Swift executable and linked runtime images. Compressed Data is retained. Timings include decoder state/workspace and calloc/owned output allocation through finish/return; complete output retained until checks outside timing, then released outside timing. Five warmups,20 individual samples per engine,2 paired order-balanced rounds. Full per-sample quality gate before timing. RSS uses separate fresh processes with compressed input plus one full output retained;3 paired trials. Explicit Swift workspace8GiB/total10GiB,libjpeg fixture output limit512MiB/dimension8192, no disk output or decoded output copy.",
+  "fixtureSHA256": {
+    "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg": "92804f8c1d4c4bf07d6bc588d8fb2b3d41894258576ff8dd25b5934d9e563aaf",
+    "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg": "19ae64fcda43b0616d558a86bb99fce0064b39fe87c0d24938a50da18e74e39a",
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg": "fa5b17f13ce554a56836520ae66857fa2dda30c94d2aff69e17775d318640bfd",
+    "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg": "e1616e4053e8b2705d5ff07f501efa6243615403356dd35157ebf1d587bebcf0",
+    "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+    "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg": "515dd20c5f52c15e8561c1921df9cfbd56744563fe1ad40bfecbdc9d584d0324",
+    "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg": "10f3b89c533043427fd560ec3380aa4602c866f3b923557fc309cdfa7cece977",
+    "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg": "af0e11e54f41533c7bbf4f6da06de587d0a44bd213d8b9d1af8b40fbde80349a",
+    "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg": "fff9fe5e9aff91c4d8c1474ff6ac374d45eb660b940bdd1e9d841dc12fee5113",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg": "6f029e5c5b0aa466794eadd5ceb4f7e28bc63edef5e1224e92ec2a88ebb3a2e2",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg": "6a0d1ae30ec0b919486bad94520ee9b7c29672a2391ce77fc98f66c35f6edb40"
+  },
+  "records": [
+    {
+      "components": 1,
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 9.958e-06,
+        "medianSeconds": 7.395500000000001e-06,
+        "minimumSeconds": 6.458e-06,
+        "p95Seconds": 9.375e-06,
+        "samplesSeconds": [
+          9.958e-06,
+          8.75e-06,
+          9.167e-06,
+          8e-06,
+          9.375e-06,
+          7.041e-06,
+          8.5e-06,
+          7.833e-06,
+          7.083e-06,
+          6.625e-06,
+          6.875e-06,
+          7.583e-06,
+          7.208e-06,
+          6.584e-06,
+          8.333e-06,
+          8.042e-06,
+          7.125e-06,
+          6.458e-06,
+          6.75e-06,
+          6.5e-06
+        ]
+      },
+      "swiftEdgeCheck": 9550,
+      "swiftFNV1a64": "18f4dd86a15f7fd3",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.1541e-05,
+        "medianSeconds": 1.0667000000000001e-05,
+        "minimumSeconds": 1.025e-05,
+        "p95Seconds": 1.1417e-05,
+        "samplesSeconds": [
+          1.1541e-05,
+          1.1375e-05,
+          1.0625e-05,
+          1.0917e-05,
+          1.05e-05,
+          1.075e-05,
+          1.1417e-05,
+          1.0791e-05,
+          1.0333e-05,
+          1.0709e-05,
+          1.0417e-05,
+          1.0791e-05,
+          1.0416e-05,
+          1.0583e-05,
+          1.025e-05,
+          1.0834e-05,
+          1.0458e-05,
+          1.0792e-05,
+          1.0458e-05,
+          1.0625e-05
+        ]
+      },
+      "turboEdgeCheck": 9550,
+      "turboFNV1a64": "18f4dd86a15f7fd3",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.8,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 107.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1.1625e-05,
+        "medianSeconds": 7.833000000000001e-06,
+        "minimumSeconds": 7e-06,
+        "p95Seconds": 1.0666e-05,
+        "samplesSeconds": [
+          9.375e-06,
+          1.0666e-05,
+          9.667e-06,
+          9.958e-06,
+          1.1625e-05,
+          7.791e-06,
+          9.167e-06,
+          9.083e-06,
+          7.875e-06,
+          7.292e-06,
+          7.708e-06,
+          8.542e-06,
+          7.625e-06,
+          7e-06,
+          9e-06,
+          7.333e-06,
+          7.459e-06,
+          7.041e-06,
+          7.375e-06,
+          7e-06
+        ]
+      },
+      "swiftEdgeCheck": 6375,
+      "swiftFNV1a64": "e15a7c618877daf2",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.375e-05,
+        "medianSeconds": 1.1396e-05,
+        "minimumSeconds": 1.0916e-05,
+        "p95Seconds": 1.3125e-05,
+        "samplesSeconds": [
+          1.2458e-05,
+          1.2083e-05,
+          1.1792e-05,
+          1.1625e-05,
+          1.375e-05,
+          1.1625e-05,
+          1.1209e-05,
+          1.3125e-05,
+          1.1125e-05,
+          1.1291e-05,
+          1.2417e-05,
+          1.1458e-05,
+          1.0917e-05,
+          1.125e-05,
+          1.0917e-05,
+          1.1417e-05,
+          1.1042e-05,
+          1.1333e-05,
+          1.0916e-05,
+          1.1375e-05
+        ]
+      },
+      "turboEdgeCheck": 6375,
+      "turboFNV1a64": "e15a7c618877daf2",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.8,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 107.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 2.6875e-05,
+        "medianSeconds": 8.896000000000001e-06,
+        "minimumSeconds": 7.125e-06,
+        "p95Seconds": 1.5333e-05,
+        "samplesSeconds": [
+          1.1e-05,
+          9.583e-06,
+          2.6875e-05,
+          1.5333e-05,
+          1.3791e-05,
+          8.834e-06,
+          1.0125e-05,
+          9.5e-06,
+          8.375e-06,
+          7.542e-06,
+          7.834e-06,
+          9.167e-06,
+          7.917e-06,
+          7.375e-06,
+          9.875e-06,
+          8.958e-06,
+          7.75e-06,
+          7.208e-06,
+          7.458e-06,
+          7.125e-06
+        ]
+      },
+      "swiftEdgeCheck": 6150,
+      "swiftFNV1a64": "7ac3ae949bcf11c2",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 2.3083e-05,
+        "medianSeconds": 1.1604e-05,
+        "minimumSeconds": 1.1125e-05,
+        "p95Seconds": 1.4417e-05,
+        "samplesSeconds": [
+          1.275e-05,
+          2.3083e-05,
+          1.4417e-05,
+          1.3959e-05,
+          1.275e-05,
+          1.2458e-05,
+          1.1375e-05,
+          1.3209e-05,
+          1.1583e-05,
+          1.1625e-05,
+          1.1208e-05,
+          1.175e-05,
+          1.1125e-05,
+          1.1541e-05,
+          1.1125e-05,
+          1.1708e-05,
+          1.1166e-05,
+          1.15e-05,
+          1.1125e-05,
+          1.1333e-05
+        ]
+      },
+      "turboEdgeCheck": 6150,
+      "turboFNV1a64": "7ac3ae949bcf11c2",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.7,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 125.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1.1541e-05,
+        "medianSeconds": 7.729e-06,
+        "minimumSeconds": 6.75e-06,
+        "p95Seconds": 1.0291e-05,
+        "samplesSeconds": [
+          1.0291e-05,
+          8.958e-06,
+          1.1541e-05,
+          7.708e-06,
+          9.917e-06,
+          7.416e-06,
+          8.709e-06,
+          8.459e-06,
+          7.75e-06,
+          7.166e-06,
+          7.458e-06,
+          8.125e-06,
+          7.375e-06,
+          6.792e-06,
+          9.25e-06,
+          8.083e-06,
+          7.208e-06,
+          6.833e-06,
+          7.125e-06,
+          6.75e-06
+        ]
+      },
+      "swiftEdgeCheck": 75,
+      "swiftFNV1a64": "2828f4ebfc86ff36",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.2208e-05,
+        "medianSeconds": 1.06665e-05,
+        "minimumSeconds": 1.0167e-05,
+        "p95Seconds": 1.1666e-05,
+        "samplesSeconds": [
+          1.2208e-05,
+          1.1417e-05,
+          1.0875e-05,
+          1.125e-05,
+          1.1583e-05,
+          1.0708e-05,
+          1.0375e-05,
+          1.1666e-05,
+          1.0334e-05,
+          1.0709e-05,
+          1.0333e-05,
+          1.0709e-05,
+          1.0375e-05,
+          1.0542e-05,
+          1.0167e-05,
+          1.075e-05,
+          1.0459e-05,
+          1.0584e-05,
+          1.0208e-05,
+          1.0625e-05
+        ]
+      },
+      "turboEdgeCheck": 75,
+      "turboFNV1a64": "2828f4ebfc86ff36",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.7,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 125.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 8388608,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.013042125,
+        "medianSeconds": 0.0122731045,
+        "minimumSeconds": 0.012007625,
+        "p95Seconds": 0.012953667,
+        "samplesSeconds": [
+          0.012114084,
+          0.012483792,
+          0.012953667,
+          0.012837666,
+          0.012281292,
+          0.012167292,
+          0.012219875,
+          0.012154667,
+          0.0120535,
+          0.012007625,
+          0.012227666,
+          0.012647375,
+          0.013042125,
+          0.01237725,
+          0.01251175,
+          0.012264917,
+          0.01275825,
+          0.012797792,
+          0.012149958,
+          0.012133958
+        ]
+      },
+      "swiftEdgeCheck": 3200,
+      "swiftFNV1a64": "cdfcedd59a62fa82",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 0.02018025,
+        "medianSeconds": 0.018613313,
+        "minimumSeconds": 0.017946625,
+        "p95Seconds": 0.019865667,
+        "samplesSeconds": [
+          0.018597167,
+          0.019865667,
+          0.02018025,
+          0.019204291,
+          0.018629459,
+          0.018277208,
+          0.017946625,
+          0.018329291,
+          0.018516292,
+          0.018165416,
+          0.01796325,
+          0.019011,
+          0.018713167,
+          0.018323167,
+          0.019014208,
+          0.018897584,
+          0.0189,
+          0.01800925,
+          0.019040958,
+          0.018439416
+        ]
+      },
+      "turboEdgeCheck": 3200,
+      "turboFNV1a64": "cdfcedd59a62fa82",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 54.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3359,
+          "cpuPercent": 19.8,
+          "process": "npm exec playwright test"
+        },
+        {
+          "pid": 3382,
+          "cpuPercent": 70.9,
+          "process": "node"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 20.8,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.9,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 116.3,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.001540042,
+        "medianSeconds": 0.0013530005,
+        "minimumSeconds": 0.001168875,
+        "p95Seconds": 0.001518333,
+        "samplesSeconds": [
+          0.001233833,
+          0.001462542,
+          0.001353292,
+          0.001518333,
+          0.001230875,
+          0.001209541,
+          0.001292583,
+          0.001287875,
+          0.001263875,
+          0.001362333,
+          0.001428375,
+          0.001394,
+          0.001540042,
+          0.001396416,
+          0.001331,
+          0.00136975,
+          0.001279792,
+          0.001352709,
+          0.001373834,
+          0.001168875
+        ]
+      },
+      "swiftEdgeCheck": 375,
+      "swiftFNV1a64": "dc9df26e34022755",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.001440416,
+        "medianSeconds": 0.001223521,
+        "minimumSeconds": 0.0011325,
+        "p95Seconds": 0.001407041,
+        "samplesSeconds": [
+          0.0011325,
+          0.0012155,
+          0.001191875,
+          0.001200958,
+          0.001132708,
+          0.001214916,
+          0.001231542,
+          0.001262209,
+          0.001185917,
+          0.001407041,
+          0.001351416,
+          0.00133225,
+          0.001440416,
+          0.001179208,
+          0.00115025,
+          0.001243708,
+          0.001150334,
+          0.001320584,
+          0.001380334,
+          0.001359542
+        ]
+      },
+      "turboEdgeCheck": 375,
+      "turboFNV1a64": "6be90299fd505fbd",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 50.6,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3359,
+          "cpuPercent": 12.3,
+          "process": "npm exec playwright test"
+        },
+        {
+          "pid": 3382,
+          "cpuPercent": 105.5,
+          "process": "node"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 12.9,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 108.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 8388608,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.018784042,
+        "medianSeconds": 0.0181278125,
+        "minimumSeconds": 0.017785042,
+        "p95Seconds": 0.018568875,
+        "samplesSeconds": [
+          0.018199667,
+          0.018431,
+          0.018568875,
+          0.017836833,
+          0.018145,
+          0.017802666,
+          0.018091917,
+          0.017814666,
+          0.018784042,
+          0.018358166,
+          0.018246334,
+          0.018312792,
+          0.017999458,
+          0.017785042,
+          0.018174625,
+          0.017790542,
+          0.018110625,
+          0.017891208,
+          0.018316208,
+          0.018071708
+        ]
+      },
+      "swiftEdgeCheck": 0,
+      "swiftFNV1a64": "8560bf7e03f3a612",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.019180208,
+        "medianSeconds": 0.0186290415,
+        "minimumSeconds": 0.018436125,
+        "p95Seconds": 0.018913708,
+        "samplesSeconds": [
+          0.018913708,
+          0.0185405,
+          0.018760208,
+          0.018597208,
+          0.018726,
+          0.018810625,
+          0.018558583,
+          0.018718792,
+          0.018507375,
+          0.018533917,
+          0.01877,
+          0.01859525,
+          0.018622541,
+          0.018564334,
+          0.018635542,
+          0.018643084,
+          0.018523875,
+          0.018436125,
+          0.018674458,
+          0.019180208
+        ]
+      },
+      "turboEdgeCheck": 0,
+      "turboFNV1a64": "aad133d2222ca6db",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 50.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 736,
+          "cpuPercent": 10.4,
+          "process": "/usr/libexec/replayd"
+        },
+        {
+          "pid": 3386,
+          "cpuPercent": 30.1,
+          "process": "/opt/homebrew/Cellar/node/26.13.0_2/bin/node"
+        },
+        {
+          "pid": 3390,
+          "cpuPercent": 17.3,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+        },
+        {
+          "pid": 3391,
+          "cpuPercent": 23.1,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+        },
+        {
+          "pid": 3393,
+          "cpuPercent": 46.9,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 13.1,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 26.3,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 101.4,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 15.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 8388608,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.026221625,
+        "medianSeconds": 0.02490175,
+        "minimumSeconds": 0.023300042,
+        "p95Seconds": 0.025896333,
+        "samplesSeconds": [
+          0.025896333,
+          0.025214458,
+          0.026221625,
+          0.025529167,
+          0.0258935,
+          0.024896125,
+          0.02445225,
+          0.025163041,
+          0.024157417,
+          0.023416916,
+          0.023569042,
+          0.024254917,
+          0.025725125,
+          0.024862,
+          0.023722,
+          0.023300042,
+          0.025461541,
+          0.024907375,
+          0.025098417,
+          0.02487725
+        ]
+      },
+      "swiftEdgeCheck": 0,
+      "swiftFNV1a64": "8560bf7e03f3a612",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.02108375,
+        "medianSeconds": 0.0200355415,
+        "minimumSeconds": 0.019026542,
+        "p95Seconds": 0.020892875,
+        "samplesSeconds": [
+          0.020568084,
+          0.020892875,
+          0.020831333,
+          0.019642209,
+          0.02058075,
+          0.020235625,
+          0.020105958,
+          0.019026542,
+          0.019448875,
+          0.019041,
+          0.019499209,
+          0.019758125,
+          0.0195275,
+          0.0196295,
+          0.019972917,
+          0.02108375,
+          0.020268292,
+          0.020036333,
+          0.02003475,
+          0.020846458
+        ]
+      },
+      "turboEdgeCheck": 0,
+      "turboFNV1a64": "aad133d2222ca6db",
+      "workerCeiling": 1,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.9,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.3,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 96.6,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 8,
+      "outputBytes": 262144,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 8,
+      "swift": {
+        "maximumSeconds": 0.000144208,
+        "medianSeconds": 6.5771e-05,
+        "minimumSeconds": 5.2458e-05,
+        "p95Seconds": 9.0875e-05,
+        "samplesSeconds": [
+          9.0875e-05,
+          0.000144208,
+          5.9917e-05,
+          5.55e-05,
+          6.1084e-05,
+          6.1625e-05,
+          5.5875e-05,
+          6.9292e-05,
+          6.5292e-05,
+          6.0583e-05,
+          7.0708e-05,
+          6.0834e-05,
+          7.0542e-05,
+          6.8375e-05,
+          5.9833e-05,
+          6.8666e-05,
+          7.7667e-05,
+          5.2458e-05,
+          7.425e-05,
+          6.625e-05
+        ]
+      },
+      "swiftEdgeCheck": 6450,
+      "swiftFNV1a64": "a7853dc248f62325",
+      "thermalState": 1,
+      "tolerance": 2,
+      "turbo": {
+        "maximumSeconds": 9.3542e-05,
+        "medianSeconds": 7.3979e-05,
+        "minimumSeconds": 6.5917e-05,
+        "p95Seconds": 9.2917e-05,
+        "samplesSeconds": [
+          8.5583e-05,
+          7.7667e-05,
+          7.4417e-05,
+          7.2083e-05,
+          6.7333e-05,
+          6.7042e-05,
+          6.5917e-05,
+          7.45e-05,
+          7.375e-05,
+          7.5708e-05,
+          7e-05,
+          7.3875e-05,
+          7.525e-05,
+          7.0291e-05,
+          8.225e-05,
+          7.4083e-05,
+          9.2917e-05,
+          7.3791e-05,
+          9.3542e-05,
+          7.1959e-05
+        ]
+      },
+      "turboEdgeCheck": 6450,
+      "turboFNV1a64": "a7853dc248f62325",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 48.8,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 96.4,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.000138459,
+        "medianSeconds": 7.6854e-05,
+        "minimumSeconds": 6.6292e-05,
+        "p95Seconds": 9.4542e-05,
+        "samplesSeconds": [
+          6.8958e-05,
+          6.7959e-05,
+          6.6667e-05,
+          7.4416e-05,
+          7.6833e-05,
+          7.55e-05,
+          6.6292e-05,
+          6.7792e-05,
+          6.6875e-05,
+          7.7125e-05,
+          0.000138459,
+          9.4542e-05,
+          8.3834e-05,
+          8.0875e-05,
+          8.075e-05,
+          7.6916e-05,
+          8.2541e-05,
+          8.4959e-05,
+          7.6875e-05,
+          7.4959e-05
+        ]
+      },
+      "swiftEdgeCheck": 225,
+      "swiftFNV1a64": "b17a2ce3c722325",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.000260625,
+        "medianSeconds": 0.00017691700000000001,
+        "minimumSeconds": 0.000140333,
+        "p95Seconds": 0.000202125,
+        "samplesSeconds": [
+          0.000153167,
+          0.000140333,
+          0.000152041,
+          0.000147542,
+          0.000150125,
+          0.000159292,
+          0.000168417,
+          0.000162209,
+          0.000177125,
+          0.000202125,
+          0.000260625,
+          0.000175708,
+          0.000187458,
+          0.0001855,
+          0.000176709,
+          0.000178041,
+          0.000183625,
+          0.000178375,
+          0.00017825,
+          0.00018
+        ]
+      },
+      "turboEdgeCheck": 225,
+      "turboFNV1a64": "b17a2ce3c722325",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 48.8,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 96.4,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 8,
+      "outputBytes": 262144,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 8,
+      "swift": {
+        "maximumSeconds": 0.001345375,
+        "medianSeconds": 0.001260125,
+        "minimumSeconds": 0.001071292,
+        "p95Seconds": 0.00129425,
+        "samplesSeconds": [
+          0.001255959,
+          0.001269875,
+          0.001286416,
+          0.001260417,
+          0.001345375,
+          0.001242541,
+          0.00129425,
+          0.001239709,
+          0.001071292,
+          0.0012715,
+          0.001280125,
+          0.001259833,
+          0.001080166,
+          0.001242042,
+          0.001236084,
+          0.00125825,
+          0.001263,
+          0.001283458,
+          0.001284292,
+          0.001182417
+        ]
+      },
+      "swiftEdgeCheck": 5425,
+      "swiftFNV1a64": "64bf8b35d4cc8934",
+      "thermalState": 1,
+      "tolerance": 2,
+      "turbo": {
+        "maximumSeconds": 0.001188083,
+        "medianSeconds": 0.0011244165,
+        "minimumSeconds": 0.000882084,
+        "p95Seconds": 0.001183417,
+        "samplesSeconds": [
+          0.001188083,
+          0.001152125,
+          0.00112125,
+          0.001133459,
+          0.001136458,
+          0.001127583,
+          0.001183417,
+          0.001111,
+          0.001038625,
+          0.001165,
+          0.001101583,
+          0.001168583,
+          0.000882084,
+          0.00116975,
+          0.001160042,
+          0.001006584,
+          0.001108708,
+          0.001029542,
+          0.001068625,
+          0.001114542
+        ]
+      },
+      "turboEdgeCheck": 5425,
+      "turboFNV1a64": "d63fe4b32cfa9cd9",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 48.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.4,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 96.0,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.001750833,
+        "medianSeconds": 0.0016643125,
+        "minimumSeconds": 0.001373,
+        "p95Seconds": 0.001723666,
+        "samplesSeconds": [
+          0.001715208,
+          0.001580666,
+          0.001668583,
+          0.001704083,
+          0.001687542,
+          0.001595375,
+          0.001661292,
+          0.001612625,
+          0.00169675,
+          0.001683916,
+          0.001667333,
+          0.001723666,
+          0.001675208,
+          0.001634167,
+          0.001750833,
+          0.001640167,
+          0.001373,
+          0.001643208,
+          0.001556459,
+          0.001630542
+        ]
+      },
+      "swiftEdgeCheck": 4025,
+      "swiftFNV1a64": "78caba2ca8b19c96",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.001498125,
+        "medianSeconds": 0.001450646,
+        "minimumSeconds": 0.001218375,
+        "p95Seconds": 0.00148175,
+        "samplesSeconds": [
+          0.001218375,
+          0.00144825,
+          0.001423292,
+          0.001498125,
+          0.0014595,
+          0.001468291,
+          0.001428042,
+          0.001453042,
+          0.001461125,
+          0.001414667,
+          0.001378708,
+          0.001361042,
+          0.00146325,
+          0.00148175,
+          0.001399292,
+          0.001453125,
+          0.0014565,
+          0.001461541,
+          0.001429875,
+          0.001447583
+        ]
+      },
+      "turboEdgeCheck": 4025,
+      "turboFNV1a64": "9ebc46099807ca68",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.0,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 95.3,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1e-05,
+        "medianSeconds": 7.0835e-06,
+        "minimumSeconds": 6.375e-06,
+        "p95Seconds": 9.709e-06,
+        "samplesSeconds": [
+          8.75e-06,
+          1e-05,
+          8.583e-06,
+          9.709e-06,
+          8.125e-06,
+          7.208e-06,
+          8.208e-06,
+          8.5e-06,
+          6.583e-06,
+          6.959e-06,
+          6.75e-06,
+          8.167e-06,
+          6.75e-06,
+          6.791e-06,
+          7.75e-06,
+          6.959e-06,
+          6.375e-06,
+          6.708e-06,
+          6.375e-06,
+          6.75e-06
+        ]
+      },
+      "swiftEdgeCheck": 9550,
+      "swiftFNV1a64": "18f4dd86a15f7fd3",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.2542e-05,
+        "medianSeconds": 1.0187e-05,
+        "minimumSeconds": 9.875e-06,
+        "p95Seconds": 1.1417e-05,
+        "samplesSeconds": [
+          1.2542e-05,
+          1.0166e-05,
+          1.0667e-05,
+          1.0042e-05,
+          1.0583e-05,
+          1.0125e-05,
+          1.1417e-05,
+          1.0208e-05,
+          1.0458e-05,
+          1e-05,
+          1.0291e-05,
+          1e-05,
+          1.0375e-05,
+          9.958e-06,
+          1.0334e-05,
+          9.875e-06,
+          1.0083e-05,
+          9.875e-06,
+          1.0208e-05,
+          9.916e-06
+        ]
+      },
+      "turboEdgeCheck": 9550,
+      "turboFNV1a64": "18f4dd86a15f7fd3",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 407,
+          "cpuPercent": 12.0,
+          "process": "/usr/sbin/notifyd"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 49.8,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 736,
+          "cpuPercent": 11.3,
+          "process": "/usr/libexec/replayd"
+        },
+        {
+          "pid": 1290,
+          "cpuPercent": 64.9,
+          "process": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 11.3,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 26.0,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 95.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.1,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 2.0292e-05,
+        "medianSeconds": 8.3335e-06,
+        "minimumSeconds": 6.917e-06,
+        "p95Seconds": 1.6542e-05,
+        "samplesSeconds": [
+          8.666e-06,
+          1.1875e-05,
+          9.416e-06,
+          1.0208e-05,
+          1.1083e-05,
+          2.0292e-05,
+          1.6542e-05,
+          1.2125e-05,
+          7.833e-06,
+          8.292e-06,
+          7.417e-06,
+          1.0084e-05,
+          7.625e-06,
+          7.625e-06,
+          8.375e-06,
+          7.875e-06,
+          7.125e-06,
+          7.417e-06,
+          6.917e-06,
+          7.375e-06
+        ]
+      },
+      "swiftEdgeCheck": 6375,
+      "swiftFNV1a64": "e15a7c618877daf2",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 2.1916e-05,
+        "medianSeconds": 1.1521e-05,
+        "minimumSeconds": 1.1083e-05,
+        "p95Seconds": 1.4708e-05,
+        "samplesSeconds": [
+          1.3334e-05,
+          1.1416e-05,
+          1.2084e-05,
+          1.1291e-05,
+          1.3584e-05,
+          2.1916e-05,
+          1.4708e-05,
+          1.4042e-05,
+          1.275e-05,
+          1.1417e-05,
+          1.375e-05,
+          1.1208e-05,
+          1.1709e-05,
+          1.1208e-05,
+          1.1584e-05,
+          1.1083e-05,
+          1.1417e-05,
+          1.1084e-05,
+          1.1458e-05,
+          1.1125e-05
+        ]
+      },
+      "turboEdgeCheck": 6375,
+      "turboFNV1a64": "e15a7c618877daf2",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 48.7,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 1290,
+          "cpuPercent": 75.5,
+          "process": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 11.3,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 12949,
+          "cpuPercent": 10.2,
+          "process": "/Users/pushparaj/.gemini/bin/agy"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 25.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 109.7,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1.1208e-05,
+        "medianSeconds": 8.5835e-06,
+        "minimumSeconds": 7.292e-06,
+        "p95Seconds": 1.075e-05,
+        "samplesSeconds": [
+          1.1208e-05,
+          1.0208e-05,
+          1.075e-05,
+          9.791e-06,
+          1.0125e-05,
+          8.333e-06,
+          8.834e-06,
+          9.25e-06,
+          7.459e-06,
+          7.834e-06,
+          7.333e-06,
+          9e-06,
+          7.458e-06,
+          7.5e-06,
+          9.875e-06,
+          9.333e-06,
+          7.375e-06,
+          7.542e-06,
+          7.292e-06,
+          7.458e-06
+        ]
+      },
+      "swiftEdgeCheck": 6150,
+      "swiftFNV1a64": "7ac3ae949bcf11c2",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.3292e-05,
+        "medianSeconds": 1.14375e-05,
+        "minimumSeconds": 1.1e-05,
+        "p95Seconds": 1.275e-05,
+        "samplesSeconds": [
+          1.3292e-05,
+          1.1333e-05,
+          1.1792e-05,
+          1.125e-05,
+          1.2666e-05,
+          1.1334e-05,
+          1.1625e-05,
+          1.275e-05,
+          1.175e-05,
+          1.1042e-05,
+          1.1458e-05,
+          1.1291e-05,
+          1.1458e-05,
+          1.1125e-05,
+          1.1417e-05,
+          1.1125e-05,
+          1.1542e-05,
+          1.1083e-05,
+          1.1541e-05,
+          1.1e-05
+        ]
+      },
+      "turboEdgeCheck": 6150,
+      "turboFNV1a64": "7ac3ae949bcf11c2",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 48.7,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 1290,
+          "cpuPercent": 75.5,
+          "process": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent"
+        },
+        {
+          "pid": 12949,
+          "cpuPercent": 10.2,
+          "process": "/Users/pushparaj/.gemini/bin/agy"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 25.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 109.7,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1.0917e-05,
+        "medianSeconds": 7.4165e-06,
+        "minimumSeconds": 6.75e-06,
+        "p95Seconds": 9.75e-06,
+        "samplesSeconds": [
+          7.833e-06,
+          9.75e-06,
+          1.0917e-05,
+          8e-06,
+          8.584e-06,
+          7.541e-06,
+          9.709e-06,
+          8.625e-06,
+          7.042e-06,
+          7.292e-06,
+          6.916e-06,
+          8.833e-06,
+          7.125e-06,
+          7.25e-06,
+          8.375e-06,
+          7.291e-06,
+          6.75e-06,
+          7.166e-06,
+          6.792e-06,
+          7.208e-06
+        ]
+      },
+      "swiftEdgeCheck": 75,
+      "swiftFNV1a64": "2828f4ebfc86ff36",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.275e-05,
+        "medianSeconds": 1.08545e-05,
+        "minimumSeconds": 1.0625e-05,
+        "p95Seconds": 1.2e-05,
+        "samplesSeconds": [
+          1.275e-05,
+          1.0833e-05,
+          1.1208e-05,
+          1.0875e-05,
+          1.1125e-05,
+          1.075e-05,
+          1.2e-05,
+          1.0834e-05,
+          1.1166e-05,
+          1.0792e-05,
+          1.2e-05,
+          1.0709e-05,
+          1.0958e-05,
+          1.0834e-05,
+          1.1042e-05,
+          1.0708e-05,
+          1.0875e-05,
+          1.0625e-05,
+          1.0833e-05,
+          1.075e-05
+        ]
+      },
+      "turboEdgeCheck": 75,
+      "turboFNV1a64": "2828f4ebfc86ff36",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 48.7,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 1290,
+          "cpuPercent": 75.5,
+          "process": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent"
+        },
+        {
+          "pid": 12949,
+          "cpuPercent": 10.2,
+          "process": "/Users/pushparaj/.gemini/bin/agy"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 25.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 109.7,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 8388608,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.013330625,
+        "medianSeconds": 0.0122913755,
+        "minimumSeconds": 0.011757667,
+        "p95Seconds": 0.01313725,
+        "samplesSeconds": [
+          0.012283458,
+          0.012297709,
+          0.013069083,
+          0.01243625,
+          0.012394291,
+          0.012531708,
+          0.012186666,
+          0.012022708,
+          0.012082292,
+          0.012037875,
+          0.012151833,
+          0.012537625,
+          0.0127045,
+          0.012253417,
+          0.012350833,
+          0.012040542,
+          0.011757667,
+          0.013330625,
+          0.01313725,
+          0.012285042
+        ]
+      },
+      "swiftEdgeCheck": 3200,
+      "swiftFNV1a64": "cdfcedd59a62fa82",
+      "thermalState": 1,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 0.020450084,
+        "medianSeconds": 0.018328979500000002,
+        "minimumSeconds": 0.017668958,
+        "p95Seconds": 0.02016975,
+        "samplesSeconds": [
+          0.018498917,
+          0.01797775,
+          0.020450084,
+          0.019399416,
+          0.018844208,
+          0.01838275,
+          0.018120459,
+          0.018058917,
+          0.018275209,
+          0.018761708,
+          0.019492209,
+          0.017979875,
+          0.018173167,
+          0.017993834,
+          0.017997584,
+          0.02016975,
+          0.017668958,
+          0.019379875,
+          0.01797925,
+          0.019237667
+        ]
+      },
+      "turboEdgeCheck": 3200,
+      "turboFNV1a64": "cdfcedd59a62fa82",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 1290,
+          "cpuPercent": 33.0,
+          "process": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 19.3,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.0,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 101.1,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.001486834,
+        "medianSeconds": 0.0013982085,
+        "minimumSeconds": 0.00119925,
+        "p95Seconds": 0.001467958,
+        "samplesSeconds": [
+          0.001282167,
+          0.001410833,
+          0.001467958,
+          0.001241375,
+          0.001441875,
+          0.001486834,
+          0.001451334,
+          0.001448041,
+          0.001402792,
+          0.001410458,
+          0.001373292,
+          0.001415583,
+          0.001388041,
+          0.001351125,
+          0.001348333,
+          0.001393625,
+          0.001348416,
+          0.00119925,
+          0.001450291,
+          0.001373875
+        ]
+      },
+      "swiftEdgeCheck": 375,
+      "swiftFNV1a64": "dc9df26e34022755",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.001415167,
+        "medianSeconds": 0.0013480215,
+        "minimumSeconds": 0.001057792,
+        "p95Seconds": 0.001391458,
+        "samplesSeconds": [
+          0.0013575,
+          0.001293959,
+          0.00136,
+          0.001057792,
+          0.001415167,
+          0.0013655,
+          0.001346959,
+          0.001237542,
+          0.001359792,
+          0.0013155,
+          0.001361834,
+          0.001349084,
+          0.001265125,
+          0.001359708,
+          0.001311792,
+          0.001231916,
+          0.001356625,
+          0.001181,
+          0.001391458,
+          0.001275209
+        ]
+      },
+      "turboEdgeCheck": 375,
+      "turboFNV1a64": "6be90299fd505fbd",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 1290,
+          "cpuPercent": 20.6,
+          "process": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 12.1,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 104.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 8388608,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.019542709,
+        "medianSeconds": 0.018749916499999998,
+        "minimumSeconds": 0.017590208,
+        "p95Seconds": 0.019537083,
+        "samplesSeconds": [
+          0.019542709,
+          0.019077292,
+          0.018022542,
+          0.019210209,
+          0.019088,
+          0.018869583,
+          0.01916125,
+          0.018139375,
+          0.017985958,
+          0.018517541,
+          0.018377625,
+          0.017884541,
+          0.01863025,
+          0.017913792,
+          0.017590208,
+          0.019537083,
+          0.018897875,
+          0.019089375,
+          0.01910125,
+          0.018428542
+        ]
+      },
+      "swiftEdgeCheck": 0,
+      "swiftFNV1a64": "8560bf7e03f3a612",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.02163375,
+        "medianSeconds": 0.019647875000000002,
+        "minimumSeconds": 0.018499584,
+        "p95Seconds": 0.021515417,
+        "samplesSeconds": [
+          0.021393583,
+          0.019780917,
+          0.02163375,
+          0.020325875,
+          0.021409708,
+          0.020025625,
+          0.01944275,
+          0.018499584,
+          0.019730292,
+          0.018793959,
+          0.019316916,
+          0.019813042,
+          0.018912125,
+          0.01898175,
+          0.019116084,
+          0.019565458,
+          0.021515417,
+          0.02016975,
+          0.019105291,
+          0.019182083
+        ]
+      },
+      "turboEdgeCheck": 0,
+      "turboFNV1a64": "aad133d2222ca6db",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 50.7,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 106.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 8388608,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.026268583,
+        "medianSeconds": 0.024823604,
+        "minimumSeconds": 0.023772542,
+        "p95Seconds": 0.026005167,
+        "samplesSeconds": [
+          0.023983917,
+          0.025041541,
+          0.024204125,
+          0.025508334,
+          0.024239042,
+          0.025549667,
+          0.023772542,
+          0.024486708,
+          0.024125125,
+          0.024085958,
+          0.024024209,
+          0.024605667,
+          0.02541475,
+          0.024289833,
+          0.025823708,
+          0.025886291,
+          0.026005167,
+          0.02596675,
+          0.026268583,
+          0.025528458
+        ]
+      },
+      "swiftEdgeCheck": 0,
+      "swiftFNV1a64": "8560bf7e03f3a612",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.021283042,
+        "medianSeconds": 0.019744042,
+        "minimumSeconds": 0.018920667,
+        "p95Seconds": 0.021149542,
+        "samplesSeconds": [
+          0.019145458,
+          0.019522875,
+          0.021017167,
+          0.020895541,
+          0.020402542,
+          0.021283042,
+          0.019612209,
+          0.019337167,
+          0.0193295,
+          0.018920667,
+          0.01921225,
+          0.019216042,
+          0.019344084,
+          0.019178833,
+          0.021149542,
+          0.020656916,
+          0.020815041,
+          0.019875875,
+          0.020126458,
+          0.020751666
+        ]
+      },
+      "turboEdgeCheck": 0,
+      "turboFNV1a64": "aad133d2222ca6db",
+      "workerCeiling": 1,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.0,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 123.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 8,
+      "outputBytes": 262144,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 8,
+      "swift": {
+        "maximumSeconds": 0.000153209,
+        "medianSeconds": 6.20835e-05,
+        "minimumSeconds": 5.2916e-05,
+        "p95Seconds": 6.9e-05,
+        "samplesSeconds": [
+          6.3291e-05,
+          6.3959e-05,
+          6.0459e-05,
+          6.4542e-05,
+          6.3791e-05,
+          6.2625e-05,
+          6.1375e-05,
+          6.3875e-05,
+          6.1375e-05,
+          6.2792e-05,
+          6.6542e-05,
+          0.000153209,
+          6.9e-05,
+          5.7959e-05,
+          5.6959e-05,
+          5.6541e-05,
+          5.4667e-05,
+          5.4667e-05,
+          5.2916e-05,
+          6.1542e-05
+        ]
+      },
+      "swiftEdgeCheck": 6450,
+      "swiftFNV1a64": "a7853dc248f62325",
+      "thermalState": 1,
+      "tolerance": 2,
+      "turbo": {
+        "maximumSeconds": 9.8667e-05,
+        "medianSeconds": 7.7563e-05,
+        "minimumSeconds": 6.6125e-05,
+        "p95Seconds": 8.6458e-05,
+        "samplesSeconds": [
+          7.8584e-05,
+          7.1958e-05,
+          8.4834e-05,
+          7.7917e-05,
+          7.7917e-05,
+          7.775e-05,
+          7.7917e-05,
+          7.7584e-05,
+          7.6708e-05,
+          7.7416e-05,
+          7.7542e-05,
+          8.6458e-05,
+          9.8667e-05,
+          8.0834e-05,
+          7e-05,
+          6.8292e-05,
+          6.6125e-05,
+          6.6875e-05,
+          7.1167e-05,
+          7.4208e-05
+        ]
+      },
+      "turboEdgeCheck": 6450,
+      "turboFNV1a64": "a7853dc248f62325",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.0,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 123.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 8.5083e-05,
+        "medianSeconds": 7.65415e-05,
+        "minimumSeconds": 6.9208e-05,
+        "p95Seconds": 8.4e-05,
+        "samplesSeconds": [
+          7.4458e-05,
+          7.9417e-05,
+          8.4e-05,
+          7.4375e-05,
+          8.5083e-05,
+          7.7958e-05,
+          7.2625e-05,
+          7.5334e-05,
+          8.0667e-05,
+          7.6458e-05,
+          7.925e-05,
+          7.8166e-05,
+          7.4708e-05,
+          7.8583e-05,
+          7.6625e-05,
+          7.2625e-05,
+          6.9208e-05,
+          7.925e-05,
+          7.5667e-05,
+          7.5709e-05
+        ]
+      },
+      "swiftEdgeCheck": 225,
+      "swiftFNV1a64": "b17a2ce3c722325",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.000202709,
+        "medianSeconds": 0.00019349949999999998,
+        "minimumSeconds": 0.000172625,
+        "p95Seconds": 0.000201959,
+        "samplesSeconds": [
+          0.000189834,
+          0.000184417,
+          0.000193333,
+          0.000193292,
+          0.00019775,
+          0.000201959,
+          0.000194375,
+          0.000189917,
+          0.000198875,
+          0.000172625,
+          0.000193291,
+          0.000195042,
+          0.000193666,
+          0.000195709,
+          0.000196792,
+          0.000202709,
+          0.0001895,
+          0.000190875,
+          0.000183542,
+          0.000194458
+        ]
+      },
+      "turboEdgeCheck": 225,
+      "turboFNV1a64": "b17a2ce3c722325",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.0,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 112.2,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 8,
+      "outputBytes": 262144,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 8,
+      "swift": {
+        "maximumSeconds": 0.001408167,
+        "medianSeconds": 0.0012617499999999999,
+        "minimumSeconds": 0.001072875,
+        "p95Seconds": 0.001318917,
+        "samplesSeconds": [
+          0.001277709,
+          0.001263875,
+          0.001245208,
+          0.001408167,
+          0.001259625,
+          0.001072875,
+          0.001225416,
+          0.001279041,
+          0.001318917,
+          0.001283917,
+          0.001255875,
+          0.00128,
+          0.001265208,
+          0.001292458,
+          0.001242167,
+          0.001231833,
+          0.001224334,
+          0.001074875,
+          0.001218708,
+          0.001310209
+        ]
+      },
+      "swiftEdgeCheck": 5425,
+      "swiftFNV1a64": "64bf8b35d4cc8934",
+      "thermalState": 1,
+      "tolerance": 2,
+      "turbo": {
+        "maximumSeconds": 0.001175625,
+        "medianSeconds": 0.0011332085,
+        "minimumSeconds": 0.000898333,
+        "p95Seconds": 0.001161459,
+        "samplesSeconds": [
+          0.001153625,
+          0.001130709,
+          0.001131542,
+          0.001132083,
+          0.001134334,
+          0.000898333,
+          0.000999916,
+          0.000898708,
+          0.001122292,
+          0.001097583,
+          0.001151333,
+          0.001161459,
+          0.001136416,
+          0.001141375,
+          0.00114475,
+          0.001113583,
+          0.001154708,
+          0.00098425,
+          0.001175625,
+          0.001143417
+        ]
+      },
+      "turboEdgeCheck": 5425,
+      "turboFNV1a64": "d63fe4b32cfa9cd9",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 104.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.1,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.001750833,
+        "medianSeconds": 0.001607354,
+        "minimumSeconds": 0.001431459,
+        "p95Seconds": 0.001736833,
+        "samplesSeconds": [
+          0.001620916,
+          0.001534833,
+          0.001676958,
+          0.001735791,
+          0.001593792,
+          0.001550541,
+          0.001736833,
+          0.001529292,
+          0.001578542,
+          0.001654625,
+          0.001750833,
+          0.001659333,
+          0.001728875,
+          0.001511375,
+          0.001431459,
+          0.001529875,
+          0.001686041,
+          0.001524083,
+          0.001481791,
+          0.001680875
+        ]
+      },
+      "swiftEdgeCheck": 4025,
+      "swiftFNV1a64": "78caba2ca8b19c96",
+      "thermalState": 1,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.001554583,
+        "medianSeconds": 0.0014158545,
+        "minimumSeconds": 0.001247625,
+        "p95Seconds": 0.001551166,
+        "samplesSeconds": [
+          0.001496834,
+          0.001270459,
+          0.001408167,
+          0.001367,
+          0.001297708,
+          0.001247625,
+          0.0013985,
+          0.001337458,
+          0.001325625,
+          0.00134125,
+          0.001554583,
+          0.001468875,
+          0.001466042,
+          0.001380875,
+          0.001551166,
+          0.00151525,
+          0.001423542,
+          0.001446208,
+          0.001453209,
+          0.0014825
+        ]
+      },
+      "turboEdgeCheck": 4025,
+      "turboFNV1a64": "9ebc46099807ca68",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 48.7,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 109.4,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "components": 3,
+      "fixture": "rgb8-512.jpg",
+      "inputBytes": 219499,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 786432,
+      "round": 1,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "6e02969d3c7a5276",
+      "tolerance": 2,
+      "turboFNV1a64": "414b4e957a519207",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 49.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 25.3,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 97.2,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.1,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "rgb8-2048.jpg",
+      "inputBytes": 3505089,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 12582912,
+      "round": 1,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "1f961eceef273bd9",
+      "tolerance": 2,
+      "turboFNV1a64": "e234e4ee08da39bf",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 53.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 414,
+          "cpuPercent": 10.5,
+          "process": "/System/Library/PrivateFrameworks/TCC.framework/Support/tccd"
+        },
+        {
+          "pid": 1290,
+          "cpuPercent": 14.6,
+          "process": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 15.5,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 25.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 96.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.5,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "progressiveRGB8-512.jpg",
+      "inputBytes": 219582,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 786432,
+      "round": 1,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "6e02969d3c7a5276",
+      "tolerance": 2,
+      "turboFNV1a64": "414b4e957a519207",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 53.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 414,
+          "cpuPercent": 10.5,
+          "process": "/System/Library/PrivateFrameworks/TCC.framework/Support/tccd"
+        },
+        {
+          "pid": 1290,
+          "cpuPercent": 14.6,
+          "process": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 15.5,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 25.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 96.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.5,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "inputBytes": 3504942,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 12582912,
+      "round": 1,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "1f961eceef273bd9",
+      "tolerance": 2,
+      "turboFNV1a64": "e234e4ee08da39bf",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 407,
+          "cpuPercent": 12.0,
+          "process": "/usr/sbin/notifyd"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 49.8,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 736,
+          "cpuPercent": 11.3,
+          "process": "/usr/libexec/replayd"
+        },
+        {
+          "pid": 1290,
+          "cpuPercent": 64.9,
+          "process": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 11.3,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 26.0,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 95.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.1,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "rgb8-512.jpg",
+      "inputBytes": 219499,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 786432,
+      "round": 2,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "6e02969d3c7a5276",
+      "tolerance": 2,
+      "turboFNV1a64": "414b4e957a519207",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 48.7,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 109.4,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "rgb8-2048.jpg",
+      "inputBytes": 3505089,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 12582912,
+      "round": 2,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "1f961eceef273bd9",
+      "tolerance": 2,
+      "turboFNV1a64": "e234e4ee08da39bf",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 52.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 11.2,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 104.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.9,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "progressiveRGB8-512.jpg",
+      "inputBytes": 219582,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 786432,
+      "round": 2,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "6e02969d3c7a5276",
+      "tolerance": 2,
+      "turboFNV1a64": "414b4e957a519207",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 52.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3183,
+          "cpuPercent": 15.2,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 23.8,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 101.0,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "inputBytes": 3504942,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 12582912,
+      "round": 2,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "1f961eceef273bd9",
+      "tolerance": 2,
+      "turboFNV1a64": "e234e4ee08da39bf",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 50.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3183,
+          "cpuPercent": 12.6,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 15.2,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 24.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 100.2,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        }
+      ]
+    }
+  ],
+  "memory": [
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9175040
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9699328
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9191424
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9699328
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9191424
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9699328
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9142272
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9732096
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 22331392
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 22806528
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "dc9df26e34022755",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 11075584
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "6be90299fd505fbd",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9814016
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 22003712
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 20774912
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 1,
+      "maximumRSSBytes": 21626880
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 1,
+      "maximumRSSBytes": 20774912
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 1,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9519104
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 1,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9191424
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9732096
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9617408
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "64bf8b35d4cc8934",
+      "round": 1,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 10747904
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "d63fe4b32cfa9cd9",
+      "round": 1,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9437184
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "78caba2ca8b19c96",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 11141120
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "9ebc46099807ca68",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9912320
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9666560
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9175040
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9764864
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9207808
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9715712
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9191424
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9699328
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9224192
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 22839296
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 22364160
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "6be90299fd505fbd",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9830400
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "dc9df26e34022755",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 11108352
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 20742144
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 22052864
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 2,
+      "maximumRSSBytes": 20774912
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 2,
+      "maximumRSSBytes": 21594112
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 2,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9289728
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 2,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9519104
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9617408
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9781248
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "d63fe4b32cfa9cd9",
+      "round": 2,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9453568
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "64bf8b35d4cc8934",
+      "round": 2,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 10829824
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "9ebc46099807ca68",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9945088
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "78caba2ca8b19c96",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 11206656
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9158656
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9732096
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9175040
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9732096
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9224192
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9715712
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9224192
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9666560
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 22364160
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 22822912
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "dc9df26e34022755",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 11075584
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "6be90299fd505fbd",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9846784
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 22036480
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 20807680
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 3,
+      "maximumRSSBytes": 21626880
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 3,
+      "maximumRSSBytes": 20742144
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 3,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9469952
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 3,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9256960
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9797632
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9617408
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "64bf8b35d4cc8934",
+      "round": 3,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 10780672
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "d63fe4b32cfa9cd9",
+      "round": 3,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9420800
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "78caba2ca8b19c96",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 11239424
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "9ebc46099807ca68",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9945088
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "errors",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:34.164976+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:34.612533+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:34.612603+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:34.621880+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:34.664570+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:34.673808+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:34.715439+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:34.725516+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:34.766046+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:34.776391+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:34.815371+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:35.659495+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:35.702087+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:35.780763+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:35.821149+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:36.815543+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:36.857247+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.060793+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.105358+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.119434+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.163036+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.180591+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.224810+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.296559+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.340591+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.431677+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.473235+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.489269+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.532441+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.634692+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.675580+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.693962+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.733976+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.864947+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.903195+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.912983+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:38.952973+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:38.962405+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:39.003054+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:39.013099+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:39.052477+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:39.062748+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:39.106716+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:39.945983+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:39.986597+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:40.068684+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:40.112575+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:41.153607+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:41.194783+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:42.384793+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:42.426505+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:42.440636+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:42.483295+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:42.501469+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:42.545379+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:42.617678+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:42.660841+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:42.751652+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:42.793782+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:42.810333+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:42.852150+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:42.953503+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:42.994532+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.012353+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.054280+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.184570+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.225212+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.236157+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.236863+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.247650+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.248662+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.259272+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.260025+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.270258+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.271051+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.281990+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.282769+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.292498+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.293221+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.303822+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.304523+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.315071+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.315996+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.349825+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.350650+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.391334+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.392149+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.405409+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.406179+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.419123+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.419916+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.459180+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.460000+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.501705+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.502601+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.547568+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.548427+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.588790+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.589628+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.601231+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.601941+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.612842+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.613579+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.625627+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.626380+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.638251+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.639048+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.651838+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.652749+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.664704+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.665643+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.678536+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.679308+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.692130+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.692979+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.704200+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.705017+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.715704+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.716687+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.727872+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.728596+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.739480+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.740238+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.751635+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.752483+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.763492+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.764335+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.776349+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.777091+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.786721+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.787474+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.826348+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.827239+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.860753+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.861549+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.874626+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.875418+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.888910+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.889644+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.929729+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.930541+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:43.970761+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:43.971602+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.013218+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.014004+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.059192+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.059995+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.071421+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.072189+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.083797+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.084606+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.096394+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.097245+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.109191+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.109967+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.121266+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.122029+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.134767+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.135530+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.148256+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.149134+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.162845+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.163645+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.174783+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.175593+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.186132+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.186904+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.197040+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.197874+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.209149+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.210026+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.220940+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.221780+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.232909+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.233742+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.244941+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.245844+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.256347+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.257187+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.291761+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.292591+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.333530+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.334496+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.348023+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.348824+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.363230+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.364093+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.403663+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.404486+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.444637+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.445539+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.491565+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.492484+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.533460+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.534367+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.545666+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.546503+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.558477+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.559351+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.571805+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.572644+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.585477+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.586323+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.598684+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.599594+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.612145+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.612986+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.626653+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/owned-output/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T14:45:44.627543+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:45:44.640338+00:00"
+    }
+  ],
+  "hostLoadBefore": [
+    {
+      "pid": 413,
+      "cpuPercent": 49.7,
+      "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+    },
+    {
+      "pid": 20318,
+      "cpuPercent": 24.3,
+      "process": "/Users/pushparaj/.local/bin/limactl"
+    },
+    {
+      "pid": 20329,
+      "cpuPercent": 149.0,
+      "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+    },
+    {
+      "pid": 20350,
+      "cpuPercent": 13.6,
+      "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+    }
+  ],
+  "powerBefore": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t100%; charged; 0:00 remaining present: true\n",
+  "containedErrorCheck": {
+    "containedCErrors": 4,
+    "fixture": "flat-19.jpg",
+    "inputBytes": 114,
+    "round": 1,
+    "tolerance": 0,
+    "workerCeiling": 8
+  },
+  "finishedUTC": "2026-11-03T14:45:44.641899+00:00",
+  "hostLoadAfter": [
+    {
+      "pid": 413,
+      "cpuPercent": 51.7,
+      "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+    },
+    {
+      "pid": 3346,
+      "cpuPercent": 11.7,
+      "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+    },
+    {
+      "pid": 3544,
+      "cpuPercent": 531.5,
+      "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+    },
+    {
+      "pid": 20329,
+      "cpuPercent": 12.6,
+      "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+    }
+  ],
+  "powerAfter": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t100%; charged; 0:00 remaining present: true\n"
+}

@@ -1,0 +1,236 @@
+commit 6ea54115da254eacabfda28ee2bbe0661140634e
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 20:22:19 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 20:22:19 2026 +0530
+
+    Trial paired AC symbols within bounded entropy lookahead
+
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index 34f7408..d803610 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -136,6 +136,16 @@ struct JLIDecoder: Sendable {
+                     quantiser: Float(quantTables[components[0].quantTableIndex][0]), plan: streamingPlan,
+                     width: frame.width, height: frame.height, precision: frame.precision,
+                     restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
++            } else if streamingPlan.pipelined && NativeOperation.workerLimit > 1,
++                      let pairs = ACPairLookahead(table: acTable, blockCount: streamingPlan.blockCount) {
++                try Self.validateGreyscaleDestination(borrowedDestination, width: frame.width,
++                    height: frame.height, precision: frame.precision, floatOutput: floating)
++                try PipelinedGreyscaleDecoder.decode(reader: &reader, dcTable: dcTable, acTable: acTable,
++                    lookup: nil, pairLookup: pairs,
++                    quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
++                    plan: streamingPlan, width: frame.width, height: frame.height,
++                    precision: frame.precision, restartInterval: parsed.restartInterval,
++                    floatOutput: floating, destination: borrowedDestination)
+             } else {
+                 // Lookup admission uses the entire scan, as in the retained path.
+                 let lookup = ACLookahead(table: acTable, blockCount: streamingPlan.blockCount)
+diff --git a/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
+index 232c53f..2fc1fad 100644
+--- a/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
+@@ -27,7 +27,7 @@ enum PipelinedGreyscaleDecoder {
+     }
+ 
+     static func decode(reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable,
+-                       lookup: ACLookahead?, quantTable: [Float], plan: SequentialGreyscalePlan,
++                       lookup: ACLookahead?, pairLookup: ACPairLookahead? = nil, quantTable: [Float], plan: SequentialGreyscalePlan,
+                        width: Int, height: Int, precision: Int, restartInterval: Int,
+                        floatOutput: Bool, destination: BorrowedSampleDestination) throws {
+         let blocks = plan.blockCount, slotSamples = 1024 * 64
+@@ -119,7 +119,9 @@ enum PipelinedGreyscaleDecoder {
+                                 }
+                                 previousDC = Int32(dc)
+                                 let block = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: 64)
+-                                if let lookup {
++                                if let pairLookup {
++                                    try HuffmanDecoder.decodeACPairs(from: &reader, table: acTable, lookup: pairLookup, into: block)
++                                } else if let lookup {
+                                     try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
+                                 } else {
+                                     try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
+diff --git a/Sources/SwiftJLI/Native/Entropy/ACPairLookahead.swift b/Sources/SwiftJLI/Native/Entropy/ACPairLookahead.swift
+new file mode 100644
+index 0000000..0c896df
+--- /dev/null
++++ b/Sources/SwiftJLI/Native/Entropy/ACPairLookahead.swift
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: Apache-2.0
++
++/// Two independent short run/value entries within the same 13 buffered bits.
++/// A missing second entry retains the ordinary single-entry result. Construction
++/// is limited to a single-component pipeline; other decoders keep their tables.
++struct ACPairLookahead {
++    let entries: [UInt64]
++
++    init?(table: HuffmanTable, blockCount: Int) {
++        guard blockCount >= 2048, let single = ACLookahead(table: table, blockCount: blockCount) else { return nil }
++        var entries = [UInt64](repeating: 0, count: ACLookahead.count)
++        for prefix in 0..<ACLookahead.count {
++            let first = single.entries[prefix]
++            guard first != 0 else { continue }
++            entries[prefix] = UInt64(first)
++            let available = ACLookahead.bits - Int(first >> 24)
++            guard available > 0, (first >> 16) & 0xFF != 0 else { continue }
++            // Padding the unconsumed suffix cannot change a complete canonical
++            // prefix. Accept it only if its entire code and magnitude fit.
++            let secondPrefix = (prefix & ((1 << available) - 1)) << (ACLookahead.bits - available)
++            let second = single.entries[secondPrefix]
++            if second != 0, Int(second >> 24) <= available {
++                entries[prefix] |= UInt64(second) << 32
++            }
++        }
++        self.entries = entries
++    }
++}
++
++extension HuffmanDecoder {
++    /// Every coefficient is cleared before consumption, including partial-error
++    /// exits. The pair reader handles end-of-block/run boundaries before reading
++    /// a second entry, so no symbol from the next block is consumed here.
++    static func decodeACPairs(from reader: inout BitReader, table: HuffmanTable,
++                              lookup: ACPairLookahead, into output: UnsafeMutableBufferPointer<Int32>) throws {
++        guard output.count == 64, let coefficients = output.baseAddress else {
++            throw JLIError.decodingFailed("Invalid AC coefficient destination")
++        }
++        coefficients.update(repeating: 0, count: 64)
++        var index = 1
++        while index < 64 {
++            if let pair = reader.fastDecodeACPair(lookup, remaining: 64 - index) {
++                let first = UInt32(truncatingIfNeeded: pair)
++                let advance = Int((first >> 16) & 0xFF)
++                if advance == 0 { break }
++                index += advance
++                coefficients[index - 1] = Int32(Int16(truncatingIfNeeded: first))
++                let second = UInt32(truncatingIfNeeded: pair >> 32)
++                if second != 0 {
++                    let advance = Int((second >> 16) & 0xFF)
++                    if advance == 0 { break }
++                    index += advance
++                    coefficients[index - 1] = Int32(Int16(truncatingIfNeeded: second))
++                }
++                continue
++            }
++            let symbol = try decodeSymbol(from: &reader, table: table)
++            if symbol == 0 { break }
++            if symbol == 0xF0 { index += 16; continue }
++            index += Int(symbol >> 4)
++            guard index < 64 else { break }
++            coefficients[index] = try decodeValue(from: &reader, category: Int(symbol & 15))
++            index += 1
++        }
++    }
++}
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index d5497e6..d66170f 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -336,6 +336,29 @@ struct BitReader {
+         return entry
+     }
+ 
++    /// Consume at most two complete AC entries without crossing a block/run
++    /// boundary. A first-entry run overflow retains the throwing fallback's
++    /// original symbol-only consumption. Physical prefetch obeys fastDecodeAC.
++    @inline(__always)
++    mutating func fastDecodeACPair(_ table: ACPairLookahead, remaining: Int) -> UInt64? {
++        if bitsAvailable < ACLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
++        guard bitsAvailable >= ACLookahead.bits else { return nil }
++        let prefix = Int((bitBuffer &>> (bitsAvailable - ACLookahead.bits)) & UInt64(ACLookahead.count - 1))
++        let pair = table.entries[prefix], first = UInt32(truncatingIfNeeded: pair)
++        let advance = Int((first >> 16) & 0xFF)
++        guard first != 0, advance <= remaining else { return nil }
++        var consumed = Int(first >> 24)
++        let second = UInt32(truncatingIfNeeded: pair >> 32)
++        if second != 0, advance > 0, advance < remaining,
++           Int((second >> 16) & 0xFF) <= remaining - advance {
++            consumed += Int(second >> 24)
++            bitsAvailable -= consumed
++            return pair
++        }
++        bitsAvailable -= consumed
++        return UInt64(first)
++    }
++
+     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
+     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
+     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,
+diff --git a/Tests/SwiftJLITests/Native/ACPairLookaheadTests.swift b/Tests/SwiftJLITests/Native/ACPairLookaheadTests.swift
+new file mode 100644
+index 0000000..db41fd0
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/ACPairLookaheadTests.swift
+@@ -0,0 +1,71 @@
++// SPDX-License-Identifier: Apache-2.0
++import Testing
++@testable import SwiftJLI
++
++@Suite struct ACPairLookaheadTests {
++    @Test func allPrefixesOffsetsAndBlockEdgesMatchSingleEntryReference() throws {
++        for table in [StandardHuffmanTables.acLuminance, StandardHuffmanTables.acChrominance] {
++            let pairs = try #require(ACPairLookahead(table: table, blockCount: 2048))
++            let single = try #require(ACLookahead(table: table, blockCount: 2048))
++            #expect(pairs.entries.count * MemoryLayout<UInt64>.stride == 65_536)
++            var twoEntries = 0
++            for offset in 0..<8 { for prefix in 0..<ACLookahead.count {
++                var writer = BitWriter(estimatedMaxSize: 32)
++                writer.writeBits(0, count: offset)
++                writer.writeBits(UInt32(prefix), count: 13)
++                for word in [UInt32(0xA55A), 0x1234, 0xFEDC, 0x90AB] { writer.writeBits(word, count: 16) }
++                writer.flush()
++                var actual = BitReader(data: writer.data), reference = actual
++                _ = try actual.readBits(offset); _ = try reference.readBits(offset)
++                let remaining = prefix % 63 + 1
++                if let pair = actual.fastDecodeACPair(pairs, remaining: remaining) {
++                    let first = try #require(reference.fastDecodeAC(single, remaining: remaining))
++                    #expect(UInt32(truncatingIfNeeded: pair) == first)
++                    let second = UInt32(truncatingIfNeeded: pair >> 32)
++                    if second != 0 {
++                        let advance = Int((first >> 16) & 255)
++                        #expect(advance > 0 && advance < remaining)
++                        #expect(reference.fastDecodeAC(single, remaining: remaining - advance) == second)
++                        twoEntries += 1
++                    }
++                    #expect(try actual.readBits(16) == reference.readBits(16))
++                    actual.alignToByte(); reference.alignToByte()
++                    #expect(actual.byteOffset == reference.byteOffset)
++                } else {
++                    #expect(reference.fastDecodeAC(single, remaining: remaining) == nil)
++                    #expect(try actual.readBits(16) == reference.readBits(16))
++                }
++            } }
++            #expect(twoEntries > 0)
++        }
++    }
++
++    @Test func fullBlocksAndPartialErrorsPreserveCoefficientsAndLogicalCursor() throws {
++        let table = StandardHuffmanTables.acLuminance
++        let pairs = try #require(ACPairLookahead(table: table, blockCount: 2048))
++        for prefix in stride(from: 0, to: 8192, by: 7) {
++            var writer = BitWriter(estimatedMaxSize: 128)
++            writer.writeBits(UInt32(prefix), count: 13)
++            for word in 0..<32 { writer.writeBits(UInt32((word * 8191 + prefix) & 65535), count: 16) }
++            writer.flush()
++            for length in [1, 2, 7, writer.data.count] {
++                var actual = BitReader(data: Array(writer.data.prefix(length))), reference = actual
++                var result = [Int32](repeating: 123456, count: 64), expected = result
++                let a = Result { try result.withUnsafeMutableBufferPointer {
++                    try HuffmanDecoder.decodeACPairs(from: &actual, table: table, lookup: pairs, into: $0)
++                } }
++                let b = Result { try expected.withUnsafeMutableBufferPointer {
++                    try HuffmanDecoder.decodeAC(from: &reference, table: table, into: $0)
++                } }
++                switch (a, b) {
++                case (.success, .success): break
++                case (.failure(let x), .failure(let y)): #expect(String(describing: x) == String(describing: y))
++                default: Issue.record("Pair lookup changed block or failure completion")
++                }
++                #expect(result == expected)
++                actual.alignToByte(); reference.alignToByte()
++                #expect(actual.byteOffset == reference.byteOffset)
++            }
++        }
++    }
++}

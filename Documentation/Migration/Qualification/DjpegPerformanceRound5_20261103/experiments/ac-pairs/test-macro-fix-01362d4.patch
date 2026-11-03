@@ -1,0 +1,22 @@
+commit 01362d4ceee126d0a5a7675a73e5e991058551be
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 20:23:09 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 20:23:09 2026 +0530
+
+    Keep mutating reader evaluation outside the requirement macro
+
+diff --git a/Tests/SwiftJLITests/Native/ACPairLookaheadTests.swift b/Tests/SwiftJLITests/Native/ACPairLookaheadTests.swift
+index db41fd0..33f4b64 100644
+--- a/Tests/SwiftJLITests/Native/ACPairLookaheadTests.swift
++++ b/Tests/SwiftJLITests/Native/ACPairLookaheadTests.swift
+@@ -19,7 +19,8 @@ import Testing
+                 _ = try actual.readBits(offset); _ = try reference.readBits(offset)
+                 let remaining = prefix % 63 + 1
+                 if let pair = actual.fastDecodeACPair(pairs, remaining: remaining) {
+-                    let first = try #require(reference.fastDecodeAC(single, remaining: remaining))
++                    let decoded = reference.fastDecodeAC(single, remaining: remaining)
++                    let first = try #require(decoded)
+                     #expect(UInt32(truncatingIfNeeded: pair) == first)
+                     let second = UInt32(truncatingIfNeeded: pair >> 32)
+                     if second != 0 {

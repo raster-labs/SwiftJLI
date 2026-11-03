@@ -1,0 +1,95 @@
+{
+  "sourceRevision": "14f35018d241666358480da2a8527d29ab047627",
+  "testedRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "sourceEquivalenceReceipt": "source-pins.json",
+  "contract": "Suite policy 0.10.0; Apple OS 26.0 floor; Swift 6.2 manifest minimum, Swift 6.4 primary.",
+  "fullRelease": {
+    "workingDirectory": "/private/tmp/swiftjli-round5-pipeline",
+    "environment": {
+      "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+    },
+    "command": [
+      "swift",
+      "test",
+      "-c",
+      "release",
+      "--jobs",
+      "4",
+      "--scratch-path",
+      "/private/tmp/swiftjli-round5-pipeline-build"
+    ],
+    "stdoutAndStderr": "/private/tmp/swiftjli-round5-evidence/pipeline/full-release-tests.log",
+    "exitCode": 0,
+    "tests": 436,
+    "suites": 73,
+    "commandProvenance": "Recovered execution receipt: process 79970; completion call_c2c35dd0a63747f3b4b12c097cb6e4ba, chunk a29db0. The log independently records 436 tests in 73 suites passed; session transcript excluded."
+  },
+  "focusedAddressSanitizer": {
+    "tests": 26,
+    "suites": 5,
+    "exitCode": 0,
+    "commands": "sanitizer-commands.json"
+  },
+  "focusedThreadSanitizer": {
+    "tests": 26,
+    "suites": 5,
+    "exitCode": 0,
+    "commands": "sanitizer-commands.json"
+  },
+  "cliRelease": {
+    "checks": 252,
+    "exitCode": 0,
+    "report": "release-cli/report.json"
+  },
+  "cliAddressSanitizer": {
+    "checks": 252,
+    "exitCode": 0,
+    "report": "asan-cli/report.json"
+  },
+  "dctOracle": {
+    "profilesPerDirection": 48,
+    "directions": 2,
+    "maximumSampleDifference": 2,
+    "limits": {
+      "8bit": 2,
+      "12bit": 4
+    },
+    "exitCode": 0,
+    "commands": "cli-oracle-commands.json"
+  },
+  "native": {
+    "fixtures": 12,
+    "rounds": 2,
+    "warmups": 5,
+    "samples": 20,
+    "quality": "Full output SHA256 and byte counts match for every baseline/candidate pair.",
+    "results": "joined-native.json",
+    "initialTrialExcluded": "../experiments/pipeline-initial/native.json"
+  },
+  "ownedOutput": {
+    "commands": 105,
+    "allExitCodes": 0,
+    "acceptedTimingRecords": 24,
+    "qualityExcludedRecords": 8,
+    "freshProcessRSSObservations": 72,
+    "results": "owned-output/results.json",
+    "build": "owned-output/build.json"
+  },
+  "notRerunAtThisCheckpoint": [
+    "Full ASan suite (focused affected pipeline group was run)",
+    "Lossless oracle (f4 result retained separately)",
+    "Whole-process CLI benchmark matrix",
+    "Physical-device or stable-release qualification"
+  ],
+  "remoteCI": {
+    "priorSource": "f4a05be9f3003a48adaa840abd48fcf6071f009d",
+    "priorRun": 41653197075,
+    "priorOverallConclusion": "failure",
+    "successfulJobs": 7,
+    "cancelledBeforeStepsJobs": 6,
+    "snapshot": "ci-f4-complete.json",
+    "currentSourceRun": 41657375246,
+    "currentSourceStatusAtPreparation": "queued; not a passed gate"
+  },
+  "status": "Completed local checkpoint with provisional timing and unavailable/pending remote gates; overall djpeg goal remains open."
+}

@@ -1,0 +1,84 @@
+commit 4b914f3644958b88405a43fc2c61391017521c31
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 19:56:30 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 19:56:30 2026 +0530
+
+    Trial exact SIMD lane conversion in DCT coefficient packing
+
+diff --git a/Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift b/Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift
+index 357b811..2c5b912 100644
+--- a/Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift
++++ b/Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift
+@@ -225,6 +225,7 @@ enum AccelerateDSP {
+     ) {
+         guard n > 0 else { return }
+         let rowStride = 8 * n
++        let vectorPack = NativeDSP.usesAccelerate
+         // Fused pack: M[r·8N + 8i + c] = dequant(zigzag coefficient at natural
+         // position 8r+c) — replaces inverse-zigzag scatter + dequant sweep + pack
+         // memcpy with one pass.
+@@ -236,8 +237,19 @@ enum AccelerateDSP {
+                     let dst = scratch + r * rowStride + 8 * i
+                     let qrow = qt + 8 * r
+                     let zrow = invZig + 8 * r
+-                    for c in 0..<8 {
+-                        dst[c] = Float(src[zrow[c]]) * qrow[c]
++                    if vectorPack {
++                        // Independent lane conversions and multiplies preserve
++                        // the scalar sequence; no reduction or fused operation.
++                        // Raw SIMD access permits ordinary Float alignment and
++                        // preserves the enclosing buffers' memory bindings.
++                        let lo = SIMD4<Int32>(src[zrow[0]], src[zrow[1]], src[zrow[2]], src[zrow[3]])
++                        let hi = SIMD4<Int32>(src[zrow[4]], src[zrow[5]], src[zrow[6]], src[zrow[7]])
++                        let qlo = UnsafeRawPointer(qrow).loadUnaligned(as: SIMD4<Float>.self)
++                        let qhi = UnsafeRawPointer(qrow + 4).loadUnaligned(as: SIMD4<Float>.self)
++                        UnsafeMutableRawPointer(dst).storeBytes(of: SIMD4<Float>(lo) * qlo, as: SIMD4<Float>.self)
++                        UnsafeMutableRawPointer(dst + 4).storeBytes(of: SIMD4<Float>(hi) * qhi, as: SIMD4<Float>.self)
++                    } else {
++                        for c in 0..<8 { dst[c] = Float(src[zrow[c]]) * qrow[c] }
+                     }
+                 }
+             }
+diff --git a/Tests/SwiftJLITests/Native/SIMDDequantizationTests.swift b/Tests/SwiftJLITests/Native/SIMDDequantizationTests.swift
+new file mode 100644
+index 0000000..d08b3c0
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/SIMDDequantizationTests.swift
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: Apache-2.0
++import Testing
++@testable import SwiftJLI
++
++@Suite struct SIMDDequantizationTests {
++    @Test func packedBitsMatchScalarArithmeticWithUnalignedVectorsAndTails() throws {
++        let extrema: [Int32] = [.min, .max, -16_777_217, 16_777_217, -1, 0, 1, 4095]
++        for count in [1, 2, 3, 17, 1023, 1024] {
++            let coefficients = (0..<(count * 64)).map { extrema[$0 % extrema.count] }
++            let quantisers = (0..<64).map { Float(($0 * 1031) % 65535 + 1) }
++            var table = [Float](repeating: -123, count: 66)
++            table.replaceSubrange(1..<65, with: quantisers)
++            var output = [Float](repeating: -123, count: count * 64 + 2)
++            for backend in [Backend.scalarCPU, .accelerated] {
++                NativeOperation.$current.withValue(.init(seconds: 120, backend: backend)) {
++                    coefficients.withUnsafeBufferPointer { src in
++                        table.withUnsafeBufferPointer { qt in
++                            output.withUnsafeMutableBufferPointer { dst in
++                                AccelerateDSP.packDequantizedDCTBatch(zigzag: src.baseAddress!,
++                                    quantTable: qt.baseAddress! + 1, scratch: dst.baseAddress! + 1,
++                                    blockCount: count)
++                            }
++                        }
++                    }
++                }
++                #expect(output.first == -123 && output.last == -123)
++                for block in 0..<count { for row in 0..<8 { for column in 0..<8 {
++                    let natural = row * 8 + column
++                    let expected = Float(coefficients[block * 64 + Quantization.inverseZigzagOrder[natural]])
++                        * quantisers[natural]
++                    #expect(output[1 + row * count * 8 + block * 8 + column].bitPattern == expected.bitPattern)
++                } } }
++            }
++        }
++    }
++}
