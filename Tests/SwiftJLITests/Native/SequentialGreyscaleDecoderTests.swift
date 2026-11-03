@@ -7,9 +7,9 @@ import Testing
     func scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision: Int) throws {
         let dcTable = StandardHuffmanTables.dcLuminance
         let acTable = StandardHuffmanTables.acLuminance
-        for dimensions in [(1, 1), (3, 5), (32, 17)] {
+        for dimensions in [(1, 1), (3, 5), (32, 17), (65, 49)] {
             let (columns, rows) = dimensions
-            for interval in [0, 1, 7, 32] {
+            for interval in [0, 1, 7, 32, 1023, 1024, 1025] {
                 var writer = BitWriter()
                 var previous: Int32 = 0
                 var expected: [Int32] = []
@@ -47,9 +47,58 @@ import Testing
                     #expect(destination.suffix(4).allSatisfy { $0 == 123456 })
                     try reader.skipRestartMarker(expectedIndex: 3)
                     #expect(try reader.readBits(8) == 0x5A)
+
+                    var batchReader = BitReader(data: writer.data)
+                    var collected: [Int32] = []
+                    try SequentialGreyscaleDecoder.decodeBatches(reader: &batchReader,
+                        dcTable: dcTable, acTable: acTable, lookup: lookup,
+                        blocksPerRow: columns, blockRows: rows,
+                        precision: precision, restartInterval: interval) { block, first in
+                        #expect(first == collected.count / 64)
+                        #expect(block.count <= 1024 * 64)
+                        collected.append(contentsOf: block)
+                    }
+                    #expect(collected == expected)
+                    try batchReader.skipRestartMarker(expectedIndex: 3)
+                    #expect(try batchReader.readBits(8) == 0x5A)
                 }
             }
         }
+    }
+
+    @Test func batchConsumerFailureStopsBeforeReusingItsBorrow() throws {
+        var writer = BitWriter()
+        let dcTable = StandardHuffmanTables.dcLuminance
+        let acTable = StandardHuffmanTables.acLuminance
+        let block = [Int32](repeating: 0, count: 64)
+        for _ in 0..<2050 {
+            HuffmanEncoder.encodeDC(0, table: dcTable, writer: &writer)
+            HuffmanEncoder.encodeAC(block, table: acTable, writer: &writer)
+        }
+        writer.flush()
+        var reader = BitReader(data: writer.data)
+        var calls = 0
+        #expect(throws: CancellationError.self) {
+            try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
+                dcTable: dcTable, acTable: acTable, lookup: nil,
+                blocksPerRow: 41, blockRows: 50, precision: 8, restartInterval: 0) { coefficients, first in
+                calls += 1
+                #expect(first == 0 && coefficients.count == 1024 * 64)
+                #expect(coefficients.allSatisfy { $0 == 0 })
+                throw CancellationError()
+            }
+        }
+        #expect(calls == 1)
+        // The failure does not leave a worker or borrowed owner alive. A new
+        // invocation can immediately consume all batches with independent state.
+        reader = BitReader(data: writer.data)
+        var received = 0
+        try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
+            dcTable: dcTable, acTable: acTable, lookup: nil,
+            blocksPerRow: 41, blockRows: 50, precision: 8, restartInterval: 0) { coefficients, _ in
+            received += coefficients.count / 64
+        }
+        #expect(received == 2050)
     }
 
     @Test func invalidExtentsRejectBeforeWriting() throws {

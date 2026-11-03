@@ -112,6 +112,33 @@ struct JLIDecoder: Sendable {
         let mcuCountH = (frame.width + mcuW - 1) / mcuW
         let mcuCountV = (frame.height + mcuH - 1) / mcuH
 
+        let directGreyscale = scale == 1 && numComponents == 1 && NativeOperation.workerLimit == 1
+            && !parsed.isXYB && !parsed.isRawRGB && !normaliseXYBOutput
+            && configuration.outputColorModel == nil
+            && (configuration.outputPixelFormat == nil || configuration.outputPixelFormat == .float32)
+        let floating = configuration.outputPixelFormat == .float32
+        if directGreyscale, !frame.isProgressive, parsed.scans.count == 1,
+           components[0].horizontalSampling == 1, components[0].verticalSampling == 1,
+           let borrowedDestination {
+            let scan = parsed.scans[0]
+            let selector = scan.header.components.first { $0.componentSelector == components[0].id }
+            let dcTable = prepareDCTables(scan.dcTables)[selector?.dcTableId ?? 0] ?? StandardHuffmanTables.dcLuminance
+            let acTable = prepareACTables(scan.acTables)[selector?.acTableId ?? 0] ?? StandardHuffmanTables.acLuminance
+            let blockCount = mcuCountH * mcuCountV
+            // Lookup admission uses the entire scan, as in the retained path.
+            let lookup = ACLookahead(table: acTable, blockCount: blockCount)
+            var reader = BitReader(data: scan.entropyData)
+            try Self.decodeSequentialGreyscaleInto(reader: &reader, dcTable: dcTable,
+                acTable: acTable, lookup: lookup,
+                quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
+                blocksPerRow: mcuCountH, blockRows: mcuCountV,
+                width: frame.width, height: frame.height, precision: frame.precision,
+                restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
+            return try JLIImage(geometryOnlyWidth: frame.width, height: frame.height,
+                pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
+                colorModel: .grayscale, iccProfile: parsed.iccProfile, exif: parsed.exif)
+        }
+
         // Step 4: Allocate one flat zigzag-coefficient buffer per component.
         // Block `b` of component `c` lives at `componentZigzag[c][b*64 ..< (b+1)*64]`.
         var componentZigzag = [[Int32]]()
@@ -248,11 +275,7 @@ struct JLIDecoder: Sendable {
         // each unchanged 1024-block IDCT batch can be rounded into its final
         // destination immediately. All destination writes stay on this caller
         // thread, inside the owning storage borrow; no worker receives it.
-        if scale == 1, numComponents == 1, NativeOperation.workerLimit == 1,
-           let borrowedDestination, !parsed.isXYB, !parsed.isRawRGB,
-           !normaliseXYBOutput, configuration.outputColorModel == nil,
-           configuration.outputPixelFormat == nil || configuration.outputPixelFormat == .float32 {
-            let floating = configuration.outputPixelFormat == .float32
+        if directGreyscale, let borrowedDestination {
             try Self.reconstructGreyscaleInto(componentZigzag[0],
                 quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
                 blocksPerRow: componentDimensions[0].blocksH,
@@ -1018,18 +1041,8 @@ struct JLIDecoder: Sendable {
         width: Int, height: Int, precision: Int, floatOutput: Bool,
         destination: BorrowedSampleDestination
     ) throws {
-        let bps = destination.bytesPerSample
-        guard floatOutput ? bps == 4 : (bps == 1 && precision <= 8) || bps == 2 else {
-            throw JLIError.unsupportedJPEGFeature("Invalid greyscale destination")
-        }
-        let rowPayload = try checkedMultiply(width, bps)
-        guard destination.rowBytes >= rowPayload else {
-            throw JLIError.decodingFailed("invalid greyscale destination layout")
-        }
-        let needed = try checkedAdd(checkedMultiply(height - 1, destination.rowBytes), rowPayload)
-        guard destination.bytes.count >= needed else {
-            throw JLIError.bufferSizeMismatch(expected: needed, actual: destination.bytes.count)
-        }
+        try validateGreyscaleDestination(destination, width: width, height: height,
+                                         precision: precision, floatOutput: floatOutput)
         let blockCount = zigzag.count / 64
         let scratchCount = min(1024, blockCount) * 64
         var pixels = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
@@ -1041,23 +1054,87 @@ struct JLIDecoder: Sendable {
                         for first in stride(from: 0, to: blockCount, by: 1024) {
                             try NativeOperation.check()
                             let count = min(1024, blockCount - first)
-                            AccelerateDSP.inverseDCTBatchDequantized(
-                                zigzag: zz.baseAddress! + first * 64, quantTable: qt.baseAddress!,
-                                output: px.baseAddress!, scratch: sc.baseAddress!, blockCount: count)
-                            var center = Float(1 << (precision - 1))
-                            var lo: Float = 0, hi = Float((1 << precision) - 1)
-                            let samples = JLI_DSPCount(count * 64)
-                            jliDSP_vsadd(px.baseAddress!, 1, &center, px.baseAddress!, 1, samples)
-                            jliDSP_vclip(px.baseAddress!, 1, &lo, &hi, px.baseAddress!, 1, samples)
-                            try SharedDCTStorage.writeGreyscaleBlocks(
-                                UnsafeBufferPointer(start: px.baseAddress!, count: count * 64),
-                                firstBlock: first, blocksPerRow: blocksPerRow,
+                            try reconstructGreyscaleBatch(
+                                coefficients: zz.baseAddress! + first * 64, quantTable: qt.baseAddress!,
+                                pixels: px.baseAddress!, scratch: sc.baseAddress!, firstBlock: first,
+                                blockCount: count, blocksPerRow: blocksPerRow,
                                 width: width, height: height, precision: precision,
-                                floatOutput: floatOutput, into: destination)
+                                floatOutput: floatOutput, destination: destination)
                         }
                     }
                 }
             }
+        }
+    }
+
+    /// Sequential greyscale retains at most one coefficient batch and two Float
+    /// reconstruction batches. All three borrows and the final destination stay
+    /// on this thread; entropy state is carried across completed batches.
+    private static func decodeSequentialGreyscaleInto(
+        reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable, lookup: ACLookahead?,
+        quantTable: [Float], blocksPerRow: Int, blockRows: Int,
+        width: Int, height: Int, precision: Int, restartInterval: Int,
+        floatOutput: Bool, destination: BorrowedSampleDestination
+    ) throws {
+        try validateGreyscaleDestination(destination, width: width, height: height,
+                                         precision: precision, floatOutput: floatOutput)
+        let scratchCount = min(1024, blocksPerRow * blockRows) * 64
+        var pixels = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
+        var scratch = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
+        try quantTable.withUnsafeBufferPointer { qt in
+            try pixels.withUnsafeMutableBufferPointer { px in
+                try scratch.withUnsafeMutableBufferPointer { sc in
+                    try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
+                        dcTable: dcTable, acTable: acTable, lookup: lookup,
+                        blocksPerRow: blocksPerRow, blockRows: blockRows,
+                        precision: precision, restartInterval: restartInterval) { coefficients, first in
+                        try reconstructGreyscaleBatch(coefficients: coefficients.baseAddress!, quantTable: qt.baseAddress!,
+                            pixels: px.baseAddress!, scratch: sc.baseAddress!, firstBlock: first,
+                            blockCount: coefficients.count / 64, blocksPerRow: blocksPerRow,
+                            width: width, height: height, precision: precision,
+                            floatOutput: floatOutput, destination: destination)
+                    }
+                }
+            }
+        }
+    }
+
+    private static func reconstructGreyscaleBatch(
+        coefficients: UnsafePointer<Int32>, quantTable: UnsafePointer<Float>,
+        pixels: UnsafeMutablePointer<Float>, scratch: UnsafeMutablePointer<Float>,
+        firstBlock: Int, blockCount: Int, blocksPerRow: Int,
+        width: Int, height: Int, precision: Int, floatOutput: Bool,
+        destination: BorrowedSampleDestination
+    ) throws {
+        AccelerateDSP.inverseDCTBatchDequantized(zigzag: coefficients, quantTable: quantTable,
+            output: pixels, scratch: scratch, blockCount: blockCount)
+        var center = Float(1 << (precision - 1))
+        var lo: Float = 0, hi = Float((1 << precision) - 1)
+        let samples = JLI_DSPCount(blockCount * 64)
+        jliDSP_vsadd(pixels, 1, &center, pixels, 1, samples)
+        jliDSP_vclip(pixels, 1, &lo, &hi, pixels, 1, samples)
+        try SharedDCTStorage.writeGreyscaleBlocks(
+            UnsafeBufferPointer(start: pixels, count: blockCount * 64),
+            firstBlock: firstBlock, blocksPerRow: blocksPerRow,
+            width: width, height: height, precision: precision,
+            floatOutput: floatOutput, into: destination)
+    }
+
+    private static func validateGreyscaleDestination(
+        _ destination: BorrowedSampleDestination, width: Int, height: Int,
+        precision: Int, floatOutput: Bool
+    ) throws {
+        let bps = destination.bytesPerSample
+        guard floatOutput ? bps == 4 : (bps == 1 && precision <= 8) || bps == 2 else {
+            throw JLIError.unsupportedJPEGFeature("Invalid greyscale destination")
+        }
+        let rowPayload = try checkedMultiply(width, bps)
+        guard destination.rowBytes >= rowPayload else {
+            throw JLIError.decodingFailed("invalid greyscale destination layout")
+        }
+        let needed = try checkedAdd(checkedMultiply(height - 1, destination.rowBytes), rowPayload)
+        guard destination.bytes.count >= needed else {
+            throw JLIError.bufferSizeMismatch(expected: needed, actual: destination.bytes.count)
         }
     }
 

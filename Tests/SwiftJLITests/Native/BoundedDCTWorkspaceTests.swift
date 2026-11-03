@@ -1,8 +1,48 @@
 // SPDX-License-Identifier: Apache-2.0
+import Foundation
 import Testing
 @testable import SwiftJLI
 
 @Suite struct BoundedDCTWorkspaceTests {
+    @Test func laterEntropyFailureInvalidatesStreamedDestination() throws {
+        let width = 513, height = 521
+        let image = try JLIImage(width: width, height: height, pixelFormat: .uint8,
+            colorModel: .grayscale, data: [UInt8](repeating: 128, count: width * height))
+        let encoded = try JLIEncoder().encode(image)
+        var parser = MarkerReader(data: encoded)
+        let complete = try parser.parse()
+        let scan = try #require(complete.scans.first)
+        let sos = try #require((0..<(encoded.count - 3)).first { encoded[$0] == 0xFF && encoded[$0 + 1] == 0xDA })
+        let entropyStart = sos + 2 + Int(encoded[sos + 2]) * 256 + Int(encoded[sos + 3])
+        // Retain a valid envelope and enough entropy for more than one batch.
+        let truncated = Array(encoded.prefix(entropyStart + scan.entropyData.count / 2)) + [0xFF, 0xD9]
+        var truncatedParser = MarkerReader(data: truncated)
+        let parsed = try truncatedParser.parse()
+        var bytes = [UInt8](repeating: 0xA5, count: width * height)
+        #expect(throws: JLIError.self) {
+            try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 1)) {
+                try bytes.withUnsafeMutableBytes { raw in
+                    _ = try JLIDecoder().decodeParsed(parsed, borrowedDestination: .init(
+                        bytes: raw, rowBytes: width, bytesPerSample: 1))
+                }
+            }
+        }
+        #expect(bytes[0] == 128)
+        #expect(bytes.last == 0xA5)
+
+        let decoder = try Decoder()
+        let descriptor = try decoder.inspect(Data(encoded)).descriptor
+        let destination = try ImageDestination.allocate(descriptor: descriptor)
+        let options = DecodeOptions(resourceLimits: try ResourceLimits(maximumWorkers: 1))
+        #expect(throws: CodecError.self) {
+            try decoder.decodeSynchronously(Data(truncated), into: destination, options: options, cancellationCheck: {})
+        }
+        // Partially written samples cannot be published or the lease reused.
+        #expect(throws: CodecError.self) {
+            try decoder.decodeSynchronously(Data(encoded), into: destination, options: options, cancellationCheck: {})
+        }
+    }
+
     @Test func directGreyscaleRejectsInvalidDestinationBeforeWriting() throws {
         let image = try JLIImage(width: 8, height: 9, pixelFormat: .uint8,
             colorModel: .grayscale, data: [UInt8](repeating: 128, count: 72))
