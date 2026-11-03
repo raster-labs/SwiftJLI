@@ -20,6 +20,8 @@ Both global and command-local help include availability, examples, option ranges
 
 The executable runs codec operations on its calling thread, with any parallel workers joined before returning. Package-only synchronous adapters use the same validated kernels, owning storage and reports as the public asynchronous API. They poll the command's signal and deadline checks at the existing cancellation points, including joined workers. Application clients retain the public asynchronous executor policy.
 
+Regular input files use their opened descriptor's admitted size to allocate an owning input buffer, then read into it in bounded chunks. The CLI still checks for EOF, trims a shrinking file and admits any growth against the same byte limit. Pipe input retains its bounded nonblocking loop. This avoids intermediate input copies without changing the format, deadline or resource policies.
+
 ## Commands and Fidelity-Preserving Uncompressed Formats
 
 - **`capabilities [--json]`**: Reports the library's actual `canEncode`, `canDecode`, `canInspect` and `formats` values without reading files.

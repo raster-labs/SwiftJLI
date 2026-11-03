@@ -2,6 +2,23 @@
 
 **Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
 
+**3 November 2026 third performance follow-up:** source
+`5351088d3bb4630a32de6509e4d62210ad14aaa0` reduces lossless dispatch, batches
+canonical zero differences, borrows greyscale DCT coefficient planes once per
+scan, reuses validated entropy extents and reads regular files directly into
+bounded owning buffers. All five eligible large lossless cases beat both pinned
+djpeg 3.2.0 and 3.2.1 by more than 5% in both rounds, including the original
+mixed2048 case (12.2% / 12.5% lower latency). Small CLI cases, DCT12 CLI latency
+and process memory still favour djpeg; the overall optimisation goal remains
+active. Final validation passes 388 release/ASan tests, 250 release/ASan CLI
+checks, 45 focused TSan tests, 210 lossless oracle cases per direction, 48 DCT
+profiles in both directions and 36 additional independent large zero-category
+fixtures. Decoded bytes match the preceding Swift revision; fidelity and
+resource limits remain unchanged. The raw unstable flat8 DCT timing round and
+its four-round follow-up remain separate in
+[DjpegPerformanceRound3_20261103](Qualification/DjpegPerformanceRound3_20261103/README.md).
+These are local macOS results; existing platform and stable-release gates remain open.
+
 **2 November 2026 second performance follow-up:** production source
 `b31999bd4246507fc9c7f18cd770b411faea501d`, with additional regression tests at
 `7fe1c7394c3238441b2ef0f068698e766914cebe`, adds scoped DCT coefficient decoding,
