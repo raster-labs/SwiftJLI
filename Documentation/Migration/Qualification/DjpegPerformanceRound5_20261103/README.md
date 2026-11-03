@@ -1,6 +1,6 @@
 # JPEG optimisation — fifth round, 3 November 2026
 
-**The overall djpeg goal remains open.** The latest completed local evidence is the [joined pipeline checkpoint at `14f3501`](pipeline-14f3501/README.md): 436 Release tests, focused ASan/TSan, CLI checks, DCT oracle and provisional native/API comparisons. Its production-equivalent tested source is `704ddae`. [Verify the report archives](verify_report.py) without rebuilding.
+**The overall djpeg goal remains open.** The latest completed local evidence is the [joined pipeline checkpoint at `14f3501`](pipeline-14f3501/README.md): 436 Release tests, focused ASan/TSan, CLI checks, DCT oracle and provisional native/API comparisons. Its production-equivalent tested source is `704ddae`. The [latest 14f CI result](pipeline-14f3501/ci-14f-summary.json) has four Linux test failures and six unavailable Apple ARM jobs; the local counts do not imply a remote pass. [Verify the report archives](verify_report.py) without rebuilding.
 
 ## Retained f4a05be checkpoint
 
