@@ -40,6 +40,36 @@ import Testing
         let mismatch = expected.indices.first { expected[$0].bitPattern != actual[$0 + 3].bitPattern }
         #expect(mismatch == nil, "Raw Float bits differ: blocks=\(blocks), q=\(quantiser), index=\(String(describing: mismatch))")
 
+        // The streaming path consumes DC values into independent scratch before
+        // it rebinds coefficient storage. Check its Float bits against the same
+        // independent generic transform, including mixed-AC fallback and tails.
+        var reused = coefficients
+        reused.withUnsafeMutableBufferPointer { c in
+            table.withUnsafeBufferPointer { q in
+                scratch.withUnsafeMutableBufferPointer { s in
+                    let count = c.count, workspace = s.baseAddress! + 3
+                    let dcOnly = AccelerateDSP.prepareDCOnlyDCTBatch(zigzag: UnsafePointer(c.baseAddress!),
+                        quantTable: q.baseAddress!, scratch: workspace, blockCount: blocks)
+                    if !dcOnly {
+                        AccelerateDSP.packDequantizedDCTBatch(zigzag: UnsafePointer(c.baseAddress!),
+                            quantTable: q.baseAddress!, scratch: workspace, blockCount: blocks)
+                    }
+                    c.baseAddress!.withMemoryRebound(to: Float.self, capacity: count) { output in
+                        if dcOnly {
+                            AccelerateDSP.writeDCOnlyDCTBatch(values: UnsafePointer(workspace),
+                                output: output, blockCount: blocks)
+                        } else {
+                            AccelerateDSP.inverseDCTBatchPacked(output: output,
+                                scratch: workspace, blockCount: blocks)
+                        }
+                        #expect(expected.indices.allSatisfy { expected[$0].bitPattern == output[$0].bitPattern })
+                    }
+                }
+            }
+        }
+        #expect(scratch.prefix(3).allSatisfy { $0 == sentinel })
+        #expect(scratch.suffix(5).allSatisfy { $0 == sentinel })
+
         if let precision = clipPrecision {
             var center = Float(1 << (precision - 1)), low: Float = 0, high = Float((1 << precision) - 1)
             expected.withUnsafeMutableBufferPointer { e in

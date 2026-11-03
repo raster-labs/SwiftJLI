@@ -85,7 +85,19 @@ import Testing
                 calls += 1
                 #expect(first == 0 && coefficients.count == 1024 * 64)
                 #expect(coefficients.allSatisfy { $0 == 0 })
-                throw CancellationError()
+                // Throw from the temporary Float binding, then access Int32
+                // again only after withMemoryRebound has restored its binding.
+                let count = coefficients.count
+                do {
+                    try coefficients.baseAddress!.withMemoryRebound(to: Float.self,
+                        capacity: count) { pixels in
+                        pixels.update(repeating: .nan, count: count)
+                        throw CancellationError()
+                    }
+                } catch {
+                    #expect(coefficients[0] == Int32(bitPattern: Float.nan.bitPattern))
+                    throw error
+                }
             }
         }
         #expect(calls == 1)

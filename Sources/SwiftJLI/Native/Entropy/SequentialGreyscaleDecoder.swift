@@ -7,7 +7,11 @@
 enum SequentialGreyscaleDecoder {
     /// Serial scan with bounded coefficient storage. The consumer completes
     /// synchronously before the same slot is reused. The consumer must not let
-    /// the pointer escape or use it concurrently; the production consumer
+    /// the pointer escape or use it concurrently. It may overwrite consumed
+    /// coefficients, including through temporary scoped rebinding, but must
+    /// restore the Int32 binding on return or throw. Each following block is
+    /// fully initialised by decodeAC and its DC assignment before it is read;
+    /// no coefficient value carries between batches. The production consumer
     /// finishes reconstruction and output before returning.
     /// DC prediction and restart numbering span batches, while each batch keeps
     /// the established 1024-block reconstruction grouping.
@@ -15,7 +19,7 @@ enum SequentialGreyscaleDecoder {
         reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable,
         lookup: ACLookahead?, blocksPerRow: Int, blockRows: Int,
         precision: Int, restartInterval: Int,
-        consume: (UnsafeBufferPointer<Int32>, Int) throws -> Void
+        consume: (UnsafeMutableBufferPointer<Int32>, Int) throws -> Void
     ) throws {
         let (blocks, overflow) = blocksPerRow.multipliedReportingOverflow(by: blockRows)
         let (_, countOverflow) = blocks.multipliedReportingOverflow(by: 64)
@@ -57,7 +61,7 @@ enum SequentialGreyscaleDecoder {
                         index += 1
                     }
                 }
-                try consume(UnsafeBufferPointer(start: base, count: (end - first) * 64), first)
+                try consume(UnsafeMutableBufferPointer(start: base, count: (end - first) * 64), first)
             }
         }
     }

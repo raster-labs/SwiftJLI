@@ -57,9 +57,9 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
         let width = 65, height = 57, bps = floating ? 4 : precision == 8 ? 1 : 2
         let configuration = DecoderConfiguration(sampleFormat: floating ? .float32RawSamples : .nativeInteger)
         let native = JLIDecoderConfiguration(outputPixelFormat: floating ? .float32 : nil)
-        // 9 x 8 padded blocks; one coefficient and two reconstruction batches.
+        // 9 x 8 padded blocks; shared coefficient/output and one scratch batch.
         // This boundary deliberately includes block padding, not width*height.
-        let workspace = data.count * 64 + 55_296 + 1_048_576
+        let workspace = data.count * 64 + 36_864 + 1_048_576
         let offset = bps * 2, rowBytes = (width + 3) * bps
         let planeCapacity = offset + rowBytes * height, storageCapacity = planeCapacity + 11
         let plane = try PlaneDescriptor(width: width, height: height, offset: offset,
@@ -173,12 +173,12 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
             let atThreshold = replacingGeometry(width: 8, height: threshold * 8)
             let plan = try #require(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend))
-            #expect(plan.blockCount == threshold && plan.batchBlocks == 1024 && plan.workspaceBytes == 786_432)
+            #expect(plan.blockCount == threshold && plan.batchBlocks == 1024 && plan.workspaceBytes == 524_288)
             let aboveThreshold = replacingGeometry(width: 8, height: (threshold + 1) * 8)
             #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
                 hasDestination: true, normaliseXYBOutput: false, workerLimit: 8, backend: backend) == nil)
             #expect(try SequentialGreyscalePlan.make(parsed: aboveThreshold, configuration: .default,
-                hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: backend)?.workspaceBytes == 786_432)
+                hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: backend)?.workspaceBytes == 524_288)
             #expect(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,
                 hasDestination: false, normaliseXYBOutput: false, workerLimit: 1, backend: backend) == nil)
             #expect(try SequentialGreyscalePlan.make(parsed: atThreshold, configuration: .default,

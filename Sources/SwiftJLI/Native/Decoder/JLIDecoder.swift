@@ -1085,9 +1085,11 @@ struct JLIDecoder: Sendable {
         }
     }
 
-    /// Sequential greyscale retains at most one coefficient batch and two Float
-    /// reconstruction batches. All three borrows and the final destination stay
-    /// on this thread; entropy state is carried across completed batches.
+    /// Sequential greyscale retains one coefficient/output batch and one Float
+    /// scratch batch. Packing consumes every Int32 coefficient before that
+    /// storage is temporarily rebound for Float output. Both borrows and the
+    /// final destination stay on this thread; no Int32 access occurs while
+    /// rebound, and the binding is restored on normal and throwing returns.
     private static func decodeSequentialGreyscaleInto(
         reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable, lookup: ACLookahead?,
         quantTable: [Float], plan: SequentialGreyscalePlan,
@@ -1097,18 +1099,33 @@ struct JLIDecoder: Sendable {
         try validateGreyscaleDestination(destination, width: width, height: height,
                                          precision: precision, floatOutput: floatOutput)
         let scratchCount = plan.batchBlocks * 64
-        var pixels = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
         var scratch = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
         try quantTable.withUnsafeBufferPointer { qt in
-            try pixels.withUnsafeMutableBufferPointer { px in
-                try scratch.withUnsafeMutableBufferPointer { sc in
-                    try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
-                        dcTable: dcTable, acTable: acTable, lookup: lookup,
-                        blocksPerRow: plan.blocksPerRow, blockRows: plan.blockRows,
-                        precision: precision, restartInterval: restartInterval) { coefficients, first in
-                        try reconstructGreyscaleBatch(coefficients: coefficients.baseAddress!, quantTable: qt.baseAddress!,
-                            pixels: px.baseAddress!, scratch: sc.baseAddress!, firstBlock: first,
-                            blockCount: coefficients.count / 64, blocksPerRow: plan.blocksPerRow,
+            try scratch.withUnsafeMutableBufferPointer { sc in
+                try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
+                    dcTable: dcTable, acTable: acTable, lookup: lookup,
+                    blocksPerRow: plan.blocksPerRow, blockRows: plan.blockRows,
+                    precision: precision, restartInterval: restartInterval) { coefficients, first in
+                    let sampleCount = coefficients.count, blockCount = sampleCount / 64
+                    let base = coefficients.baseAddress!
+                    let dcOnly = AccelerateDSP.prepareDCOnlyDCTBatch(zigzag: UnsafePointer(base),
+                        quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount)
+                    if !dcOnly {
+                        AccelerateDSP.packDequantizedDCTBatch(zigzag: UnsafePointer(base),
+                            quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount)
+                    }
+                    // Plan admission proves matching stride/alignment. Packing
+                    // has finished all coefficient reads before changing binding.
+                    try base.withMemoryRebound(to: Float.self, capacity: sampleCount) { pixels in
+                        if dcOnly {
+                            AccelerateDSP.writeDCOnlyDCTBatch(values: UnsafePointer(sc.baseAddress!),
+                                output: pixels, blockCount: blockCount)
+                        } else {
+                            AccelerateDSP.inverseDCTBatchPacked(output: pixels, scratch: sc.baseAddress!,
+                                blockCount: blockCount)
+                        }
+                        try writeReconstructedGreyscaleBatch(pixels: pixels, firstBlock: first,
+                            blockCount: blockCount, blocksPerRow: plan.blocksPerRow,
                             width: width, height: height, precision: precision,
                             floatOutput: floatOutput, destination: destination)
                     }
@@ -1126,6 +1143,17 @@ struct JLIDecoder: Sendable {
     ) throws {
         AccelerateDSP.inverseDCTBatchDequantized(zigzag: coefficients, quantTable: quantTable,
             output: pixels, scratch: scratch, blockCount: blockCount)
+        try writeReconstructedGreyscaleBatch(pixels: pixels, firstBlock: firstBlock,
+            blockCount: blockCount, blocksPerRow: blocksPerRow,
+            width: width, height: height, precision: precision,
+            floatOutput: floatOutput, destination: destination)
+    }
+
+    private static func writeReconstructedGreyscaleBatch(
+        pixels: UnsafeMutablePointer<Float>, firstBlock: Int, blockCount: Int, blocksPerRow: Int,
+        width: Int, height: Int, precision: Int, floatOutput: Bool,
+        destination: BorrowedSampleDestination
+    ) throws {
         var center = Float(1 << (precision - 1))
         var lo: Float = 0, hi = Float((1 << precision) - 1)
         let samples = JLI_DSPCount(blockCount * 64)

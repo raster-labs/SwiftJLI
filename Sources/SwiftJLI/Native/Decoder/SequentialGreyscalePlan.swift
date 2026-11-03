@@ -12,7 +12,7 @@ struct SequentialGreyscalePlan: Sendable {
     let blockRows: Int
     let blockCount: Int
     let batchBlocks: Int
-    /// Payload of one Int32 coefficient batch and two Float IDCT batches.
+    /// Payload of one Int32 coefficient/output batch and one Float IDCT scratch.
     /// This is a conservative reservation component, not measured peak memory.
     let workspaceBytes: Int
 
@@ -25,7 +25,9 @@ struct SequentialGreyscalePlan: Sendable {
                      hasDestination: Bool, normaliseXYBOutput: Bool,
                      workerLimit: Int, backend: Backend) throws -> Self? {
         let frame = parsed.frameInfo
-        guard hasDestination, !frame.isLossless, !frame.isProgressive,
+        guard MemoryLayout<Int32>.stride == MemoryLayout<Float>.stride,
+              MemoryLayout<Int32>.alignment >= MemoryLayout<Float>.alignment,
+              hasDestination, !frame.isLossless, !frame.isProgressive,
               configuration.scale == 1, frame.components.count == 1,
               parsed.scans.count == 1,
               frame.components[0].horizontalSampling == 1,
@@ -48,8 +50,7 @@ struct SequentialGreyscalePlan: Sendable {
                 || blockCount <= maximumAutomaticScalarBlocks else { return nil }
         let batchBlocks = min(maximumBatchBlocks, blockCount)
         let samples = try checkedMultiply(batchBlocks, 64)
-        let bytesPerSample = try checkedAdd(MemoryLayout<Int32>.stride,
-            checkedMultiply(2, MemoryLayout<Float>.stride))
+        let bytesPerSample = try checkedAdd(MemoryLayout<Int32>.stride, MemoryLayout<Float>.stride)
         let workspaceBytes = try checkedMultiply(samples, bytesPerSample)
         return Self(blocksPerRow: blocksPerRow, blockRows: blockRows,
                     blockCount: blockCount, batchBlocks: batchBlocks, workspaceBytes: workspaceBytes)
