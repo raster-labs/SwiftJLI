@@ -1,5 +1,11 @@
 # Change log
 
+## Compact and pipelined DCT decoding — 3 November 2026
+
+- Source `14f35018d241666358480da2a8527d29ab047627` extends round four with scan-local AC prefetch, compact DC-only decoding, canonical grouped DCT reconstruction and an entropy/reconstruction pipeline. Compact greyscale coefficient/reconstruction storage is 8 KiB; eligible pipelined dense greyscale uses 768 KiB. Large lossless predictor specialisation repairs the measured ramp regression. RGB reconstruction now stages internal tiles and scatters only on the caller thread, preserving provider-borrow lifetime.
+- Pipeline output is byte-identical to the preceding accepted source across the paired DCT matrix. Compared with the compact/grouped checkpoint, dense 512² greyscale decoding improves by 5.7–15.1% across the measured cases and rounds. The pipeline reduces large-image reconstruction storage from 4 MiB to 768 KiB but adds 256 KiB to the previous serial medium-image plan. These are owner-authorised provisional measurements; dense small DCT and CLI/process-memory gaps against djpeg remain open.
+- Final pipeline Release passes 436 tests in 73 suites; focused pipeline ASan and TSan each pass 26 tests in five suites, with 252 CLI checks per build mode and a fresh 48-profile DCT oracle. The earlier compact/grouped checkpoint retains its separate full 434-test ASan and lossless-oracle receipts. A nominal task-local callback wrapper repairs the reproduced Swift 6.3 crash; native Intel CI passes at the recorded follow-up pin, while hosted Apple ARM capacity limits final-platform qualification. See [the source-pinned report](Documentation/Migration/Qualification/DjpegPerformanceRound5_20261103/README.md). No stable-release or completed benchmark goal is claimed.
+
 ## Bounded DCT decoding and compressed-input ownership — 3 November 2026
 
 - Source `0a8acd72ddeac6fb1911457ae28b689eef0e9db1` bounds DCT reconstruction scratch, streams eligible greyscale coefficients, shares immutable compressed input across scans and removes small CLI scratch/descriptor overhead. Admission uses the streaming allocation plan without raising resource ceilings; qualifying decodes may now fit previously rejected budgets. Public API, sample precision, fidelity tolerances and suite policy 0.10.0 are unchanged.

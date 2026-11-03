@@ -2,6 +2,25 @@
 
 **Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
 
+**3 November 2026 fifth performance follow-up:** source
+`14f35018d241666358480da2a8527d29ab047627` adds compact DC-only storage,
+canonical grouped reconstruction, and a joined entropy/reconstruction pipeline.
+The pipeline uses 768 KiB for its two coefficient/output slots and reconstruction
+scratch; the compact path uses 8 KiB. Provider storage remains on the caller
+thread, including the corrected RGB tile path. Large lossless ramp regressions
+are addressed without changing samples, fidelity tolerances or resource ceilings.
+Full pipeline Release passes 436 tests in 73 suites; focused ASan and TSan each
+pass 26 tests in five suites. Separate checkpoint receipts retain full 434-test
+ASan, 252 CLI checks per mode, exact lossless interoperability and DCT oracles.
+See [DjpegPerformanceRound5_20261103](Qualification/DjpegPerformanceRound5_20261103/README.md)
+for exact source and binary pins, comparisons, errors and excluded cases.
+The Swift 6.3 task-local crash has a reproduced cause and nominal-carrier fix;
+native Intel follow-up CI passes at its recorded source, while hosted Apple ARM
+capacity has prevented complete final-platform qualification. The timing results
+remain provisional. Dense small DCT, small CLI latency and process-memory gaps
+against djpeg keep the competitive goal open. Historical entries below describe
+their own source pins and are not the current qualification status.
+
 **3 November 2026 fourth performance follow-up:** source
 `0a8acd72ddeac6fb1911457ae28b689eef0e9db1` bounds DCT scratch, streams eligible
 greyscale DCT coefficients and shares immutable compressed input. Single-decode
