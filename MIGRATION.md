@@ -123,6 +123,7 @@ metadata bytes, the current reservations are:
 | Predictive decode | `64 × B + 8 × N + 1,048,576` |
 | DCT decode, except eligible greyscale streaming | `64 × B + 128 × N + 1,048,576` |
 | Eligible full-resolution greyscale DCT streaming | `64 × B + 512 × min(1024 × L, K) + 1,048,576` |
+| Accelerated greyscale pipeline, at least 2,048 blocks and two permitted workers | `64 × B + 786,432 + 1,048,576` |
 | Table-proven DC-only greyscale streaming | `64 × B + 8 × min(1024, K) + 1,048,576` |
 
 Here `K = ceil(width/8) × ceil(height/8)` counts padded blocks and `L` is the
@@ -142,6 +143,17 @@ categories, the compact path retains just one Int32 DC coefficient and one Float
 value per block. It always uses one batch of at most 1,024 blocks, for an 8 KiB
 payload, independently of the worker ceiling. It preserves full resolution and
 precision; this is not reduced-scale decoding.
+
+For eligible nonconstant accelerated scans with at least 2,048 blocks and a
+worker ceiling of at least two, the pipeline takes precedence over the generic
+lane choice. It overlaps caller-thread entropy decoding with one joined
+reconstruction worker, using two 1,024-block coefficient/output slots and one
+Float scratch slot (768 KiB). The caller alone scatters completed tiles into
+provider storage. If only one CPU is active, execution falls back to the serial
+path within the same conservative reservation. The 768 KiB payload is lower
+than large grouped windows; it is 256 KiB higher than the intermediate one-batch
+512 KiB path for medium images. This explicit concurrency tradeoff is reflected
+in admission and its exact-bound tests.
 
 Public allocated-output and caller-storage decode share these plans. Reduced
 scales, progressive/colour scans and unsupported layouts retain their existing

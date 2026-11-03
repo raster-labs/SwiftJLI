@@ -18,8 +18,10 @@ struct SequentialGreyscalePlan: Sendable {
     let pipelined: Bool
     /// The selected scan-local AC table proves every AC coefficient is zero.
     let dcOnlyTable: Bool
-    /// Payload of one Int32 coefficient/output batch and one Float IDCT scratch.
-    /// A table-proven DC-only scan retains one value of each type per block.
+    /// Payload of coefficient/output slots and Float IDCT scratch. The
+    /// pipeline owns two coefficient slots and one scratch slot; grouped and
+    /// serial paths own one of each per logical lane. A table-proven DC-only
+    /// scan retains one value of each type per block.
     /// This is a conservative reservation component, not measured peak memory.
     let workspaceBytes: Int
 
