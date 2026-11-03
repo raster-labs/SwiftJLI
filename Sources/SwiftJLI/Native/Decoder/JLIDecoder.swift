@@ -244,6 +244,25 @@ struct JLIDecoder: Sendable {
             }
         }
 
+        // A single-worker greyscale decode needs no full-frame Float plane:
+        // each unchanged 1024-block IDCT batch can be rounded into its final
+        // destination immediately. All destination writes stay on this caller
+        // thread, inside the owning storage borrow; no worker receives it.
+        if scale == 1, numComponents == 1, NativeOperation.workerLimit == 1,
+           let borrowedDestination, !parsed.isXYB, !parsed.isRawRGB,
+           !normaliseXYBOutput, configuration.outputColorModel == nil,
+           configuration.outputPixelFormat == nil || configuration.outputPixelFormat == .float32 {
+            let floating = configuration.outputPixelFormat == .float32
+            try Self.reconstructGreyscaleInto(componentZigzag[0],
+                quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
+                blocksPerRow: componentDimensions[0].blocksH,
+                width: frame.width, height: frame.height, precision: frame.precision,
+                floatOutput: floating, destination: borrowedDestination)
+            return try JLIImage(geometryOnlyWidth: frame.width, height: frame.height,
+                pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
+                colorModel: .grayscale, iccProfile: parsed.iccProfile, exif: parsed.exif)
+        }
+
         // Step 7: Per component — fused dequantize+IDCT straight from the
         // entropy-order coefficients, level-shift, then write each block into
         // its (exactly component-sized) plane — in parallel across block ranges
@@ -986,6 +1005,58 @@ struct JLIDecoder: Sendable {
                 memcpy(ptrs.plane + py * compWidth + startX,
                        px + blockBase + y * 8,
                        runW * MemoryLayout<Float>.size)
+            }
+        }
+    }
+
+    /// Serial bounded reconstruction into caller storage. The component plane
+    /// writer and this path share the same sample conversion, and the IDCT,
+    /// level shift and clipping keep exactly the existing 1024-block grouping.
+    /// No pointer escapes these nested borrows or crosses a worker boundary.
+    private static func reconstructGreyscaleInto(
+        _ zigzag: [Int32], quantTable: [Float], blocksPerRow: Int,
+        width: Int, height: Int, precision: Int, floatOutput: Bool,
+        destination: BorrowedSampleDestination
+    ) throws {
+        let bps = destination.bytesPerSample
+        guard floatOutput ? bps == 4 : (bps == 1 && precision <= 8) || bps == 2 else {
+            throw JLIError.unsupportedJPEGFeature("Invalid greyscale destination")
+        }
+        let rowPayload = try checkedMultiply(width, bps)
+        guard destination.rowBytes >= rowPayload else {
+            throw JLIError.decodingFailed("invalid greyscale destination layout")
+        }
+        let needed = try checkedAdd(checkedMultiply(height - 1, destination.rowBytes), rowPayload)
+        guard destination.bytes.count >= needed else {
+            throw JLIError.bufferSizeMismatch(expected: needed, actual: destination.bytes.count)
+        }
+        let blockCount = zigzag.count / 64
+        let scratchCount = min(1024, blockCount) * 64
+        var pixels = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
+        var scratch = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
+        try zigzag.withUnsafeBufferPointer { zz in
+            try quantTable.withUnsafeBufferPointer { qt in
+                try pixels.withUnsafeMutableBufferPointer { px in
+                    try scratch.withUnsafeMutableBufferPointer { sc in
+                        for first in stride(from: 0, to: blockCount, by: 1024) {
+                            try NativeOperation.check()
+                            let count = min(1024, blockCount - first)
+                            AccelerateDSP.inverseDCTBatchDequantized(
+                                zigzag: zz.baseAddress! + first * 64, quantTable: qt.baseAddress!,
+                                output: px.baseAddress!, scratch: sc.baseAddress!, blockCount: count)
+                            var center = Float(1 << (precision - 1))
+                            var lo: Float = 0, hi = Float((1 << precision) - 1)
+                            let samples = JLI_DSPCount(count * 64)
+                            jliDSP_vsadd(px.baseAddress!, 1, &center, px.baseAddress!, 1, samples)
+                            jliDSP_vclip(px.baseAddress!, 1, &lo, &hi, px.baseAddress!, 1, samples)
+                            try SharedDCTStorage.writeGreyscaleBlocks(
+                                UnsafeBufferPointer(start: px.baseAddress!, count: count * 64),
+                                firstBlock: first, blocksPerRow: blocksPerRow,
+                                width: width, height: height, precision: precision,
+                                floatOutput: floatOutput, into: destination)
+                        }
+                    }
+                }
             }
         }
     }

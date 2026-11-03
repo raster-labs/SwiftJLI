@@ -261,28 +261,63 @@ enum SharedDCTStorage {
             for row in 0..<height {
                 try NativeOperation.check()
                 let src = base + row * plane.width, dst = bytes + row * destination.rowBytes
-                if floatOutput {
-                    for x in 0..<width {
-                        let sample = src[x]
-                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
-                        let bits = sample.bitPattern
-                        for byte in 0..<4 { dst[x * 4 + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
-                    }
-                } else if bps == 2 {
-                    for x in 0..<width {
-                        let sample = src[x]
-                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
-                        let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
-                        dst[x * 2] = UInt8(truncatingIfNeeded: value)
-                        dst[x * 2 + 1] = UInt8(value >> 8)
-                    }
-                } else {
-                    for x in 0..<width {
-                        let sample = src[x]
-                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
-                        dst[x] = UInt8(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
-                    }
-                }
+                try writeGreyscaleRun(src, into: dst, count: width, bytesPerSample: bps,
+                                      maximum: maximum, floatOutput: floatOutput)
+            }
+        }
+    }
+
+    /// Writes an already reconstructed batch synchronously into caller memory.
+    /// The caller validates destination geometry and keeps both scoped borrows
+    /// alive. Edge tiles write only active samples, preserving caller padding.
+    static func writeGreyscaleBlocks(_ pixels: UnsafeBufferPointer<Float>,
+                                     firstBlock: Int, blocksPerRow: Int,
+                                     width: Int, height: Int, precision: Int,
+                                     floatOutput: Bool, into destination: BorrowedSampleDestination) throws {
+        guard let base = pixels.baseAddress,
+              let bytes = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+            throw JLIError.unsupportedJPEGFeature("Invalid greyscale destination")
+        }
+        let maximum = Float((1 << precision) - 1), bps = destination.bytesPerSample
+        for index in 0..<(pixels.count / 64) {
+            // At most 4096 reconstructed samples between cancellation checks.
+            if index % 64 == 0 { try NativeOperation.check() }
+            let block = firstBlock + index
+            let x = (block % blocksPerRow) * 8, y = (block / blocksPerRow) * 8
+            guard x < width, y < height else { continue }
+            let count = min(8, width - x)
+            for row in 0..<min(8, height - y) {
+                try writeGreyscaleRun(base + index * 64 + row * 8,
+                    into: bytes + (y + row) * destination.rowBytes + x * bps,
+                    count: count, bytesPerSample: bps, maximum: maximum, floatOutput: floatOutput)
+            }
+        }
+    }
+
+    @inline(__always)
+    private static func writeGreyscaleRun(_ src: UnsafePointer<Float>, into dst: UnsafeMutablePointer<UInt8>,
+                                          count: Int, bytesPerSample: Int, maximum: Float,
+                                          floatOutput: Bool) throws {
+        if floatOutput {
+            for x in 0..<count {
+                let sample = src[x]
+                guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                let bits = sample.bitPattern
+                for byte in 0..<4 { dst[x * 4 + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+            }
+        } else if bytesPerSample == 2 {
+            for x in 0..<count {
+                let sample = src[x]
+                guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
+                dst[x * 2] = UInt8(truncatingIfNeeded: value)
+                dst[x * 2 + 1] = UInt8(value >> 8)
+            }
+        } else {
+            for x in 0..<count {
+                let sample = src[x]
+                guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                dst[x] = UInt8(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
             }
         }
     }
