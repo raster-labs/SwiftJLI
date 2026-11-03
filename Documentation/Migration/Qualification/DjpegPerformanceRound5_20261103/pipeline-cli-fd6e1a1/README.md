@@ -59,3 +59,5 @@ Tables show the mean of the two per-round medians. Positive reduction means Swif
 The retained earlier f4 CLI measurements remain a separate checkpoint. These later measurements do not establish controlled final acceptance or change any quality exclusion. [Archive manifest](manifest.json) records byte-identical original receipts.
 
 The corrected worker-failure test passes all four Linux CI jobs (Swift6.2/6.4 on x86_64/ARM64) in [run41663076174](https://github.com/raster-labs/SwiftJLI/actions/runs/41663076174). At this [captured snapshot](ci-fd6-latest.json), native Intel was still running and six Apple ARM jobs were queued. This does not close final-platform qualification.
+
+A [later snapshot](ci-fd6-followup.json) records native Intel success as well as the four Linux, contract and independent-consumer successes. Two Apple ARM jobs were cancelled and four remained queued; their platform gates remain unavailable. The earlier running snapshot is retained.
