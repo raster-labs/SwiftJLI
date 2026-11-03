@@ -68,7 +68,8 @@ struct JLIDecoder: Sendable {
     }
 
     func decodeParsed(_ parsed: ParsedJPEG, configuration: JLIDecoderConfiguration = .default,
-                      borrowedDestination: BorrowedSampleDestination? = nil, normaliseXYBOutput: Bool = false) throws -> JLIImage {
+                      borrowedDestination: BorrowedSampleDestination? = nil, normaliseXYBOutput: Bool = false,
+                      useScalarCEntropy: Bool = false) throws -> JLIImage {
         let frame = parsed.frameInfo
 
         guard !parsed.scans.isEmpty else {
@@ -79,7 +80,8 @@ struct JLIDecoder: Sendable {
         if frame.isLossless {
             return try decodeLossless(frame: frame, scans: parsed.scans, configuration: configuration,
                                       restartInterval: parsed.restartInterval,
-                                      iccProfile: parsed.iccProfile, exif: parsed.exif)
+                                      iccProfile: parsed.iccProfile, exif: parsed.exif,
+                                      useScalarCEntropy: useScalarCEntropy)
         }
 
         // Step 2: Prepare quantization tables (convert from zigzag to natural order)
@@ -696,7 +698,7 @@ struct JLIDecoder: Sendable {
     private func decodeLossless(
         frame: JPEGFrameInfo, scans: [JPEGScanData], configuration: JLIDecoderConfiguration,
         restartInterval: Int = 0, iccProfile: [UInt8]? = nil, exif: [UInt8]? = nil,
-        borrowedDestination: BorrowedSampleDestination? = nil
+        borrowedDestination: BorrowedSampleDestination? = nil, useScalarCEntropy: Bool = false
     ) throws -> JLIImage {
         let precision = frame.precision
         guard (2...16).contains(precision) else {
@@ -781,10 +783,17 @@ struct JLIDecoder: Sendable {
                     table: tables[0], reader: &reader, pointTransform: pt,
                     segmentRows: restartInterval > 0 ? restartInterval / w : h)
             } else if predictor == 1, pt == 0, borrowed.bytesPerSample == 2 {
-                try Self.losslessLeftUInt16Into(
-                    borrowed, width: w, height: h, half: half,
-                    table: tables[0], reader: &reader,
-                    segmentRows: restartInterval > 0 ? restartInterval / w : h)
+                if useScalarCEntropy {
+                    try Self.losslessCLeftUInt16Into(
+                        borrowed, width: w, height: h, half: half,
+                        table: tables[0], reader: &reader,
+                        segmentRows: restartInterval > 0 ? restartInterval / w : h)
+                } else {
+                    try Self.losslessLeftUInt16Into(
+                        borrowed, width: w, height: h, half: half,
+                        table: tables[0], reader: &reader,
+                        segmentRows: restartInterval > 0 ? restartInterval / w : h)
+                }
             } else {
                 try Self.losslessGrayInto(
                     borrowed, width: w, height: h, predictor: predictor, half: half,
@@ -1253,6 +1262,47 @@ struct JLIDecoder: Sendable {
                 value = (value + (try losslessDifference(table, &reader))) & 0xFFFF
                 outputRow.storeBytes(of: UInt16(truncatingIfNeeded: value).littleEndian,
                     toByteOffset: x * 2, as: UInt16.self)
+            }
+        }
+    }
+
+    /// Optional large-scan row leaf. Cancellation and restart handling stay on
+    /// the caller at exactly the same row boundaries as the Swift reference.
+    /// No row can exceed the validated JPEG width of 65,535 samples. Metadata
+    /// is prepared once per scan; the provider borrow is never used by workers.
+    @inline(never)
+    private static func losslessCLeftUInt16Into(
+        _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
+        half: Int32, table: HuffmanTable, reader: inout BitReader, segmentRows: Int
+    ) throws {
+        guard (1...65535).contains(w), (1...65535).contains(h), segmentRows > 0,
+              destination.bytesPerSample == 2, destination.rowBytes >= w * 2 else {
+            throw JLIError.decodingFailed("invalid lossless destination layout")
+        }
+        let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: destination.rowBytes)
+        let (needed, overflow2) = rowOffset.addingReportingOverflow(w * 2)
+        guard !overflow1, !overflow2, needed <= destination.bytes.count,
+              let output = destination.bytes.baseAddress else {
+            throw JLIError.decodingFailed("lossless destination is too small")
+        }
+        try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { kernel in
+            guard let kernel else {
+                try losslessLeftUInt16Into(destination, width: w, height: h, half: half,
+                    table: table, reader: &reader, segmentRows: segmentRows)
+                return
+            }
+            var previousRowFirst = half
+            for y in 0..<h {
+                try NativeOperation.check()
+                let segmentY = y % segmentRows
+                if y > 0, segmentY == 0 {
+                    try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+                }
+                let row = UnsafeMutableRawBufferPointer(
+                    start: output + y * destination.rowBytes, count: w * 2)
+                let decoded = try reader.decodeLeftUInt16Row(using: kernel, sampleCount: w,
+                    seed: segmentY == 0 ? half : previousRowFirst, into: row)
+                previousRowFirst = decoded.first
             }
         }
     }
@@ -1783,10 +1833,12 @@ func jliWriteInterleavedPlanes(
 
 // The public adapter preflights and parses once, then writes into its lease.
 extension JLIDecoder {
-    func decodeSharedLossless(_ parsed: ParsedJPEG, into plane: BorrowedSampleDestination) throws {
+    func decodeSharedLossless(_ parsed: ParsedJPEG, into plane: BorrowedSampleDestination,
+                              useScalarCEntropy: Bool = false) throws {
         _ = try decodeLossless(frame: parsed.frameInfo, scans: parsed.scans,
             configuration: .init(outputPixelFormat: plane.bytesPerSample == 1 ? .uint8 : .uint16),
             restartInterval: parsed.restartInterval,
-            iccProfile: parsed.iccProfile, exif: parsed.exif, borrowedDestination: plane)
+            iccProfile: parsed.iccProfile, exif: parsed.exif, borrowedDestination: plane,
+            useScalarCEntropy: useScalarCEntropy)
     }
 }

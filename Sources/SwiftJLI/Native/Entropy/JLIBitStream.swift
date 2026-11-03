@@ -403,6 +403,47 @@ struct BitReader {
         }
     }
 
+    /// One synchronous C call per validated row. All input/table/output owners
+    /// enclose this call, and no pointer is saved or passed to another thread.
+    /// Publish reader state before translating failure so a truncated row has
+    /// the same partial output, physical prefetch and next-read behaviour as Swift.
+    mutating func decodeLeftUInt16Row(using kernel: CLosslessRowKernel,
+        sampleCount: Int, seed: Int32, into output: UnsafeMutableRawBufferPointer
+    ) throws -> (first: Int32, last: Int32) {
+        guard (1...65535).contains(sampleCount), (0...65535).contains(seed),
+              output.count >= sampleCount * 2, let destination = output.baseAddress else {
+            throw JLIError.decodingFailed("Invalid C lossless row arguments")
+        }
+        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
+                               available: UInt32(bitsAvailable), marker: 0)
+        var result = SJLILosslessRowResult()
+        let status = withExtendedLifetime(data) {
+            if kernel.usesCodeZero {
+                return sjli_lossless_left_u16_code0_row(buffer.baseAddress,
+                    buffer.count, &state, kernel.table, UInt32(seed), sampleCount,
+                    destination, output.count, &result)
+            }
+            return sjli_lossless_left_u16_row(buffer.baseAddress,
+                buffer.count, &state, kernel.table, UInt32(seed), sampleCount,
+                destination, output.count, &result)
+        }
+        byteOffset = state.byte_offset
+        bitBuffer = state.accumulator
+        bitsAvailable = Int(state.available)
+        switch status {
+        case SJLI_AC_OK: return (Int32(result.first), Int32(result.last))
+        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
+        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
+        case SJLI_AC_MARKER:
+            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
+        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
+        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
+        case SJLI_AC_INVALID_WIDTH:
+            throw JLIError.decodingFailed("invalid bit-read width \(state.marker)")
+        default: throw JLIError.decodingFailed("Invalid C lossless row arguments")
+        }
+    }
+
     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,

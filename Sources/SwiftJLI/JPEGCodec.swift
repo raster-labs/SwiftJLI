@@ -383,7 +383,14 @@ enum JPEGCodec {
                         _ = try JLIDecoder().decodeParsed(parsed, configuration: native, borrowedDestination: borrowed,
                             normaliseXYBOutput: normaliseXYBOutput)
                     } else {
-                        try JLIDecoder().decodeSharedLossless(parsed, into: borrowed)
+                        // Internal implementation choice only: portable C rows
+                        // still report scalarCPU. Explicit scalar retains Swift;
+                        // no flag is added to the TaskLocal or DCT capture state.
+                        let useScalarCEntropy: Bool
+                        if case .automatic = options.executionPolicy { useScalarCEntropy = true }
+                        else { useScalarCEntropy = false }
+                        try JLIDecoder().decodeSharedLossless(parsed, into: borrowed,
+                            useScalarCEntropy: useScalarCEntropy)
                     }
                     try NativeOperation.check()
                 }

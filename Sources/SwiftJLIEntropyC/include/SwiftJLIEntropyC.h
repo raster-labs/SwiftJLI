@@ -57,4 +57,36 @@ SJLIACStatus sjli_dct_decode_block(const void *raw_input, size_t input_count,
     SJLIACState *state, const SJLIACHuffman *dc_table, const SJLIACHuffman *ac_table,
     const uint32_t *lookup, size_t lookup_count, int32_t *previous_dc,
     unsigned precision, int32_t *output, size_t output_count);
+typedef struct {
+    uint16_t first;
+    uint16_t last;
+    uint32_t written;
+} SJLILosslessRowResult;
+
+// Original synchronous left-predictor/Pt0 row leaf. There is no heap, I/O,
+// callback or worker. The caller retains input and output owners until return;
+// output is a raw byte borrow (unaligned is allowed). State, metadata and result
+// must be disjoint from each other and from the input/output buffers. No
+// restrict assumption is made about caller output versus compressed input.
+// Metadata has the same validated invariants as the AC leaf above.
+// count is 1...65535 and seed is a reconstructed value in 0...65535. The result
+// and state are published on entropy failure, with only the complete sample
+// prefix written. Categories >16 fail after their symbol, before any magnitude
+// read (state.marker carries that width); category16 means -32768 with no
+// extra bits. All arithmetic is modulo
+// 65536 regardless of JPEG precision, matching the retained Swift reference.
+// Invalid arguments leave state, result and output unchanged.
+SJLIACStatus sjli_lossless_left_u16_row(const void *raw_input, size_t input_count,
+    SJLIACState *state, const SJLIACHuffman *table, uint32_t seed,
+    size_t count, void *output, size_t output_count,
+    SJLILosslessRowResult *result);
+
+// Optional scalar row for a canonical one-bit code0 carrying category1...7.
+// Bounds/borrows/publication match the generic row. Width, sign threshold and
+// mask are fixed once per row; leading1/short input uses the generic C row for
+// one sample without consuming bits first. No extra lookup or allocation.
+SJLIACStatus sjli_lossless_left_u16_code0_row(const void *raw_input, size_t input_count,
+    SJLIACState *state, const SJLIACHuffman *table, uint32_t seed,
+    size_t count, void *output, size_t output_count,
+    SJLILosslessRowResult *result);
 #endif
