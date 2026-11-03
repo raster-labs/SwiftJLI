@@ -205,6 +205,9 @@ enum AccelerateDSP {
         blockCount n: Int
     ) {
         guard n > 0 else { return }
+        if inverseDCTDCOnlyBatch(zigzag: zigzag, quantTable: qt, output: output, blockCount: n) {
+            return
+        }
         let eightN = JLI_DSPCount(8 * n)
         let rowStride = 8 * n
 
@@ -240,6 +243,35 @@ enum AccelerateDSP {
 
         // Pass 2: f = V · C (8N × 8). Output per-block-contig.
         jliDSP_mmul(scratch, 1, dctMatrix, 1, output, 1, eightN, 8, 8)
+    }
+
+    /// A DC-only batch needs the same two rounded multiplications as the two
+    /// matrix passes, followed by replication. Do not replace them by DC/8:
+    /// the stored Float basis squared is not exactly 1/8. Quantisation tables
+    /// on this decode path are validated positive JPEG integer values, so
+    /// nonzero integer DC cannot underflow to signed zero. Int32 extremes
+    /// multiplied by the largest 16-bit table value remain finite in Float.
+    /// All AC slots are examined before any output is changed; a mixed batch
+    /// keeps the original GEMM shapes and arithmetic below. Input and output
+    /// have distinct, correctly bound storage for this synchronous borrow.
+    private static func inverseDCTDCOnlyBatch(
+        zigzag: UnsafePointer<Int32>, quantTable: UnsafePointer<Float>,
+        output: UnsafeMutablePointer<Float>, blockCount: Int
+    ) -> Bool {
+        for block in 0..<blockCount {
+            let coefficients = zigzag + block * 64
+            var nonzero: Int32 = 0
+            for index in 1..<64 { nonzero |= coefficients[index] }
+            if nonzero != 0 { return false }
+        }
+        let basis = dctMatrix[0]
+        for block in 0..<blockCount {
+            let dequantised = Float(zigzag[block * 64]) * quantTable[0]
+            let firstPass = dequantised * basis
+            let value = firstPass * basis
+            (output + block * 64).update(repeating: value, count: 64)
+        }
+        return true
     }
 
     // MARK: - Image-level color conversion (BT.601)
