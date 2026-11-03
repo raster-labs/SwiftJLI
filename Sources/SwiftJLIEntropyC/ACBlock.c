@@ -36,7 +36,10 @@ static inline void fill(const uint8_t *input, size_t count, SJLIACState *r) {
     }
 }
 
-static inline SJLIACStatus read_bits(const uint8_t *input, size_t count,
+// These three hot helpers preserve the original call-free AC leaf. Release
+// C size optimisation otherwise outlines the shared bodies after adding the
+// DC+AC entrypoint, adding calls and state traffic inside the coefficient loop.
+static inline __attribute__((always_inline)) SJLIACStatus read_bits(const uint8_t *input, size_t count,
                                     SJLIACState *r, unsigned width, uint32_t *value) {
     // All callers prove width <= 16. A zero category consumes no bits; avoid
     // shifting by 64 when the accumulator is full.
@@ -59,7 +62,7 @@ static inline SJLIACStatus read_bits(const uint8_t *input, size_t count,
     return SJLI_AC_OK;
 }
 
-static inline SJLIACStatus symbol(const uint8_t *input, size_t count,
+static inline __attribute__((always_inline)) SJLIACStatus symbol(const uint8_t *input, size_t count,
                                  SJLIACState *r, const SJLIACHuffman *table,
                                  uint8_t *value) {
     if (r->available < 8) fill(input, count, r);
@@ -91,7 +94,7 @@ static inline SJLIACStatus symbol(const uint8_t *input, size_t count,
 
 // The entrypoints validate all extents before this shared body is entered.
 // The DC+AC entrypoint keeps one local reader through both entropy stages.
-static inline SJLIACStatus ac_body(const uint8_t *restrict input, size_t input_count,
+static inline __attribute__((always_inline)) SJLIACStatus ac_body(const uint8_t *restrict input, size_t input_count,
     SJLIACState *restrict reader, const SJLIACHuffman *restrict table,
     const uint32_t *restrict lookup, int32_t *restrict output) {
     memset(output, 0, 64 * sizeof(*output));
