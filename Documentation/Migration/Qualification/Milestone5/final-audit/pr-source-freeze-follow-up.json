@@ -1,0 +1,40 @@
+{
+  "sourceURL": "https://api.github.com/repos/raster-labs/SwiftJLI/pulls/26",
+  "observedUTC": "2026-11-03T09:44:17.275Z",
+  "number": 26,
+  "state": "open",
+  "draft": true,
+  "head": {
+    "ref": "codex/milestone-5-release-preparation",
+    "sha": "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed"
+  },
+  "base": {
+    "ref": "codex/milestone-5-baseline-8ae2762",
+    "sha": "8ae2762710d6279cd92222f5bb5ca95f042f694e"
+  },
+  "mergeCommit": "084bf719eb441477711de7226844901afd160749",
+  "updatedAt": "2026-11-03T09:22:12Z",
+  "status": "resolved",
+  "scope": "Read-only PR-body reconciliation and local source hash verification; no build, test, benchmark or CI-pass inference.",
+  "previousSnapshot": "pr-source-freeze.json",
+  "previousFinding": "The full-hour current-source fuzz campaigns and controlled performance qualification are pending.",
+  "previousFindingStillPresent": false,
+  "currentBodyExcerpt": "Fresh URL consumption, independent JPEG oracles, cross-codec handoffs and allocation/lifetime controls have passed locally. Completed evidence is retained in `Documentation/Migration/Qualification/Milestone5/`. All four current-source fuzz campaigns completed a full hour and passed with unchanged source/binary hashes. The matched before/after performance screen passes its 5% gate: maximum median-latency increase 1.334%, maximum observed peak-RSS increase 3.003%. Ordinary desktop activity and noisy latency tails are documented; no exclusive-host or universal-speed claim is made. Separately labelled library and CLI SBOM derivatives pass official JSON Schemas, SPDX semantic validation and independent review; original generator defects remain visible and unchanged.",
+  "ciStatusScope": "Final hosted verification is still marked pending in the PR body. Parent reports a scoped Apple retry (attempt 2) running after hosted capacity failure; this audit does not query or qualify that retry.",
+  "sourceVerification": {
+    "verifiedUTC": "2026-11-03T09:44:53.502403+00:00",
+    "checkoutRevision": "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed",
+    "shippingRevision": "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+    "sourceCount": 49,
+    "pathSetMatchesCurrentSourcesAndFuzzer": true,
+    "allCurrentBytesMatchPriorAudit": true,
+    "allHEADBytesMatchPriorAudit": true,
+    "allShippingPinBytesMatchPriorAudit": true,
+    "sourceHashRecord": "fuzz-source-freeze.json#/sourceChecks",
+    "sourceHashRecordSHA256": "f0174f2507f1fd5c93d04d5b37f0b0022491673759b474309c72da728b09a249",
+    "previousPRSnapshotSHA256": "5c0e75fcfe4a5b37e10c918fb4442d0d762244ef83c48eed3badd675693eb3d0",
+    "method": "For each of the 49 paths in the prior sourceChecks, compute SHA-256 of the current file and git show HEAD:path and shippingRevision:path; compare each with its prior recorded SHA-256. Verify the path set against current Sources plus root manifest and two fuzzer files.",
+    "gitCommandCount": 99,
+    "allGitCommandsExitZero": true
+  }
+}

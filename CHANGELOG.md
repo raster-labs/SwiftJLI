@@ -1,6 +1,6 @@
 # Change log
 
-## Milestone 5 release preparation — in progress, 3 November 2026
+## Milestone 5 release preparation — external gates open, 3 November 2026
 
 - Retain synchronous host cancellation callbacks in an immutable task-local
   owner, addressing the observed native macOS release failure during callback
@@ -20,7 +20,8 @@
   cancellation test from a competing deadline. All 13 CI jobs pass at `a44e671`;
   the original failures remain retained. Four full-hour fuzz campaigns and the
   scoped matched performance check pass. Six Watch simulator Release tests pass;
-  a corrected evidence verifier awaits hosted confirmation. Loaded timing
+  the corrected verifier passes genuine-artefact revalidation, while its fresh
+  hosted check remains unexecuted because Apple runners are unavailable. Loaded timing
   attempts remain excluded from performance acceptance.
 - Audit the current DICOMKit source and document its separate managed-workspace
   and synchronous-execution adoption requirements; no consumer cutover occurs.

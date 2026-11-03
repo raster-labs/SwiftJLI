@@ -1,0 +1,76 @@
+{
+  "recordedUTC": "2026-11-03T09:39:34.637538+00:00",
+  "headSHA": "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed",
+  "runAttempt": 1,
+  "status": "completed",
+  "conclusion": "failure",
+  "summary": {
+    "success": 7,
+    "cancelledBeforeExecution": 6
+  },
+  "retryEligibleJobIDs": [
+    125826177130,
+    125826177238,
+    125826177247,
+    125826177255,
+    125826177331,
+    125826177343
+  ],
+  "commands": [
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI/actions/runs/41608951795"
+      ],
+      "exitCode": 0,
+      "file": "attempt-1/workflow-run.json",
+      "sha256": "f3461e69d3f8914ace902de011e6a2bce82d39e8631c4bbe2420247c9a82fbad"
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI/actions/runs/41608951795/jobs?per_page=100"
+      ],
+      "exitCode": 0,
+      "file": "attempt-1/workflow-jobs.json",
+      "sha256": "3f80e416bd7702b31327866195aa7e08dd2098c807d8181cf6e186e89132db9c"
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI/actions/jobs/125826177331"
+      ],
+      "exitCode": 0,
+      "file": "attempt-1/infrastructure/apple-sdk-job.json",
+      "sha256": "d44ec821619ba2a3757d5d3bd803e3ec38375bbba8ec7c355417630248fc7592"
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI/check-runs/125826177331"
+      ],
+      "exitCode": 0,
+      "file": "attempt-1/infrastructure/apple-sdk-check.json",
+      "sha256": "648f6fb9073f05ed36c2a2114936e8fb93eb90a33b5adbdbed74a8f07f2d2361"
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI/check-runs/125826177331/annotations"
+      ],
+      "exitCode": 0,
+      "file": "attempt-1/infrastructure/apple-sdk-annotations.json",
+      "sha256": "fc2670c839dd0ac88ac6ef02d5169a4b339e0e0a5af2938adfc5306f86e61329"
+    }
+  ],
+  "cancellationPOSTSent": false,
+  "cancellationGuard": "The SDK job terminated naturally before cancellation; the queued-only preflight aborted before sending a cancellation request.",
+  "retryScope": "One request to rerun-failed-jobs; no needs/dependent jobs exist, so the seven successful independent jobs must not rerun.",
+  "retryReason": "Hosted macOS ARM runner capacity; none of the six jobs executed any step.",
+  "officialDocumentation": "https://docs.github.com/en/rest/actions/workflow-runs#re-run-failed-jobs-from-a-workflow-run"
+}

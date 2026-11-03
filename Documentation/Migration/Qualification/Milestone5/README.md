@@ -1,6 +1,6 @@
 # Milestone 5 release preparation — 3 November 2026
 
-**In progress; stable-release acceptance remains open.** The owner assigned
+**Reviewable draft; blocked on hosted Apple runner availability and private-reporting activation.** The owner assigned
 Milestone 5 on 3 November 2026. This record supersedes earlier statements that
 the milestone is deferred, without rewriting historical qualification results.
 
@@ -39,7 +39,7 @@ exact configuration. A passing subset does not establish overall acceptance.
 | --- | --- |
 | Local build/library validation | [Swift 6.4.2 / explicit Swift Build](final-validation/README.md): clean/incremental debug and release builds pass; debug, release, full ASan and full TSan each execute 389 test declarations in 60 suites, with zero failures/skips. All 22 subprocess commands pass. These are four configurations of the same suite. |
 | CLI | [250 release process checks](final-cli/report.json) pass against the final local release binary. Earlier ASan CLI receipts retain their original source pins. |
-| Platform/toolchain CI | [Run 41601103725](https://github.com/raster-labs/SwiftJLI/actions/runs/41601103725) passes all 13 jobs at test-only candidate `a44e671`, whose shipping sources match f548. [Retained evidence](ci/test-isolation/README.md) includes both native macOS release suites, ASan/TSan, Linux/toolchain coverage, Apple SDK builds, four simulator suites and iOS predecessor comparisons. The original release crash and visionOS deadline-race failures remain separately retained. The dedicated Watch Release harness passes six tests and records; its initial post-check failed on a query-generated SQLite index. The [corrected verifier revalidates that genuine artefact](ci/watch-qualification/verifier-cache-fix/README.md); fresh hosted post-check validation is pending. |
+| Platform/toolchain CI | [Run 41601103725](https://github.com/raster-labs/SwiftJLI/actions/runs/41601103725) passes all 13 jobs at test-only candidate `a44e671`, whose shipping sources match f548. [Retained evidence](ci/test-isolation/README.md) includes both native macOS release suites, ASan/TSan, Linux/toolchain coverage, Apple SDK builds, four simulator suites and iOS predecessor comparisons. The original release crash and visionOS deadline-race failures remain separately retained. The dedicated Watch Release harness passes six tests and records; its initial post-check failed on a query-generated SQLite index. The [corrected verifier revalidates that genuine artefact](ci/watch-qualification/verifier-cache-fix/README.md); fresh hosted post-check validation remains unexecuted. At `07cc31e`, [run 41608951795](ci/watch-qualification/run-41608951795/README.md) completes seven jobs; six Apple jobs never execute after hosted runner acquisition fails and one bounded retry acquires no runner. The bounded operator cancellation is recorded separately from GitHub's initial capacity failure. |
 | Fresh URL consumer | [Final consumer](final-consumer-sbom/README.md) resolves exactly f548 from GitHub, with no sibling/local-path dependency. Clean/incremental debug and release Swift Build and both executions pass. The separately repaired [local-path consumer](local-consumer/report.json) retains its own earlier run. |
 | Build-associated SBOMs | [Separately labelled library and CLI derivatives](final-consumer-sbom/derived/README.md) pass both official JSON Schemas, SPDX SHACL and independent identity/licence checks. Exact transformations and deterministic replay are retained; raw SwiftPM failures remain unchanged. Observed native linkage supplements the package graph without claiming a complete Apple SDK/runtime inventory. [Upstream schema notices](schema-licences/README.md) preserve their separate terms. |
 | JPEG fidelity | [Final independent oracles](final-rgb/README.md): 8 subsampled decodes / 16 comparisons pass bound 3; 16 raw-RGB cases pass unchanged bounds 2/4; 210 predictive cases per direction and 48 DCT profiles in both directions pass. Allocating/padded storage outputs and recorded baseline outputs agree. |
@@ -58,6 +58,27 @@ Completion requires reviewed evidence for the required gates. Hardware and
 administrator prerequisites are not converted into passes by documentation.
 Stable tagging, predecessor retirement and application cutover remain separate
 explicit tasks after their acceptance requirements are met.
+
+The [final handoff comparison](final-handoff.json) confirms shipping sources
+match f548, tests/examples match the all-13-passing a44 candidate, and executable
+sources, tests, examples, qualification scripts and workflow match `07cc31e`.
+The closing documentation/evidence-only commit uses `[skip ci]` to avoid
+enqueuing another unchanged matrix after the bounded infrastructure retry.
+It does not establish a fresh CI pass or waive the hosted-verifier gate.
+
+The final source/evidence [audit](final-audit/README.md) confirms the frozen
+base, shipping-source identity and four full-hour campaign receipts. The
+[final security check](security-final-check.json) and earlier
+[follow-up](security-follow-up.json) retain the read-only API commands
+and outcomes: private reporting is disabled and the current CLI account cannot
+administer the repository. A repository administrator must enable the prepared
+private reporting channel; the owner's confirmation that this can be done is
+not evidence that activation has occurred.
+
+The owner-selected scope for this task is simulator qualification. Physical
+Watch and representative iPhone/iPad qualification remains a later stable-release
+condition, not an additional hardware request within this task. The seven common
+contracts and their device requirements have not been rewritten.
 
 The current DICOMKit source audit finds predecessor-only caller-workspace and
 managed-allocation obligations. A basic SwiftJLI consumer does not prove those
