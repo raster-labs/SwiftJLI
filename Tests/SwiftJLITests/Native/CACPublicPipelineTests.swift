@@ -27,6 +27,24 @@ private final class CACCanaryStorage: WritableImageStorage {
 }
 
 @Suite struct CACPublicPipelineTests {
+    // Keep the TaskLocal binding and temporary C metadata in a synchronous
+    // frame. The Intel Release CI failure reports a non-LIFO task allocation
+    // cleanup when this scope is inlined into the async parameterised test.
+    // This boundary is a candidate compiler workaround; its assertions and
+    // the asynchronous public decode coverage below remain unchanged.
+    @inline(never)
+    private static func requireAcceleratedEntropyKernel(
+        dcTable: HuffmanTable, acTable: HuffmanTable, lookup: ACLookahead
+    ) throws {
+        try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 2)) {
+            #expect(NativeOperation.workerLimit >= 2)
+            try CDCTKernel.withBorrowed(dcTable: dcTable, acTable: acTable, lookup: lookup,
+                enabled: NativeOperation.current?.backend == .accelerated) { kernel in
+                _ = try #require(kernel)
+            }
+        }
+    }
+
     @Test(.enabled(if: ProcessInfo.processInfo.activeProcessorCount >= 2
         && SwiftJLI.Decoder.capabilities.availableBackends.contains(.accelerated)),
         arguments: [8, 12], [(false, 255), (true, 255), (false, 256), (true, 256),
@@ -67,15 +85,9 @@ private final class CACCanaryStorage: WritableImageStorage {
             workerLimit: 1, backend: .accelerated))
         #expect(!referencePlan.pipelined && referencePlan.batchBlocks == batchBlocks)
         let lookup = try #require(ACLookahead(table: table, blockCount: acceleratedPlan.blockCount))
-        // Reproduce the C dispatch conditions for both serial and pipelined
-        // accelerated decodes. The scalar backend retains Swift entropy.
-        try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 2)) {
-            #expect(NativeOperation.workerLimit >= 2)
-            try CDCTKernel.withBorrowed(dcTable: dcTable, acTable: table, lookup: lookup,
-                enabled: NativeOperation.current?.backend == .accelerated) { kernel in
-                _ = try #require(kernel)
-            }
-        }
+        // Reproduce both accelerated C dispatch conditions in one synchronous
+        // scope before either public async decode.
+        try Self.requireAcceleratedEntropyKernel(dcTable: dcTable, acTable: table, lookup: lookup)
 
         let offset = 4, suffix = 8, rowBytes = width * bps + 12
         let capacity = offset + rowBytes * height + suffix
