@@ -130,10 +130,12 @@ static inline SJLIACStatus ac_body(const uint8_t *restrict input, size_t input_c
     return status;
 }
 
-SJLIACStatus sjli_ac_decode_block(const uint8_t *restrict input, size_t input_count,
+SJLIACStatus sjli_ac_decode_block(const void *restrict raw_input, size_t input_count,
     SJLIACState *restrict state, const SJLIACHuffman *restrict table,
     const uint32_t *restrict lookup, size_t lookup_count,
     int32_t *restrict output, size_t output_count) {
+    // Character-byte access needs no typed Swift binding of NSData storage.
+    const uint8_t *input = (const uint8_t *)raw_input;
     if ((!input && input_count != 0) || !state || !table || !lookup || !output ||
         output_count != 64 || lookup_count != 8192 || table->value_count > 256 ||
         state->byte_offset > input_count || state->available > 64) return SJLI_AC_INVALID_ARGUMENT;
@@ -143,11 +145,12 @@ SJLIACStatus sjli_ac_decode_block(const uint8_t *restrict input, size_t input_co
     return status;
 }
 
-SJLIACStatus sjli_dct_decode_block(const uint8_t *restrict input, size_t input_count,
+SJLIACStatus sjli_dct_decode_block(const void *restrict raw_input, size_t input_count,
     SJLIACState *restrict state, const SJLIACHuffman *restrict dc_table,
     const SJLIACHuffman *restrict ac_table, const uint32_t *restrict lookup,
     size_t lookup_count, int32_t *restrict previous_dc, unsigned precision,
     int32_t *restrict output, size_t output_count) {
+    const uint8_t *input = (const uint8_t *)raw_input;
     if ((!input && input_count != 0) || !state || !dc_table || !ac_table || !lookup ||
         !previous_dc || !output || output_count != 64 || lookup_count != 8192 ||
         dc_table->value_count > 256 || ac_table->value_count > 256 ||

@@ -41,7 +41,7 @@ typedef enum {
 // is saved, captured, returned or given to a worker. Every entropy-error return
 // publishes the consumed cursor and partial output. Invalid arguments write
 // nothing. No caller-visible DC value is installed here.
-SJLIACStatus sjli_ac_decode_block(const uint8_t *input, size_t input_count,
+SJLIACStatus sjli_ac_decode_block(const void *raw_input, size_t input_count,
     SJLIACState *state, const SJLIACHuffman *table,
     const uint32_t *lookup, size_t lookup_count,
     int32_t *output, size_t output_count);
@@ -53,7 +53,7 @@ SJLIACStatus sjli_ac_decode_block(const uint8_t *input, size_t input_count,
 // slot. Only full success installs output[0]. For INVALID_WIDTH, state.marker
 // carries the offending DC category; for MARKER it carries the marker byte.
 // Precision is 8 or 12; restart scanning/cancellation remains with the caller.
-SJLIACStatus sjli_dct_decode_block(const uint8_t *input, size_t input_count,
+SJLIACStatus sjli_dct_decode_block(const void *raw_input, size_t input_count,
     SJLIACState *state, const SJLIACHuffman *dc_table, const SJLIACHuffman *ac_table,
     const uint32_t *lookup, size_t lookup_count, int32_t *previous_dc,
     unsigned precision, int32_t *output, size_t output_count);

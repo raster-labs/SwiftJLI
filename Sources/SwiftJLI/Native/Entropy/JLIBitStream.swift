@@ -348,7 +348,7 @@ struct BitReader {
         var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
                                available: UInt32(bitsAvailable), marker: 0)
         let status = withExtendedLifetime(data) {
-            sjli_ac_decode_block(buffer.baseAddress?.assumingMemoryBound(to: UInt8.self), buffer.count,
+            sjli_ac_decode_block(buffer.baseAddress, buffer.count,
                 &state, kernel.table, kernel.lookup, 8192, destination, output.count)
         }
         // The C input-count checks prove this offset remains within Int range.
@@ -380,7 +380,7 @@ struct BitReader {
         var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
                                available: UInt32(bitsAvailable), marker: 0)
         let status = withExtendedLifetime(data) {
-            sjli_dct_decode_block(buffer.baseAddress?.assumingMemoryBound(to: UInt8.self), buffer.count,
+            sjli_dct_decode_block(buffer.baseAddress, buffer.count,
                 &state, kernel.dcTable, kernel.ac.table, kernel.ac.lookup, 8192,
                 &previousDC, UInt32(precision), destination, output.count)
         }
