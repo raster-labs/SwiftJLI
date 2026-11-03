@@ -1,0 +1,36 @@
+{
+  "scope": "Local retained-binary Rosetta and corrected ARM test environment; not original native Intel CI",
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/sw_vers"
+      ],
+      "exitCode": 0,
+      "output": "ProductName:\t\tmacOS\nProductVersion:\t\t27.0.1\nBuildVersion:\t\t26A434\n"
+    },
+    {
+      "command": [
+        "/usr/bin/xcodebuild",
+        "-version"
+      ],
+      "exitCode": 0,
+      "output": "Xcode 27.2\nBuild version 27B52\n"
+    },
+    {
+      "command": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift",
+        "--version"
+      ],
+      "exitCode": 0,
+      "output": "swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)\nTarget: arm64-apple-macosx27.0.0\n"
+    },
+    {
+      "command": [
+        "/usr/bin/uname",
+        "-m"
+      ],
+      "exitCode": 0,
+      "output": "arm64\n"
+    }
+  ]
+}

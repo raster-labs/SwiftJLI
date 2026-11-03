@@ -1,0 +1,13 @@
+# Intel CI test-helper correction
+
+Candidate `2436f95b4dd8a83d1513c2837cb99f280494bfdb`, based on selected `2195d15e05ab2359a19e635d8a83d440b7dea7ba`, passed the focused local ARM64 Release run: **1 test, 1 suite, all 16 parameter cases**, exit 0. It changes only the test's TaskLocal preflight into a private synchronous `@inline(never)` helper. The public decoding, precision, restart, padding, sample equality, copy and storage-lifetime assertions remain unchanged. No production source or workflow skip changed. Suite contract remains 0.10.0.
+
+The exact retained failed Intel binary also reproduced the original abort locally. The same 16 cases started; the process exited SIGABRT (-6) with `freed pointer was not the last allocation`. Its retained crash report shows `swift_task_dealloc`, inlined `TaskLocal.withValue` at +70, and `CACPublicPipelineTests.swift:72` at +10254, matching the CI site. It ran through the byte-identical official SwiftPM 6.3 helper source compiled locally for x86_64.
+
+The original CI environment was native Intel macOS 26.6.1 / Xcode 26.6. The reproduction used Rosetta on local macOS 27.0.1 with Xcode 27.2 / Swift 6.4.2 runtime and Testing 2403. This confirms the retained binary's failure site in the local environment; it does not establish a compiler defect or qualify the correction on the original native toolchain. **Actual native Intel CI acceptance remains pending.**
+
+Static local ARM64 emitted-code inspection confirms a separate synchronous helper and a direct call from the async test body. The helper extraction is therefore present in this tested binary. No shipping performance measurement was necessary or performed for the test-only change.
+
+Two unsuccessful setup/analysis attempts remain preserved. The first retained run through `/usr/bin/arch` failed to load `Testing.framework` before any test started; direct execution of the same x86 helper with the same framework path then loaded and reproduced the original abort. An initial emitted-code matcher also counted the helper's nested closure; the corrected exact-symbol matcher changes only the analysis. Neither failure is hidden or counted as a test pass.
+
+See `qualification.json` for exact source and artifact hashes, `runs/initial/focused.json` for the full local test command and exit result, `runs/initial/retained-direct.json` for the reproduction command, and `runs/initial/candidate-emitted-code.json` for the static code evidence. All prepared input hashes remained unchanged. Existing macro warnings are retained in the full build log; no warnings were suppressed. CPU use is complete and released to the parent.

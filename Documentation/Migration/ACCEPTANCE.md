@@ -20,8 +20,12 @@ records all failures and commands, exact source/fixture pins, 11/12 allocated-ou
 latency wins, five lossless RSS wins and seven remaining DCT RSS losses against
 libjpeg-turbo. All eight large lossless patterns beat both djpeg versions; small
 CLI cases and all CLI RSS comparisons still favour djpeg. Timings are provisional
-under owner-authorised host contention. New-source cross-platform/remote CI is
-unexecuted; the competitive goal and stable-release prerequisites remain open.
+under owner-authorised host contention. [New-source remote CI](Qualification/DjpegPerformanceRound5_20261103/ci-2195d15/README.md)
+passed four Linux jobs, consumer and contract checks, but Intel Release aborted
+in a task-local scope; six other Apple jobs did not execute. A test-only synchronous
+helper correction preserves all 16 cases and passes focused ARM64 Release; native
+Intel correction verification is pending. The competitive goal
+and stable-release prerequisites remain open.
 Subsequent selected-Huffman and bounded-C-run experiments are separate and are
 not included in this checkpoint. Earlier entries below retain their source pins.
 

@@ -1,0 +1,53 @@
+{
+  "action": "retained",
+  "scope": "Run the exact failed Intel CI test bundle through the official helper on local Rosetta and local Testing/Swift runtimes, filtered to the same 16-case test.",
+  "parentCPUGrant": "Parent exclusive CPU grant after Int16 proof completed; run retained Intel diagnostic then focused candidate ARM Release",
+  "preparedSHA256": "881dadabc3900fe11aa0a7c04cf8079b4b98eab578a2d426289a02ae15efe4f5",
+  "candidateRevision": "2436f95b4dd8a83d1513c2837cb99f280494bfdb",
+  "command": [
+    "/usr/bin/arch",
+    "-x86_64",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/helper-correction/runs/initial/swiftpm-testing-helper-x86_64",
+    "--test-bundle-path",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/retained-artifact/extracted/Users/runner/work/SwiftJLI/SwiftJLI/.build/x86_64-apple-macosx/release/SwiftJLIPackageTests.xctest/Contents/MacOS/SwiftJLIPackageTests",
+    "--testing-library",
+    "swift-testing",
+    "--filter",
+    "CACPublicPipelineTests"
+  ],
+  "cwd": "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/helper-correction/runs/initial",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+    "DYLD_FRAMEWORK_PATH": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks"
+  },
+  "startedUTC": "2026-11-03T21:02:23.148278+00:00",
+  "exitCode": -4,
+  "inputs": {
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/helper-correction/Entrypoint.swift": "457c415f96bc4dad0af9d0c0c125441f9808d1f0390504e5d77b28db5233d734",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/helper-correction/run.py": "a8e688e182387f48d757b6d30e1979b6a08c2fdf9d535a0bd0ab3ae017d5a8c5",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/helper-correction/candidate.patch": "1469933e80dc9f10b747ddae06aecda01f24d6b36a643df3058f9056d74a4d50",
+    "/private/tmp/swiftjli-round5-ci-intel-tasklocal-helper/Tests/SwiftJLITests/Native/CACPublicPipelineTests.swift": "4ec32ec58fe546c446256e7620e2dbf2b2ad8e5da14b53b1892b64b5fc39ab37",
+    "/private/tmp/swiftjli-round5-ci-intel-tasklocal-helper/Package.swift": "7b4a5251c6a2e61cfac447a32601a83b2f0484e4917e58de291a0486d65c3613",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/failed.log": "c54e8de4c564bf5b820ca1727c4748c322e5770f50f130990c8869d858ba8cec",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/status.json": "e6071012c417689510a913f9846b11b0c6da86132810b94b5055c0f9cf2b8f9a",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/retained-artifact/inventory.json": "6119e7ea0f12f7ffda4e668e8a7fe21e1081cf1b50a727296a96faba2307f9c9",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/retained-artifact/extracted/Users/runner/work/SwiftJLI/SwiftJLI/.build/x86_64-apple-macosx/release/SwiftJLIPackageTests.xctest/Contents/MacOS/SwiftJLIPackageTests": "89b60a61017dd79ad14bf104944f337efaf961bcbc5f7678878259cabb768775",
+    "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc": "448457da9a8a56741f2c8c4b8931e85b7377fc009c16918cd8ac1a8a3210ea1f",
+    "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift": "448457da9a8a56741f2c8c4b8931e85b7377fc009c16918cd8ac1a8a3210ea1f",
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/SDKSettings.json": "82165b15ee21419d4cffaba8895797391b908ac9499ba70f561f3e1bd16758d6",
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Versions/A/Testing": "fcfba3e9ee95b10aa9b13c792e02b9c408d6c4932ebb8a8eaf92ab0a3d5d499d"
+  },
+  "outputs": {
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/ci-2195d15/helper-correction/runs/initial/swiftpm-testing-helper-x86_64": "7fcf78f99744aa395b0ccaa5e4ba81520acc28d31d4ac3bc6591891cb671a90d"
+  },
+  "qualificationLimits": [
+    "A retained-binary local reproduction does not reproduce the native Intel CI host or runtime.",
+    "A local ARM64 pass does not qualify the correction on Xcode26.6 Intel.",
+    "The causal compiler/runtime hypothesis is not proven by this proposed helper extraction.",
+    "No benchmark or production implementation change is part of this diagnostic."
+  ],
+  "elapsedSeconds": 2.3932185410230886,
+  "finishedUTC": "2026-11-03T21:02:25.541953+00:00",
+  "logSHA256": "397986e590089c4e51c9a758505b87c2864ff58c08fae28aec0f7535edf6c024",
+  "inputHashesUnchanged": true
+}
