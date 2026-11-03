@@ -1,0 +1,173 @@
+Building for production...
+[Planning deferred tasks]
+[41 / 67]
+[42 / 68] SwiftJLI
+[53 / 114]
+[59 / 114]
+[65 / 114]
+[66 / 114]
+[70 / 114]
+[73 / 114]
+[79 / 114]
+[81 / 114]
+[82 / 114]
+[83 / 114]
+[86 / 114]
+[88 / 114]
+[89 / 114] SwiftJLI
+[101 / 116] swiftjli-cli-product
+[107 / 123]
+[110 / 123] swiftjli-cli-product
+[112 / 123] swiftjli-cli-product
+[113 / 123] swiftjli-cli-product
+/private/tmp/swiftjli-round5-bit-shifts/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-round5-bit-shifts/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:37:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 35 |                     var reader = BitReader(data: writer.data)
+ 36 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 37 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 38 |                     try destination.withUnsafeMutableBufferPointer {
+ 39 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+
+/private/tmp/swiftjli-round5-bit-shifts/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:31:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 29 |         let scan = Self.scan(blockCount: 2050, dcOnly: dcOnly)
+ 30 |         let table = StandardHuffmanTables.acLuminance
+ 31 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 32 |         let quantisation = (0..<64).map { Float($0 * 7 % 127 + 1) }
+ 33 |         for backend in Decoder.capabilities.availableBackends {
+
+/private/tmp/swiftjli-round5-bit-shifts/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:92:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 90 |         let scan = Self.scan(blockCount: 1025)
+ 91 |         let table = StandardHuffmanTables.acLuminance
+ 92 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 93 |         var reader = BitReader(data: scan.bytes), calls = 0
+ 94 |         #expect(throws: JLIError.self) {
+[114 / 123] SwiftJLITests-product
+[119 / 123] SwiftJLITests-product
+[121 / 123] SwiftJLITests-product
+Build complete! (44.19 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite ACLookaheadTests started.
+◇ Suite LosslessDifferenceTests started.
+◇ Suite "Huffman – Bit Streams, Tables, Encoding and Decoding" started.
+◇ Suite BoundedBitReadTests started.
+◇ Suite SequentialGreyscaleDecoderTests started.
+◇ Suite LosslessLeftUInt16Tests started.
+◇ Suite ScopedACDecoderTests started.
+◇ Suite LosslessLookaheadTests started.
+◇ Test widerPrefetchPreservesLogicalCursorAndMarkerBoundaries() started.
+◇ Test zeroWidthAfterFullPrefetchAndInvalidWidthsConsumeNothing() started.
+◇ Test "Optimal table is a valid prefix code (canonical, ≤16-bit, complete)" started.
+◇ Test "Additional bits encoding for negative values" started.
+◇ Test everyPrefixOffsetAndRunBoundaryMatchesReference() started.
+◇ Test allocationAndCoverageDispatchAreBounded() started.
+◇ Test "Standard DC chrominance table has 12 symbols" started.
+◇ Test everyValidWidthAndAccumulatorOffsetMatchesByteOracle() started.
+◇ Test "BitWriter writes single byte correctly" started.
+◇ Test "BitReader throws on end of data" started.
+◇ Test "BitReader reads written bits correctly" started.
+◇ Test longCodesTruncationMarkersAndInvalidCategoriesUseFallback() started.
+◇ Test "Standard AC luminance table has 162 symbols" started.
+◇ Test "Standard DC luminance table has 12 symbols" started.
+◇ Test "DC encode then decode round-trips" started.
+◇ Test "Fast-path decode is bit-identical to bit-by-bit over random streams" started.
+◇ Test "BitWriter handles byte stuffing for 0xFF" started.
+◇ Test "Optimal table round-trips encode → decode" started.
+◇ Test "HuffmanTable stores bits array" started.
+◇ Test "Lookahead table resolves short codes and defers long ones" started.
+◇ Test "Empty frequencies fall back to the standard table" started.
+◇ Test "AC encode then decode round-trips for simple block" started.
+◇ Test everyMagnitudeAtEveryBitOffsetMatchesBitwiseReference() started.
+◇ Test malformedEntropyAndExpiredOperationsStillReject() started.
+◇ Test "Additional bits encoding for positive values" started.
+◇ Test "Standard AC chrominance table has 162 symbols" started.
+◇ Test "Optimized Huffman produces smaller output than standard, same pixels" started.
+◇ Test batchConsumerFailureStopsBeforeReusingItsBorrow() started.
+◇ Test "BitReader single bit reads" started.
+◇ Test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test invalidStorageAndInterruptedScanPreserveBoundaries() started.
+◇ Test coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test invalidExtentsRejectBeforeWriting() started.
+◇ Test paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+◇ Test malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test invalidDestinationIsRejectedBeforeWriting() started.
+◇ Test everyPrefixAndBitOffsetMatchesBitwiseReference() started.
+◇ Test allocationAndLongMagnitudeDispatchAreBounded() started.
+◇ Test lookupRejectsInvalidStorageBeforeWriting() started.
+◇ Test "Category function returns correct values" started.
+✔ Test "Additional bits encoding for negative values" passed after 0.001 seconds.
+◇ Test case passing 1 argument precision → 8 to scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test case passing 1 argument precision → 12 to scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+✔ Test "BitReader reads written bits correctly" passed after 0.001 seconds.
+◇ Test case passing 1 argument combined → false to coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test case passing 1 argument combined → true to coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+✔ Test "Optimal table is a valid prefix code (canonical, ≤16-bit, complete)" passed after 0.001 seconds.
+◇ Test case passing 1 argument precision → 2 to paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+◇ Test case passing 1 argument combined → false to malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test case passing 1 argument precision → 12 to paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+✔ Test "Standard AC luminance table has 162 symbols" passed after 0.002 seconds.
+✔ Test "Standard DC chrominance table has 12 symbols" passed after 0.002 seconds.
+◇ Test case passing 1 argument combined → true to malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test case passing 1 argument bits → 2 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument precision → 8 to paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+◇ Test case passing 1 argument precision → 16 to paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+◇ Test case passing 1 argument bits → 8 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 12 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 16 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+✔ Test "Standard DC luminance table has 12 symbols" passed after 0.020 seconds.
+✔ Test "BitWriter writes single byte correctly" passed after 0.020 seconds.
+✔ Test "BitWriter handles byte stuffing for 0xFF" passed after 0.020 seconds.
+✔ Test "DC encode then decode round-trips" passed after 0.020 seconds.
+✔ Test allocationAndCoverageDispatchAreBounded() passed after 0.021 seconds.
+✔ Test "Optimal table round-trips encode → decode" passed after 0.021 seconds.
+✔ Test "HuffmanTable stores bits array" passed after 0.021 seconds.
+✔ Test "Standard AC chrominance table has 162 symbols" passed after 0.021 seconds.
+✔ Test "Empty frequencies fall back to the standard table" passed after 0.021 seconds.
+✔ Test "AC encode then decode round-trips for simple block" passed after 0.021 seconds.
+✔ Test malformedEntropyAndExpiredOperationsStillReject() passed after 0.021 seconds.
+✔ Test "BitReader single bit reads" passed after 0.021 seconds.
+✔ Test "Additional bits encoding for positive values" passed after 0.021 seconds.
+✔ Test "BitReader throws on end of data" passed after 0.021 seconds.
+✔ Test everyValidWidthAndAccumulatorOffsetMatchesByteOracle() passed after 0.021 seconds.
+✔ Test zeroWidthAfterFullPrefetchAndInvalidWidthsConsumeNothing() passed after 0.021 seconds.
+✔ Test batchConsumerFailureStopsBeforeReusingItsBorrow() passed after 0.021 seconds.
+✔ Test invalidExtentsRejectBeforeWriting() passed after 0.021 seconds.
+✔ Test coefficientsAndRestartPositionMatchArrayReference(combined:) with 2 test cases passed after 0.021 seconds.
+✔ Test invalidDestinationIsRejectedBeforeWriting() passed after 0.021 seconds.
+✔ Test invalidStorageAndInterruptedScanPreserveBoundaries() passed after 0.021 seconds.
+✔ Test "Lookahead table resolves short codes and defers long ones" passed after 0.021 seconds.
+✔ Test "Optimized Huffman produces smaller output than standard, same pixels" passed after 0.021 seconds.
+✔ Test widerPrefetchPreservesLogicalCursorAndMarkerBoundaries() passed after 0.021 seconds.
+✔ Test longCodesTruncationMarkersAndInvalidCategoriesUseFallback() passed after 0.021 seconds.
+✔ Test "Fast-path decode is bit-identical to bit-by-bit over random streams" passed after 0.021 seconds.
+✔ Test allocationAndLongMagnitudeDispatchAreBounded() passed after 0.021 seconds.
+✔ Test lookupRejectsInvalidStorageBeforeWriting() passed after 0.021 seconds.
+✔ Test "Category function returns correct values" passed after 0.021 seconds.
+✔ Suite "Huffman – Bit Streams, Tables, Encoding and Decoding" passed after 0.022 seconds.
+✔ Suite BoundedBitReadTests passed after 0.022 seconds.
+✔ Test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) with 2 test cases passed after 0.036 seconds.
+✔ Suite SequentialGreyscaleDecoderTests passed after 0.037 seconds.
+✔ Test malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) with 2 test cases passed after 0.036 seconds.
+✔ Suite ScopedACDecoderTests passed after 0.037 seconds.
+✔ Test largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) with 4 test cases passed after 0.037 seconds.
+✔ Test paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) with 4 test cases passed after 0.138 seconds.
+✔ Suite LosslessLeftUInt16Tests passed after 0.138 seconds.
+✔ Test everyMagnitudeAtEveryBitOffsetMatchesBitwiseReference() passed after 0.302 seconds.
+✔ Suite LosslessDifferenceTests passed after 0.303 seconds.
+✔ Test everyPrefixOffsetAndRunBoundaryMatchesReference() passed after 0.395 seconds.
+✔ Suite ACLookaheadTests passed after 0.395 seconds.
+✔ Test everyPrefixAndBitOffsetMatchesBitwiseReference() passed after 0.395 seconds.
+✔ Suite LosslessLookaheadTests passed after 0.396 seconds.
+✔ Test run with 41 tests in 8 suites passed after 0.396 seconds.
