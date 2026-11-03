@@ -1,5 +1,11 @@
 # Change log
 
+## Bounded DCT decoding and compressed-input ownership — 3 November 2026
+
+- Source `0a8acd72ddeac6fb1911457ae28b689eef0e9db1` bounds DCT reconstruction scratch, streams eligible greyscale coefficients, shares immutable compressed input across scans and removes small CLI scratch/descriptor overhead. Admission uses the streaming allocation plan without raising resource ceilings; qualifying decodes may now fit previously rejected budgets. Public API, sample precision, fidelity tolerances and suite policy 0.10.0 are unchanged.
+- Against `8ae2762710d6279cd92222f5bb5ca95f042f694e`, single-decode peak RSS falls 38.6% for 2048² greyscale DCT at the default worker ceiling, 78.7% with one worker and about 23% for 2048² RGB/progressive DCT. Final timing runs are explicitly provisional because of other host workloads. Small CLI latency and all measured CLI RSS cases still favour djpeg; tiny native lossless regressions remain disclosed.
+- Final Release passes 403 tests; source-pinned ASan, TSan, 252 CLI checks per mode and independent oracles preserve exact baseline/candidate output. Existing Swift 6.3.3 macOS Release CI crashes remain unresolved; failure diagnostics are retained by the updated workflow. See [the full report and exact qualification pins](Documentation/Migration/Qualification/DjpegPerformanceRound4_20261103/README.md). No completed optimisation goal or stable-release acceptance is claimed.
+
 ## JLISwift 0.6.0 (`fb1e188`) parity assessment and sequential `DHT` `SOS`-snapshot fix — 15 October 2026
 
 - Audit `JLISwift` `fix/bounded-decode-allocation` at `fb1e188b4b1bad73febccf3b7c7595a78ae7a4c2` (merged to predecessor `main` as `b6df774a3c3ecdf4b98971f31543fdd18074ace2` / `v0.6.0` on 14 October 2026) against `SwiftJLI` `main` at `89d5e6a31c51384a48a01d2ac84983ee534c6d24` (after PR #23 merged with all 13 CI checks passing).

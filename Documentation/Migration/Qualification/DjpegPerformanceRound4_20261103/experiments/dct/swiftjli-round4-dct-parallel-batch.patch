@@ -1,0 +1,126 @@
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index 01a2ed9..4365038 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -114,12 +114,10 @@ struct JLIDecoder: Sendable {
+ 
+         let sequentialGreyscale = numComponents == 1 && !frame.isProgressive && parsed.scans.count == 1
+             && components[0].horizontalSampling == 1 && components[0].verticalSampling == 1
+-        // The worker setting is a ceiling. On small sequential greyscale
+-        // frames the measured serial streaming path avoids dispatch and full
+-        // coefficient/Float planes; large frames retain parallel reconstruction.
+-        let serialGreyscale = NativeOperation.workerLimit == 1
+-            || (sequentialGreyscale && mcuCountH * mcuCountV <= 4096)
+-        let directGreyscale = scale == 1 && numComponents == 1 && serialGreyscale
++        // Streaming keeps destination writes serial. Large sequential frames
++        // parallelise only the internal IDCT scratch within each joined batch.
++        let directGreyscale = scale == 1 && numComponents == 1
++            && (NativeOperation.workerLimit == 1 || sequentialGreyscale)
+             && !parsed.isXYB && !parsed.isRawRGB && !normaliseXYBOutput
+             && configuration.outputColorModel == nil
+             && (configuration.outputPixelFormat == nil || configuration.outputPixelFormat == .float32)
+@@ -1073,8 +1071,9 @@ struct JLIDecoder: Sendable {
+     }
+ 
+     /// Sequential greyscale retains at most one coefficient batch and two Float
+-    /// reconstruction batches. All three borrows and the final destination stay
+-    /// on this thread; entropy state is carried across completed batches.
++    /// reconstruction batches. The caller retains their owners while joined
++    /// workers access only internal scratch; destination writes stay on this
++    /// thread. Entropy state is carried across completed batches.
+     private static func decodeSequentialGreyscaleInto(
+         reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable, lookup: ACLookahead?,
+         quantTable: [Float], blocksPerRow: Int, blockRows: Int,
+@@ -1084,6 +1083,7 @@ struct JLIDecoder: Sendable {
+         try validateGreyscaleDestination(destination, width: width, height: height,
+                                          precision: precision, floatOutput: floatOutput)
+         let scratchCount = min(1024, blocksPerRow * blockRows) * 64
++        let reconstructionWorkers = blocksPerRow * blockRows > 4096 ? NativeOperation.workerLimit : 1
+         var pixels = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
+         var scratch = [Float](unsafeUninitializedCapacity: scratchCount) { _, count in count = scratchCount }
+         try quantTable.withUnsafeBufferPointer { qt in
+@@ -1097,7 +1097,7 @@ struct JLIDecoder: Sendable {
+                             pixels: px.baseAddress!, scratch: sc.baseAddress!, firstBlock: first,
+                             blockCount: coefficients.count / 64, blocksPerRow: blocksPerRow,
+                             width: width, height: height, precision: precision,
+-                            floatOutput: floatOutput, destination: destination)
++                            floatOutput: floatOutput, destination: destination, maximumWorkers: reconstructionWorkers)
+                     }
+                 }
+             }
+@@ -1109,8 +1109,46 @@ struct JLIDecoder: Sendable {
+         pixels: UnsafeMutablePointer<Float>, scratch: UnsafeMutablePointer<Float>,
+         firstBlock: Int, blockCount: Int, blocksPerRow: Int,
+         width: Int, height: Int, precision: Int, floatOutput: Bool,
+-        destination: BorrowedSampleDestination
++        destination: BorrowedSampleDestination, maximumWorkers: Int = 1
+     ) throws {
++        let lanes = min(maximumWorkers, max(1, blockCount / 256))
++        if lanes == 1 {
++            transformGreyscaleBlocks(coefficients: coefficients, quantTable: quantTable,
++                pixels: pixels, scratch: scratch, blockCount: blockCount, precision: precision)
++        } else {
++            let pointers = GreyscaleIDCTPointers(coefficients: coefficients, quantTable: quantTable,
++                pixels: pixels, scratch: scratch)
++            let span = ((blockCount + lanes - 1) / lanes + 7) / 8 * 8
++            try NativeOperation.perform(iterations: lanes) { lane in
++                let first = lane * span, end = min(first + span, blockCount)
++                guard first < end else { return }
++                transformGreyscaleBlocks(coefficients: pointers.coefficients + first * 64,
++                    quantTable: pointers.quantTable, pixels: pointers.pixels + first * 64,
++                    scratch: pointers.scratch + first * 64, blockCount: end - first, precision: precision)
++            }
++        }
++        try SharedDCTStorage.writeGreyscaleBlocks(
++            UnsafeBufferPointer(start: pixels, count: blockCount * 64),
++            firstBlock: firstBlock, blocksPerRow: blocksPerRow,
++            width: width, height: height, precision: precision,
++            floatOutput: floatOutput, into: destination)
++    }
++
++    /// Read-only coefficients/table and disjoint internal Float slots, retained
++    /// by the enclosing scoped borrows until NativeOperation.perform joins.
++    /// Caller destination memory is deliberately absent from this carrier.
++    private struct GreyscaleIDCTPointers: @unchecked Sendable {
++        let coefficients: UnsafePointer<Int32>
++        let quantTable: UnsafePointer<Float>
++        let pixels: UnsafeMutablePointer<Float>
++        let scratch: UnsafeMutablePointer<Float>
++    }
++
++    private static func transformGreyscaleBlocks(
++        coefficients: UnsafePointer<Int32>, quantTable: UnsafePointer<Float>,
++        pixels: UnsafeMutablePointer<Float>, scratch: UnsafeMutablePointer<Float>,
++        blockCount: Int, precision: Int
++    ) {
+         AccelerateDSP.inverseDCTBatchDequantized(zigzag: coefficients, quantTable: quantTable,
+             output: pixels, scratch: scratch, blockCount: blockCount)
+         var center = Float(1 << (precision - 1))
+@@ -1118,11 +1156,6 @@ struct JLIDecoder: Sendable {
+         let samples = JLI_DSPCount(blockCount * 64)
+         jliDSP_vsadd(pixels, 1, &center, pixels, 1, samples)
+         jliDSP_vclip(pixels, 1, &lo, &hi, pixels, 1, samples)
+-        try SharedDCTStorage.writeGreyscaleBlocks(
+-            UnsafeBufferPointer(start: pixels, count: blockCount * 64),
+-            firstBlock: firstBlock, blocksPerRow: blocksPerRow,
+-            width: width, height: height, precision: precision,
+-            floatOutput: floatOutput, into: destination)
+     }
+ 
+     private static func validateGreyscaleDestination(
+diff --git a/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift
+index f0e6b1b..04bfdee 100644
+--- a/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift
++++ b/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift
+@@ -7,8 +7,9 @@
+ enum SequentialGreyscaleDecoder {
+     /// Serial scan with bounded coefficient storage. The consumer completes
+     /// synchronously before the same slot is reused. The consumer must not let
+-    /// the pointer escape or use it concurrently; the production consumer
+-    /// finishes reconstruction and output before returning.
++    /// the pointer escape. Any workers may only read these coefficients and
++    /// must join before the consumer returns; the production consumer finishes
++    /// reconstruction and serial destination output before slot reuse.
+     /// DC prediction and restart numbering span batches, while each batch keeps
+     /// the established 1024-block reconstruction grouping.
+     static func decodeBatches(

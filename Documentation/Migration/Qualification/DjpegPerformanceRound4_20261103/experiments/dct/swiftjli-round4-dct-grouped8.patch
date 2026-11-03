@@ -1,0 +1,263 @@
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index 156ca4a..1576f8d 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -116,7 +116,7 @@ struct JLIDecoder: Sendable {
+         // coefficient/scratch capacity. Unsupported paths retain full planes.
+         let streamingPlan = try SequentialGreyscalePlan.make(parsed: parsed, configuration: configuration,
+             hasDestination: borrowedDestination != nil, normaliseXYBOutput: normaliseXYBOutput,
+-            workerLimit: NativeOperation.workerLimit)
++            workerLimit: NativeOperation.current?.maximumWorkers ?? NativeOperation.workerLimit)
+         let directGreyscale = scale == 1 && numComponents == 1 && NativeOperation.workerLimit == 1
+             && !parsed.isXYB && !parsed.isRawRGB && !normaliseXYBOutput
+             && configuration.outputColorModel == nil
+@@ -1070,8 +1070,9 @@ struct JLIDecoder: Sendable {
+     }
+ 
+     /// Sequential greyscale retains at most one coefficient batch and two Float
+-    /// reconstruction batches. All three borrows and the final destination stay
+-    /// on this thread; entropy state is carried across completed batches.
++    /// reconstruction windows. The caller retains their owners while joined
++    /// workers access only internal scratch; destination writes stay on this
++    /// thread. Entropy state is carried across completed windows.
+     private static func decodeSequentialGreyscaleInto(
+         reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable, lookup: ACLookahead?,
+         quantTable: [Float], plan: SequentialGreyscalePlan,
+@@ -1089,7 +1090,8 @@ struct JLIDecoder: Sendable {
+                     try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
+                         dcTable: dcTable, acTable: acTable, lookup: lookup,
+                         blocksPerRow: plan.blocksPerRow, blockRows: plan.blockRows,
+-                        precision: precision, restartInterval: restartInterval) { coefficients, first in
++                        precision: precision, restartInterval: restartInterval,
++                        batchBlocks: plan.batchBlocks) { coefficients, first in
+                         try reconstructGreyscaleBatch(coefficients: coefficients.baseAddress!, quantTable: qt.baseAddress!,
+                             pixels: px.baseAddress!, scratch: sc.baseAddress!, firstBlock: first,
+                             blockCount: coefficients.count / 64, blocksPerRow: plan.blocksPerRow,
+@@ -1108,6 +1110,43 @@ struct JLIDecoder: Sendable {
+         width: Int, height: Int, precision: Int, floatOutput: Bool,
+         destination: BorrowedSampleDestination
+     ) throws {
++        let groupSize = SequentialGreyscalePlan.blocksPerTransform
++        let groups = (blockCount + groupSize - 1) / groupSize
++        if groups == 1 {
++            transformGreyscaleBlocks(coefficients: coefficients, quantTable: quantTable,
++                pixels: pixels, scratch: scratch, blockCount: blockCount, precision: precision)
++        } else {
++            let pointers = GreyscaleIDCTPointers(coefficients: coefficients, quantTable: quantTable,
++                pixels: pixels, scratch: scratch)
++            try NativeOperation.perform(iterations: groups) { group in
++                let first = group * groupSize, count = min(groupSize, blockCount - first)
++                transformGreyscaleBlocks(coefficients: pointers.coefficients + first * 64,
++                    quantTable: pointers.quantTable, pixels: pointers.pixels + first * 64,
++                    scratch: pointers.scratch + first * 64, blockCount: count, precision: precision)
++            }
++        }
++        try SharedDCTStorage.writeGreyscaleBlocks(
++            UnsafeBufferPointer(start: pixels, count: blockCount * 64),
++            firstBlock: firstBlock, blocksPerRow: blocksPerRow,
++            width: width, height: height, precision: precision,
++            floatOutput: floatOutput, into: destination)
++    }
++
++    /// Read-only coefficients/table and disjoint internal Float slots, retained
++    /// by the enclosing scoped borrows until NativeOperation.perform joins.
++    /// Caller destination memory is deliberately absent from this carrier.
++    private struct GreyscaleIDCTPointers: @unchecked Sendable {
++        let coefficients: UnsafePointer<Int32>
++        let quantTable: UnsafePointer<Float>
++        let pixels: UnsafeMutablePointer<Float>
++        let scratch: UnsafeMutablePointer<Float>
++    }
++
++    private static func transformGreyscaleBlocks(
++        coefficients: UnsafePointer<Int32>, quantTable: UnsafePointer<Float>,
++        pixels: UnsafeMutablePointer<Float>, scratch: UnsafeMutablePointer<Float>,
++        blockCount: Int, precision: Int
++    ) {
+         AccelerateDSP.inverseDCTBatchDequantized(zigzag: coefficients, quantTable: quantTable,
+             output: pixels, scratch: scratch, blockCount: blockCount)
+         var center = Float(1 << (precision - 1))
+@@ -1115,11 +1154,6 @@ struct JLIDecoder: Sendable {
+         let samples = JLI_DSPCount(blockCount * 64)
+         jliDSP_vsadd(pixels, 1, &center, pixels, 1, samples)
+         jliDSP_vclip(pixels, 1, &lo, &hi, pixels, 1, samples)
+-        try SharedDCTStorage.writeGreyscaleBlocks(
+-            UnsafeBufferPointer(start: pixels, count: blockCount * 64),
+-            firstBlock: firstBlock, blocksPerRow: blocksPerRow,
+-            width: width, height: height, precision: precision,
+-            floatOutput: floatOutput, into: destination)
+     }
+ 
+     private static func validateGreyscaleDestination(
+diff --git a/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift b/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift
+index b802586..65b780a 100644
+--- a/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift
++++ b/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift
+@@ -4,7 +4,9 @@
+ /// A plan exists only when the decoder will avoid its full coefficient/Float
+ /// planes. Resource admission must not infer streaming from geometry alone.
+ struct SequentialGreyscalePlan: Sendable {
+-    static let maximumBatchBlocks = 1024
++    static let blocksPerTransform = 1024
++    static let maximumParallelGroups = 8
++    static let maximumBatchBlocks = blocksPerTransform * maximumParallelGroups
+     static let maximumAutomaticBlocks = 4096
+ 
+     let blocksPerRow: Int
+@@ -15,6 +17,8 @@ struct SequentialGreyscalePlan: Sendable {
+     /// This is a conservative reservation component, not measured peak memory.
+     let workspaceBytes: Int
+ 
++    /// The caller supplies the immutable operation worker ceiling. Admission
++    /// must not depend on a changing active-CPU count between planning and use.
+     static func make(parsed: ParsedJPEG, configuration: JLIDecoderConfiguration,
+                      hasDestination: Bool, normaliseXYBOutput: Bool,
+                      workerLimit: Int) throws -> Self? {
+@@ -34,10 +38,10 @@ struct SequentialGreyscalePlan: Sendable {
+         let blocksPerRow = try checkedAdd(frame.width, 7) / 8
+         let blockRows = try checkedAdd(frame.height, 7) / 8
+         let blockCount = try checkedMultiply(blocksPerRow, blockRows)
+-        // The large-image parallel path remains faster on the qualified host.
+-        // A worker limit is a ceiling: small images use the measured serial path.
+-        guard workerLimit == 1 || blockCount <= maximumAutomaticBlocks else { return nil }
+-        let batchBlocks = min(maximumBatchBlocks, blockCount)
++        // Small frames remain serial; large frames group unchanged 1024-block
++        // transforms into one joined window, bounded by the worker ceiling.
++        let groups = blockCount <= maximumAutomaticBlocks ? 1 : min(workerLimit, maximumParallelGroups)
++        let batchBlocks = min(try checkedMultiply(blocksPerTransform, groups), blockCount)
+         let samples = try checkedMultiply(batchBlocks, 64)
+         let bytesPerSample = try checkedAdd(MemoryLayout<Int32>.stride,
+             checkedMultiply(2, MemoryLayout<Float>.stride))
+diff --git a/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift
+index f0e6b1b..24540b9 100644
+--- a/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift
++++ b/Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift
+@@ -7,34 +7,42 @@
+ enum SequentialGreyscaleDecoder {
+     /// Serial scan with bounded coefficient storage. The consumer completes
+     /// synchronously before the same slot is reused. The consumer must not let
+-    /// the pointer escape or use it concurrently; the production consumer
+-    /// finishes reconstruction and output before returning.
++    /// the pointer escape. Any workers may only read these coefficients and
++    /// must join before the consumer returns; the production consumer finishes
++    /// reconstruction and serial destination output before slot reuse.
+     /// DC prediction and restart numbering span batches, while each batch keeps
+     /// the established 1024-block reconstruction grouping.
+     static func decodeBatches(
+         reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable,
+         lookup: ACLookahead?, blocksPerRow: Int, blockRows: Int,
+         precision: Int, restartInterval: Int,
++        batchBlocks: Int = SequentialGreyscalePlan.blocksPerTransform,
+         consume: (UnsafeBufferPointer<Int32>, Int) throws -> Void
+     ) throws {
+         let (blocks, overflow) = blocksPerRow.multipliedReportingOverflow(by: blockRows)
+         let (_, countOverflow) = blocks.multipliedReportingOverflow(by: 64)
+         guard blocksPerRow > 0, blockRows > 0, !overflow, !countOverflow,
+-              (8...12).contains(precision), restartInterval >= 0 else {
++              (8...12).contains(precision), restartInterval >= 0,
++              batchBlocks > 0, batchBlocks <= SequentialGreyscalePlan.maximumBatchBlocks,
++              batchBlocks >= blocks || batchBlocks % SequentialGreyscalePlan.blocksPerTransform == 0 else {
+             throw JLIError.decodingFailed("Invalid sequential coefficient destination")
+         }
+-        let capacity = min(1024, blocks) * 64
++        let capacity = min(batchBlocks, blocks) * 64
+         var coefficients = [Int32](unsafeUninitializedCapacity: capacity) { _, count in count = capacity }
+         var previousDC: Int32 = 0
+         var restartIndex = 0
+         try coefficients.withUnsafeMutableBufferPointer { buffer in
+             let base = buffer.baseAddress!
+-            for first in stride(from: 0, to: blocks, by: 1024) {
+-                let end = min(first + 1024, blocks)
++            for first in stride(from: 0, to: blocks, by: batchBlocks) {
++                let end = min(first + batchBlocks, blocks)
+                 var index = first
+                 while index < end {
+                     try NativeOperation.check()
+-                    let rowEnd = min(end, index + blocksPerRow - index % blocksPerRow)
++                    // A grouped window must not widen the previous 1024-block
++                    // cancellation bound, even when an MCU row is very wide.
++                    let groupEnd = index + SequentialGreyscalePlan.blocksPerTransform
++                        - index % SequentialGreyscalePlan.blocksPerTransform
++                    let rowEnd = min(end, min(index + blocksPerRow - index % blocksPerRow, groupEnd))
+                     while index < rowEnd {
+                         if restartInterval > 0, index > 0, index % restartInterval == 0 {
+                             try reader.skipRestartMarker(expectedIndex: restartIndex)
+diff --git a/Tests/SwiftJLITests/Native/BoundedDCTWorkspaceTests.swift b/Tests/SwiftJLITests/Native/BoundedDCTWorkspaceTests.swift
+index 4f36fcb..44d8284 100644
+--- a/Tests/SwiftJLITests/Native/BoundedDCTWorkspaceTests.swift
++++ b/Tests/SwiftJLITests/Native/BoundedDCTWorkspaceTests.swift
+@@ -113,9 +113,10 @@ import Testing
+ 
+     @Test(arguments: [8, 12])
+     func reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision: Int) throws {
+-        // 65 x 98 blocks span several 1024-block batches and do not divide
++        // 65 x 130 blocks span several 1024-block transforms and cross the
++        // largest 8192-block window. They do not divide
+         // evenly among three workers. The final block has partial rows/columns.
+-        let width = 513, height = 777, bps = precision == 8 ? 1 : 2
++        let width = 513, height = 1033, bps = precision == 8 ? 1 : 2
+         var source = [UInt8](repeating: 0, count: width * height * bps)
+         for y in 0..<height { for x in 0..<width {
+             let value = (x * 17 + y * 31 + x * y % 257) & ((1 << precision) - 1)
+@@ -135,7 +136,7 @@ import Testing
+                 let expected = try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 1)) {
+                     try JLIDecoder().decodeParsed(parsed, configuration: configuration).data
+                 }
+-                for workers in [1, 3] {
++                for workers in [1, 3, 8] {
+                     let rowBytes = width * bps + 7
+                     var destination = [UInt8](repeating: 0xA5, count: 3 + rowBytes * height + 5)
+                     try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: workers)) {
+diff --git a/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift b/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift
+index 667aa04..59a1273 100644
+--- a/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift
++++ b/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift
+@@ -3,6 +3,48 @@ import Testing
+ @testable import SwiftJLI
+ 
+ @Suite struct SequentialGreyscaleDecoderTests {
++    @Test(arguments: [4096, 8192])
++    func groupedWindowsPreserveRestartAndDCState(window: Int) throws {
++        let columns = 65, rows = 129
++        let dcTable = StandardHuffmanTables.dcLuminance
++        let acTable = StandardHuffmanTables.acLuminance
++        for interval in [window - 1, window, window + 1] {
++            var writer = BitWriter()
++            var previous: Int32 = 0
++            var expected: [Int32] = []
++            for index in 0..<(columns * rows) {
++                if index > 0, index % interval == 0 {
++                    writer.emitRestartMarker((index / interval - 1) & 7)
++                    previous = 0
++                }
++                var block = [Int32](repeating: 0, count: 64)
++                block[0] = Int32(index % 511 - 255)
++                block[1] = Int32(index % 7 - 3)
++                HuffmanEncoder.encodeDC(block[0] - previous, table: dcTable, writer: &writer)
++                HuffmanEncoder.encodeAC(block, table: acTable, writer: &writer)
++                previous = block[0]
++                expected += block
++            }
++            writer.emitRestartMarker(5)
++            writer.writeBits(0xA3, count: 8)
++            writer.flush()
++            var reader = BitReader(data: writer.data)
++            var collected: [Int32] = []
++            try SequentialGreyscaleDecoder.decodeBatches(reader: &reader,
++                dcTable: dcTable, acTable: acTable,
++                lookup: ACLookahead(table: acTable, blockCount: columns * rows),
++                blocksPerRow: columns, blockRows: rows, precision: 12, restartInterval: interval,
++                batchBlocks: window) { coefficients, first in
++                #expect(first == collected.count / 64)
++                #expect(coefficients.count <= window * 64)
++                collected.append(contentsOf: coefficients)
++            }
++            #expect(collected == expected)
++            try reader.skipRestartMarker(expectedIndex: 5)
++            #expect(try reader.readBits(8) == 0xA3)
++        }
++    }
++
+     @Test(arguments: [8, 12])
+     func scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision: Int) throws {
+         let dcTable = StandardHuffmanTables.dcLuminance

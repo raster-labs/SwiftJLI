@@ -70,7 +70,7 @@ print(details.codingProcess, details.chromaSubsampling, details.bitsPerComponent
 
 Signed-labelled predecessor input deserves separate review: its SOF3 encoder preserves the bit patterns, but its decoder does not restore `isSigned`. The successor's standalone JPEG path rejects signed descriptors as COMMON_API API-06 requires. A caller needing signed interpretation must qualify an explicit external-metadata contract; a RAM flag or a private JPEG marker would not establish that contract.
 
-`DecoderConfiguration(scale:)` accepts 1, 2, 4 or 8. DCT output dimensions are `ceil(encodedDimension / scale)`; the existing native DCT reduction is used directly. Predictive JPEG requires scale 1. `inspect` always describes encoded geometry/precision, even on a decoder configured for reduced output. Resource admission still includes the full coefficient workspace.
+`DecoderConfiguration(scale:)` accepts 1, 2, 4 or 8. DCT output dimensions are `ceil(encodedDimension / scale)`; the existing native DCT reduction is used directly. Predictive JPEG requires scale 1. `inspect` always describes encoded geometry/precision, even on a decoder configured for reduced output. Reduced-scale DCT admission still includes the full coefficient workspace; eligible full-resolution greyscale streaming has the bounded reservation described below.
 
 `DecoderConfiguration(scale: 2, sampleFormat: .float32RawSamples)` explicitly returns raw reconstructed sample values as little-endian IEEE Float32, without integer rounding or normalisation. For example, a reconstructed 12-bit sample near 2048 remains near 2048, not 0.5. This profile supports greyscale DCT JPEG without ICC interpretation; colour, ICC-bearing input and SOF3 are rejected before the destination borrow. The result descriptor is `.floatingPoint` with 32 storage/meaningful bits. Supplied destinations must declare that same interpretation; default integer decode does not infer a float conversion from the destination.
 
@@ -100,7 +100,7 @@ The profile's [source and licence](Documentation/Migration/Fixtures/ICC-LICENSE.
 swift run --package-path Examples/IndependentConsumer
 ```
 
-Set realistic ResourceLimits for compressed bytes, samples, metadata and workspace. The predictive algorithm uses full-frame Int32 working planes and DCT uses Float/coefficient workspace; required sharing eliminates a hand-off copy, not that workspace. Conservative admission reservations and unmeasured peak fields are documented in the migration status. A preflight failure leaves an unwritten destination usable; failure after writing begins invalidates it.
+Set realistic ResourceLimits for compressed bytes, samples, metadata and workspace. Predictive working storage depends on the selected decode path, and DCT uses Float/coefficient workspace; required sharing eliminates a hand-off copy, not algorithm workspace. Conservative admission reservations and unmeasured peak fields are documented in the migration status. A preflight failure leaves an unwritten destination usable; failure after writing begins invalidates it.
 
 ### Explicit memory admission
 
@@ -121,15 +121,28 @@ metadata bytes, the current reservations are:
 | DCT encode | `192 × N + 4 × M + 1,048,576` |
 | Parsing | `64 × B + 1,048,576` |
 | Predictive decode | `64 × B + 8 × N + 1,048,576` |
-| DCT decode, including reduced-scale output | `64 × B + 128 × N + 1,048,576` |
+| DCT decode, except eligible greyscale streaming | `64 × B + 128 × N + 1,048,576` |
+| Eligible full-resolution greyscale DCT streaming | `64 × B + 768 × min(1024, ceil(width/8) × ceil(height/8)) + 1,048,576` |
+
+Streaming requires a single sequential 8/12-bit greyscale scan with 1×1 sampling
+and compatible integer or raw Float output. It applies to explicit
+`maximumWorkers: 1`, or at most 4,096 blocks with the accelerated backend and
+2,048 blocks with the scalar backend. Public allocated-output and caller-storage
+decode use the same admission/dispatch plan. Larger default decodes and reduced
+scales retain the conservative full coefficient reservation. Resource ceilings
+are unchanged; the smaller reservation allows qualifying operations to fit
+budgets that previously rejected them. See [source-pinned tests and measurements](Documentation/Migration/Qualification/DjpegPerformanceRound4_20261103/README.md).
 
 Admission also counts supplied/final pixel storage, compressed data or the encode
 output bound, and metadata against `maximumMemoryBytes`. Padding counts as storage.
 
-The Data-based decoder currently materialises one bounded compressed-byte array
-for validation and native parsing. This is compressed input workspace, distinct
-from the no-copy decoded-image hand-off. Reports with unknown workspace peaks
-remain `nil`; admission reservations must not be presented as measured peaks.
+The Data-based decoder retains an immutable compressed-input owner and checked
+scan ranges without materialising a compressed-byte array or per-scan copies.
+Apple tests verify input pointer sharing and copy-on-write independence;
+Foundation bridging may still copy on another platform or representation.
+This is distinct from the no-copy decoded-image hand-off. Reports with unknown
+workspace peaks remain `nil`; admission reservations must not be presented as
+measured peaks.
 
 ## Application acceptance
 

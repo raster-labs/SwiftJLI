@@ -1,0 +1,17 @@
+## CLI scratch and descriptor work
+
+Source `ae70b432574ffddd53c5d9d57d09202812fe355e` (integrated by root as `ee9a2e7`) preserves command/API behaviour and sample fidelity while avoiding a 64 KiB fallback read buffer for ordinary regular-file EOF and configuring stdout nonblocking mode once for the complete output. Limits, EINTR/EAGAIN handling, cancellation and error restoration remain intact. The new stack-byte borrow is synchronous and does not escape.
+
+Identically compiled CLI variants use the same baseline `SwiftJLI.o` from production `5351088` / documentation baseline `8ae2762`, with Swift 6.4.2, Swift 6 mode, complete concurrency checking, -O and whole-module optimisation. The separate instrumented build is diagnostic only. This CLI experiment is not final Swift Build/sanitizer/platform qualification.
+
+- Three CLI builds: exit 0; exact compiler commands in `build-commands.json`.
+- `python3 Scripts/test-cli.py --binary /private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli --output /private/tmp/swiftjli-round4-cli-evidence/cli-tests-verified`: exit 0, **252 process checks**. New tests preserve the stdout `O_NONBLOCK` state after success and timeout, including initially nonblocking stdout.
+- `python3 /private/tmp/swiftjli-round4-cli-evidence/run-size-hint.py`: exit 0, **5 checks**. Simulated size hints 0/size-1/size/size+1 preserve exact output; growth beyond the admitted byte ceiling returns exit 5 with zero stdout.
+- `python3 /private/tmp/swiftjli-round4-cli-evidence/phases.py`: exit 0; five warmups/twenty diagnostic samples per fixture. Flat19 spends approximately **0.246 ms from main to exit**, versus 5.483 ms whole-process direct-launch time. This is startup attribution, not an accepted latency comparison.
+- Paired release matrix: exit 0; exact full command in `README.md` and runner arguments in `paired-cli-lossless.json`. **5 warmups, 20 samples, 2 balanced rounds**, baseline/candidate/djpeg 3.2.1, unchanged lossless-pattern fixtures. All **13 eligible cases per round** preserve exact baseline/candidate PNM and exact djpeg samples. Noise2048/noise3072/mixed3072 remain exit-5 memory-budget exclusions.
+
+No CLI latency change reaches 5%: changes range from -3.11% to +4.24%. All four 19×19 profiles reduce median RSS by **96 KiB in both rounds**, except mixed19 round 2 at **112 KiB**. Other RSS differences range from -104 to +16 KiB. Small-image latency and RSS still favour djpeg. Retain as a bounded scratch/syscall reduction; claim no new >5% latency win or overall djpeg memory win.
+
+The source audit found no actionable issue. The two initial CLI runs failed in newly added test code (Darwin's unrelated pipe flag and a shadowed test variable); their separate logs/reports are retained. Final source qualification belongs to the root integration.
+
+Runner fairness review: same JPEG inputs and stdout-to-/dev/null output; decoded layouts/samples checked before timing; baseline/candidate samples must match exactly; djpeg tolerance is predeclared (lossless 0; original-matrix DCT12 4, RGB8/progressive RGB8 2). Tool order rotates and reverses across samples; all timed commands use /usr/bin/time -l, so wall time includes common wrapper/launch overhead. Both implementations must have the same resource rejection for an excluded lossless case; a new admission mismatch fails the runner. Full-process RSS is distinct from codec workspace. No fixtures/options/runner code changed.

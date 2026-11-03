@@ -2,6 +2,22 @@
 
 **Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
 
+**3 November 2026 fourth performance follow-up:** source
+`0a8acd72ddeac6fb1911457ae28b689eef0e9db1` bounds DCT scratch, streams eligible
+greyscale DCT coefficients and shares immutable compressed input. Single-decode
+RSS falls 38.6% for 2048² greyscale DCT at the default worker ceiling, 78.7%
+with one worker and about 23% for 2048² RGB/progressive DCT. Samples remain
+identical to the previous revision. Final Release passes 403 tests; exact
+earlier/full and final/focused sanitiser, CLI and oracle pins are in
+[DjpegPerformanceRound4_20261103](Qualification/DjpegPerformanceRound4_20261103/README.md).
+All final timings are owner-authorised provisional measurements under sustained
+host contention. Small CLI latency and process memory still favour djpeg;
+two tiny native lossless regressions are disclosed. Resource ceilings remain
+unchanged, with lower admission reservations only where the streaming plan
+actually uses bounded buffers. The optimisation goal stays open. Baseline
+Swift 6.3.3 macOS Release CI signal-11 failures remain unresolved; local
+Swift 6.4.2 passes do not establish a fix or final-source platform qualification.
+
 **3 November 2026 third performance follow-up:** source
 `5351088d3bb4630a32de6509e4d62210ad14aaa0` reduces lossless dispatch, batches
 canonical zero differences, borrows greyscale DCT coefficient planes once per

@@ -1,0 +1,199 @@
+diff --git a/Sources/SwiftJLI/JPEGCodec.swift b/Sources/SwiftJLI/JPEGCodec.swift
+index d7130c7..01e6ee2 100644
+--- a/Sources/SwiftJLI/JPEGCodec.swift
++++ b/Sources/SwiftJLI/JPEGCodec.swift
+@@ -241,11 +241,10 @@ enum JPEGCodec {
+ 
+     static func parse(_ data: Data, options: DecodeOptions, sourceColourModel: JPEGSourceColourModel? = nil) throws -> ParsedJPEG {
+         let limits = options.resourceLimits
+-        // Bound copies/table storage before materialising the array or parsing.
++        // Retain the existing conservative parser/table admission before parsing.
+         let parserBudget = try checkedAdd(checkedMultiply(data.count, 64), 1_048_576)
+         try admit(workspace: parserBudget, pixels: 0, compressed: data.count, metadata: 0, limits: limits)
+-        let bytes = Array(data)
+-        let envelope = try JPEGEnvelope.validate(bytes, limits: limits)
++        let envelope = try JPEGEnvelope.validate(data, limits: limits)
+         let adobeTransform = envelope.adobeTransform
+         var reader = MarkerReader(validated: envelope)
+         var parsed = try reader.parse()
+diff --git a/Sources/SwiftJLI/JPEGEntropyBoundary.swift b/Sources/SwiftJLI/JPEGEntropyBoundary.swift
+index b875423..a89fd3c 100644
+--- a/Sources/SwiftJLI/JPEGEntropyBoundary.swift
++++ b/Sources/SwiftJLI/JPEGEntropyBoundary.swift
+@@ -7,11 +7,15 @@ import Foundation
+ /// the input contains no marker. The borrow ends before returning its index.
+ enum JPEGEntropyBoundary {
+     static func find(in bytes: [UInt8], from start: Int) throws -> Int {
++        try find(in: JPEGBytes(bytes), from: start)
++    }
++
++    static func find(in bytes: JPEGBytes, from start: Int) throws -> Int {
+         guard start >= 0, start <= bytes.count else {
+             throw CodecError(.malformedInput, "Invalid entropy scan offset.")
+         }
+-        return try bytes.withUnsafeBufferPointer { buffer in
+-            guard let base = buffer.baseAddress else { return start }
++        return try bytes.withUnsafeBytes { buffer in
++            guard let base = buffer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return start }
+             var position = start, checkEnd = start
+             while position < buffer.count {
+                 if position >= checkEnd {
+diff --git a/Sources/SwiftJLI/JPEGEnvelope.swift b/Sources/SwiftJLI/JPEGEnvelope.swift
+index 33820a3..1fbccd7 100644
+--- a/Sources/SwiftJLI/JPEGEnvelope.swift
++++ b/Sources/SwiftJLI/JPEGEnvelope.swift
+@@ -7,21 +7,29 @@ import Foundation
+ enum JPEGEnvelope {
+     /// Owns the exact immutable bytes whose segment and entropy extents passed
+     /// admission. The private constructor prevents a parser from mixing ranges
+-    /// validated against one input with another input. Array value semantics
++    /// validated against one input with another input. Data value semantics
+     /// retain the owner without making another full-input copy.
+     struct Validated {
+-        let bytes: [UInt8]
++        let bytes: JPEGBytes
+         let adobeTransform: UInt8?
+         let entropyRanges: [Range<Int>]
+ 
+-        fileprivate init(bytes: [UInt8], adobeTransform: UInt8?, entropyRanges: [Range<Int>]) {
++        fileprivate init(bytes: JPEGBytes, adobeTransform: UInt8?, entropyRanges: [Range<Int>]) {
+             self.bytes = bytes
+             self.adobeTransform = adobeTransform
+             self.entropyRanges = entropyRanges
+         }
+     }
+ 
+-    static func validate(_ b: [UInt8], limits: ResourceLimits) throws -> Validated {
++    static func validate(_ bytes: [UInt8], limits: ResourceLimits) throws -> Validated {
++        try validate(JPEGBytes(bytes), limits: limits)
++    }
++
++    static func validate(_ data: Data, limits: ResourceLimits) throws -> Validated {
++        try validate(JPEGBytes(data), limits: limits)
++    }
++
++    private static func validate(_ b: JPEGBytes, limits: ResourceLimits) throws -> Validated {
+         func malformed() -> CodecError { .init(.malformedInput, "Invalid JPEG marker envelope.") }
+         guard b.count >= 4, b[0] == 255, b[1] == 216 else { throw malformed() }
+         var p = 2, sawFrame = false, sawScan = false, metadata = 0, iccBytes = 0
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index 6475994..5e2d2a6 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -142,8 +142,10 @@ struct BitWriter {
+ /// stuffing-aware byte loads are only triggered to complete a read/symbol that
+ /// then consumes them below 8 remaining bits). `alignToByte` relies on this to
+ /// rewind `byteOffset` over buffered whole bytes exactly.
++/// Retains the immutable input owner. Every raw-buffer access is scoped to its
++/// immediate load; no borrowed pointer is stored or captured by workers.
+ struct BitReader {
+-    private let data: [UInt8]
++    private let data: JPEGBytes
+     /// Current byte position in the data buffer.
+     private(set) var byteOffset: Int = 0
+     /// Bit accumulator (MSB-first in the low `bitsAvailable` bits).
+@@ -152,12 +154,16 @@ struct BitReader {
+     private var bitsAvailable: Int = 0
+ 
+     init(data: [UInt8]) {
++        self.data = JPEGBytes(data)
++    }
++
++    init(data: JPEGBytes) {
+         self.data = data
+     }
+ 
+     /// Starts reading at `offset` — used by segment-parallel lossless decode,
+     /// where each restart segment's reader begins just past its RST marker.
+-    init(data: [UInt8], startingAt offset: Int) {
++    init(data: JPEGBytes, startingAt offset: Int) {
+         self.data = data
+         self.byteOffset = min(max(0, offset), data.count)
+     }
+@@ -186,9 +192,8 @@ struct BitReader {
+     @inline(__always)
+     private mutating func bulkRefill() -> Bool {
+         guard byteOffset + 8 <= data.count else { return false }
+-        let word = data.withUnsafeBufferPointer { buf in
+-            UInt64(bigEndian: UnsafeRawPointer(buf.baseAddress! + byteOffset)
+-                .loadUnaligned(as: UInt64.self))
++        let word = data.withUnsafeBytes { buf in
++            UInt64(bigEndian: buf.loadUnaligned(fromByteOffset: byteOffset, as: UInt64.self))
+         }
+         guard !Self.hasFFByte(word) else { return false }
+         let k = (64 - bitsAvailable) >> 3          // whole bytes that fit (≥ 6 here)
+diff --git a/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift b/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
+index a92ac56..d292d93 100644
+--- a/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
++++ b/Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift
+@@ -40,7 +40,7 @@ struct JPEGScanHeader: Sendable {
+ /// A single scan's data extracted from the JPEG stream.
+ struct JPEGScanData: Sendable {
+     let header: JPEGScanHeader
+-    let entropyData: [UInt8]
++    let entropyData: JPEGBytes
+     /// Huffman tables in effect when this scan's SOS was parsed. Progressive
+     /// JPEGs redefine DHT tables between scans, so each scan must use the
+     /// snapshot active at its point in the stream, not a global merge.
+@@ -85,18 +85,18 @@ struct ParsedJPEG: Sendable {
+ 
+ /// Reads and parses JPEG marker segments from a byte buffer.
+ struct MarkerReader {
+-    private let data: [UInt8]
++    private let data: JPEGBytes
+     private var offset: Int = 0
+     private let validatedEntropyRanges: [Range<Int>]?
+     private var nextEntropyRange: Int = 0
+ 
+     init(data: [UInt8]) {
+-        self.data = data
++        self.data = JPEGBytes(data)
+         self.validatedEntropyRanges = nil
+     }
+ 
+     /// Reuses entropy extents from structural admission of these exact bytes.
+-    /// Both arrays remain owned values; no pointer or borrow escapes parsing.
++    /// The immutable owner is retained; no pointer or borrow escapes parsing.
+     init(validated: JPEGEnvelope.Validated) {
+         self.data = validated.bytes
+         self.validatedEntropyRanges = validated.entropyRanges
+@@ -481,14 +481,13 @@ struct MarkerReader {
+     /// stuffed `0xFF 0x00` pairs **and** restart markers (`0xFF 0xD0`–`0xFF 0xD7`).
+     /// `BitReader` is the single point that performs unstuffing, and the decoder consumes
+     /// restart markers explicitly at known MCU boundaries via `skipRestartMarker`.
+-    private mutating func readEntropyData() throws -> [UInt8] {
++    private mutating func readEntropyData() throws -> JPEGBytes {
+         // The segment is a verbatim slice (stuffed pairs and RST markers stay
+         // in; `BitReader` unstuffs), so only the END needs finding: scan to the
+         // first 0xFF whose successor is neither 0x00 (stuffing) nor 0xD0–0xD7
+         // (RST0–7) — or a trailing lone 0xFF — leaving `offset` on the 0xFF for
+-        // nextMarker(). One slice copy replaces the previous per-byte append
+-        // (which paid an Array uniqueness check + growth per byte and showed up
+-        // at ~7-9% of a whole lossless decode).
++        // nextMarker(). The slice retains the immutable compressed owner and
++        // rebases indices without copying entropy bytes.
+         let start = offset
+         let pos: Int
+         if let ranges = validatedEntropyRanges {
+@@ -504,7 +503,7 @@ struct MarkerReader {
+             pos = try JPEGEntropyBoundary.find(in: data, from: start)
+         }
+         offset = pos
+-        return Array(data[start..<pos])
++        return data.rebasedSlice(start..<pos)
+     }
+ 
+     // MARK: - Byte Reading Primitives
+diff --git a/Tests/SwiftJLITests/ValidatedEnvelopeTests.swift b/Tests/SwiftJLITests/ValidatedEnvelopeTests.swift
+index 4998a52..7081911 100644
+--- a/Tests/SwiftJLITests/ValidatedEnvelopeTests.swift
++++ b/Tests/SwiftJLITests/ValidatedEnvelopeTests.swift
+@@ -46,7 +46,7 @@ import Testing
+         let original = bytes
+         let envelope = try JPEGEnvelope.validate(bytes, limits: .init())
+         bytes.replaceSubrange(bytes.indices, with: [0, 1, 2])
+-        #expect(envelope.bytes == original)
++        #expect(envelope.bytes.elementsEqual(original))
+         var parser = MarkerReader(validated: envelope)
+         let parsed = try parser.parse()
+         #expect(parsed.frameInfo.width == 13 && parsed.frameInfo.height == 9)

@@ -1,0 +1,90 @@
+{
+  "suitePolicy": "0.10.0",
+  "pins": [
+    {
+      "revision": "8ae2762710d6279cd92222f5bb5ca95f042f694e",
+      "role": "Baseline documentation/source pin",
+      "subject": "Keep the overall performance goal explicitly open"
+    },
+    {
+      "revision": "5351088d3bb4630a32de6509e4d62210ad14aaa0",
+      "role": "Baseline production pin",
+      "subject": "Decode canonical zero-difference runs in bounded batches"
+    },
+    {
+      "revision": "7302f7e7b9d744570545ca5288e719a24ce241b3",
+      "role": "DCT child bounded scratch",
+      "subject": "Bound DCT reconstruction scratch to per-worker batches"
+    },
+    {
+      "revision": "0b69c46c18fa34bf78c0d6b89e8c812226676f26",
+      "role": "DCT child direct output",
+      "subject": "Write serial greyscale DCT batches directly to caller storage"
+    },
+    {
+      "revision": "b315effd6bd3046890be81babff7d606debf8d93",
+      "role": "DCT child sequential streaming",
+      "subject": "Stream sequential greyscale coefficients in bounded DCT batches"
+    },
+    {
+      "revision": "a4cd761b0a060a0b593feaddcd56b4fa12c3c9ad",
+      "role": "DCT child small default dispatch",
+      "subject": "Stream small greyscale frames under the default worker ceiling"
+    },
+    {
+      "revision": "e3ee589cbba20bc78e27228c169dba4c3345ac0a",
+      "role": "DCT child shared plan mirror",
+      "subject": "Share sequential reconstruction dispatch and workspace plan"
+    },
+    {
+      "revision": "41acd7235435f67d9336cbfd07f5215e42f7fed8",
+      "role": "DCT child final selector mirror",
+      "subject": "Keep automatic scalar streaming within the measured block limit"
+    },
+    {
+      "revision": "ae70b432574ffddd53c5d9d57d09202812fe355e",
+      "role": "CLI child accepted source",
+      "subject": "Reduce CLI input scratch and stdout descriptor work"
+    },
+    {
+      "revision": "9f4cfb3c1f46efe3670dfd7d4d683692640fef37",
+      "role": "Integrated bounded scratch",
+      "subject": "Bound DCT reconstruction scratch to per-worker batches"
+    },
+    {
+      "revision": "c1c97102e985156b4e6f4213ce15c9a6b85a9205",
+      "role": "Integrated direct output",
+      "subject": "Write serial greyscale DCT batches directly to caller storage"
+    },
+    {
+      "revision": "ee9a2e7918f750a0dfd098aadfa37c07d3d6002f",
+      "role": "Integrated CLI changes",
+      "subject": "Reduce CLI input scratch and stdout descriptor work"
+    },
+    {
+      "revision": "10a9de7edc19d483ffccb18d4b8fd1ee8ac8301f",
+      "role": "Integrated sequential streaming",
+      "subject": "Stream sequential greyscale coefficients in bounded DCT batches"
+    },
+    {
+      "revision": "5611e46f2bb716ae761e29c83ad2d00fbeb9b5cb",
+      "role": "Integrated immutable input sharing",
+      "subject": "Share immutable compressed input across validated JPEG scans"
+    },
+    {
+      "revision": "dc58a2e7bad92a5da06cbb42f7addb9ebfe59d1a",
+      "role": "Integrated small default dispatch",
+      "subject": "Stream small greyscale frames under the default worker ceiling"
+    },
+    {
+      "revision": "82d4b25510daceeddb40d1a2395e683203d76526",
+      "role": "Integrated admission and prompt owner release",
+      "subject": "Account for bounded decoding and release compressed owners promptly"
+    },
+    {
+      "revision": "0a8acd72ddeac6fb1911457ae28b689eef0e9db1",
+      "role": "Integrated scalar/ownership portability correction",
+      "subject": "Preserve scalar parallelism and portable input ownership checks"
+    }
+  ]
+}
