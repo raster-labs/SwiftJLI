@@ -1,0 +1,28 @@
+{
+  "kind": "read-only C helper inlining audit; no new compilation or timing",
+  "source_revision": "3a5ef320c04fff03561a69b705355c0e9da2fc31",
+  "source_path": "Sources/SwiftJLIEntropyC/ACBlock.c",
+  "source_sha256": "8cf99770d669a535501972f677f77826536ff091d3ae1f63d3ba4b1bb7a7e59a",
+  "object_path": "/private/tmp/swiftjli-round5-c-ac-leaf-build/out/Intermediates.noindex/SwiftJLI.build/Release/SwiftJLIEntropyC-t.build/Objects-normal/arm64/ACBlock.o",
+  "object_sha256": "66be32b0ce6c15497eacde327b21174164c4e54d53c8ffbe6cd73ebfda560b65",
+  "disassembly_command": [
+    "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump",
+    "-d",
+    "--disassemble-symbols=_sjli_ac_decode_block",
+    "/private/tmp/swiftjli-round5-c-ac-leaf-build/out/Intermediates.noindex/SwiftJLI.build/Release/SwiftJLIEntropyC-t.build/Objects-normal/arm64/ACBlock.o"
+  ],
+  "object_instruction_count": 314,
+  "object_call_instructions": [],
+  "linked_instruction_count": 314,
+  "linked_call_instructions": [],
+  "defined_function_symbols": [
+    "0000000000000000 l     F __TEXT,__text ltmp0",
+    "0000000000000000 g     F __TEXT,__text _sjli_ac_decode_block"
+  ],
+  "finding": "The four static inline helpers bulk, fill, read_bits and symbol are already fully inlined into sjli_ac_decode_block. Neither the measured linked leaf nor its source object has a call instruction. The fixed-size memcpy and memset also produce no library calls.",
+  "decision": "Do not create an always_inline/flatten trial: the proposed outlined-helper overhead is absent in the measured build.",
+  "limits": [
+    "No fresh build, timing, source edit, acceptance or regression attribution follows from this structural audit.",
+    "The independent Swift lossless codegen/regression investigation remains necessary."
+  ]
+}

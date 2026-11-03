@@ -1,0 +1,221 @@
+{
+  "decision": "reject combined helper trial pending isolated inline recovery",
+  "reason": "Dense DCT loses original C-AC gain; noise8/12 regress repeatedly above5%. C codegen outlines the shared helpers where originalC-AC was call-free.",
+  "candidateRevision": "1db53e8cf6ab4fbf99ad6efbd321d3fa45eba384",
+  "baselineRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "focusedTests": {
+    "exitCode": 0,
+    "tests": 47,
+    "suites": 11,
+    "log": "tests.log",
+    "finishedUTC": "2026-11-03T16:19:13.634907+00:00"
+  },
+  "warningsCheck": {
+    "command": "xcrun clang -Wall -Wextra -Werror -std=c11 -c Sources/SwiftJLIEntropyC/ACBlock.c -I Sources/SwiftJLIEntropyC/include -o /private/tmp/swiftjli-round5-evidence/c-dct-block/warnings-check.o",
+    "exitCode": 0,
+    "log": "warnings-check.log"
+  },
+  "dctExitCode": 0,
+  "exactPairs": 24,
+  "pairs": [
+    {
+      "round": 1,
+      "fixture": "dct12-512.jpg",
+      "baselineMedianMS": 1.2797915,
+      "candidateMedianMS": 1.2869585000000001,
+      "changePercent": 0.560013095883205,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "dct12-2048.jpg",
+      "baselineMedianMS": 17.875375,
+      "candidateMedianMS": 17.649604,
+      "changePercent": -1.2630280483626244,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "rgb8-512.jpg",
+      "baselineMedianMS": 2.7292914999999995,
+      "candidateMedianMS": 2.6835,
+      "changePercent": -1.677779746135566,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "rgb8-2048.jpg",
+      "baselineMedianMS": 32.976958,
+      "candidateMedianMS": 32.881229499999996,
+      "changePercent": -0.29028905577040964,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "progressiveRGB8-512.jpg",
+      "baselineMedianMS": 4.601292,
+      "candidateMedianMS": 4.4257085,
+      "changePercent": -3.8159608214388463,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "baselineMedianMS": 57.843937999999994,
+      "candidateMedianMS": 57.4185835,
+      "changePercent": -0.7353484474034278,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "xyb8-512.jpg",
+      "baselineMedianMS": 9.125146,
+      "candidateMedianMS": 9.0476875,
+      "changePercent": -0.8488466924255311,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "xyb8-2048.jpg",
+      "baselineMedianMS": 136.227542,
+      "candidateMedianMS": 137.2503755,
+      "changePercent": 0.7508272446110631,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "flat-8-512.jpg",
+      "baselineMedianMS": 0.061145500000000005,
+      "candidateMedianMS": 0.063458,
+      "changePercent": 3.7819626955376773,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "flat-12-512.jpg",
+      "baselineMedianMS": 0.067313,
+      "candidateMedianMS": 0.066896,
+      "changePercent": -0.6194940056155618,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "noise-8-512.jpg",
+      "baselineMedianMS": 1.0744995,
+      "candidateMedianMS": 1.2965,
+      "changePercent": 20.660828599734103,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "noise-12-512.jpg",
+      "baselineMedianMS": 1.4327505,
+      "candidateMedianMS": 1.5390625,
+      "changePercent": 7.420133512429428,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "dct12-512.jpg",
+      "baselineMedianMS": 1.2136040000000001,
+      "candidateMedianMS": 1.1906249999999998,
+      "changePercent": -1.8934512410967885,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "dct12-2048.jpg",
+      "baselineMedianMS": 17.982270500000002,
+      "candidateMedianMS": 17.801938,
+      "changePercent": -1.0028349868277275,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "rgb8-512.jpg",
+      "baselineMedianMS": 2.691875,
+      "candidateMedianMS": 2.810625,
+      "changePercent": 4.411423264453207,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "rgb8-2048.jpg",
+      "baselineMedianMS": 32.980583,
+      "candidateMedianMS": 32.85068750000001,
+      "changePercent": -0.3938544688551926,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "progressiveRGB8-512.jpg",
+      "baselineMedianMS": 4.360375499999999,
+      "candidateMedianMS": 4.477291499999999,
+      "changePercent": 2.681328706667574,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "baselineMedianMS": 58.12039600000001,
+      "candidateMedianMS": 57.644332999999996,
+      "changePercent": -0.8190979978870194,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "xyb8-512.jpg",
+      "baselineMedianMS": 9.064375,
+      "candidateMedianMS": 9.058604,
+      "changePercent": -0.06366682755289954,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "xyb8-2048.jpg",
+      "baselineMedianMS": 137.1881455,
+      "candidateMedianMS": 136.30458299999998,
+      "changePercent": -0.64405163928688,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "flat-8-512.jpg",
+      "baselineMedianMS": 0.061541,
+      "candidateMedianMS": 0.0612295,
+      "changePercent": -0.5061666206269022,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "flat-12-512.jpg",
+      "baselineMedianMS": 0.07264599999999999,
+      "candidateMedianMS": 0.070625,
+      "changePercent": -2.781983866971338,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "noise-8-512.jpg",
+      "baselineMedianMS": 1.1023744999999998,
+      "candidateMedianMS": 1.287125,
+      "changePercent": 16.75932271655416,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "noise-12-512.jpg",
+      "baselineMedianMS": 1.4014375,
+      "candidateMedianMS": 1.6022705,
+      "changePercent": 14.330499933104402,
+      "exact": true
+    }
+  ],
+  "sourceAndProductsVerifiedUnchanged": true,
+  "losslessMatrix": "Not run: DCT gate failed.",
+  "sanitisers": "Not run for this combined source.",
+  "codegenEvidence": "C-call-shape.json",
+  "nextSourceOnlyTrial": "../c-dct-inline",
+  "productionChanged": false,
+  "finishedUTC": "2026-11-03T16:22:44.369525+00:00"
+}

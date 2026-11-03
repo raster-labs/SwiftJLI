@@ -1,0 +1,44 @@
+{
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-u",
+        "/private/tmp/swiftjli-round5-evidence/c-lossless-row/run-targeted.py"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-u",
+        "/private/tmp/swiftjli-round5-evidence/c-lossless-row/run-lossless.py",
+        "--baseline-products",
+        "/private/tmp/swiftjli-round5-704ddae-products",
+        "--candidate-products",
+        "/private/tmp/swiftjli-round5-c-lossless-row-build/out/Products/Release",
+        "--output",
+        "/private/tmp/swiftjli-round5-evidence/c-lossless-row/lossless.json"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-u",
+        "/private/tmp/swiftjli-round5-evidence/c-lossless-row/run-dct.py",
+        "--baseline-products",
+        "/private/tmp/swiftjli-round5-704ddae-products",
+        "--candidate-products",
+        "/private/tmp/swiftjli-round5-c-lossless-row-build/out/Products/Release",
+        "--output",
+        "/private/tmp/swiftjli-round5-evidence/c-lossless-row/dct.json",
+        "--rounds",
+        "2"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "sourceRevision": "06eff275d4a2b72b3497748064311a38b288aa7d",
+  "nestedCompileAndExecutionCommands": "Preserved by each raw runner JSON; all retained fixture outputs exact."
+}

@@ -1,0 +1,722 @@
+diff --git a/Package.swift b/Package.swift
+index 770cc12..9263fe0 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -11,7 +11,8 @@ let package = Package(
+     products: [.library(name: "SwiftJLI", targets: ["SwiftJLI"]),
+                .executable(name: "swiftjli-cli", targets: ["SwiftJLICLI"])],
+     targets: [
+-        .target(name: "SwiftJLI"),
++        .target(name: "SwiftJLIEntropyC", publicHeadersPath: "include"),
++        .target(name: "SwiftJLI", dependencies: ["SwiftJLIEntropyC"]),
+         .executableTarget(name: "SwiftJLICLI", dependencies: ["SwiftJLI"]),
+         .testTarget(name: "SwiftJLITests", dependencies: ["SwiftJLI"], resources: [.copy("Fixtures")])
+     ],
+diff --git a/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
+index 232c53f..1e8790e 100644
+--- a/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
+@@ -96,39 +96,44 @@ enum PipelinedGreyscaleDecoder {
+                             firstBlock: batch * 1024, blocksPerRow: plan.blocksPerRow,
+                             width: width, height: height, destination: destination)
+                     }
+-                    var previousDC: Int32 = 0, restartIndex = 0
+-                    for batch in 0..<batches {
+-                        if batch >= 2 { try scatterCompleted(batch - 2) }
+-                        if let error = state.progress.withLock({ $0.error }) { throw error }
+-                        let first = batch * 1024, end = min(first + 1024, blocks)
+-                        let slot = base + (batch & 1) * slotSamples
+-                        var index = first
+-                        while index < end {
+-                            try NativeOperation.check()
+-                            let rowEnd = min(end, index + plan.blocksPerRow - index % plan.blocksPerRow)
+-                            while index < rowEnd {
+-                                if restartInterval > 0, index > 0, index % restartInterval == 0 {
+-                                    try reader.skipRestartMarker(expectedIndex: restartIndex)
+-                                    restartIndex = (restartIndex + 1) & 7
+-                                    previousDC = 0
+-                                }
+-                                let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
+-                                let dc = Int64(previousDC) + Int64(difference)
+-                                guard abs(dc) <= (1 << (precision + 2)) else {
+-                                    throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
++                    try CACKernel.withBorrowed(table: acTable, lookup: lookup,
++                        enabled: NativeOperation.current?.backend == .accelerated) { kernel in
++                        var previousDC: Int32 = 0, restartIndex = 0
++                        for batch in 0..<batches {
++                            if batch >= 2 { try scatterCompleted(batch - 2) }
++                            if let error = state.progress.withLock({ $0.error }) { throw error }
++                            let first = batch * 1024, end = min(first + 1024, blocks)
++                            let slot = base + (batch & 1) * slotSamples
++                            var index = first
++                            while index < end {
++                                try NativeOperation.check()
++                                let rowEnd = min(end, index + plan.blocksPerRow - index % plan.blocksPerRow)
++                                while index < rowEnd {
++                                    if restartInterval > 0, index > 0, index % restartInterval == 0 {
++                                        try reader.skipRestartMarker(expectedIndex: restartIndex)
++                                        restartIndex = (restartIndex + 1) & 7
++                                        previousDC = 0
++                                    }
++                                    let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
++                                    let dc = Int64(previousDC) + Int64(difference)
++                                    guard abs(dc) <= (1 << (precision + 2)) else {
++                                        throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
++                                    }
++                                    previousDC = Int32(dc)
++                                    let block = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: 64)
++                                    if let kernel {
++                                        try reader.decodeAC(using: kernel, into: block)
++                                    } else if let lookup {
++                                        try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
++                                    } else {
++                                        try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
++                                    }
++                                    block[0] = previousDC
++                                    index += 1
+                                 }
+-                                previousDC = Int32(dc)
+-                                let block = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: 64)
+-                                if let lookup {
+-                                    try HuffmanDecoder.decodeAC(from: &reader, table: acTable, lookup: lookup, into: block)
+-                                } else {
+-                                    try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
+-                                }
+-                                block[0] = previousDC
+-                                index += 1
+                             }
++                            state.ready.signal()
+                         }
+-                        state.ready.signal()
+                     }
+                     for batch in max(0, batches - 2)..<batches { try scatterCompleted(batch) }
+                 }
+diff --git a/Sources/SwiftJLI/Native/Entropy/CACDecoder.swift b/Sources/SwiftJLI/Native/Entropy/CACDecoder.swift
+new file mode 100644
+index 0000000..3704e6a
+--- /dev/null
++++ b/Sources/SwiftJLI/Native/Entropy/CACDecoder.swift
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: Apache-2.0
++import SwiftJLIEntropyC
++
++/// A non-Sendable, synchronous scan-local borrow. Only the entropy producer
++/// receives it; reconstruction workers receive coefficients, never these
++/// pointers. The metadata and existing 32 KiB lookup owners enclose the entire
++/// producer loop. No per-block table conversion, allocation or copy occurs.
++struct CACKernel {
++    let table: UnsafePointer<SJLIACHuffman>
++    let lookup: UnsafePointer<UInt32>
++
++    static func withBorrowed(table: HuffmanTable, lookup: ACLookahead?, enabled: Bool,
++                             _ body: (CACKernel?) throws -> Void) rethrows {
++        guard enabled, let lookup, lookup.entries.count == 8192,
++              table.minCode.count == 17, table.maxCode.count == 17,
++              table.valPtr.count == 17, table.values.count <= 256,
++              table.lookaheadLength.count == 256, table.lookaheadSymbol.count == 256,
++              table.valPtr.allSatisfy({ $0 >= 0 && $0 <= 256 }),
++              table.lookaheadLength.allSatisfy({ $0 <= 8 }) else {
++            try body(nil)
++            return
++        }
++        // Fixed stack metadata is bounded by 1,048 bytes on the supported
++        // 64-bit ABIs, covered by the existing 1 MiB decoder scratch reserve.
++        // Each tuple borrow covers only its own imported C array member.
++        var metadata = SJLIACHuffman()
++        withUnsafeMutableBytes(of: &metadata.minimum) { target in
++            table.minCode.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        withUnsafeMutableBytes(of: &metadata.maximum) { target in
++            table.maxCode.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        withUnsafeMutableBytes(of: &metadata.value_offsets) { target in
++            for index in 0..<17 {
++                target.storeBytes(of: Int64(table.valPtr[index]),
++                    toByteOffset: index * MemoryLayout<Int64>.stride, as: Int64.self)
++            }
++        }
++        withUnsafeMutableBytes(of: &metadata.values) { target in
++            table.values.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        withUnsafeMutableBytes(of: &metadata.lengths) { target in
++            table.lookaheadLength.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        withUnsafeMutableBytes(of: &metadata.symbols) { target in
++            table.lookaheadSymbol.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        metadata.value_count = UInt32(table.values.count)
++        try withUnsafePointer(to: &metadata) { tablePointer in
++            try lookup.entries.withUnsafeBufferPointer { entries in
++                // The exact positive count guard proves a non-nil base.
++                guard let base = entries.baseAddress else { try body(nil); return }
++                try body(.init(table: tablePointer, lookup: base))
++            }
++        }
++    }
++}
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index d5497e6..92b8635 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: Apache-2.0
+ // Copyright 2024 Raster Lab. All rights reserved.
++import SwiftJLIEntropyC
+ 
+ /// Bit-level writer for constructing JPEG entropy-coded data.
+ ///
+@@ -284,7 +285,9 @@ struct BitReader {
+     mutating func fastDecodeLosslessDifference(_ table: HuffmanTable) -> Int32? {
+         if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+         guard bitsAvailable >= 8 else { return nil }
+-        let peek = Int((bitBuffer >> (bitsAvailable - 8)) & 0xFF)
++        // Reader invariants bound available bits to 0...64. This guard makes
++        // the prefix shift 0...56; the masked shift has identical semantics.
++        let peek = Int((bitBuffer &>> (bitsAvailable - 8)) & 0xFF)
+         let length = Int(table.lookaheadLength[peek])
+         guard length != 0 else { return nil }
+         let category = Int(table.lookaheadSymbol[peek])
+@@ -294,7 +297,9 @@ struct BitReader {
+         }
+         guard category < 16, bitsAvailable >= length + category else { return nil }
+         bitsAvailable -= length + category
+-        let magnitude = Int32((bitBuffer >> bitsAvailable) & ((1 << category) - 1))
++        // The remaining category is 1...15 and length is positive, so the
++        // subtraction leaves 0...62 buffered bits and cannot mask a bad width.
++        let magnitude = Int32((bitBuffer &>> bitsAvailable) & ((1 << category) - 1))
+         return magnitude < (1 << (category - 1)) ? magnitude - ((1 << category) - 1) : magnitude
+     }
+ 
+@@ -336,6 +341,36 @@ struct BitReader {
+         return entry
+     }
+ 
++    /// The imported leaf synchronously borrows this reader's immutable input
++    /// owner, the scan-local tables and exactly 64 writable coefficients. All
++    /// storage is disjoint. No input/table pointer reaches a pipeline worker.
++    /// Commit cursor and partial bits before translating an entropy error.
++    mutating func decodeAC(using kernel: CACKernel, into output: UnsafeMutableBufferPointer<Int32>) throws {
++        guard output.count == 64, let destination = output.baseAddress else {
++            throw JLIError.decodingFailed("Invalid AC coefficient destination")
++        }
++        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
++                               available: UInt32(bitsAvailable), marker: 0)
++        let status = withExtendedLifetime(data) {
++            sjli_ac_decode_block(buffer.baseAddress?.assumingMemoryBound(to: UInt8.self), buffer.count,
++                &state, kernel.table, kernel.lookup, 8192, destination, output.count)
++        }
++        // The C input-count checks prove this offset remains within Int range.
++        byteOffset = state.byte_offset
++        bitBuffer = state.accumulator
++        bitsAvailable = Int(state.available)
++        switch status {
++        case SJLI_AC_OK: return
++        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
++        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
++        case SJLI_AC_MARKER:
++            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
++        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
++        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
++        default: throw JLIError.decodingFailed("Invalid C AC kernel arguments")
++        }
++    }
++
+     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
+     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
+     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,
+diff --git a/Sources/SwiftJLIEntropyC/ACBlock.c b/Sources/SwiftJLIEntropyC/ACBlock.c
+new file mode 100644
+index 0000000..135ec1c
+--- /dev/null
++++ b/Sources/SwiftJLIEntropyC/ACBlock.c
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: Apache-2.0
++// Original SwiftJLI implementation of the retained Swift AC reader semantics.
++#include "SwiftJLIEntropyC.h"
++#include <string.h>
++
++static inline int bulk(const uint8_t *input, size_t count, SJLIACState *r) {
++    if (count - r->byte_offset < 8) return 0;
++    uint64_t word;
++    memcpy(&word, input + r->byte_offset, sizeof(word));
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++    word = __builtin_bswap64(word);
++#endif
++    const uint64_t inverse = ~word;
++    if (((inverse - UINT64_C(0x0101010101010101)) & ~inverse &
++         UINT64_C(0x8080808080808080)) != 0) return 0;
++    const unsigned bytes = (64 - r->available) / 8;
++    if (r->available == 0) r->accumulator = word;
++    else r->accumulator = (r->accumulator << (8 * bytes)) |
++                          (word >> (64 - 8 * bytes));
++    r->available += 8 * bytes;
++    r->byte_offset += bytes;
++    return 1;
++}
++
++static inline void fill(const uint8_t *input, size_t count, SJLIACState *r) {
++    if (r->available < 8 && bulk(input, count, r)) return;
++    while (r->available < 8) {
++        if (r->byte_offset == count) return;
++        const uint8_t byte = input[r->byte_offset];
++        if (byte == 0xff) {
++            if (count - r->byte_offset < 2 || input[r->byte_offset + 1] != 0) return;
++            r->byte_offset += 2;
++        } else r->byte_offset += 1;
++        r->accumulator = (r->accumulator << 8) | byte;
++        r->available += 8;
++    }
++}
++
++static inline SJLIACStatus read_bits(const uint8_t *input, size_t count,
++                                    SJLIACState *r, unsigned width, uint32_t *value) {
++    // All callers prove width <= 15. A zero category consumes no bits; avoid
++    // shifting by 64 when the accumulator is full.
++    if (width == 0) { *value = 0; return SJLI_AC_OK; }
++    while (r->available < width) {
++        if (bulk(input, count, r)) break;
++        if (r->byte_offset == count) return SJLI_AC_END;
++        const uint8_t byte = input[r->byte_offset++];
++        if (byte == 0xff) {
++            if (r->byte_offset == count) return SJLI_AC_END_AFTER_FF;
++            const uint8_t next = input[r->byte_offset];
++            if (next != 0) { r->marker = next; return SJLI_AC_MARKER; }
++            r->byte_offset += 1;
++        }
++        r->accumulator = (r->accumulator << 8) | byte;
++        r->available += 8;
++    }
++    r->available -= width;
++    *value = (uint32_t)((r->accumulator >> r->available) & ((UINT64_C(1) << width) - 1));
++    return SJLI_AC_OK;
++}
++
++static inline SJLIACStatus symbol(const uint8_t *input, size_t count,
++                                 SJLIACState *r, const SJLIACHuffman *table,
++                                 uint8_t *value) {
++    if (r->available < 8) fill(input, count, r);
++    if (r->available >= 8) {
++        const unsigned prefix = (unsigned)((r->accumulator >> (r->available - 8)) & 255);
++        const unsigned length = table->lengths[prefix];
++        if (length != 0) {
++            r->available -= length;
++            *value = table->symbols[prefix];
++            return SJLI_AC_OK;
++        }
++    }
++    uint32_t code = 0;
++    for (unsigned length = 1; length <= 16; ++length) {
++        uint32_t bit;
++        SJLIACStatus status = read_bits(input, count, r, 1, &bit);
++        if (status != SJLI_AC_OK) return status;
++        code = (code << 1) | bit;
++        if (table->maximum[length] >= 0 && (int64_t)code <= table->maximum[length]) {
++            const int64_t index = table->value_offsets[length] +
++                                  (int64_t)code - table->minimum[length];
++            if (index < 0 || (uint64_t)index >= table->value_count) return SJLI_AC_CODE_INDEX;
++            *value = table->values[index];
++            return SJLI_AC_OK;
++        }
++    }
++    return SJLI_AC_INVALID_CODE;
++}
++
++SJLIACStatus sjli_ac_decode_block(const uint8_t *restrict input, size_t input_count,
++    SJLIACState *restrict state, const SJLIACHuffman *restrict table,
++    const uint32_t *restrict lookup, size_t lookup_count,
++    int32_t *restrict output, size_t output_count) {
++    if ((!input && input_count != 0) || !state || !table || !lookup || !output ||
++        output_count != 64 || lookup_count != 8192 || table->value_count > 256 ||
++        state->byte_offset > input_count || state->available > 64) return SJLI_AC_INVALID_ARGUMENT;
++    SJLIACState reader = *state;
++    memset(output, 0, 64 * sizeof(*output));
++    SJLIACStatus status = SJLI_AC_OK;
++    unsigned index = 1;
++    while (index < 64) {
++        if (reader.available < 13 && !bulk(input, input_count, &reader)) fill(input, input_count, &reader);
++        if (reader.available >= 13) {
++            const unsigned prefix = (unsigned)((reader.accumulator >> (reader.available - 13)) & 8191);
++            const uint32_t entry = lookup[prefix];
++            const unsigned advance = (entry >> 16) & 255;
++            if (entry != 0 && advance <= 64 - index) {
++                reader.available -= entry >> 24;
++                if (advance == 0) break;
++                index += advance;
++                const uint32_t low = entry & 65535;
++                output[index - 1] = low < 32768 ? (int32_t)low : (int32_t)low - 65536;
++                continue;
++            }
++        }
++        uint8_t value;
++        status = symbol(input, input_count, &reader, table, &value);
++        if (status != SJLI_AC_OK || value == 0) break;
++        if (value == 0xf0) { index += 16; continue; }
++        index += value >> 4;
++        if (index >= 64) break;
++        const unsigned category = value & 15;
++        uint32_t magnitude;
++        status = read_bits(input, input_count, &reader, category, &magnitude);
++        if (status != SJLI_AC_OK) break;
++        int32_t coefficient = (int32_t)magnitude;
++        if (category != 0 && magnitude < (UINT32_C(1) << (category - 1)))
++            coefficient -= (int32_t)((UINT32_C(1) << category) - 1);
++        output[index++] = coefficient;
++    }
++    *state = reader;
++    return status;
++}
+diff --git a/Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h b/Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h
+new file mode 100644
+index 0000000..7cd6df2
+--- /dev/null
++++ b/Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: Apache-2.0
++// Original SwiftJLI kernel; no external codec source or runtime dependency.
++#ifndef SWIFTJLI_ENTROPY_C_H
++#define SWIFTJLI_ENTROPY_C_H
++#include <stddef.h>
++#include <stdint.h>
++
++typedef struct {
++    int32_t minimum[17];
++    int32_t maximum[17];
++    int64_t value_offsets[17];
++    uint8_t values[256];
++    uint8_t lengths[256];
++    uint8_t symbols[256];
++    uint32_t value_count;
++} SJLIACHuffman;
++
++typedef struct {
++    size_t byte_offset;
++    uint64_t accumulator;
++    uint32_t available;
++    uint8_t marker;
++} SJLIACState;
++
++typedef enum {
++    SJLI_AC_OK = 0,
++    SJLI_AC_END,
++    SJLI_AC_END_AFTER_FF,
++    SJLI_AC_MARKER,
++    SJLI_AC_CODE_INDEX,
++    SJLI_AC_INVALID_CODE,
++    SJLI_AC_INVALID_ARGUMENT
++} SJLIACStatus;
++
++// Synchronous, allocation-free leaf. The caller retains every owner and borrow
++// until return. Input, state, metadata, lookup and output must not overlap.
++// Metadata comes from a validated Swift HuffmanTable: offsets 0...256, short
++// lengths 0...8. Lookup is the existing 8192-entry Swift ACLookahead. No pointer
++// is saved, captured, returned or given to a worker. Every entropy-error return
++// publishes the consumed cursor and partial output. Invalid arguments write
++// nothing. No caller-visible DC value is installed here.
++SJLIACStatus sjli_ac_decode_block(const uint8_t *input, size_t input_count,
++    SJLIACState *state, const SJLIACHuffman *table,
++    const uint32_t *lookup, size_t lookup_count,
++    int32_t *output, size_t output_count);
++#endif
+diff --git a/Tests/SwiftJLITests/Native/CACDecoderTests.swift b/Tests/SwiftJLITests/Native/CACDecoderTests.swift
+new file mode 100644
+index 0000000..16be5d5
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/CACDecoderTests.swift
+@@ -0,0 +1,188 @@
++// SPDX-License-Identifier: Apache-2.0
++import Testing
++@testable import SwiftJLI
++
++@Suite struct CACDecoderTests {
++    /// Compare the complete current Swift combined path, including physical
++    /// prefetch, partial coefficients and the next read after an entropy error.
++    private func compare(_ bytes: [UInt8], skipping: Int = 0, table: HuffmanTable,
++                         lookup: ACLookahead, kernel: CACKernel) throws -> Bool {
++        var reference = BitReader(data: bytes), candidate = reference
++        var remaining = skipping
++        while remaining > 0 {
++            let count = min(16, remaining)
++            _ = try reference.readBits(count); _ = try candidate.readBits(count)
++            remaining -= count
++        }
++        var expected = [Int32](repeating: 919, count: 64)
++        var guarded = [Int32](repeating: 919, count: 71)
++        let lhs = Result {
++            try expected.withUnsafeMutableBufferPointer {
++                try HuffmanDecoder.decodeAC(from: &reference, table: table, lookup: lookup, into: $0)
++            }
++        }
++        let rhs = Result {
++            try guarded.withUnsafeMutableBufferPointer {
++                try candidate.decodeAC(using: kernel, into: .init(rebasing: $0[3..<67]))
++            }
++        }
++        var failed = false
++        switch (lhs, rhs) {
++        case (.success, .success): break
++        case (.failure(let a), .failure(let b)):
++            failed = true
++            #expect(String(describing: a) == String(describing: b))
++        default: Issue.record("C leaf changed AC completion or failure")
++        }
++        #expect(guarded[3..<67].elementsEqual(expected))
++        #expect(guarded.prefix(3).allSatisfy { $0 == 919 })
++        #expect(guarded.suffix(4).allSatisfy { $0 == 919 })
++        #expect(candidate.byteOffset == reference.byteOffset)
++        var alignedReference = reference, alignedCandidate = candidate
++        alignedReference.alignToByte(); alignedCandidate.alignToByte()
++        #expect(alignedCandidate.byteOffset == alignedReference.byteOffset)
++        let nextA = Result { try reference.readBits(8) }, nextB = Result { try candidate.readBits(8) }
++        switch (nextA, nextB) {
++        case (.success(let a), .success(let b)): #expect(a == b)
++        case (.failure(let a), .failure(let b)):
++            #expect(String(describing: a) == String(describing: b))
++        default: Issue.record("C leaf changed the entropy remainder")
++        }
++        #expect(candidate.byteOffset == reference.byteOffset)
++        return failed
++    }
++
++    @Test func everyPrefixOffsetAndPartialFailureMatchesSwift() throws {
++        let tables = [StandardHuffmanTables.acLuminance, StandardHuffmanTables.acChrominance,
++            HuffmanTable(bits: [0, 0, 0, 15] + Array(repeating: 0, count: 12),
++                values: (0..<13).map { UInt8($0 << 4) } + [0x01, 0xF0])]
++        var successes = 0, failures = 0
++        for table in tables {
++            let lookup = try #require(ACLookahead(table: table, blockCount: 512))
++            try CACKernel.withBorrowed(table: table, lookup: lookup, enabled: true) { borrowed in
++                let kernel = try #require(borrowed)
++                for offset in 0..<8 { for prefix in 0..<ACLookahead.count {
++                    var writer = BitWriter(estimatedMaxSize: 32)
++                    writer.writeBits(0, count: offset)
++                    writer.writeBits(UInt32(prefix), count: ACLookahead.bits)
++                    for tail in [UInt32(0xA55A), 0x1234, 0x6789, 0x90AB] { writer.writeBits(tail, count: 16) }
++                    writer.flush()
++                    if try compare(writer.data, skipping: offset, table: table, lookup: lookup, kernel: kernel) {
++                        failures += 1
++                    } else { successes += 1 }
++                } }
++            }
++        }
++        #expect(successes > 0 && failures > 0)
++    }
++
++    @Test func widerRefillAndEveryStuffingMarkerTailMatchSwift() throws {
++        let table = StandardHuffmanTables.acLuminance
++        let lookup = try #require(ACLookahead(table: table, blockCount: 512))
++        try CACKernel.withBorrowed(table: table, lookup: lookup, enabled: true) { borrowed in
++            let kernel = try #require(borrowed)
++            _ = try compare([], table: table, lookup: lookup, kernel: kernel)
++            for first in UInt16(0)...255 {
++                for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
++                    Array(repeating: 0, count: 12), Array(repeating: 0xA5, count: 12),
++                    [0, 1, 2, 3, 4, 5, 6, 0xFF, 0, 0xFF, 0xD0],
++                    [0, 1, 2, 3, 4, 5, 6, 0xFF, 0xD9]] {
++                    _ = try compare([UInt8(first)] + tail, table: table, lookup: lookup, kernel: kernel)
++                }
++            }
++            // First bulk-fill64, then consume52...56 bits: the next call starts
++            // with8...12 buffered bits, precisely the wider-prefetch boundary.
++            for available in 8...12 { for byte in UInt16(0)...255 {
++                let bytes = [UInt8](repeating: 0, count: 8) + [UInt8(byte)] +
++                    [0xA5, 0x5A, 0x12, 0x34, 0xFF, 0, 0xFF, 0xD0]
++                _ = try compare(bytes, skipping: 64 - available, table: table, lookup: lookup, kernel: kernel)
++            } }
++        }
++    }
++
++    @Test func allMagnitudeCategoriesAndRestartsPreserveUnalignedState() throws {
++        let table = HuffmanTable(bits: [0, 0, 0, 16] + Array(repeating: 0, count: 12),
++                                 values: (1...15).map(UInt8.init) + [0])
++        let lookup = try #require(ACLookahead(table: table, blockCount: 512))
++        var blocks = [[Int32](repeating: 0, count: 64)]
++        for category in 1...15 {
++            var block = [Int32](repeating: 0, count: 64)
++            for index in 1..<64 { block[index] = Int32((1 << category) - 1) * (index % 2 == 0 ? 1 : -1) }
++            blocks.append(block)
++        }
++        try CACKernel.withBorrowed(table: table, lookup: lookup, enabled: true) { borrowed in
++            let kernel = try #require(borrowed)
++            for offset in 0..<8 {
++                var writer = BitWriter()
++                writer.writeBits(0, count: offset)
++                for block in blocks { HuffmanEncoder.encodeAC(block, table: table, writer: &writer) }
++                writer.emitRestartMarker(3); writer.writeBits(0x5A, count: 8); writer.flush()
++                var reader = BitReader(data: writer.data)
++                _ = try reader.readBits(offset)
++                for expected in blocks {
++                    var output = [Int32](repeating: 919, count: 64)
++                    try output.withUnsafeMutableBufferPointer { try reader.decodeAC(using: kernel, into: $0) }
++                    #expect(output == expected)
++                }
++                try reader.skipRestartMarker(expectedIndex: 3)
++                #expect(try reader.readBits(8) == 0x5A)
++            }
++        }
++    }
++
++    @Test func disabledOrMissingLookupRetainsSwiftAndBadDestinationDoesNotWrite() throws {
++        let table = StandardHuffmanTables.acLuminance
++        let lookup = try #require(ACLookahead(table: table, blockCount: 512))
++        CACKernel.withBorrowed(table: table, lookup: lookup, enabled: false) { #expect($0 == nil) }
++        CACKernel.withBorrowed(table: table, lookup: nil, enabled: true) { #expect($0 == nil) }
++        try CACKernel.withBorrowed(table: table, lookup: lookup, enabled: true) { borrowed in
++            let kernel = try #require(borrowed)
++            for count in [0, 63, 65] {
++                var reader = BitReader(data: [0xAA, 0xBB])
++                var output = [Int32](repeating: 919, count: count)
++                #expect(throws: JLIError.self) {
++                    try output.withUnsafeMutableBufferPointer { try reader.decodeAC(using: kernel, into: $0) }
++                }
++                #expect(output.allSatisfy { $0 == 919 })
++                #expect(reader.byteOffset == 0)
++            }
++        }
++    }
++
++    @Test func runOverflowAndZRLStopWithoutConsumingFollowingBits() throws {
++        let table = StandardHuffmanTables.acLuminance
++        let lookup = try #require(ACLookahead(table: table, blockCount: 512))
++        try CACKernel.withBorrowed(table: table, lookup: lookup, enabled: true) { borrowed in
++            let kernel = try #require(borrowed)
++            for offset in 0..<8 { for zrl in [false, true] {
++                var writer = BitWriter()
++                writer.writeBits(0, count: offset)
++                if zrl {
++                    // Four ZRL symbols pass the final coefficient; no fifth
++                    // symbol is read and no error is introduced.
++                    let code = table.encodingTable[0xF0]
++                    for _ in 0..<4 { writer.writeBits(UInt32(code.code), count: Int(code.length)) }
++                } else {
++                    let one = table.encodingTable[0x01]
++                    for _ in 0..<62 {
++                        writer.writeBits(UInt32(one.code), count: Int(one.length))
++                        writer.writeBits(1, count: 1)
++                    }
++                    // At index63, run1 exceeds the block. The combined entry
++                    // must miss before consuming its one magnitude bit.
++                    let overflow = table.encodingTable[0x11]
++                    writer.writeBits(UInt32(overflow.code), count: Int(overflow.length))
++                }
++                writer.writeBits(0x5A, count: 8); writer.flush()
++                var reader = BitReader(data: writer.data)
++                _ = try reader.readBits(offset)
++                var output = [Int32](repeating: 919, count: 64)
++                try output.withUnsafeMutableBufferPointer { try reader.decodeAC(using: kernel, into: $0) }
++                #expect(output[0] == 0 && output[63] == 0)
++                #expect(output[1..<63].allSatisfy { $0 == (zrl ? 0 : 1) })
++                #expect(try reader.readBits(8) == 0x5A)
++                _ = try compare(writer.data, skipping: offset, table: table, lookup: lookup, kernel: kernel)
++            } }
++        }
++    }
++}
+diff --git a/Tests/SwiftJLITests/Native/CACPublicPipelineTests.swift b/Tests/SwiftJLITests/Native/CACPublicPipelineTests.swift
+new file mode 100644
+index 0000000..ce23669
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/CACPublicPipelineTests.swift
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: Apache-2.0
++import Foundation
++import Testing
++@testable import SwiftJLI
++
++/// Initialises guard bytes inside the provider's existing synchronous borrow.
++/// The owned provider retains all lease, sealing and invalidation enforcement.
++private final class CACCanaryStorage: WritableImageStorage {
++    private let owner: OwnedImageStorage
++    init(byteCount: Int) throws { owner = try OwnedImageStorage(byteCount: byteCount) }
++    var byteCount: Int { owner.byteCount }
++    var allocationID: UUID { owner.allocationID }
++    func reserveWrite() throws -> StorageWriteLease { try owner.reserveWrite() }
++    func withUnsafeMutableBytes<R>(lease: StorageWriteLease,
++        _ body: (UnsafeMutableRawBufferPointer) throws -> R) throws -> R {
++        try owner.withUnsafeMutableBytes(lease: lease) { bytes in
++            bytes.initializeMemory(as: UInt8.self, repeating: 0xA5)
++            return try body(bytes)
++        }
++    }
++    func finishAndSeal(lease: StorageWriteLease) throws -> any ReadOnlyImageStorage {
++        try owner.finishAndSeal(lease: lease)
++    }
++    func abortAndInvalidate(lease: StorageWriteLease) throws {
++        try owner.abortAndInvalidate(lease: lease)
++    }
++}
++
++@Suite struct CACPublicPipelineTests {
++    @Test(.enabled(if: ProcessInfo.processInfo.activeProcessorCount >= 2), arguments: [8, 12])
++    func publicDecodePreservesRestartCrossingAndCallerPadding(precision: Int) async throws {
++        let width = 513, height = 257, bps = precision == 8 ? 1 : 2
++        var samples = [UInt8](repeating: 0, count: width * height * bps)
++        for index in 0..<(width * height) {
++            let value = (index * 151 + index / width * 17 + 117) & ((1 << precision) - 1)
++            samples[index * bps] = UInt8(truncatingIfNeeded: value)
++            if bps == 2 { samples[index * bps + 1] = UInt8(value >> 8) }
++        }
++        let source = try JLIImage(width: width, height: height,
++            pixelFormat: precision == 8 ? .uint8 : .uint16, colorModel: .grayscale, data: samples)
++        let bytes = try JLIEncoder().encode(source, configuration: .init(quality: 87, restartInterval: 1023))
++        var parser = MarkerReader(data: bytes)
++        let parsed = try parser.parse()
++        #expect(parsed.frameInfo.precision == precision && parsed.restartInterval == 1023)
++        let scan = try #require(parsed.scans.first)
++        let selector = try #require(scan.header.components.first)
++        let table = try #require(scan.acTables[selector.acTableId])
++        let acceleratedPlan = try #require(try SequentialGreyscalePlan.make(parsed: parsed,
++            configuration: .default, hasDestination: true, normaliseXYBOutput: false,
++            workerLimit: 2, backend: .accelerated))
++        // 65 * 33 blocks cover three alternating slots. Restarts at blocks
++        // 1023 and 2046 straddle the canonical 1024-block batch boundaries.
++        #expect(acceleratedPlan.pipelined && acceleratedPlan.blockCount == 2145)
++        #expect(acceleratedPlan.batchBlocks == 1024 && !acceleratedPlan.dcOnlyTable)
++        let referencePlan = try #require(try SequentialGreyscalePlan.make(parsed: parsed,
++            configuration: .default, hasDestination: true, normaliseXYBOutput: false,
++            workerLimit: 1, backend: .accelerated))
++        #expect(!referencePlan.pipelined)
++        let lookup = try #require(ACLookahead(table: table, blockCount: acceleratedPlan.blockCount))
++        try CACKernel.withBorrowed(table: table, lookup: lookup, enabled: true) { kernel in
++            _ = try #require(kernel)
++        }
++
++        let offset = 4, suffix = 8, rowBytes = width * bps + 12
++        let capacity = offset + rowBytes * height + suffix
++        let plane = try PlaneDescriptor(width: width, height: height, offset: offset,
++            sampleStride: bps, pixelStride: bps, rowBytes: rowBytes, byteCount: capacity)
++        let descriptor = try ImageDescriptor(width: width, height: height,
++            storageBits: bps * 8, meaningfulBits: precision, planes: [plane])
++        let decoder = try SwiftJLI.Decoder(), data = Data(bytes)
++        var backends: [Backend] = [.scalarCPU]
++        #if canImport(Accelerate)
++        backends.append(.accelerated)
++        #endif
++        for backend in backends {
++            let reference = try await decoder.decode(data, options: .init(
++                resourceLimits: .init(maximumWorkers: 1), executionPolicy: .required(backend)))
++            let storage = try CACCanaryStorage(byteCount: capacity)
++            let destination = try ImageDestination(descriptor: descriptor, storage: storage)
++            let result = try await decoder.decode(data, into: destination, options: .init(
++                resourceLimits: .init(maximumWorkers: 2), executionPolicy: .required(backend)))
++            #expect(result.report.backend == backend && result.report.fallbackReason == nil)
++            #expect(result.report.fidelity == reference.report.fidelity)
++            #expect(result.report.pixelAllocationCount == 0 && result.report.copyEvents.isEmpty)
++            #expect(result.image.storage.allocationID == storage.allocationID)
++            #expect(result.image.descriptor == descriptor)
++            try result.image.storage.withUnsafeBytes { actual in
++                try reference.image.storage.withUnsafeBytes { expected in
++                    #expect(actual.prefix(offset).allSatisfy { $0 == 0xA5 })
++                    #expect(actual.suffix(suffix).allSatisfy { $0 == 0xA5 })
++                    for row in 0..<height {
++                        let first = offset + row * rowBytes, count = width * bps
++                        #expect(actual[first..<(first + count)]
++                            .elementsEqual(expected[(row * count)..<((row + 1) * count)]))
++                        #expect(actual[(first + count)..<(first + rowBytes)].allSatisfy { $0 == 0xA5 })
++                    }
++                }
++            }
++            // Both public destinations have completed their one-writer lifecycle.
++            #expect(throws: CodecError.self) { try storage.reserveWrite() }
++        }
++    }
++}

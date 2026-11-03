@@ -1,0 +1,362 @@
+{
+  "binarySHA256": {
+    "baseline": "4dd5ca161ed1c11e9af0cea1d540d4301aa4392ba974cca46b83164dfd3b3b3e",
+    "candidate": "35321ce97679609a3f82f66ad75570ad1cc1d9c002b79d4526af5a58f0911b5b"
+  },
+  "selectedFunctionCount": 310,
+  "unchangedAfterNormalisation": 304,
+  "remainingChangedFunctions": 6,
+  "finding": "No successful lossless greyscale borrowed-destination hot instruction/register/loop difference found through the public decode caller, decodeLossless dispatcher, specialised row kernels, and entropy callees. Function placement changes remain; timing causation cannot be established by disassembly.",
+  "verifiedAlias": "Baseline BorrowedSampleDestination.bytes getter and candidate CACKernel.table getter labels each designate the same one-instruction ret. Candidate nm locates both at 0x1000026c0. Their call label changes are deduplication aliases, not changed operations.",
+  "actualLosslessFallbackChange": "The non-borrowed UInt8 output closure has 381 baseline vs 387 candidate instructions; six extra instructions replace a cancellation-error witness helper with inline witness setup. Sample loops do not change. Public greyscale direct-output route returns before this fallback closure.",
+  "hotFunctions": [
+    {
+      "symbol": "_$s8SwiftJLI10JLIDecoderV16losslessGrayInto33_3374B9D79BE399395322590CE2153958LL_5width6height9predictor4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S3is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZ",
+      "instructions": 320,
+      "addresses": {
+        "baseline": {
+          "address": "0x10003c2f0",
+          "mod64": 48,
+          "mod128": 112,
+          "mod4096": 752
+        },
+        "candidate": {
+          "address": "0x10003c3f0",
+          "mod64": 48,
+          "mod128": 112,
+          "mod4096": 1008
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ",
+      "instructions": 96,
+      "addresses": {
+        "baseline": {
+          "address": "0x10003e39c",
+          "mod64": 28,
+          "mod128": 28,
+          "mod4096": 924
+        },
+        "candidate": {
+          "address": "0x10003e4cc",
+          "mod64": 12,
+          "mod128": 76,
+          "mod4096": 1228
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI10JLIDecoderV21losslessSmallGrayInto33_3374B9D79BE399395322590CE2153958LL_5width6height9predictor4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S3is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZ",
+      "instructions": 510,
+      "addresses": {
+        "baseline": {
+          "address": "0x10003b760",
+          "mod64": 32,
+          "mod128": 96,
+          "mod4096": 1888
+        },
+        "candidate": {
+          "address": "0x10003b860",
+          "mod64": 32,
+          "mod128": 96,
+          "mod4096": 2144
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI10JLIDecoderV22losslessGrayLookupInto33_3374B9D79BE399395322590CE2153958LL_5width6height9predictor4half5table6reader14pointTransform11segmentRows6lookupyAA25BorrowedSampleDestinationV_S3is5Int32VAA12HuffmanTableVAA9BitReaderVzS2iAA17LosslessLookaheadVtKFZ",
+      "instructions": 515,
+      "addresses": {
+        "baseline": {
+          "address": "0x10003af54",
+          "mod64": 20,
+          "mod128": 84,
+          "mod4096": 3924
+        },
+        "candidate": {
+          "address": "0x10003b054",
+          "mod64": 20,
+          "mod128": 84,
+          "mod4096": 84
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI10JLIDecoderV22losslessLeftUInt16Into33_3374B9D79BE399395322590CE2153958LL_5width6height4half5table6reader11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzSitKFZ",
+      "instructions": 230,
+      "addresses": {
+        "baseline": {
+          "address": "0x10003bf58",
+          "mod64": 24,
+          "mod128": 88,
+          "mod4096": 3928
+        },
+        "candidate": {
+          "address": "0x10003c058",
+          "mod64": 24,
+          "mod128": 88,
+          "mod4096": 88
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI14HuffmanDecoderO017decodeSymbolBitByG04from5tables5UInt8VAA0G6ReaderVz_AA0C5TableVtKFZTf4nnd_n",
+      "instructions": 92,
+      "addresses": {
+        "baseline": {
+          "address": "0x1000714b8",
+          "mod64": 56,
+          "mod128": 56,
+          "mod4096": 1208
+        },
+        "candidate": {
+          "address": "0x100072d48",
+          "mod64": 8,
+          "mod128": 72,
+          "mod4096": 3400
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI14HuffmanDecoderO11decodeValue4from8categorys5Int32VAA9BitReaderVz_SitKFZ",
+      "instructions": 5,
+      "addresses": {
+        "baseline": {
+          "address": "0x10006ff20",
+          "mod64": 32,
+          "mod128": 32,
+          "mod4096": 3872
+        },
+        "candidate": {
+          "address": "0x1000717b0",
+          "mod64": 48,
+          "mod128": 48,
+          "mod4096": 1968
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI14HuffmanDecoderO11decodeValue4from8categorys5Int32VAA9BitReaderVz_SitKFZTf4nnd_n",
+      "instructions": 33,
+      "addresses": {
+        "baseline": {
+          "address": "0x100071628",
+          "mod64": 40,
+          "mod128": 40,
+          "mod4096": 1576
+        },
+        "candidate": {
+          "address": "0x100072eb8",
+          "mod64": 56,
+          "mod128": 56,
+          "mod4096": 3768
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI15NativeOperationV5checkyyKFZ",
+      "instructions": 5,
+      "addresses": {
+        "baseline": {
+          "address": "0x100086f5c",
+          "mod64": 28,
+          "mod128": 92,
+          "mod4096": 3932
+        },
+        "candidate": {
+          "address": "0x1000887ec",
+          "mod64": 44,
+          "mod128": 108,
+          "mod4096": 2028
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI15NativeOperationV5checkyyKFZTf4d_n",
+      "instructions": 182,
+      "addresses": {
+        "baseline": {
+          "address": "0x100087b14",
+          "mod64": 20,
+          "mod128": 20,
+          "mod4096": 2836
+        },
+        "candidate": {
+          "address": "0x1000893a4",
+          "mod64": 36,
+          "mod128": 36,
+          "mod4096": 932
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZ",
+      "instructions": 11,
+      "addresses": {
+        "baseline": {
+          "address": "0x100072f54",
+          "mod64": 20,
+          "mod128": 84,
+          "mod4096": 3924
+        },
+        "candidate": {
+          "address": "0x1000747e4",
+          "mod64": 36,
+          "mod128": 100,
+          "mod4096": 2020
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n",
+      "instructions": 334,
+      "addresses": {
+        "baseline": {
+          "address": "0x100072f80",
+          "mod64": 0,
+          "mod128": 0,
+          "mod4096": 3968
+        },
+        "candidate": {
+          "address": "0x100074810",
+          "mod64": 16,
+          "mod128": 16,
+          "mod4096": 2064
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF",
+      "instructions": 89,
+      "addresses": {
+        "baseline": {
+          "address": "0x10006f5e4",
+          "mod64": 36,
+          "mod128": 100,
+          "mod4096": 1508
+        },
+        "candidate": {
+          "address": "0x100070e74",
+          "mod64": 52,
+          "mod128": 116,
+          "mod4096": 3700
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI9BitReaderV16fastDecodeSymbolys5UInt8VSgAA12HuffmanTableVF",
+      "instructions": 43,
+      "addresses": {
+        "baseline": {
+          "address": "0x10006f538",
+          "mod64": 56,
+          "mod128": 56,
+          "mod4096": 1336
+        },
+        "candidate": {
+          "address": "0x100070dc8",
+          "mod64": 8,
+          "mod128": 72,
+          "mod4096": 3528
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI9BitReaderV8readBitsys6UInt32VSiKF",
+      "instructions": 128,
+      "addresses": {
+        "baseline": {
+          "address": "0x10006eaf4",
+          "mod64": 52,
+          "mod128": 116,
+          "mod4096": 2804
+        },
+        "candidate": {
+          "address": "0x10006ffe8",
+          "mod64": 40,
+          "mod128": 104,
+          "mod4096": 4072
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI9JPEGCodecO6decode_4into13configuration7optionsAA12DecodedImageV10Foundation4DataV_AA0I11DestinationCSgAA20DecoderConfigurationVAA13DecodeOptionsVtKFZ",
+      "instructions": 179,
+      "addresses": {
+        "baseline": {
+          "address": "0x1000114f0",
+          "mod64": 48,
+          "mod128": 112,
+          "mod4096": 1264
+        },
+        "candidate": {
+          "address": "0x1000115d8",
+          "mod64": 24,
+          "mod128": 88,
+          "mod4096": 1496
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI9JPEGCodecO6decode_4into13configuration7optionsAA12DecodedImageV10Foundation4DataV_AA0I11DestinationCSgAA20DecoderConfigurationVAA13DecodeOptionsVtKFZAIyKXEfU_AIyKXEfU_",
+      "instructions": 1172,
+      "addresses": {
+        "baseline": {
+          "address": "0x100015afc",
+          "mod64": 60,
+          "mod128": 124,
+          "mod4096": 2812
+        },
+        "candidate": {
+          "address": "0x100015be4",
+          "mod64": 36,
+          "mod128": 100,
+          "mod4096": 3044
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI9JPEGCodecO6decode_4into13configuration7optionsAA12DecodedImageV10Foundation4DataV_AA0I11DestinationCSgAA20DecoderConfigurationVAA13DecodeOptionsVtKFZAIyKXEfU_AIyKXEfU_ySwKXEfU_",
+      "instructions": 67,
+      "addresses": {
+        "baseline": {
+          "address": "0x100016d4c",
+          "mod64": 12,
+          "mod128": 76,
+          "mod4096": 3404
+        },
+        "candidate": {
+          "address": "0x100016e34",
+          "mod64": 52,
+          "mod128": 52,
+          "mod4096": 3636
+        }
+      }
+    },
+    {
+      "symbol": "_$s8SwiftJLI9JPEGCodecO6decode_4into13configuration7optionsAA12DecodedImageV10Foundation4DataV_AA0I11DestinationCSgAA20DecoderConfigurationVAA13DecodeOptionsVtKFZAIyKXEfU_AIyKXEfU_ySwKXEfU_TA",
+      "instructions": 14,
+      "addresses": {
+        "baseline": {
+          "address": "0x1000190c8",
+          "mod64": 8,
+          "mod128": 72,
+          "mod4096": 200
+        },
+        "candidate": {
+          "address": "0x1000191b0",
+          "mod64": 48,
+          "mod128": 48,
+          "mod4096": 432
+        }
+      }
+    }
+  ],
+  "optionalTrial": "If performance recovery remains necessary, explicitly place the fused losslessDifference fast branch in the UInt16 pixel loop with an equivalent checked slow fallback, then test all patterns. This is a new measured optimisation proposal, not a finding that the compiler changed that loop.",
+  "limitations": [
+    "ADRP and literal/global locations are normalised; data/cache placement is intentionally not claimed identical.",
+    "Changes to function virtual addresses, branch-displacement encodings and symbol aliases are not semantic instruction changes.",
+    "No build, profile or benchmark executed during this review."
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "candidate": "06eff275d4a2b72b3497748064311a38b288aa7d",
+  "sourceParent": "3a5ef320c04fff03561a69b705355c0e9da2fc31",
+  "comparisonBaselineSource": "14f35018d241666358480da2a8527d29ab047627",
+  "comparisonBaselineProduction": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "status": "Isolated unaccepted C row trial; automatic lossless may select portable scalar C, explicit scalar remains Swift. No resource/admission limits changed.",
+  "sourceSHA256": {
+    "Sources/SwiftJLI/JPEGCodec.swift": "1bb1fe8e21bbe4a95cecdeab19b26117b4694862c5967fd9abf3d1c690825a5a",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "de34d3b2081812482b4258e6c4fae6207d2ea5cc911840ecce5e24ee468241ab",
+    "Sources/SwiftJLI/Native/Entropy/CLosslessRowDecoder.swift": "ab3f7edf32bc1d8a3c1592188f91acd9e0b55ff161af3d5b79a6c346ae30f793",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": "ddee5c790e167c0b3c35d3a713803065607beb9d065c435b0523a15a499b375a",
+    "Sources/SwiftJLI/NativeExecution.swift": "a82fa3d5c7bdbad2e25621ca13a67ae2f4990cd7a7dc9ae454a8bae26ea1b869",
+    "Sources/SwiftJLIEntropyC/ACBlock.c": "7c8a497003728e0c51120897d366fecbd38bc0d58dcaa0a5aad367a3e4a3d0dc",
+    "Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h": "4ff9f47fc896602081ee7b5b9676267463fced46783c7f16932910201cd7b498",
+    "Tests/SwiftJLITests/Native/CLosslessRowTests.swift": "a3a4216db9faf22f1f274277a2aacba50bce3ec712ddbff4da141e1d6e4bd160"
+  },
+  "auditCorrection": "C output takes void* so caller raw storage need not be bound to UInt8; UInt16-bound odd raw subrange test added. No C restrict on compressed input/output pair. Input entry points now accept const void*, with only C character access; Swift imposes no typed input binding.",
+  "previousTestedSource": "9f39dd9339a5a24817dda50ec612bc5a56f2f89c"
+}
