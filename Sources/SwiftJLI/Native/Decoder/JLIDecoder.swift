@@ -253,11 +253,7 @@ struct JLIDecoder: Sendable {
         // by `parallelDecodeDeterministic`).
         var componentPlanes = [(data: [Float], width: Int, height: Int)]()
         let maxBlockCount = componentDimensions.map { $0.blocksH * $0.blocksV }.max() ?? 0
-        // Reused per-component scratch; each component fully writes its used
-        // region before reading it, so skip the zero-fill (a per-decode bzero).
-        let scratchN = maxBlockCount * 64
-        var pixelsBuf = [Float](unsafeUninitializedCapacity: scratchN) { _, c in c = scratchN }
-        var idctScratch = [Float](unsafeUninitializedCapacity: scratchN) { _, c in c = scratchN }
+        let coefficientCount = maxBlockCount * 64
         // The separate inverse-zigzag + dequantize buffers are only needed by
         // the 1/2 & 1/4 box-average preview path; the full-resolution path
         // fuses both into the IDCT pack pass.
@@ -267,9 +263,9 @@ struct JLIDecoder: Sendable {
         // producing a race between otherwise independent decoders under TSan.
         // Choosing [] before entering that initialiser avoids the shared write.
         var natural: [Int32] = needsNatural
-            ? [Int32](unsafeUninitializedCapacity: scratchN) { _, count in count = scratchN } : []
+            ? [Int32](unsafeUninitializedCapacity: coefficientCount) { _, count in count = coefficientCount } : []
         var dctBuf: [Float] = needsNatural
-            ? [Float](unsafeUninitializedCapacity: scratchN) { _, count in count = scratchN } : []
+            ? [Float](unsafeUninitializedCapacity: coefficientCount) { _, count in count = coefficientCount } : []
 
         for compIdx in 0..<numComponents {
             let comp = components[compIdx]
@@ -397,13 +393,21 @@ struct JLIDecoder: Sendable {
             // straight into an exactly component-sized plane (no padded plane,
             // no trim copy — edge blocks write only their in-bounds rows/columns,
             // and every in-bounds pixel belongs to some block, so the
-            // uninitialized plane is fully covered). All scratch is block-indexed,
-            // so parallel workers slice disjoint subranges of the SAME buffers.
+            // uninitialized plane is fully covered). Each joined worker owns
+            // one bounded scratch slot, reused after each 1024-block batch.
             var plane = [Float](unsafeUninitializedCapacity: compWidth * compHeight) {
                 _, c in c = compWidth * compHeight
             }
             let chunks = min(NativeOperation.workerLimit,
                              max(1, blockCount / JLIDecoder.reconstructMinBlocksPerChunk))
+            let span = (blockCount + chunks - 1) / chunks
+            let scratchStride = min(1024, span) * 64
+            // Every used slot is fully written before being read. Bounded
+            // slots replace two full-frame arrays without changing batch size,
+            // worker partition, IDCT arithmetic or sample ordering.
+            let scratchCount = chunks * scratchStride
+            var pixelsBuf = [Float](unsafeUninitializedCapacity: scratchCount) { _, c in c = scratchCount }
+            var idctScratch = [Float](unsafeUninitializedCapacity: scratchCount) { _, c in c = scratchCount }
             try componentZigzag[compIdx].withUnsafeBufferPointer { zzb in
                 try qtF.withUnsafeBufferPointer { qtb in
                     try pixelsBuf.withUnsafeMutableBufferPointer { pxb in
@@ -419,10 +423,9 @@ struct JLIDecoder: Sendable {
                                         JLIDecoder.reconstructBlocks(
                                             base..<min(base + 1024, blockCount), ptrs: ptrs, blocksH: blocksH,
                                             compWidth: compWidth, compHeight: compHeight,
-                                            precision: frame.precision)
+                                            precision: frame.precision, scratchOffset: 0)
                                     }
                                 } else {
-                                    let span = (blockCount + chunks - 1) / chunks
                                     try NativeOperation.perform(iterations: chunks) { c in
                                         let lo = c * span, hi = min(lo + span, blockCount)
                                         for base in stride(from: lo, to: hi, by: 1024) {
@@ -430,7 +433,7 @@ struct JLIDecoder: Sendable {
                                             JLIDecoder.reconstructBlocks(
                                                 base..<min(base + 1024, hi), ptrs: ptrs, blocksH: blocksH,
                                                 compWidth: compWidth, compHeight: compHeight,
-                                                precision: frame.precision)
+                                                precision: frame.precision, scratchOffset: c * scratchStride)
                                         }
                                     }
                                 }
@@ -929,8 +932,10 @@ struct JLIDecoder: Sendable {
     }
 
     /// `@unchecked Sendable` carrier for parallel Step-7 reconstruction: each
-    /// worker reads the shared `zz`/`qt` and writes only its own block range's
-    /// subranges of `px`/`scratch` plus the disjoint plane tiles of its blocks.
+    /// worker reads shared `zz`/`qt` and writes only its own bounded scratch
+    /// slot plus the disjoint plane tiles of its assigned blocks. A slot is
+    /// reused only by that worker after its preceding synchronous batch ends.
+    /// NativeOperation.perform joins every worker before these borrows end.
     private struct ReconstructPtrs: @unchecked Sendable {
         let zz: UnsafePointer<Int32>
         let qt: UnsafePointer<Float>
@@ -946,15 +951,15 @@ struct JLIDecoder: Sendable {
     /// range; block tiles never overlap, so partitioning is race-free.
     private static func reconstructBlocks(
         _ blocks: Range<Int>, ptrs: ReconstructPtrs, blocksH: Int,
-        compWidth: Int, compHeight: Int, precision: Int
+        compWidth: Int, compHeight: Int, precision: Int, scratchOffset: Int
     ) {
         let m = blocks.count
         guard m > 0 else { return }
         let base = blocks.lowerBound
-        let px = ptrs.px + base * 64
+        let px = ptrs.px + scratchOffset
         AccelerateDSP.inverseDCTBatchDequantized(
             zigzag: ptrs.zz + base * 64, quantTable: ptrs.qt,
-            output: px, scratch: ptrs.scratch + base * 64, blockCount: m)
+            output: px, scratch: ptrs.scratch + scratchOffset, blockCount: m)
 
         // Level shift +2^(P-1) + clamp [0, 2^P-1] — 128/255 for 8-bit,
         // 2048/4095 for 12-bit; per-element ops, so chunking changes nothing.
