@@ -6,6 +6,7 @@ import copy
 import hashlib
 import importlib.util
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -99,6 +100,28 @@ for name, paths, change in [
     finally:
         if change:
             change.write_bytes(original)
+original_bundle = out / 'mock-original.xcresult'
+original_bundle.mkdir()
+(original_bundle / 'Info.plist').write_text('MOCK immutable bundle payload\n')
+copy_bundle = out / 'mock-copy.xcresult'
+before = module.bundle_hashes(original_bundle)
+shutil.copytree(original_bundle, copy_bundle)
+copy_before = module.bundle_hashes(copy_bundle)
+(copy_bundle / 'database.sqlite3').write_text('MOCK xcresulttool index\n')
+copy_after = module.bundle_hashes(copy_bundle)
+module.validate_bundle_query(before, module.bundle_hashes(original_bundle), copy_before, copy_after)
+bundle_checks = [{'fixture': 'index creation on copied bundle', 'expected': 'accepted', 'actual': 'accepted'}]
+for name, original_after, changed_copy in [
+    ('original payload mutation', {**before, 'Info.plist': 'changed'}, copy_after),
+    ('copied payload mutation', before, {**copy_after, 'Info.plist': 'changed'}),
+    ('original new cache file', {**before, 'database.sqlite3': 'new'}, copy_after),
+]:
+    try:
+        module.validate_bundle_query(before, original_after, copy_before, changed_copy)
+    except ValueError as error:
+        bundle_checks.append({'fixture': name, 'expected': 'rejected', 'actual': 'rejected', 'error': str(error)})
+    else:
+        raise AssertionError(name)
 protected = out / 'already-exists'; protected.mkdir(); marker = protected / 'sentinel'; marker.write_text('preserve fixture\n')
 command = [sys.executable, str(helper), '--evidence', str(out / 'no-real-evidence'), '--output', str(protected)]
 proc = subprocess.run(command, capture_output=True, text=True, timeout=10)
@@ -109,6 +132,7 @@ result = {'status': 'passed', 'scope': 'MOCK fixtures only; no genuine Watch run
     'fixtureRunnerSHA256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
     'fixtures': results, 'positiveMocks': 1, 'negativeMocks': len(results)-1,
     'sourceIdentityFixtures': source_checks,
+    'bundleCopyFixtures': bundle_checks,
     'existingOutputGuard': {'command': command, 'exitCode': proc.returncode, 'stderr': proc.stderr, 'sentinelUnchanged': True}}
 reference = a.repository.resolve() / 'Documentation/Migration/Qualification/Milestone5/ci/test-isolation/visionos-xcresult-summary.json'
 result['summaryFieldShapeReference'] = {'path': str(reference.relative_to(a.repository.resolve())),

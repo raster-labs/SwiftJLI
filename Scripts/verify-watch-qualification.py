@@ -7,6 +7,7 @@ import json
 import math
 import os
 import re
+import shutil
 import signal
 import subprocess
 from pathlib import Path
@@ -128,10 +129,32 @@ def validate_source_identity(repository, paths, tree_output):
 
 
 def bundle_hashes(bundle):
-    paths = sorted(p for p in bundle.rglob('*') if p.is_file())
+    entries = sorted(bundle.rglob('*'))
+    require(not any(p.is_symlink() for p in entries), 'xcresult bundle must not contain symlinks')
+    paths = [p for p in entries if p.is_file()]
     require(bool(paths), 'xcresult bundle contains no files')
-    require(not any(p.is_symlink() for p in paths), 'xcresult bundle must not contain symlink files')
     return {str(p.relative_to(bundle)): sha(p) for p in paths}
+
+
+def bundle_changes(before, after):
+    return {
+        'addedFiles': {p: after[p] for p in sorted(after.keys() - before.keys())},
+        'removedFiles': {p: before[p] for p in sorted(before.keys() - after.keys())},
+        'changedFiles': {p: {'before': before[p], 'after': after[p]} for p in sorted(before.keys() & after.keys())
+                         if before[p] != after[p]},
+    }
+
+
+def validate_bundle_query(original_before, original_after, copy_before, copy_after):
+    require(original_before == copy_before, 'xcresult copy does not match the original input')
+    require(original_before == original_after, 'Original xcresult input changed during verification')
+    changes = bundle_changes(copy_before, copy_after)
+    # xcresulttool creates/updates its SQLite index even for a summary read.
+    # Permit that cache only on the disposable copy; payload changes still fail.
+    cache_files = {'database.sqlite3', 'database.sqlite3-wal', 'database.sqlite3-shm'}
+    altered = set(changes['addedFiles']) | set(changes['removedFiles']) | set(changes['changedFiles'])
+    require(altered <= cache_files, 'xcresulttool changed non-cache files in the verification copy')
+    return changes
 
 
 def main():
@@ -141,6 +164,7 @@ def main():
     args = parser.parse_args()
     evidence = args.evidence.resolve()
     out = (args.output or evidence / 'verification').resolve()
+    require(not out.is_relative_to(evidence / 'Tests.xcresult'), 'Verification output cannot be inside the original xcresult')
     out.mkdir(parents=True, exist_ok=False)
     receipt = {'status': 'running', 'scope': 'watch-simulator only; no physical-device or RSS-ceiling qualification',
                'helperSHA256': sha(Path(__file__)), 'commands': []}
@@ -173,6 +197,14 @@ def main():
         report_path, log_path, bundle = evidence / 'report.json', evidence / 'test.log', evidence / 'Tests.xcresult'
         receipt['inputs'] = {'report.json': sha(report_path), 'test.log': sha(log_path)}
         receipt['xcresultFilesSHA256'] = bundle_hashes(bundle)
+        query_bundle = out / 'SummaryInput.xcresult'
+        shutil.copytree(bundle, query_bundle)
+        receipt['xcresultCopyInitialSHA256'] = bundle_hashes(query_bundle)
+        require(receipt['xcresultFilesSHA256'] == receipt['xcresultCopyInitialSHA256'],
+                'xcresult copy does not initially match the original input')
+        require(receipt['xcresultFilesSHA256'] == bundle_hashes(bundle), 'Original xcresult changed while copying')
+        receipt['xcresultQueryCopy'] = str(query_bundle)
+        save()
         report = json.loads(report_path.read_text())
         repository = Path(__file__).resolve().parent.parent
         head = run('revision', ['git', '-C', str(repository), 'rev-parse', 'HEAD'], 15).strip()
@@ -189,7 +221,10 @@ def main():
         receipt['sourceMatchesRevision'] = True
         receipt['sourceSHA256'] = {str(p.relative_to(repository)): sha(p) for p in source_paths}
         summary_text = run('xcresult-summary', ['xcrun', 'xcresulttool', 'get', 'test-results', 'summary',
-                                               '--path', str(bundle)], 120)
+                                               '--path', str(query_bundle)], 120)
+        receipt['xcresultCopyAfterSHA256'] = bundle_hashes(query_bundle)
+        receipt['xcresultCopyChanges'] = bundle_changes(receipt['xcresultCopyInitialSHA256'], receipt['xcresultCopyAfterSHA256'])
+        save()
         summary = json.loads(summary_text)
         (out / 'xcresult-summary.json').write_text(json.dumps(summary, indent=2) + '\n')
         receipt['summarySHA256'] = sha(out / 'xcresult-summary.json')
@@ -197,10 +232,12 @@ def main():
         (out / 'watch-records.json').write_text(json.dumps(records, indent=2) + '\n')
         receipt['recordsSHA256'] = sha(out / 'watch-records.json')
         require(receipt['inputs'] == {'report.json': sha(report_path), 'test.log': sha(log_path)}, 'Runner evidence changed during verification')
-        require(receipt['xcresultFilesSHA256'] == bundle_hashes(bundle), 'xcresult changed during verification')
+        validate_bundle_query(receipt['xcresultFilesSHA256'], bundle_hashes(bundle),
+                              receipt['xcresultCopyInitialSHA256'], receipt['xcresultCopyAfterSHA256'])
         require(all(sha(repository / p) == h for p, h in receipt['sourceSHA256'].items()), 'Source changed during verification')
         receipt.update(status='passed', testsPassed=6, testsFailed=0, testsSkipped=0, records=6,
-                       environment='watch-simulator', configuration='Release', inputsUnchanged=True)
+                       environment='watch-simulator', configuration='Release', inputsUnchanged=True,
+                       originalXcresultUnchanged=True)
         save()
         print('Watch simulator qualification passed: six Release tests and six verified records; no device qualification.')
     except Exception as error:

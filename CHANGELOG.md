@@ -18,9 +18,10 @@
   failures remain unchanged.
 - Recover both native macOS CI release steps and isolate the visionOS
   cancellation test from a competing deadline. All 13 CI jobs pass at `a44e671`;
-  the original failures remain retained. Full fuzz campaigns, controlled
-  performance and the dedicated Watch simulator harness remain in progress;
-  loaded timing attempts are excluded from performance acceptance.
+  the original failures remain retained. Four full-hour fuzz campaigns and the
+  scoped matched performance check pass. Six Watch simulator Release tests pass;
+  a corrected evidence verifier awaits hosted confirmation. Loaded timing
+  attempts remain excluded from performance acceptance.
 - Audit the current DICOMKit source and document its separate managed-workspace
   and synchronous-execution adoption requirements; no consumer cutover occurs.
 - Add failure-only macOS CI crash diagnostics. Release test failures remain

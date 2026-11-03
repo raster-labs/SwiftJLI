@@ -1,6 +1,6 @@
 # Watch verifier fixtures — no simulator execution
 
-[The current fixture run](attempt-3/report.json) passes **one positive and 27 negative
+[The current fixture run](attempt-4/report.json) passes **one positive and 27 negative
 mock record/summary cases**, one positive and three negative source-identity
 fixtures, plus rejection of an existing output directory without changing its
 sentinel. These are Python acceptance-check fixtures. They establish no
@@ -34,3 +34,5 @@ Helper and fixture-runner SHA-256 values are recorded in the result. The separat
 Watch tests were executed.
 
 The summary field shape follows the real retained [visionOS xcresult summary](../ci/test-isolation/visionos-xcresult-summary.json); its exact SHA-256 is recorded in the fixture receipt. Watch devices, counts and records here are explicitly synthetic. Earlier fixture attempts remain retained with their executed helper hashes.
+
+The cache-handling follow-up additionally accepts SQLite index creation only on a verified bundle copy, and rejects original payload mutation, an original added cache file and copied payload mutation. These four mock bundle cases are in attempt-4. The original xcresult is never passed to the summary command. The [genuine-artifact revalidation](../ci/watch-qualification/verifier-cache-fix/README.md) is separate from these mocks.

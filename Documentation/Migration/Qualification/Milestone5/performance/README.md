@@ -1,7 +1,15 @@
 # Callback-owner performance qualification
 
-**The controlled performance gate is still pending.** The completed
-[loaded run](measured/results.json) has 24 rows with exact baseline/candidate
+**The callback-owner correction passes the scoped PERF-03 regression comparison.**
+The [matched run and independent assessment](controlled-summary.md) cover
+24 rows across two interleaved rounds: median latency changes range from
+−3.372% to +1.334%, and maximum observed peak-RSS changes from −3.448% to
++3.003%. The assessment retains noisy latency tails and active desktop/VM
+load explicitly; it makes no exclusive-host or universal-speed claim. See
+[the machine-readable disposition](controlled-disposition.json) for all
+recalculated statistics, criteria and limits.
+
+The earlier [loaded run](measured/results.json) has 24 rows with exact baseline/candidate
 outputs, but its before/after snapshots show an unrelated SwiftJLS benchmark
 at approximately 100% CPU plus substantial virtual-machine/Java activity.
 The [separate disposition](loaded-disposition.json) excludes it from controlled
@@ -47,7 +55,7 @@ JLISwift benchmark generator at
 SwiftJLI pattern generator. These are existing fixtures; no fixture was
 regenerated for this refinement.
 
-## Future controlled run
+## Reproduce the matched comparison
 
 Wait until the fuzz campaign, other codec benchmarks and substantial competing
 workloads have completed. Do not terminate unrelated work to obtain a quiet
@@ -62,7 +70,7 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer python3 \
   --fixtures /private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory \
   --patterns /private/tmp/swiftjli-native-matrix-fixtures \
   --build-metadata Documentation/Migration/Qualification/Milestone5/performance/matched-builds.json \
-  --output Documentation/Migration/Qualification/Milestone5/performance/controlled
+  --output /absolute/new/performance-comparison
 ```
 
 The maintained [runner](run.py) requires fresh output, validates binary and
@@ -76,7 +84,7 @@ unchanged through the run. A rebuild needs a new audited build receipt.
 The progressive case now explicitly encodes with
 `--progressive successive-approximation`; other lossy encodes use sequential
 mode and all use quality 85. This changes the workload relative to the loaded
-run, so a future progressive encode row must not be combined with its old
+run, so a current progressive encode row must not be combined with its old
 sequential row. Baseline/candidate outputs must match byte for byte before
 timing each round. Independent oracle qualification and the historical RGB
 djpeg tolerance-2 timing exclusions remain separate and unchanged.
