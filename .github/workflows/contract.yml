@@ -68,8 +68,6 @@ jobs:
     name: macOS 26 / Xcode default Swift
     runs-on: macos-26
     timeout-minutes: 30
-    env:
-      SWIFT_BACKTRACE: enable=yes,interactive=no,color=no
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -78,8 +76,12 @@ jobs:
       - run: xcodebuild -version
       - run: swift build
       - run: swift test
+        env:
+          SWIFT_BACKTRACE: enable=yes,interactive=no,color=no
       - run: swift build -c release
       - run: swift test -c release
+        env:
+          SWIFT_BACKTRACE: enable=yes,interactive=no,color=no
       - name: Address sanitizer
         run: swift test --scratch-path .build/asan --sanitize address
       - name: Thread sanitizer
@@ -125,8 +127,6 @@ jobs:
     name: Native macOS 26 Intel runtime and CLI
     runs-on: macos-26-intel
     timeout-minutes: 30
-    env:
-      SWIFT_BACKTRACE: enable=yes,interactive=no,color=no
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -138,7 +138,11 @@ jobs:
           swift --version
           xcodebuild -version
       - run: swift test -j 3
+        env:
+          SWIFT_BACKTRACE: enable=yes,interactive=no,color=no
       - run: swift test -c release -j 3
+        env:
+          SWIFT_BACKTRACE: enable=yes,interactive=no,color=no
       - name: Qualify CLI installation and manual
         run: |
           command -v mandoc >/dev/null || brew install mandoc
