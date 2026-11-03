@@ -27,18 +27,21 @@ The two retained JPEGs under [fixtures](fixtures/) are synthetic in-house fixtur
 | `rgb8-512.jpg` | `e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c` |
 | `progressiveRGB8-512.jpg` | `050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b` |
 
-Run from the repository root, with a fresh scratch directory. The baseline argument must be the previously pinned binary whose SHA-256 is checked by the runner; build an equivalent pinned baseline if that binary is unavailable, then explicitly update the reproduction pin and record the compiler/build provenance rather than bypassing the check.
+Run from the repository root, with fresh scratch and evidence directories. The runner refuses an existing `--output` path before writing anything, so reproduction cannot overwrite this retained qualification. The baseline argument must be the previously pinned binary whose SHA-256 is checked by the runner; build an equivalent pinned baseline if that binary is unavailable, then explicitly update the reproduction pin and record the compiler/build provenance rather than bypassing the check.
 
 ```sh
 python3 Documentation/Migration/Qualification/Milestone5/rgb/run.py \
   --fixtures Documentation/Migration/Qualification/Milestone5/rgb/fixtures \
   --scratch /private/tmp/swiftjli-m5-rgb-reproduction \
+  --output /private/tmp/swiftjli-m5-rgb-reproduction-evidence \
   --djpeg-320 /opt/homebrew/Cellar/jpeg-turbo/3.2.0/bin/djpeg \
   --djpeg-321 /opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg \
   --baseline-cli /private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli
 ```
 
 The runner prebuilds the existing oracle consumer with two jobs, links the [subsampled harness](subsampled.swift) to that same library object, and reuses the build for the raw-RGB script. Exact executed paths appear in the receipt; retained fixture copies have identical hashes. Temporary reference PNM files are deliberate test artefacts, not codec image spilling.
+
+The completed receipt predates the output-directory guard. Its exact executed runner is retained as [run-executed.py](run-executed.py); the receipt's `run.py` hash identifies those bytes. The maintained [run.py](run.py) adds the fresh `--output` requirement and keeps harness/source paths anchored to its own directory. This output-path refinement does not change codec qualification or rewrite the completed receipt.
 
 ## Initial harness correction
 

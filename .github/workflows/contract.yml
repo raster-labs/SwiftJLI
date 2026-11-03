@@ -196,6 +196,13 @@ jobs:
           persist-credentials: false
       - name: Run the library suite on the target simulator
         run: python3 Scripts/test-apple-simulator.py --platform "${{ matrix.platform }}" --output "$RUNNER_TEMP/runtime"
+      - name: Run Watch resource and cancellation harness in Release
+        if: matrix.platform == 'watchOS'
+        run: |
+          python3 Scripts/test-apple-simulator.py --platform watchOS \
+            --configuration Release --package-path Examples/WatchQualification \
+            --scheme WatchQualification-Package --output "$RUNNER_TEMP/watch-qualification"
+          python3 Scripts/verify-watch-qualification.py --evidence "$RUNNER_TEMP/watch-qualification"
       - name: Retain simulator commands and test results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -205,6 +212,10 @@ jobs:
             ${{ runner.temp }}/runtime/*.json
             ${{ runner.temp }}/runtime/*.log
             ${{ runner.temp }}/runtime/Tests.xcresult
+            ${{ runner.temp }}/watch-qualification/*.json
+            ${{ runner.temp }}/watch-qualification/*.log
+            ${{ runner.temp }}/watch-qualification/Tests.xcresult
+            ${{ runner.temp }}/watch-qualification/verification
           retention-days: 14
 
   independent-consumer:

@@ -11,6 +11,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--evidence", type=Path, required=True)
 args = parser.parse_args()
 root = args.evidence.resolve()
+if (root / "field-audit.json").exists():
+    parser.error("Existing field-audit results must be preserved; choose fresh evidence")
 pin = json.loads((root / "report.json").read_text())["candidateRevision"]
 records = []
 for spec in ("spdx", "cyclonedx"):

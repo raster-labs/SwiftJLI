@@ -1,5 +1,35 @@
 # Change log
 
+## Milestone 5 release preparation — in progress, 3 November 2026
+
+- Retain synchronous host cancellation callbacks in an immutable task-local
+  owner, addressing the observed native macOS release failure during callback
+  installation. Add nested throwing-scope restoration coverage; preserve the
+  original failing regression and its ARM64/Intel crash reports.
+- Repair the general validation runner's stale Milestone 1 consumer: it now runs
+  the maintained public codec example and resolves an explicitly named local
+  dependency even when an isolated checkout has a different directory name.
+- Qualify shipping candidate `f548e5048e5c71204c2a2ec4036bf66c4f040285` locally:
+  debug, release, full ASan and full TSan each pass 389 tests; 250 release CLI
+  checks, fresh URL consumption, independent JPEG/suite oracles and ordinary
+  allocation/lifetime controls pass. Separately labelled library and CLI SBOM
+  derivatives pass official schemas and SPDX semantic validation, with explicit
+  transformations, licence notices and native-linkage limits. Raw producer
+  failures remain unchanged.
+- Recover both native macOS CI release steps and isolate the visionOS
+  cancellation test from a competing deadline. All 13 CI jobs pass at `a44e671`;
+  the original failures remain retained. Full fuzz campaigns, controlled
+  performance and the dedicated Watch simulator harness remain in progress;
+  loaded timing attempts are excluded from performance acceptance.
+- Audit the current DICOMKit source and document its separate managed-workspace
+  and synchronous-execution adoption requirements; no consumer cutover occurs.
+- Add failure-only macOS CI crash diagnostics. Release test failures remain
+  failures; debugger runs collect evidence without replacing their results.
+- The owner selected simulator testing because physical devices are unavailable.
+  Private reporting still needs administrator activation. See the
+  [Milestone 5 acceptance record](Documentation/Migration/Qualification/Milestone5/README.md)
+  for current progress and remaining release limits. No stable tag is published.
+
 ## JLISwift 0.6.0 (`fb1e188`) parity assessment and sequential `DHT` `SOS`-snapshot fix — 15 October 2026
 
 - Audit `JLISwift` `fix/bounded-decode-allocation` at `fb1e188b4b1bad73febccf3b7c7595a78ae7a4c2` (merged to predecessor `main` as `b6df774a3c3ecdf4b98971f31543fdd18074ace2` / `v0.6.0` on 14 October 2026) against `SwiftJLI` `main` at `89d5e6a31c51384a48a01d2ac84983ee534c6d24` (after PR #23 merged with all 13 CI checks passing).

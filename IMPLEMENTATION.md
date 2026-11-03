@@ -2,7 +2,13 @@
 
 Read AGENTS.md and every common contract document first. Milestone 1 implements API shapes and owning storage; see [executed evidence](Documentation/MILESTONE1.md). Later milestones require an owner-assigned implementation task. Follow the common contract when predecessor conventions differ. Maintain performance, reliability and security together.
 
-## Verified status — 15 October 2026
+## Current assignment — 3 November 2026
+
+The owner has assigned **Milestone 5 release preparation** under suite policy **0.10.0**. The current shipping candidate is `f548e5048e5c71204c2a2ec4036bf66c4f040285`; only task-local host callback ownership changes from the starting `8ae2762` source. Local Swift 6.4.2 debug/release/full ASan/full TSan each pass 389 tests, with fresh consumer, independent oracle, suite and allocation evidence in the [Milestone 5 record](Documentation/Migration/Qualification/Milestone5/README.md). The test-only correction at `a44e671` isolates cancellation from a competing short deadline; all 13 hosted CI jobs pass. Derived library/CLI SBOM conformance also passes. Full fuzzing, controlled performance and the dedicated Watch simulator harness remain in progress. Physical hardware is unavailable and private reporting remains disabled pending administrator activation. No stable tag or application cutover is established.
+
+The [DICOMKit readiness audit](Documentation/Migration/Qualification/Milestone5/DICOMKitReadiness.md) records current consumer requirements and an adoption plan, not completed integration. Its current manifest has already removed `JLIDICOM`; predecessor-specific managed workspace and synchronous execution APIs still require separately assigned consumer work. The September product inventory and October milestones below retain their historical source pins and dispositions.
+
+## Historical verified status — 15 October 2026
 
 [PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged the codec migration
 and deadline-overflow correction into main as `a967d27`. The 13-job CI matrix
@@ -20,7 +26,7 @@ independent regressions and measured performance cost are recorded in
 
 On 15 October 2026, the owner assigned all Milestone 4 software work including the CLI payload commands (`encode`, `decode`, `inspect`, `validate`), reconciling the earlier `I3` deferral, and explicitly scoped platform validation for this task to **native macOS and the iOS Simulator**.
 
-| Scope | Current disposition |
+| Scope | Disposition recorded on 15 October 2026 |
 | --- | --- |
 | Milestones 1–2: API/storage foundation and native migration baseline | Implemented; source inventory, provenance, predecessor comparisons and independent JPEG oracle evidence retained. |
 | Milestone 3: caller storage and first suite pair | Implemented; refreshed sharing/copy/lifetime evidence covers all six available codec pairs in both directions, including the first SwiftJ2K ↔ SwiftJLS pair. |
@@ -98,6 +104,8 @@ POL-05 requires every product to be explicitly **retained** (migrates, stays a p
 ### Decisions recorded with these dispositions
 
 **I1 — DICOMKit's `JLIDICOM` dependency is dead and is dropped either way.** DICOMKit declares the product in its manifest and imports it in no source file, so it resolves and builds a product it never uses. Removing that declaration belongs in DICOMKit's separately assigned cutover task and does not depend on this migration.
+
+**3 November 2026 reconciliation:** the [current DICOMKit audit](Documentation/Migration/Qualification/Milestone5/DICOMKitReadiness.md) at `ff9d26fc6336340f7a5046419d9ac164e341eb0d` confirms that dependency cleanup has already occurred. I1 above records the September finding; it is not outstanding removal work or evidence of SwiftJLI adoption.
 
 **I2 — deferring `JLIBench` does not defer its fixtures.** Its `Regression/` corpus and `IdentityHashes.swift` are exactly the pinned predecessor corpus and bug reproducers TEST-04 requires to be carried forward. The fixtures migrate with the codec and keep their provenance records; only the executable is deferred.
 

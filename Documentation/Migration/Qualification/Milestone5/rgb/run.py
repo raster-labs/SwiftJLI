@@ -17,9 +17,15 @@ parser.add_argument('--scratch', type=Path, required=True)
 parser.add_argument('--djpeg-320', type=Path, required=True)
 parser.add_argument('--djpeg-321', type=Path, required=True)
 parser.add_argument('--baseline-cli', type=Path, required=True)
+parser.add_argument('--output', type=Path, required=True, help='New evidence directory; existing paths are refused')
 args = parser.parse_args()
-evidence = Path(__file__).resolve().parent
-repo = evidence.parents[4]
+script_dir = Path(__file__).resolve().parent
+repo = script_dir.parents[4]
+evidence = args.output.resolve()
+try:
+    evidence.mkdir(parents=True, exist_ok=False)
+except FileExistsError:
+    parser.error('--output must be a new directory; existing evidence will not be overwritten')
 scratch = args.scratch.resolve()
 scratch.mkdir(parents=True, exist_ok=True)
 env = dict(os.environ, DEVELOPER_DIR='/Applications/Xcode.app/Contents/Developer')
@@ -84,7 +90,7 @@ try:
     binary = scratch / 'subsampled'
     run('compile', ['xcrun', 'swiftc', '-parse-as-library', '-swift-version', '6', '-strict-concurrency=complete',
                     '-target', 'arm64-apple-macos26.0', '-sdk', sdk, '-I', products, library,
-                    '-framework', 'Accelerate', evidence / 'subsampled.swift', '-o', binary])
+                    '-framework', 'Accelerate', script_dir / 'subsampled.swift', '-o', binary])
     record['harnessBinarySHA256'] = sha(binary)
     oracle_dir = scratch / 'references'
     oracle_dir.mkdir(exist_ok=True)
@@ -119,6 +125,6 @@ except BaseException as error:
     raise
 finally:
     record['finishedUTC'] = now()
-    record['harnessSHA256'] = {p.name: sha(p) for p in [evidence / 'run.py', evidence / 'subsampled.swift']}
+    record['harnessSHA256'] = {p.name: sha(p) for p in [script_dir / 'run.py', script_dir / 'subsampled.swift']}
     save()
 print(json.dumps({k: record.get(k) for k in ['status', 'revision', 'subsampledDecodeCases', 'subsampledOracleComparisons', 'rawRGBDecodeCases']}))

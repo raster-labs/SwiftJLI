@@ -1,0 +1,86 @@
+{
+  "checkedUTC": "2026-11-03T07:35:28.980646+00:00",
+  "method": "Existing-directory rejection plus fresh-output configuration with subprocess.run intercepted before any real command. No codec tests repeated.",
+  "cases": [
+    {
+      "runner": "Documentation/Migration/Qualification/Milestone5/rgb/run.py",
+      "runnerSHA256": "24283d8b86987cacf08602b10f6876c9ddff9af69be6f1a505b7ed8c788572dc",
+      "existingOutputCommand": [
+        "/opt/homebrew/opt/python@3.15/bin/python3.15",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/rgb/run.py",
+        "--fixtures",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/rgb/fixtures",
+        "--scratch",
+        "/private/tmp/swiftjli-output-guards-sr_i57xy/rgb-scratch",
+        "--djpeg-320",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/bin/djpeg",
+        "--djpeg-321",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "--baseline-cli",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+        "--output",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/rgb"
+      ],
+      "existingOutputExitCode": 2,
+      "existingOutputStderr": "usage: run.py [-h] --fixtures FIXTURES --scratch SCRATCH --djpeg-320 DJPEG_320\n              --djpeg-321 DJPEG_321 --baseline-cli BASELINE_CLI\n              --output OUTPUT\nrun.py: error: --output must be a new directory; existing evidence will not be overwritten\n",
+      "freshOutputPath": "/private/tmp/swiftjli-output-guards-sr_i57xy/rgb-fresh",
+      "freshOutputInterceptionExitCode": 73,
+      "freshReceiptCreated": true,
+      "freshCommandAnchoredToRepository": true
+    },
+    {
+      "runner": "Documentation/Migration/Qualification/Milestone5/suite/run.py",
+      "runnerSHA256": "95faec8cc60757f84492658fd002d791e54fe7accf9e7281a42acf1d547b94b3",
+      "existingOutputCommand": [
+        "/opt/homebrew/opt/python@3.15/bin/python3.15",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/suite/run.py",
+        "--scratch",
+        "/private/tmp/swiftjli-output-guards-sr_i57xy/suite-scratch",
+        "--output",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/suite"
+      ],
+      "existingOutputExitCode": 2,
+      "existingOutputStderr": "usage: run.py [-h] --scratch SCRATCH [--image IMAGE] --output OUTPUT\nrun.py: error: --output must be a new directory; existing evidence will not be overwritten\n",
+      "freshOutputPath": "/private/tmp/swiftjli-output-guards-sr_i57xy/suite-fresh",
+      "freshOutputInterceptionExitCode": 73,
+      "freshReceiptCreated": true,
+      "freshCommandAnchoredToRepository": true
+    },
+    {
+      "runner": "Documentation/Migration/Qualification/Milestone5/suite/build-oracle-image.py",
+      "runnerSHA256": "878b640e58ebb690830183a4be08975fb113fc1b98271c39f798d700edc3cb52",
+      "existingOutputCommand": [
+        "/opt/homebrew/opt/python@3.15/bin/python3.15",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/suite/build-oracle-image.py",
+        "--output",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/suite"
+      ],
+      "existingOutputExitCode": 2,
+      "existingOutputStderr": "usage: build-oracle-image.py [-h] --output OUTPUT\nbuild-oracle-image.py: error: --output must be a new directory; existing evidence will not be overwritten\n",
+      "freshOutputPath": "/private/tmp/swiftjli-output-guards-sr_i57xy/oracle-image-fresh",
+      "freshOutputInterceptionExitCode": 73,
+      "freshReceiptCreated": true,
+      "freshCommandAnchoredToRepository": true
+    }
+  ],
+  "status": "passed",
+  "canonicalReceiptsUnchanged": true,
+  "protectedSHA256": {
+    "Documentation/Migration/Qualification/Milestone5/rgb/execution.json": "3d1c57628e315fceebfa82bf7ac9ee47e968fe8f5ba8c95f4761fd3fd88c0f8a",
+    "Documentation/Migration/Qualification/Milestone5/rgb/subsampled-results.json": "2ed2ae0fffe0892411e561e03eff080524522add7589fad63c505d6b04b64dc6",
+    "Documentation/Migration/Qualification/Milestone5/rgb/raw-rgb-results.json": "509defb66db73405bd6bfdeea62cc9a9b46d1d6587898c6837132508b610cf12",
+    "Documentation/Migration/Qualification/Milestone5/suite/execution.json": "ecc6b20710b2e792f98c53d13d28917935cea4328f9957b5eef1f3b16e1207e5",
+    "Documentation/Migration/Qualification/Milestone5/suite/oracle-image.json": "39821db1f684f4b58a0995f75bc0ebda83c0b4f963e4239d597808bb3c1979e5"
+  },
+  "interceptedSubprocessSource": "import runpy,subprocess,sys,platform\nfrom unittest.mock import patch\nplatform.platform()\nscript=sys.argv[1];sys.argv=sys.argv[1:]\ndef stop(argv,**kwargs):\n return subprocess.CompletedProcess(argv,73)\nwith patch('subprocess.run',stop):\n runpy.run_path(script,run_name='__main__')\n",
+  "executedRunnerCopies": {
+    "Documentation/Migration/Qualification/Milestone5/rgb/run-executed.py": "802b20b9822f9cb93675f72a2416de90ad2f2be0f7befd4ffcf4c2978767ba54",
+    "Documentation/Migration/Qualification/Milestone5/suite/run-initial.py": "a64222fa7687a11411bd0d3cb4e7fbbf464b272fe467189066d75afc16367b51",
+    "Documentation/Migration/Qualification/Milestone5/suite/build-oracle-image-executed.py": "56d048eb52cbe05ca47b8e748b805a138145b2b72926a32e6967e468291edde5"
+  },
+  "initialGuardProbe": {
+    "result": "mock setup error before fresh receipt creation",
+    "reason": "platform.platform called subprocess before the intended command interception; initialised platform cache before applying the mock",
+    "codecCommandsRun": 0
+  }
+}

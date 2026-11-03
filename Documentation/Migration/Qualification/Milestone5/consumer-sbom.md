@@ -1,5 +1,11 @@
 # Milestone 5 — remote consumer and build-associated SBOMs
 
+**Historical pre-fix record.** The completed refresh for shipping candidate
+`f548e5048e5c71204c2a2ec4036bf66c4f040285` is in
+[final-consumer-sbom/README.md](final-consumer-sbom/README.md). It preserves the
+same consumer pass and explicit SBOM producer limitations. The original
+`8ae2762` evidence and reproduction below retain their own pin.
+
 Assessed 3 November 2026 against immutable candidate
 `8ae2762710d6279cd92222f5bb5ca95f042f694e`, suite policy **0.10.0**.
 The 46 shipping Swift source hashes match the 3 November optimisation snapshot
@@ -79,7 +85,7 @@ fixture notices and exact compiler/SDK evidence remain separate obligations.
 From the repository root, choose a fresh evidence directory:
 
 ```sh
-python3 Documentation/Migration/Qualification/Milestone5/consumer-qualify.py --evidence /absolute/new/m5-consumer-sbom
+python3 Documentation/Migration/Qualification/Milestone5/consumer-qualify.py --revision 8ae2762710d6279cd92222f5bb5ca95f042f694e --evidence /absolute/new/m5-consumer-sbom
 python3 Documentation/Migration/Qualification/Milestone5/sbom-prepare-schemas.py --evidence /absolute/new/m5-consumer-sbom/sbom
 ```
 
@@ -89,6 +95,16 @@ status for the retained producer is exit 1, not a successful SPDX result. Run
 `sbom-audit.py` with the same evidence argument for the separate field audit.
 The retained commands show the exact executed paths and outcomes. Large build
 trees and binaries stay outside the repository.
+
+After the completed runs, the schema and field-audit helpers gained guards
+rejecting an existing result file. This changes reproduction output handling
+only; the raw SBOMs, completed receipts and validation results remain unchanged.
+[The helper review](sbom/helper-safety-review.json) records pre/post-change
+script hashes and verifies rejection without modifying retained evidence.
+The consumer helper now also requires an explicit immutable `--revision` for
+later candidates. Its originally executed revision-specific copy is preserved
+as [consumer-qualify-executed-8ae2762.py](consumer-qualify-executed-8ae2762.py);
+the original receipts remain unchanged.
 
 No shipping source, contract, stable tag or external repository was changed.
 Device qualification, remaining platform/security/fidelity gates, and any real

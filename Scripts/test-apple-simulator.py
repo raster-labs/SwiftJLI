@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Run the library suite on an installed OS 26+ simulator; never substitute a build."""
+"""Run a package test suite on an installed OS 26+ simulator; never substitute a build."""
 import argparse
 import json
 import re
@@ -14,6 +14,7 @@ def main():
     parser.add_argument('--package-path', type=Path)
     parser.add_argument('--scheme', default='SwiftJLI-Package')
     parser.add_argument('--platform', choices=['iOS', 'tvOS', 'visionOS', 'watchOS'], default='iOS')
+    parser.add_argument('--configuration', choices=['Debug', 'Release'], default='Debug')
     args = parser.parse_args()
     root = Path(__file__).resolve().parent.parent
     if args.package_path:
@@ -26,7 +27,8 @@ def main():
                  'watchOS': ('watchOS', 'watchsimulator', 'Apple Watch')}
     runtime_name, sdk_name, device_prefix = platforms[args.platform]
     destination_platform = args.platform + ' Simulator'
-    report = {'platform': destination_platform, 'commands': [], 'status': 'running'}
+    report = {'platform': destination_platform, 'configuration': args.configuration,
+              'commands': [], 'status': 'running'}
 
     def save():
         (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
@@ -74,9 +76,10 @@ def main():
         # package scheme includes SwiftJLITests.
         scheme = args.scheme if args.scheme in names else None
         if scheme is None:
-            raise RuntimeError(f'Library test scheme missing: {names}')
+            raise RuntimeError(f'Requested test scheme missing: {names}')
         report['scheme'] = scheme
         log = run('test', ['xcodebuild', 'test', '-scheme', scheme,
+            '-configuration', args.configuration,
             '-destination', 'platform=' + destination_platform + ',id=' + device['udid'],
             '-destination-timeout', '120', '-parallel-testing-enabled', 'NO',
             '-derivedDataPath', str(out / 'DerivedData'),

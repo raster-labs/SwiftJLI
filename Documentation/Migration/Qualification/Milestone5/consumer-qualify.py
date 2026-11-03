@@ -7,11 +7,11 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
 
-PIN = "8ae2762710d6279cd92222f5bb5ca95f042f694e"
 URL = "https://github.com/raster-labs/SwiftJLI.git"
 
 def digest(path):
@@ -20,7 +20,11 @@ def digest(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--evidence", type=Path, required=True)
+    parser.add_argument("--revision", required=True, help="Immutable 40-character Git commit; moving references are rejected")
     args = parser.parse_args()
+    if not re.fullmatch(r"[0-9a-f]{40}", args.revision):
+        parser.error("--revision must be an explicit immutable 40-character Git commit")
+    pin = args.revision
     evidence = args.evidence.resolve()
     consumer_evidence = evidence / "consumer"
     sbom_evidence = evidence / "sbom"
@@ -32,14 +36,14 @@ def main():
     sources.mkdir(parents=True)
     repo = Path(__file__).resolve().parents[4]
     historical = repo / "Documentation/Migration/Qualification/NonWatchCompletion/Harnesses/completion-url-consumer"
-    manifest = (historical / "Package.swift").read_text().replace("e7e54f756cccec07a66870ebefd68b5bbb5c79a6", PIN)
+    manifest = (historical / "Package.swift").read_text().replace("e7e54f756cccec07a66870ebefd68b5bbb5c79a6", pin)
     (package / "Package.swift").write_text(manifest)
     shutil.copy2(historical / "Sources/IndependentConsumer/main.swift", sources / "main.swift")
     env = dict(os.environ, DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer",
                CLANG_MODULE_CACHE_PATH=str(scratch / "clang-cache"),
                SWIFTPM_MODULECACHE_OVERRIDE=str(scratch / "swift-cache"),
                GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL="/dev/null")
-    report = {"candidateRevision": PIN, "repositoryURL": URL, "contract": "0.10.0",
+    report = {"candidateRevision": pin, "repositoryURL": URL, "contract": "0.10.0",
               "scratch": str(scratch), "startedUTC": dt.datetime.now(dt.timezone.utc).isoformat(),
               "commands": [], "status": "running", "buildEngine": "swiftbuild", "jobs": 2,
               "sourceOfConsumer": str(historical.relative_to(repo)),
@@ -85,12 +89,12 @@ def main():
         run("resolve", ["xcrun", "swift", "package", *common, "resolve"])
         resolved = json.loads((package / "Package.resolved").read_text())
         pins = resolved["pins"]
-        if len(pins) != 1 or pins[0]["location"] != URL or pins[0]["state"]["revision"] != PIN:
+        if len(pins) != 1 or pins[0]["location"] != URL or pins[0]["state"]["revision"] != pin:
             raise RuntimeError("Unexpected dependency graph or resolved revision")
         report["resolvedPins"] = pins
         checkout = consumer_build / "checkouts/SwiftJLI"
         actual = run("checkout-revision", ["git", "rev-parse", "HEAD"], checkout).strip()
-        if actual != PIN:
+        if actual != pin:
             raise RuntimeError("Fetched checkout revision mismatch")
         run("checkout-status", ["git", "status", "--porcelain"], checkout)
         report["shippingSourceSHA256"] = {str(p.relative_to(checkout)): digest(p) for p in sorted((checkout / "Sources").rglob("*.swift"))}
@@ -112,7 +116,7 @@ def main():
         save()
         consumer_report = report
         current = sbom_evidence
-        report = {"candidateRevision": PIN, "repositoryURL": URL, "contract": "0.10.0", "status": "running",
+        report = {"candidateRevision": pin, "repositoryURL": URL, "contract": "0.10.0", "status": "running",
                   "startedUTC": dt.datetime.now(dt.timezone.utc).isoformat(), "commands": [], "sboms": [],
                   "buildEngine": "swiftbuild", "jobs": 2, "scratch": str(scratch),
                   "shippingSourceSHA256": consumer_report["shippingSourceSHA256"],

@@ -1,6 +1,27 @@
-# Migration acceptance ledger — 15 October 2026
+# Migration acceptance ledger — 3 November 2026
 
-**Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
+**Milestone 5 release preparation is authorised and in progress; stable-release acceptance remains open.** Milestone 4 software retains its recorded qualification scope.
+
+## Current Milestone 5 evidence
+
+The owner assigned Milestone 5 on 3 November 2026 from `8ae2762710d6279cd92222f5bb5ca95f042f694e`, whose 46 shipping Swift source hashes matched `5351088`. The current shipping candidate is **`f548e5048e5c71204c2a2ec4036bf66c4f040285`**, under suite policy **0.10.0**. It addresses the observed native macOS release crash with an immutable owner for task-local host cancellation callbacks and adds nested throwing-scope restoration coverage. Only `NativeExecution.swift` changes in shipping source; the other 45 files retain their starting hashes. The [Milestone 5 record](Qualification/Milestone5/README.md) and [source manifest](Qualification/Milestone5/final-candidate.json) identify current qualification and supersede the earlier milestone deferral.
+
+| Requirement | Current evidence or open work |
+| --- | --- |
+| Local library/build validation | [Final Swift 6.4.2 validation](Qualification/Milestone5/final-validation/README.md) passes clean/incremental debug/release builds and 389 test declarations in 60 suites in each of debug, release, full ASan and full TSan. Zero failures/skips; all 22 subprocess commands exit zero. |
+| CLI | [250 release process checks](Qualification/Milestone5/final-cli/report.json) pass against the final local release binary. Historical ASan CLI evidence retains its earlier source pin. |
+| Clean consumer/build | A genuine GitHub URL consumer resolves exactly f548 without sibling/local dependencies. Explicit Swift Build clean/incremental debug/release builds and both executions pass on Swift 6.4.2. The separate local-path validator consumer was repaired to use the maintained codec example. See [final consumer evidence](Qualification/Milestone5/final-consumer-sbom/README.md). |
+| Build-associated SBOMs | [Library and CLI derivatives](Qualification/Milestone5/final-consumer-sbom/derived/README.md) pass official JSON Schemas, SPDX SHACL and independent identity/licence checks. Raw SwiftPM failures remain unchanged; transformations, deterministic replay, source-backed licence declarations and upstream schema notices are retained. Native-linkage supplements do not claim a complete Apple SDK/runtime inventory. |
+| JPEG fidelity and suite interoperability | [Final JPEG oracles](Qualification/Milestone5/final-rgb/README.md) pass the subsampled/raw-RGB, 210 predictive cases per direction and 48 DCT profiles in both directions. [Final suite qualification](Qualification/Milestone5/final-suite/README.md) passes 72 handoffs, 72 deliberate-copy controls and 72 independent decodes across all twelve ordered pairs. |
+| Allocation and lifetime | Ordinary Linux [decoder](Qualification/Milestone5/final-allocation/results.json) passes 60 + 60 controls, [encoder](Qualification/Milestone5/final-encode/results.json) 30 + 30, and [failure/cancellation stress](Qualification/Milestone5/final-stress/results.json) 28 + 28. Ordinary Apple release [retained-frame checks](Qualification/Milestone5/final-apple-memory/README.md) pass 56 + 56. These are finite tested allocation shapes, not universal copy/leak proofs or device ceilings. |
+| Platform CI | [Run 41601103725](https://github.com/raster-labs/SwiftJLI/actions/runs/41601103725) passes all 13 jobs at test-only candidate `a44e671`, whose shipping sources match f548. [Retained evidence](Qualification/Milestone5/ci/test-isolation/README.md) includes both native macOS release suites, ASan/TSan, Linux/toolchain coverage, Apple SDK builds, four simulator suites and iOS predecessor comparisons. The original release crash and visionOS deadline-race failures remain separately retained. Dedicated Watch simulator resource-harness qualification is pending. |
+| Fuzzing and performance | Corrected-candidate full fuzz campaigns are running. Controlled performance comparison remains pending matched compiler flags and controlled host load; the loaded attempt is excluded from acceptance. Interrupted pre-fix fuzz receipts and historical performance results retain their pins. |
+| DICOMKit readiness | [Source audit and adoption plan](Qualification/Milestone5/DICOMKitReadiness.md) identify managed allocation/execution gaps. The inspected consumer already removed its `JLIDICOM` dependency; actual SwiftJLI integration remains unexecuted. |
+| Hardware and private reporting | The owner confirms no Watch or iPhone/iPad is available and selects simulator testing for this task. Physical-device evidence remains unexecuted. The latest GitHub check still reports private reporting disabled and the CLI account lacks admin access; administrator activation is not verified. These remain explicit release gates. |
+
+Stable publication, application cutover and predecessor retirement remain separate tasks. The records below retain their original source revisions and historical outcomes; a previously completed subset does not imply current-candidate release acceptance.
+
+## Retained qualification history
 
 **3 November 2026 third performance follow-up:** source
 `5351088d3bb4630a32de6509e4d62210ad14aaa0` reduces lossless dispatch, batches
@@ -87,7 +108,9 @@ Suite policy: 0.10.0. Earlier aa6e298 evidence remains historical and separately
 hashed. The UInt12 reader refinement, runtime jobs, fresh URL consumer and
 memory experiments have their own source hashes under Qualification.
 
-| Requirement | Evidence / current disposition |
+The following requirement table records the October qualification scope; the current Milestone 5 update above governs later work and supersedes its milestone/private-reporting deferrals.
+
+| Requirement | Evidence / disposition at the recorded source |
 | --- | --- |
 | Pinned source, product inventory, licences (POL-05/07; milestone 2) | Passed provenance verifier: 57 principal paths, 56 original source hashes, generated identity fixture and ICC asset/notice. Product dispositions remain in IMPLEMENTATION.md. |
 | Independent library and common contract (POL-01–04) | No shipping package dependency. Fresh remote-URL consumer resolves e7e54f7 and passes predictive, progressive, float, XYB, RGBA, YCbCr and greyscale policies. Actual contents of all 28 shared documents match across four refreshed immutable repository pins, and all 7 local common-contract SHA-256 digests match. |
@@ -109,7 +132,7 @@ memory experiments have their own source hashes under Qualification.
 
 All Milestone 4 software work — including the CLI payload commands (`encode`, `decode`, `inspect`, `validate`) merged in PR #23 (`89d5e6a`), the 15 October 2026 `JLISwift 0.6.0` (`fb1e188`) sequential `DHT` `SOS`-snapshot parity fix (`44e3807`), and the expanded 10-category `JLISwift` historical-fix checklist audit — is complete for the owner's 15 October 2026 macOS + iOS Simulator task scope. The [Watch harness and Milestone 4 qualification record](Qualification/Milestone4/README.md), the [`JLISwift` 14 October parity record](Qualification/JLISwiftOct14Parity/README.md), and the [full historical-fix checklist record](Qualification/JLISwiftHistoryChecklist/README.md) retain the 13 October Watch harness preparation, the 15 October CLI audit evidence, the 15 October `JLISwift 0.6.0` parity audit evidence, and the 15 October historical-checklist audit evidence. No physical Watch is connected to the current host, and device resource testing remains unexecuted. An administrator must establish the private reporting channel in the owner-deferred follow-up. These limits prevent unconditional stable-release completion. Unsupported capabilities remain explicit, and the supplied common contracts remain byte-identical.
 
-## Remaining work and completion criteria
+## Remaining work recorded on 15 October 2026
 
 | Work | Required evidence or disposition |
 | --- | --- |

@@ -1,0 +1,48 @@
+{
+  "status": "excluded_from_controlled_performance_gate",
+  "rawReceipt": "measured/results.json",
+  "rawReceiptSHA256": "b9c9ae078b2dbea7af0f446bd3cac98332c89b0ea9e3519b73ef8e289cabe209",
+  "executedRunner": "run-loaded.py",
+  "executedRunnerSHA256": "0f07e8c6fbe70e72973e45661c8b19ec540383aff483db3d58773135dc4d1dd7",
+  "rawRows": 24,
+  "allBaselineCandidateOutputsExact": true,
+  "reasons": [
+    "Concurrent unrelated SwiftJLS benchmark and substantial VM/Java activity in before/after snapshots.",
+    "Historical baseline and candidate had different testability build requests.",
+    "Progressive-named encode rows used default sequential encoding. Progressive input decode remains accurately named."
+  ],
+  "selectedRecordedProcesses": [
+    {
+      "stage": "before",
+      "pid": 20329,
+      "cpuPercent": 188.6,
+      "command": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+    },
+    {
+      "stage": "before",
+      "pid": 79205,
+      "cpuPercent": 99.2,
+      "command": "/private/tmp/swiftjls-charls-optimisation-20261103/candidate016/consumer/.build/out/Products/Release/Benchmark"
+    },
+    {
+      "stage": "after",
+      "pid": 20329,
+      "cpuPercent": 80.3,
+      "command": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+    },
+    {
+      "stage": "after",
+      "pid": 78921,
+      "cpuPercent": 111.6,
+      "command": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+    },
+    {
+      "stage": "after",
+      "pid": 79743,
+      "cpuPercent": 101.0,
+      "command": "/private/tmp/swiftjls-charls-optimisation-20261103/candidate016/consumer/.build/out/Products/Release/Benchmark"
+    }
+  ],
+  "action": "Retain raw results without editing. A fresh, matched-build, quiescent-host run of the revised runner is needed for controlled acceptance.",
+  "sourceReview": "Immutable Sendable callback owner preserves entry, worker and exit cancellation checks; no blocking source defect found. Existing no-task/join/cancellation tests and new nested throwing test meaningfully cover restoration and completion. Explicit deinitialisation-count/leak assertions are not provided by these tests."
+}

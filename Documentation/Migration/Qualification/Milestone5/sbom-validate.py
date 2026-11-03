@@ -16,6 +16,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--evidence", type=Path, required=True)
 args = parser.parse_args()
 root = args.evidence.resolve()
+if (root / "schema-results.json").exists():
+    parser.error("Existing schema results must be preserved; choose fresh evidence")
 schemas = root / "schemas"
 names = {"spdx-json-schema.json", "bom-1.7.schema.json", "spdx.schema.json", "jsf-0.82.schema.json"}
 
