@@ -1110,20 +1110,25 @@ struct JLIDecoder: Sendable {
                     let base = coefficients.baseAddress!
                     let dcOnly = AccelerateDSP.prepareDCOnlyDCTBatch(zigzag: UnsafePointer(base),
                         quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount)
-                    if !dcOnly {
-                        AccelerateDSP.packDequantizedDCTBatch(zigzag: UnsafePointer(base),
-                            quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount)
+                    if dcOnly {
+                        var center = Float(1 << (precision - 1))
+                        var low: Float = 0, high = Float((1 << precision) - 1)
+                        jliDSP_vsadd(sc.baseAddress!, 1, &center, sc.baseAddress!, 1, blockCount)
+                        jliDSP_vclip(sc.baseAddress!, 1, &low, &high, sc.baseAddress!, 1, blockCount)
+                        try SharedDCTStorage.writeGreyscaleConstantBlocks(
+                            UnsafeBufferPointer(start: sc.baseAddress!, count: blockCount),
+                            firstBlock: first, blocksPerRow: plan.blocksPerRow,
+                            width: width, height: height, precision: precision,
+                            floatOutput: floatOutput, into: destination)
+                        return
                     }
+                    AccelerateDSP.packDequantizedDCTBatch(zigzag: UnsafePointer(base),
+                        quantTable: qt.baseAddress!, scratch: sc.baseAddress!, blockCount: blockCount)
                     // Plan admission proves matching stride/alignment. Packing
                     // has finished all coefficient reads before changing binding.
                     try base.withMemoryRebound(to: Float.self, capacity: sampleCount) { pixels in
-                        if dcOnly {
-                            AccelerateDSP.writeDCOnlyDCTBatch(values: UnsafePointer(sc.baseAddress!),
-                                output: pixels, blockCount: blockCount)
-                        } else {
-                            AccelerateDSP.inverseDCTBatchPacked(output: pixels, scratch: sc.baseAddress!,
-                                blockCount: blockCount)
-                        }
+                        AccelerateDSP.inverseDCTBatchPacked(output: pixels, scratch: sc.baseAddress!,
+                            blockCount: blockCount)
                         try writeReconstructedGreyscaleBatch(pixels: pixels, firstBlock: first,
                             blockCount: blockCount, blocksPerRow: plan.blocksPerRow,
                             width: width, height: height, precision: precision,

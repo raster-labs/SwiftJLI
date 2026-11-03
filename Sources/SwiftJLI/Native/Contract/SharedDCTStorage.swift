@@ -294,6 +294,54 @@ enum SharedDCTStorage {
         }
     }
 
+    /// A DC-only block has one already shifted/clipped sample. Convert it using
+    /// the same integer rounding or Float-bit writer as a full block, then copy
+    /// the repeated byte pattern into its active rows. The 32-byte temporary is
+    /// scoped to this synchronous call; caller memory never enters other work.
+    /// The caller validates geometry just as for writeGreyscaleBlocks.
+    static func writeGreyscaleConstantBlocks(_ values: UnsafeBufferPointer<Float>,
+                                             firstBlock: Int, blocksPerRow: Int,
+                                             width: Int, height: Int, precision: Int,
+                                             floatOutput: Bool, into destination: BorrowedSampleDestination) throws {
+        let bps = destination.bytesPerSample
+        guard floatOutput ? bps == 4 : (bps == 1 && precision <= 8) || bps == 2,
+              let base = values.baseAddress,
+              let bytes = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+            throw JLIError.unsupportedJPEGFeature("Invalid greyscale destination")
+        }
+        let maximum = Float((1 << precision) - 1)
+        try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: 32) { pattern in
+            pattern.initialize(repeating: 0)
+            let tile = pattern.baseAddress!
+            for index in 0..<values.count {
+                if index % 64 == 0 { try NativeOperation.check() }
+                let block = firstBlock + index
+                let x = (block % blocksPerRow) * 8, y = (block / blocksPerRow) * 8
+                guard x < width, y < height else { continue }
+                try writeGreyscaleRun(base + index, into: tile, count: 1,
+                    bytesPerSample: bps, maximum: maximum, floatOutput: floatOutput)
+                for sample in 1..<8 { for byte in 0..<bps {
+                    tile[sample * bps + byte] = tile[byte]
+                } }
+                let payload = min(8, width - x) * bps
+                let rows = min(8, height - y)
+                let destinationRow = bytes + y * destination.rowBytes + x * bps
+                // Constant memcpy lengths permit unaligned fixed-size stores;
+                // partial edge rows retain a bounded variable-length copy.
+                switch payload {
+                case 8:
+                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, 8) }
+                case 16:
+                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, 16) }
+                case 32:
+                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, 32) }
+                default:
+                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, payload) }
+                }
+            }
+        }
+    }
+
     @inline(__always)
     private static func writeGreyscaleRun(_ src: UnsafePointer<Float>, into dst: UnsafeMutablePointer<UInt8>,
                                           count: Int, bytesPerSample: Int, maximum: Float,
