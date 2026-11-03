@@ -15,7 +15,13 @@ The other 45 shipping Swift files retain their starting hashes. See the
 
 The starting candidate was `8ae2762710d6279cd92222f5bb5ca95f042f694e`, whose 46
 shipping Swift files matched the `5351088` [November checkpoint](../DjpegPerformanceRound3_20261103/README.md).
-Its pre-fix receipts remain retained separately. The isolated branch is
+Its pre-fix receipts remain retained separately. PR #26 now uses the pinned
+base branch `codex/milestone-5-baseline-8ae2762` at that exact starting revision.
+The concurrent performance branch advanced to `bbb0b1a` while qualification
+ran; those new codec changes are **excluded** from this candidate and its
+results. [Base-drift diagnosis](ci/watch-qualification/base-drift.json) and
+[resolution](ci/watch-qualification/base-resolution.json) retain the distinction.
+The isolated branch is
 `codex/milestone-5-release-preparation`; unrelated edits in the original checkout
 are excluded. Suite policy stays at **0.10.0**, the manifest floor at Swift
 **6.2**, the primary toolchain at Swift **6.4**, and Apple minima at **26.0**.

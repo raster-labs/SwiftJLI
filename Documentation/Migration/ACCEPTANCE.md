@@ -6,6 +6,10 @@
 
 The owner assigned Milestone 5 on 3 November 2026 from `8ae2762710d6279cd92222f5bb5ca95f042f694e`, whose 46 shipping Swift source hashes matched `5351088`. The current shipping candidate is **`f548e5048e5c71204c2a2ec4036bf66c4f040285`**, under suite policy **0.10.0**. It addresses the observed native macOS release crash with an immutable owner for task-local host cancellation callbacks and adds nested throwing-scope restoration coverage. Only `NativeExecution.swift` changes in shipping source; the other 45 files retain their starting hashes. The [Milestone 5 record](Qualification/Milestone5/README.md) and [source manifest](Qualification/Milestone5/final-candidate.json) identify current qualification and supersede the earlier milestone deferral.
 
+PR #26 is based on the pinned `8ae2762` baseline branch. Concurrent performance
+changes at `bbb0b1a` are outside this candidate and are not qualified by the
+Milestone 5 results below.
+
 | Requirement | Current evidence or open work |
 | --- | --- |
 | Local library/build validation | [Final Swift 6.4.2 validation](Qualification/Milestone5/final-validation/README.md) passes clean/incremental debug/release builds and 389 test declarations in 60 suites in each of debug, release, full ASan and full TSan. Zero failures/skips; all 22 subprocess commands exit zero. |
