@@ -1,0 +1,63 @@
+{
+  "baselineRevision": "425bfa4b996c39b6fde727af4bdd795b62cc4652",
+  "candidateRevision": "b0266d8a68adae6a0e570c72a5fbcfe588821f04",
+  "candidateWorktree": "/private/tmp/swiftjli-round5-parallel-stream",
+  "candidateBuild": "/private/tmp/swiftjli-round5-parallel-stream-build",
+  "baselineProducts": "/private/tmp/swiftjli-round5-425bfa4-products",
+  "baselineObjectSHA256": "b573ac165e8e17007bd51e012b22fc375ec058b7b0d2445bc139039aaa737d0c",
+  "candidateObjectSHA256": "a87ca97b494f2e3fd9acaf92b06bc27bb57ee3bd582ee51eab6dd4110568388f",
+  "sourceManifestSHA256": "5ae7b5a6623909a65385e7920351b797cf69103de1332205bd20e324c7b895f5",
+  "releaseTests": {
+    "exitCode": 0,
+    "tests": 35,
+    "suites": 8
+  },
+  "status": "Local release/output/performance gates passed; integrated sanitizers and remote CI pending.",
+  "nativeBenchmark": {
+    "exitCode": 0,
+    "fixtures": 12,
+    "pairedRounds": 2,
+    "outputsExact": true,
+    "command": [
+      "python3",
+      "/private/tmp/swiftjli-round5-evidence/grouped-tiles/run-native-dct.py",
+      "--baseline-products",
+      "/private/tmp/swiftjli-round5-425bfa4-products",
+      "--candidate-products",
+      "/private/tmp/swiftjli-round5-parallel-stream-build/out/Products/Release",
+      "--output",
+      "/private/tmp/swiftjli-round5-evidence/grouped-tiles/native-dct.json",
+      "--rounds",
+      "2"
+    ]
+  },
+  "scalarBenchmark": {
+    "exitCode": 0,
+    "fixtures": 6,
+    "pairedRounds": 2,
+    "outputsExact": true,
+    "command": [
+      "python3",
+      "/private/tmp/swiftjli-round5-evidence/grouped-tiles/run-native-scalar.py",
+      "--baseline-products",
+      "/private/tmp/swiftjli-round5-425bfa4-products",
+      "--candidate-products",
+      "/private/tmp/swiftjli-round5-parallel-stream-build/out/Products/Release",
+      "--output",
+      "/private/tmp/swiftjli-round5-evidence/grouped-tiles/native-scalar.json",
+      "--rounds",
+      "2"
+    ]
+  },
+  "memoryBenchmark": {
+    "exitCode": 0,
+    "cases": 4,
+    "pairedTrials": 3,
+    "command": [
+      "python3",
+      "/private/tmp/swiftjli-round5-evidence/grouped-tiles/run-one-shot-memory.py"
+    ]
+  },
+  "sanitizers": "Not run here; required integrated ASan/TSan gate remains pending.",
+  "sourceReview": "Independent audit agent found no actionable binding/race/bounds issue; no code or tests weakened."
+}

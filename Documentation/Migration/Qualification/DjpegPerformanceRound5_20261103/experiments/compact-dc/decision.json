@@ -1,0 +1,12 @@
+{
+  "status": "Accepted isolated source for parent integration; combined qualification pending",
+  "baseline": "425bfa4b996c39b6fde727af4bdd795b62cc4652",
+  "candidate": "9e3b315df18b05e67fc6a6764e7bd6ef11c3d88c",
+  "contract": "Suite policy 0.10.0; Apple OS 26; Swift 6.2 manifest floor; Swift 6.4 qualified toolchain",
+  "sourceProof": "candidate-source.json hashes cover every changed source/test before measurement; source was uncommitted at execution, now committed unchanged. one-shot-memory.json candidateRevision records baseline HEAD before commit, not the entire tested dirty tree; use source hashes and this candidate pin together.",
+  "validation": "56 tests / 11 suites; 12 native and 6 extra fixtures in each of 2 paired rounds, all SHA256 and byte counts exact; four fresh-process RSS cases in 3 pairs each.",
+  "initialFailure": "compact-tests-initial.* records one test-assumption failure: the existing reader accepts any RST0...RST7 order. The test was corrected to preserve retained behaviour; production source was unchanged, and the rerun passed.",
+  "timingStatus": "Provisional shared-host timings. No repeated regression above 5% in the measured matrix. Flat 8-bit 512 improves 27-33%, flat 12-bit 512 improves 29-31%; tiny 19x19 cases are roughly flat.",
+  "memory": "Explicit selected batch payload: 524288 to 8192 bytes. Median whole-process RSS: flat8-512 7.219 to 6.984 MiB; flat12-512 7.469 to 7.203 MiB. DCT512/2048 controls are about +0.016 MiB. Reservation is not measured RSS.",
+  "limits": "Only existing small-image or explicit single-worker eligibility was tested in isolation. Parent will merge larger-group eligibility with forced 1024-block compact capacity and one lane; that extension is not covered by these isolated claims. No general AC-flag or masked-shift trial source is included. Final integrated Release/ASan/TSan and external comparator qualification remain parent-owned."
+}
