@@ -39,8 +39,7 @@ import Testing
         #expect(active.withLock { $0 } == 0)
     }
 
-    @Test(arguments: [10.0, Double.greatestFiniteMagnitude])
-    func cancellationReachesDispatchWorkersAndJoins(seconds: Double) async throws {
+    @Test func cancellationReachesDispatchWorkersAndJoins() async throws {
         let entered = DispatchSemaphore(value: 0)
         let state = Mutex((active: 0, started: 0))
         let lanes = min(2, ProcessInfo.processInfo.activeProcessorCount)
@@ -49,7 +48,12 @@ import Testing
             // starts; the started assertion and expected error expose that failure.
             defer { entered.signal() }
             try await NativeOperation.withCancellation {
-                try NativeOperation.$current.withValue(.init(seconds: seconds, maximumWorkers: lanes)) {
+                // Isolate cancellation from deadline expiry. A loaded simulator
+                // can delay the cancellation thread beyond a short deadline;
+                // that correctly produces a deadline error, not cancellation.
+                // Finite expiry is checked separately below.
+                try NativeOperation.$current.withValue(.init(
+                    seconds: Double.greatestFiniteMagnitude, maximumWorkers: lanes)) {
                     try NativeOperation.perform(iterations: lanes) { _ in
                         state.withLock { $0.active += 1; $0.started += 1 }
                         defer { state.withLock { $0.active -= 1 } }
