@@ -6,7 +6,9 @@
 /// the same as the general interleaved decoder.
 enum SequentialGreyscaleDecoder {
     /// Serial scan with bounded coefficient storage. The consumer completes
-    /// synchronously before the same slot is reused; its pointer cannot escape.
+    /// synchronously before the same slot is reused. The consumer must not let
+    /// the pointer escape or use it concurrently; the production consumer
+    /// finishes reconstruction and output before returning.
     /// DC prediction and restart numbering span batches, while each batch keeps
     /// the established 1024-block reconstruction grouping.
     static func decodeBatches(

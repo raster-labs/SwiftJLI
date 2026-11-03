@@ -112,14 +112,19 @@ struct JLIDecoder: Sendable {
         let mcuCountH = (frame.width + mcuW - 1) / mcuW
         let mcuCountV = (frame.height + mcuH - 1) / mcuH
 
-        let directGreyscale = scale == 1 && numComponents == 1 && NativeOperation.workerLimit == 1
+        let sequentialGreyscale = numComponents == 1 && !frame.isProgressive && parsed.scans.count == 1
+            && components[0].horizontalSampling == 1 && components[0].verticalSampling == 1
+        // The worker setting is a ceiling. On small sequential greyscale
+        // frames the measured serial streaming path avoids dispatch and full
+        // coefficient/Float planes; large frames retain parallel reconstruction.
+        let serialGreyscale = NativeOperation.workerLimit == 1
+            || (sequentialGreyscale && mcuCountH * mcuCountV <= 4096)
+        let directGreyscale = scale == 1 && numComponents == 1 && serialGreyscale
             && !parsed.isXYB && !parsed.isRawRGB && !normaliseXYBOutput
             && configuration.outputColorModel == nil
             && (configuration.outputPixelFormat == nil || configuration.outputPixelFormat == .float32)
         let floating = configuration.outputPixelFormat == .float32
-        if directGreyscale, !frame.isProgressive, parsed.scans.count == 1,
-           components[0].horizontalSampling == 1, components[0].verticalSampling == 1,
-           let borrowedDestination {
+        if directGreyscale, sequentialGreyscale, let borrowedDestination {
             let scan = parsed.scans[0]
             let selector = scan.header.components.first { $0.componentSelector == components[0].id }
             let dcTable = prepareDCTables(scan.dcTables)[selector?.dcTableId ?? 0] ?? StandardHuffmanTables.dcLuminance

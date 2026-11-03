@@ -5,7 +5,7 @@ import Testing
 
 @Suite struct BoundedDCTWorkspaceTests {
     @Test func laterEntropyFailureInvalidatesStreamedDestination() throws {
-        let width = 513, height = 521
+        let width = 511, height = 509
         let image = try JLIImage(width: width, height: height, pixelFormat: .uint8,
             colorModel: .grayscale, data: [UInt8](repeating: 128, count: width * height))
         let encoded = try JLIEncoder().encode(image)
@@ -20,7 +20,7 @@ import Testing
         let parsed = try truncatedParser.parse()
         var bytes = [UInt8](repeating: 0xA5, count: width * height)
         #expect(throws: JLIError.self) {
-            try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 1)) {
+            try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 8)) {
                 try bytes.withUnsafeMutableBytes { raw in
                     _ = try JLIDecoder().decodeParsed(parsed, borrowedDestination: .init(
                         bytes: raw, rowBytes: width, bytesPerSample: 1))
@@ -33,7 +33,7 @@ import Testing
         let decoder = try Decoder()
         let descriptor = try decoder.inspect(Data(encoded)).descriptor
         let destination = try ImageDestination.allocate(descriptor: descriptor)
-        let options = DecodeOptions(resourceLimits: try ResourceLimits(maximumWorkers: 1))
+        let options = DecodeOptions(resourceLimits: try ResourceLimits(maximumWorkers: 8))
         #expect(throws: CodecError.self) {
             try decoder.decodeSynchronously(Data(truncated), into: destination, options: options, cancellationCheck: {})
         }
