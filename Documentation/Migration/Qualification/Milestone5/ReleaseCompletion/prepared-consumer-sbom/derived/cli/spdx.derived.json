@@ -1,0 +1,225 @@
+{
+  "@context": "https://spdx.org/rdf/3.0.1/spdx-context.jsonld",
+  "@graph": [
+    {
+      "comment": "Corrected licence subject from the creator Agent to its represented software tool; original assertion retained.",
+      "creationInfo": "_:derivedCreationInfo",
+      "from": "urn:swiftjli:build-tool:swift-package-manager:6.4.2",
+      "relationshipType": "hasDeclaredLicense",
+      "spdxId": "urn:uuid:10735509-8ee7-4280-9494-6efc26377703-hasDeclaredLicense-urn:spdx:Apache-2.0",
+      "to": [
+        "urn:spdx:Apache-2.0"
+      ],
+      "type": "Relationship"
+    },
+    {
+      "creationInfo": "urn:uuid:10735509-8ee7-4280-9494-6efc26377703:creationInfo",
+      "simplelicensing_licenseExpression": "Apache-2.0",
+      "spdxId": "urn:spdx:Apache-2.0",
+      "type": "simplelicensing_LicenseExpression"
+    },
+    {
+      "@id": "urn:uuid:10735509-8ee7-4280-9494-6efc26377703:creationInfo",
+      "comment": "Derived correction: SwiftPM wrote its tool version 6.4.2 in SPDX specVersion.",
+      "created": "2026-11-04T06:00:28Z",
+      "createdBy": [
+        "urn:uuid:10735509-8ee7-4280-9494-6efc26377703"
+      ],
+      "specVersion": "3.0.1",
+      "type": "CreationInfo"
+    },
+    {
+      "creationInfo": "urn:uuid:10735509-8ee7-4280-9494-6efc26377703:creationInfo",
+      "name": "swift-package-manager",
+      "spdxId": "urn:uuid:10735509-8ee7-4280-9494-6efc26377703",
+      "type": "Agent"
+    },
+    {
+      "@id": "_:creationInfo",
+      "created": "2026-11-04T06:00:28Z",
+      "createdBy": [
+        "urn:uuid:10735509-8ee7-4280-9494-6efc26377703"
+      ],
+      "specVersion": "3.0.1",
+      "type": "CreationInfo"
+    },
+    {
+      "creationInfo": "_:creationInfo",
+      "profileConformance": [
+        "core",
+        "software",
+        "simpleLicensing"
+      ],
+      "rootElement": [
+        "urn:spdx:swiftjli:swiftjli-cli"
+      ],
+      "spdxId": "urn:uuid:e4b93a6b-69cc-4ec0-9f68-bd9c838a5df0",
+      "type": "software_Sbom"
+    },
+    {
+      "creationInfo": "_:creationInfo",
+      "from": "urn:uuid:e4b93a6b-69cc-4ec0-9f68-bd9c838a5df0",
+      "relationshipType": "describes",
+      "spdxId": "urn:uuid:e4b93a6b-69cc-4ec0-9f68-bd9c838a5df0-describes-urn:spdx:swiftjli:swiftjli-cli",
+      "to": [
+        "urn:spdx:swiftjli:swiftjli-cli"
+      ],
+      "type": "Relationship"
+    },
+    {
+      "comment": "Separately labelled derived release-package SBOM. Raw SPDX SHA-256: ae01fa418035241ccba2ee787d606758bff4926b97d76ce497fa4cee5dee683b. Native linkage and licence scope: supplement.json.",
+      "creationInfo": "_:derivedCreationInfo",
+      "profileConformance": [
+        "core",
+        "software",
+        "simpleLicensing"
+      ],
+      "rootElement": [
+        "urn:uuid:e4b93a6b-69cc-4ec0-9f68-bd9c838a5df0"
+      ],
+      "spdxId": "urn:uuid:15ac7e1b-d0cd-55c5-b1f2-0e4515e5c770",
+      "type": "SpdxDocument"
+    },
+    {
+      "comment": "Derived correction; original SwiftPM package URL: pkg:swift/swiftjli@7739dba554cabebcc25e3593af3feb6ba27f8489",
+      "creationInfo": "_:derivedCreationInfo",
+      "description": "<ResolvedPackage: swiftjli>",
+      "name": "swiftjli",
+      "software_homePage": "https://github.com/raster-labs/SwiftJLI",
+      "software_packageUrl": "pkg:swift/github.com/raster-labs/SwiftJLI@7739dba554cabebcc25e3593af3feb6ba27f8489",
+      "software_packageVersion": "7739dba554cabebcc25e3593af3feb6ba27f8489",
+      "software_primaryPurpose": "application",
+      "spdxId": "urn:spdx:swiftjli",
+      "summary": "swift-package",
+      "type": "software_Package"
+    },
+    {
+      "comment": "Derived correction; original SwiftPM package URL: pkg:swift/swiftjli/swiftjli:swiftjli-cli@7739dba554cabebcc25e3593af3feb6ba27f8489",
+      "creationInfo": "_:derivedCreationInfo",
+      "name": "swiftjli-cli",
+      "software_homePage": "https://github.com/raster-labs/SwiftJLI",
+      "software_packageVersion": "7739dba554cabebcc25e3593af3feb6ba27f8489",
+      "software_primaryPurpose": "application",
+      "software_sourceInfo": "swiftjli-cli product from https://github.com/raster-labs/SwiftJLI/tree/7739dba554cabebcc25e3593af3feb6ba27f8489",
+      "spdxId": "urn:spdx:swiftjli:swiftjli-cli",
+      "summary": "swift-product",
+      "type": "software_Package"
+    },
+    {
+      "creationInfo": "_:creationInfo",
+      "from": "urn:spdx:swiftjli",
+      "relationshipType": "dependsOn",
+      "spdxId": "urn:spdx:swiftjli-dependsOn",
+      "to": [
+        "urn:spdx:swiftjli:swiftjli-cli"
+      ],
+      "type": "Relationship"
+    },
+    {
+      "@id": "_:derivedCreationInfo",
+      "created": "2026-11-04T06:00:30Z",
+      "createdBy": [
+        "urn:swiftjli:milestone5:sbom-qualification-agent"
+      ],
+      "createdUsing": [
+        "urn:swiftjli:milestone5:derive:ae4c335ce82a8111f9adfab5782bfc3ca7de8ff6c885f4e7ec997c1dd3e747de"
+      ],
+      "specVersion": "3.0.1",
+      "type": "CreationInfo"
+    },
+    {
+      "creationInfo": "_:derivedCreationInfo",
+      "name": "SwiftJLI Milestone 5 SBOM qualification",
+      "spdxId": "urn:swiftjli:milestone5:sbom-qualification-agent",
+      "type": "Agent"
+    },
+    {
+      "comment": "SHA-256 ae4c335ce82a8111f9adfab5782bfc3ca7de8ff6c885f4e7ec997c1dd3e747de",
+      "creationInfo": "_:derivedCreationInfo",
+      "name": "derive-prepared.py",
+      "spdxId": "urn:swiftjli:milestone5:derive:ae4c335ce82a8111f9adfab5782bfc3ca7de8ff6c885f4e7ec997c1dd3e747de",
+      "type": "Tool"
+    },
+    {
+      "comment": "Build tool identified by the preserved generator metadata; not a runtime package dependency.",
+      "creationInfo": "_:derivedCreationInfo",
+      "name": "swift-package-manager",
+      "software_packageVersion": "6.4.2",
+      "software_primaryPurpose": "application",
+      "spdxId": "urn:swiftjli:build-tool:swift-package-manager:6.4.2",
+      "type": "software_Package"
+    },
+    {
+      "comment": "Unchanged embedded profile; provenance source https://registry.color.org/rgb-registry/profiles/sRGB2014.icc",
+      "contentType": "application/vnd.iccprofile",
+      "creationInfo": "_:derivedCreationInfo",
+      "name": "sRGB2014.icc",
+      "software_copyrightText": "Copyright International Color Consortium, 2015",
+      "spdxId": "urn:sha256:384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a",
+      "type": "software_File",
+      "verifiedUsing": [
+        {
+          "algorithm": "sha256",
+          "hashValue": "384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a",
+          "type": "Hash"
+        }
+      ]
+    },
+    {
+      "comment": "Repository ICC notice is retained separately; this profile is not relicensed as Apache-2.0.",
+      "creationInfo": "_:derivedCreationInfo",
+      "simplelicensing_customIdToUri": [
+        {
+          "key": "LicenseRef-ICC-Profile",
+          "type": "DictionaryEntry",
+          "value": "https://registry.color.org/profile-library/"
+        }
+      ],
+      "simplelicensing_licenseExpression": "LicenseRef-ICC-Profile",
+      "spdxId": "urn:swiftjli:licence:icc-profile-terms",
+      "type": "simplelicensing_LicenseExpression"
+    },
+    {
+      "comment": "Apache-2.0 covers in-house source; the separately identified embedded ICC asset retains its own terms.",
+      "creationInfo": "_:derivedCreationInfo",
+      "from": "urn:spdx:swiftjli",
+      "relationshipType": "hasDeclaredLicense",
+      "spdxId": "urn:spdx:swiftjli-declared-apache2-derived",
+      "to": [
+        "urn:spdx:Apache-2.0"
+      ],
+      "type": "Relationship"
+    },
+    {
+      "comment": "Apache-2.0 covers in-house source; the separately identified embedded ICC asset retains its own terms.",
+      "creationInfo": "_:derivedCreationInfo",
+      "from": "urn:spdx:swiftjli:swiftjli-cli",
+      "relationshipType": "hasDeclaredLicense",
+      "spdxId": "urn:spdx:swiftjli:swiftjli-cli-declared-apache2-derived",
+      "to": [
+        "urn:spdx:Apache-2.0"
+      ],
+      "type": "Relationship"
+    },
+    {
+      "creationInfo": "_:derivedCreationInfo",
+      "from": "urn:spdx:swiftjli:swiftjli-cli",
+      "relationshipType": "contains",
+      "spdxId": "urn:swiftjli:contains:icc-profile",
+      "to": [
+        "urn:sha256:384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a"
+      ],
+      "type": "Relationship"
+    },
+    {
+      "creationInfo": "_:derivedCreationInfo",
+      "from": "urn:sha256:384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a",
+      "relationshipType": "hasDeclaredLicense",
+      "spdxId": "urn:swiftjli:icc-profile:declared-licence",
+      "to": [
+        "urn:swiftjli:licence:icc-profile-terms"
+      ],
+      "type": "Relationship"
+    }
+  ]
+}

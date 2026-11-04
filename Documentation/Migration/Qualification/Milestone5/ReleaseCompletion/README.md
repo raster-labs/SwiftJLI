@@ -15,16 +15,26 @@ The [source-preservation checks](source-preservation.json) retain the qualified 
 
 | Requirement | Current disposition |
 | --- | --- |
-| Physical devices | Current inventory exposes simulators and the host Mac, with no physical iPhone, iPad or Watch. Real hardware, signing and synthetic test execution remain necessary. SDK compilation and simulator results do not satisfy this gate. |
+| Physical devices | The [owner confirms](hardware-availability.json) no physical devices are available on 4 November. Current inventory exposes simulators and the host Mac. Real hardware, signing and synthetic test execution remain necessary. SDK compilation and simulator results do not satisfy this gate. |
 | DICOMKit integration | Existing managed paths require admitted caller workspace, scalar failure outcomes and a synchronous worker. The frozen SwiftJLI public API exposes owning async operations but not this managed interface. Consumer baseline qualification and an explicit adoption design precede changes. |
 | Consumer scope | Suite policy Decision D3 requires a coordinated four-codec cutover and Apple minima of 26.0. The owner has been asked whether this assignment means that full migration or an explicitly staged SwiftJLI integration retaining the existing managed routes. No scope exception or weakened allocation contract is inferred. |
 | Stable publication | Authorised after the required gates pass. Select the exact qualified revision, reconcile release metadata, validate clean versioned consumption and publish precise capability/release notes. Publication is pending physical and consumer acceptance. |
+
+The [four-codec source inventory](ConsumerPrerequisites.md) records available managed JPEG-LS support, the remaining JPEG gap and concrete JPEG XL/JPEG 2000 adapter constraints. It does not claim successor integration.
 
 ## Completed preparation
 
 The [physical Watch verifier checks](watch-device-verifier-checks.json) pass eleven focused parser, provenance and rejection tests, including rejection of the retained genuine simulator capture. The [device inventory](device-inventory.json) records no connected physical device. These are preparation results, not physical qualification.
 
-The [prepared 1.1.0 CLI metadata](release-metadata/README.md) passes the explicit Swift Build Release build and 250 process checks, including staged installation and matching manual validation. The library implementation remains frozen; final stable publication and versioned consumer/SBOM evidence are pending.
+The [prepared 1.1.0 CLI metadata](release-metadata/README.md) passes the explicit Swift Build Release build and 250 process checks, including staged installation and matching manual validation. The library implementation remains frozen.
+
+The [fresh URL consumer and product SBOM checks](prepared-consumer-sbom/README.md) pass for prepared revision `7739dba554cabebcc25e3593af3feb6ba27f8489`. Clean and incremental Debug/Release consumer builds and both executions pass. Both library and CLI derived SBOMs pass official schemas and SPDX SHACL validation; original producer defects and failed raw SPDX validation remain preserved. This verifies exact-revision consumption, not a stable tag, DICOMKit integration or physical execution.
+
+The [archive review](archive-review.json) verifies evidence hashes and documentation links. Two generated SHACL results and two raw Watch compiler/test logs retain their original whitespace; the unfiltered check and the otherwise-clean filtered check are recorded without rewriting captured output.
+
+The [current repository check](repository-state.json) confirms private vulnerability reporting is enabled. It also confirms no tags or releases are published at the recorded time.
+
+The [full hosted CI matrix](ci-41781795793/README.md) passes all 13 jobs at prepared revision `7739dba554cabebcc25e3593af3feb6ba27f8489`, including native macOS Debug/Release/AddressSanitizer/ThreadSanitizer, Linux/compiler combinations, Apple SDK/simulator jobs and independent consumption. The Watch job passes its library suite, six-case Release harness and strict simulator verifier. These are hosted software results; no physical-device or DICOMKit successor execution is implied.
 
 The [unchanged DICOMKit baseline](dicomkit-baseline/README.md) passes 54 test declarations in eight selected JPEG, allocation and managed-ownership suites, exit 0. This is predecessor-backed Debug coverage, not successor integration or full consumer qualification.
 
