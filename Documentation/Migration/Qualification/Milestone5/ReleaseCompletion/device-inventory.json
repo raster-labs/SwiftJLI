@@ -1,0 +1,159 @@
+{
+  "status": "physical_devices_unavailable",
+  "recordedUTC": "2026-11-04T05:43:30.981043+00:00",
+  "scope": "Sanitised transcription of the actual read-only inventory commands executed earlier in this task; no commands repeated to manufacture this receipt. Device identifiers and personal device/certificate/profile names omitted.",
+  "observationTimestamp": "Exact UTC execution timestamp was not captured; results precede this receipt in the active task.",
+  "toolchain": {
+    "selectedDeveloperDirectory": "/Applications/Xcode.app/Contents/Developer",
+    "xcode": "27.2",
+    "xcodeBuild": "27B52",
+    "swift": "Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)",
+    "swiftTarget": "arm64-apple-macosx27.0.0",
+    "installedDeviceSDKs": [
+      "iPhoneOS27.2.sdk",
+      "WatchOS27.2.sdk"
+    ],
+    "packageDeploymentFloor": "26.0"
+  },
+  "commands": [
+    {
+      "argv": [
+        "xcode-select",
+        "-p"
+      ],
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "xcrun",
+        "devicectl",
+        "list",
+        "devices",
+        "--help"
+      ],
+      "exitCode": 0,
+      "unexpectedSideEffect": "Xcode automatically emitted Install Started and Install Succeeded for first-use component setup. It completed before interruption could stop it. No installation command, device test or settings change was explicitly requested."
+    },
+    {
+      "argv": [
+        "xcrun",
+        "xcdevice",
+        "--help"
+      ],
+      "exitCode": 0,
+      "note": "Deprecated-tool notice directs users to devicectl."
+    },
+    {
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/devicectl",
+        "list",
+        "devices",
+        "--timeout",
+        "15",
+        "--json-output",
+        "-",
+        "--omit-deprecated-fields-in-json"
+      ],
+      "exitCode": 0,
+      "counts": {
+        "total": 8,
+        "simulators": 8,
+        "physicalMobileOrWatch": 0
+      },
+      "observedState": "Every returned entry has visibilityClass simulators, shutdown boot state and sameMachine transport."
+    },
+    {
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcdevice",
+        "list",
+        "--timeout",
+        "10"
+      ],
+      "exitCode": 0,
+      "counts": {
+        "total": 40,
+        "iOSSimulators": 22,
+        "watchOSSimulators": 10,
+        "tvOSSimulators": 5,
+        "visionOSSimulators": 2,
+        "hostMac": 1,
+        "physicalIPhoneIPadWatch": 0
+      },
+      "host": {
+        "model": "MacBook Pro",
+        "modelCode": "Mac16,5",
+        "architecture": "arm64e",
+        "os": "27.0.1 (26A434)"
+      }
+    },
+    {
+      "argv": [
+        "/usr/bin/security",
+        "find-identity",
+        "-v",
+        "-p",
+        "codesigning"
+      ],
+      "exitCode": 0,
+      "counts": {
+        "validAppleDevelopmentIdentities": 1
+      },
+      "privateKeysRead": false
+    },
+    {
+      "argv": [
+        "/usr/bin/security",
+        "cms",
+        "-D",
+        "-i",
+        "<existing provisioning profile; filename redacted>"
+      ],
+      "exitCode": 0,
+      "profile": {
+        "count": 1,
+        "platforms": [
+          "iOS",
+          "xrOS",
+          "visionOS"
+        ],
+        "expiration": "2027-10-21T08:26:36",
+        "unexpiredAtInspection": true,
+        "developmentEntitlement": true,
+        "wildcardApplicationIdentifier": true,
+        "provisionedDeviceCount": 43
+      },
+      "limit": "Existing identity/profile does not establish physical Watch test-runner signing or current account/team provisioning access."
+    },
+    {
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift",
+        "--version"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "inspectionMethod": "Command stdout/JSON parsed in memory; only model/platform/state/count/version and signing counts were printed. SDK/profile directory existence was inspected without creating profiles. Subsequent device inventory used direct installed binary paths.",
+  "qualificationExecuted": false,
+  "physicalPassClaimed": false,
+  "neededOperatorSteps": [
+    "Connect, unlock and trust supported iPhone/iPad hardware for their respective coverage.",
+    "Connect a paired Watch running watchOS26+ through its iPhone; enable Developer Mode as prompted.",
+    "Select an authorised Apple development team and confirm physical Xcode destinations and signing/test-host support."
+  ],
+  "remainingGates": [
+    "Actual signed physical Watch six-case Release execution, source/result verification and repeated memory/cancellation review.",
+    "Representative physical iPhone and iPad runs; simulator/SDK evidence cannot replace them."
+  ],
+  "limits": [
+    "Inventory only reports devices visible to this Mac at inspection; it does not prove the owner has no other hardware.",
+    "No physical-device tests, codec benchmarks, project changes, profile creation or deliberate device-settings mutations occurred during inventory.",
+    "Automatic Xcode component provisioning did occur during the initial help query and is not described as a purely read-only system outcome."
+  ]
+}

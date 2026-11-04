@@ -2,7 +2,7 @@
 
 JPEG, including native lossless JPEG for the **Swift Image Compression Suite**.
 
-**Status: Milestone 5 release preparation is complete for the frozen candidate and owner-approved simulator scope. Stable-release device qualification remains open.**
+**Status: the earlier Milestone 5 release-preparation scope is complete. The [expanded assignment](Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/README.md) now includes physical-device qualification, DICOMKit integration and stable publication; those requirements are in progress.**
 
 The current Milestone 5 shipping candidate is `f548e5048e5c71204c2a2ec4036bf66c4f040285`, correcting task-local host cancellation callback ownership. Local Swift 6.4.2 debug, release, full ASan and full TSan each pass 389 tests; fresh remote consumption, independent oracles and allocation controls also pass. All 13 hosted CI jobs pass at `a44e671`; the derived library/CLI SBOM conformance checks also pass. Full-hour fuzzing and the scoped matched performance check also pass. Hosted Watch qualification now passes on Intel: 389 library tests and six Release cases with strict source/result verification. Private reporting is now verified active, as recorded in the [Milestone 5 record](Documentation/Migration/Qualification/Milestone5/README.md). The [DICOMKit readiness audit](Documentation/Migration/Qualification/Milestone5/DICOMKitReadiness.md) identifies separate consumer adoption work; actual DICOMKit integration is unexecuted.
 
@@ -14,9 +14,9 @@ SwiftJLI is the standalone successor to [JLISwift](https://github.com/Raster-Lab
 
 Milestone 4 software — including `swiftjli-cli` payload commands (`encode`, `decode`, `inspect`, `validate`) and fidelity-preserving NRRD (`CLI-04`) and binary Netpbm (`pgm`/`ppm`/`pnm`) I/O — is implemented and qualified at the recorded source for the owner-scoped native macOS and iOS Simulator targets. The [Watch qualification harness](Examples/WatchQualification/README.md) prepares the remaining device checks; the owner confirmed on 3 November that physical Watch hardware is unavailable. [Milestone 4 status and evidence](Documentation/Migration/Qualification/Milestone4/README.md) retain that unexecuted release gate. Milestone 5 release preparation is complete for the agreed task scope; its earlier deferral remains historical.
 
-## Swift 6.4 development candidate
+## Swift 6.4 release candidate
 
-Current development version: **1.1.0-dev.2** ([VERSION](VERSION)); shared suite policy **0.10.0**. This increments the earlier unreleased 1.0.0 target and creates no release/tag. See the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md) for adopted features, exact Xcode/Swift Build evidence and open platform gates; its platform claims are superseded history, since contract 0.5.0 returned the Apple floor to 26.0 and the compiler minimum to 6.2, while its CLI foundation content remains retained alongside the Milestone 4 payload implementation. The historical [Milestone 1 evidence](Documentation/MILESTONE1.md) remains unchanged.
+Prepared release version: **1.1.0** ([VERSION](VERSION)); shared suite policy **0.10.0**. Publication is pending the expanded acceptance gates. Preparing this metadata creates no release or tag. See the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md) for adopted features, exact Xcode/Swift Build evidence and open platform gates; its platform claims are superseded history, since contract 0.5.0 returned the Apple floor to 26.0 and the compiler minimum to 6.2, while its CLI foundation content remains retained alongside the Milestone 4 payload implementation. The historical [Milestone 1 evidence](Documentation/MILESTONE1.md) remains unchanged.
 
 ## Intended platform baseline
 

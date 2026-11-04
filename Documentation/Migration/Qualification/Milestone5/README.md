@@ -1,6 +1,6 @@
 # Milestone 5 release preparation — 3 November 2026
 
-**Complete for the owner-approved frozen candidate and simulator scope; stable-release device qualification remains open.** The owner assigned
+**The original frozen-candidate, simulator-only scope is complete. The [4 November extension](ReleaseCompletion/README.md) assigns physical-device qualification, DICOMKit integration and stable publication; that expanded scope is in progress.** The owner assigned
 Milestone 5 on 3 November 2026. This record supersedes earlier statements that
 the milestone is deferred, without rewriting historical qualification results.
 
@@ -30,7 +30,7 @@ The seven common documents remain unchanged. Original migration provenance
 remains JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`; subsequent
 maintenance pins and fixture origins remain separate.
 
-## Acceptance work
+## Accepted release-preparation evidence — 3 November 2026
 
 The completed records below identify the f548 shipping source and each run's
 exact configuration. The [completion receipt](completion.json) records task acceptance within the agreed scope; physical-device and downstream release work remain separate.
@@ -49,16 +49,17 @@ exact configuration. The [completion receipt](completion.json) records task acce
 | Fuzzing | [All four corrected-candidate campaigns](final-fuzz/README.md) pass at least 3,600 seconds per entry, with zero exit statuses and unchanged source/executable hashes. No crash, watchdog or unresolved bounds finding was reported. These deterministic ordinary-release campaigns are separate from sanitizers and are not security certification. Interrupted pre-fix records remain partial evidence. |
 | Performance | [Matched callback-owner comparison](performance/controlled-summary.md) passes the finite PERF-03 screen: maximum median-latency increase 1.334%, maximum observed peak-RSS increase 3.003%, both below 5% in each round. All 24 pre-timing output comparisons are exact. Desktop activity, endpoint-only environment snapshots and noisy latency tails are explicit; this is not an exclusive-host or universal speed claim. |
 | DICOMKit readiness | [Current consumer audit and adoption plan](DICOMKitReadiness.md); managed-workspace/execution obligations remain separate, and actual DICOMKit integration is unexecuted. |
-| Physical devices | The owner confirms no Watch or iPhone/iPad is available and selects simulator testing for this task. Physical-device testing remains unexecuted; simulator and SDK runs do not establish device qualification. |
+| Physical devices | On 3 November the owner confirmed no Watch or iPhone/iPad was available and selected simulators for the original task scope. Physical-device testing remains unexecuted; simulator and SDK runs do not establish device qualification. |
 | Private security reporting | Verified enabled on 3 November: [authenticated confirmation](security-activation-confirmed.json) and [independent public confirmation](security-activation-public-verification.json) both return `enabled: true` for `raster-labs/SwiftJLI`, repository ID `1373980250`. The current CLI account still lacks admin access; no settings were changed by the agent. |
 
-## Release boundary
+## Original completion boundary — 3 November 2026
 
-Milestone 5 release preparation is complete for the agreed frozen candidate and
-simulator scope. Verified administrator activation closes the final task
-prerequisite. Physical-device qualification remains required before stable
-release. Stable tagging, predecessor retirement and application cutover remain
-separate explicit tasks after their acceptance requirements are met.
+The original Milestone 5 release preparation completed its agreed frozen-candidate
+and simulator scope on 3 November. Verified administrator activation closed that
+scope's final prerequisite. Physical qualification, stable tagging and application
+cutover were outside that original assignment; the 4 November extension now
+assigns them. Predecessor retirement remains separate. Required device evidence
+and release acceptance remain open.
 
 At the earlier `8d0f8b4` handoff, the [comparison](final-handoff.json) confirmed
 shipping sources matched f548, tests/examples matched the all-13-passing a44
@@ -89,15 +90,15 @@ observations. After the administrator acted, the [recheck](security-activation-r
 [independent public confirmation](security-activation-public-verification.json)
 return `enabled: true` for the canonical repository. The transition is recorded
 without attributing it to a cache or propagation cause. No settings, permissions
-or security reports were changed by the agent. This closes the final task
-prerequisite; [administrator verification steps](../../../../SECURITY.md#administrator-activation)
+or security reports were changed by the agent. This closed the original 3 November
+release-preparation prerequisite; [administrator verification steps](../../../../SECURITY.md#administrator-activation)
 remain available for future maintenance.
 
-The owner-selected scope for this task is simulator qualification. Physical
-Watch and representative iPhone/iPad qualification remains a later stable-release
-condition, not an additional hardware request within this task. The seven common
-contracts and their device requirements have not been rewritten.
+The owner-selected scope on 3 November was simulator qualification. The expanded
+4 November task now includes physical Watch and representative iPhone/iPad
+qualification. The seven common contracts and their device requirements remain
+unchanged; the earlier simulator results do not establish these new passes.
 
 The current DICOMKit source audit finds predecessor-only caller-workspace and
 managed-allocation obligations. A basic SwiftJLI consumer does not prove those
-obligations; the adoption report records the separate integration work.
+obligations; the adoption report identifies the integration work now assigned.

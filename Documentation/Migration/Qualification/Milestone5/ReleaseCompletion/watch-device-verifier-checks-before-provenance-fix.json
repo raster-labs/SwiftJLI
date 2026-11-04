@@ -1,0 +1,68 @@
+{
+  "status": "passed",
+  "scope": "Verifier preparation checks only; no physical-device tests, genuine physical acceptance, codec build or simulator execution.",
+  "recordedUTC": "2026-11-04T05:43:31.195142+00:00",
+  "baselineRevision": "87bc4e9f99ddaf8c592ec9dfe09120c043a768ff",
+  "suitePolicy": "0.10.0",
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "Scripts/tests",
+    "-p",
+    "test_watch_device_verifier.py",
+    "-v"
+  ],
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "test_genuine_simulator_capture_is_rejected (test_watch_device_verifier.WatchDeviceVerifierControls.test_genuine_simulator_capture_is_rejected) ... ok\ntest_genuine_simulator_records_are_rejected (test_watch_device_verifier.WatchDeviceVerifierControls.test_genuine_simulator_records_are_rejected) ... ok\ntest_genuine_simulator_rejected_before_any_tool_query (test_watch_device_verifier.WatchDeviceVerifierControls.test_genuine_simulator_rejected_before_any_tool_query) ... ok\ntest_malformed_input_is_rejected (test_watch_device_verifier.WatchDeviceVerifierControls.test_malformed_input_is_rejected) ... ok\ntest_negative_hardware_identity_controls (test_watch_device_verifier.WatchDeviceVerifierControls.test_negative_hardware_identity_controls) ... ok\ntest_negative_summary_and_command_controls (test_watch_device_verifier.WatchDeviceVerifierControls.test_negative_summary_and_command_controls) ... ok\ntest_relabelled_report_cannot_make_simulator_xcresult_physical (test_watch_device_verifier.WatchDeviceVerifierControls.test_relabelled_report_cannot_make_simulator_xcresult_physical) ... ok\ntest_shared_preservation_helpers_reject_mutations (test_watch_device_verifier.WatchDeviceVerifierControls.test_shared_preservation_helpers_reject_mutations) ... ok\ntest_synthetic_record_parser_only (test_watch_device_verifier.WatchDeviceVerifierControls.test_synthetic_record_parser_only) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.100s\n\nOK\n",
+  "testMethods": 9,
+  "positiveScope": "Synthetic record-parser and copy-cache utility assertions only; no positive physical end-to-end fixture or qualification receipt.",
+  "genuineNegativeControl": "Retained Intel Watch simulator run41622083807 report/log/summary rejects ordinary and relabelled capture. CLI rejection occurs before any external tool query, preserves inputs and rejects reused output.",
+  "frozenFiles": {
+    "Scripts/verify-watch-qualification.py": {
+      "sha256": "f82c2a555e22f1e2abe2c8fa9183e8c7b1ccafe2057592a411049acc8a87264a",
+      "byteIdenticalToBaseline": true
+    },
+    "Examples/WatchQualification/Tests/WatchQualificationTests/WatchQualificationTests.swift": {
+      "sha256": "cc4b2895e93bab127d04cf5539780e6b6353e3b4b4bc0c7605ff3f0844923327",
+      "byteIdenticalToBaseline": true
+    }
+  },
+  "libraryTestsAndHarnessManifestCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--exit-code",
+      "87bc4e9f99ddaf8c592ec9dfe09120c043a768ff",
+      "--",
+      "Sources/SwiftJLI",
+      "Tests",
+      "Examples/WatchQualification/Package.swift"
+    ],
+    "exitCode": 0,
+    "outputEmpty": true
+  },
+  "priorAuditAttempt": {
+    "verifierTestsExitCode": 0,
+    "testMethods": 9,
+    "postTestGuardExitCode": 1,
+    "reason": "Initial evidence-writing script asserted all Sources were unchanged. Root concurrently authorised CLI version/help metadata edits; only Sources/SwiftJLICLI/main.swift differed. No codec failure occurred. Final unchanged check explicitly scopes library Sources/SwiftJLI, Tests and Watch manifest/source.",
+    "originalCommandScope": [
+      "Sources",
+      "Tests",
+      "Examples/WatchQualification/Package.swift"
+    ]
+  },
+  "captureProcedureASTValid": true,
+  "localLinksVerified": 1,
+  "files": {
+    "Scripts/verify-watch-device-tests.py": "859c848384471393fa95bd6695a59473871264a95e48afda28dac112dac91b52",
+    "Scripts/tests/test_watch_device_verifier.py": "2939f1921f51633444171c14e8913cd4538f948cae394f8c0e068c4f6cf2df5a",
+    "Examples/WatchQualification/README.md": "0d696f3db72c9c7607b3702e2015aed4aa25b8c6e658cba751b2479a5cea4f4c"
+  },
+  "physicalDeviceQualification": "unexecuted; no connected physical iPhone/iPad/Watch in recorded inventory"
+}

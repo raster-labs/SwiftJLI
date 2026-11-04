@@ -1,5 +1,11 @@
 # Change log
 
+## Milestone 5 consumer and stable-release completion — in progress, 4 November 2026
+
+- Extend the assigned scope to actual DICOMKit integration, physical-device qualification and stable publication. Retain the completed frozen-candidate simulator evidence and [record the new requirements](Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/README.md).
+- Prepare version `1.1.0` in the CLI, VERSION, manual and current guides; publication remains pending.
+- Current device inventory has no physical iPhone, iPad or Watch. No physical test pass, consumer cutover or stable publication is claimed.
+
 ## Milestone 5 release preparation — complete for the assigned scope, 3 November 2026
 
 - Retain synchronous host cancellation callbacks in an immutable task-local

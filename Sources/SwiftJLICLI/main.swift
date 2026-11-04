@@ -9,7 +9,7 @@ import Glibc
 #endif
 
 private let tool = "swiftjli-cli"
-private let version = "1.1.0-dev.2"
+private let version = "1.1.0"
 // PLAT-01/02 fix the Apple deployment minimum at 26.0; contract 0.5.0 reversed the
 // 0.4.0 raise to 27.0 and contract 0.9.0 confirmed 26.0. Reported in one place so the
 // help text and the JSON payload cannot drift apart from each other again.
@@ -251,7 +251,7 @@ private func help(_ command: String?) -> String {
     let common = """
     OPTIONS
       -h, --help                 Show this help; also: help [command].
-      --version                  Show the development version.
+      --version                  Show the version.
       -v, -vv ... -vvvvv         Increase verbosity (maximum 5).
       --verbose LEVEL           Set verbosity to 1..5 or + through +++++.
       --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.
@@ -387,7 +387,7 @@ private func help(_ command: String?) -> String {
       inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.
       validate -i PATH [--json]  Validate full JPEG stream and entropy scans.
       help [command]             Show global or command-specific help.
-      version                    Show the development version.
+      version                    Show the version.
       transcode                  Unavailable in \(tool) (exit 2).
 
     Builds with Swift 6.2 or later; Apple OS baseline \(minimumAppleOS). CLI hosts: macOS/Linux.
@@ -1575,7 +1575,7 @@ private func run() throws -> Int32 {
     guard let command = options.command else { return 0 }
 
     if command == "capabilities" {
-        try diagnostic(1, "development version \(version)")
+        try diagnostic(1, "version \(version)")
         try diagnostic(2, "reporting capabilities")
         // Qualified deliberately so SwiftJLI.Encoder / SwiftJLI.Decoder never collide with Swift.Encoder / Swift.Decoder.
         let encoder = SwiftJLI.Encoder.capabilities
@@ -1642,7 +1642,7 @@ private func run() throws -> Int32 {
             }
         }
 
-        try diagnostic(1, "development version \(version); command \(command)")
+        try diagnostic(1, "version \(version); command \(command)")
         try diagnostic(2, "stage input admission and format resolution (\(inputFormat.rawValue))")
 
         switch command {

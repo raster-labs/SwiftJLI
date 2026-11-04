@@ -2,7 +2,11 @@
 
 Read AGENTS.md and every common contract document first. Milestone 1 implements API shapes and owning storage; see [executed evidence](Documentation/MILESTONE1.md). Later milestones require an owner-assigned implementation task. Follow the common contract when predecessor conventions differ. Maintain performance, reliability and security together.
 
-## Completed assignment — 3 November 2026
+## Expanded assignment — 4 November 2026
+
+The owner has now assigned physical-device qualification, actual DICOMKit integration and stable-release publication within Milestone 5. This expanded scope is in progress. The [release-completion record](Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/README.md) records the current source pins, hardware availability, consumer contract and publication prerequisites. The earlier completion below retains its original frozen-candidate and simulator-only scope.
+
+## Completed release-preparation scope — 3 November 2026
 
 **Milestone 5 release preparation is complete** under suite policy **0.10.0** for the owner-approved frozen candidate and simulator scope. The current shipping candidate is `f548e5048e5c71204c2a2ec4036bf66c4f040285`; only task-local host callback ownership changes from the starting `8ae2762` source. Local Swift 6.4.2 debug/release/full ASan/full TSan each pass 389 tests, with fresh consumer, independent oracle, suite and allocation evidence in the [Milestone 5 record](Documentation/Migration/Qualification/Milestone5/README.md). The test-only correction at `a44e671` isolates cancellation from a competing short deadline; all 13 hosted CI jobs pass. Derived library/CLI SBOM conformance also passes. Four full-hour fuzz campaigns and the scoped matched performance check pass. The dedicated Watch simulator harness passes six Release tests; fresh hosted qualification at `8c1b965` passes 389 library tests, six Release cases and the strict verifier on the watchOS 26.5 simulator hosted on Intel. The normal thirteen-job PR/push matrix remains unchanged. Physical-device qualification remains separate stable-release work. Administrator activation of private reporting is now independently verified. No stable tag or application cutover is established.
 

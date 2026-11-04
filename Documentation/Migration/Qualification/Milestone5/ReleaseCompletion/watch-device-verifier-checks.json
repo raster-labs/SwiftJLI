@@ -1,0 +1,76 @@
+{
+  "status": "passed",
+  "scope": "Verifier preparation checks only; no physical-device tests, genuine physical acceptance, codec build or simulator execution.",
+  "baselineRevision": "87bc4e9f99ddaf8c592ec9dfe09120c043a768ff",
+  "suitePolicy": "0.10.0",
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "Scripts/tests",
+    "-p",
+    "test_watch_device_verifier.py",
+    "-v"
+  ],
+  "exitCode": 0,
+  "genuineNegativeControl": "Retained Intel Watch simulator run41622083807 report/log/summary rejects ordinary and relabelled capture. CLI rejection occurs before any external tool query, preserves inputs and rejects reused output.",
+  "frozenFiles": {
+    "Scripts/verify-watch-qualification.py": {
+      "sha256": "f82c2a555e22f1e2abe2c8fa9183e8c7b1ccafe2057592a411049acc8a87264a",
+      "byteIdenticalToBaseline": true
+    },
+    "Examples/WatchQualification/Tests/WatchQualificationTests/WatchQualificationTests.swift": {
+      "sha256": "cc4b2895e93bab127d04cf5539780e6b6353e3b4b4bc0c7605ff3f0844923327",
+      "byteIdenticalToBaseline": true
+    }
+  },
+  "libraryTestsAndHarnessManifestCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--exit-code",
+      "87bc4e9f99ddaf8c592ec9dfe09120c043a768ff",
+      "--",
+      "Sources/SwiftJLI",
+      "Tests",
+      "Examples/WatchQualification/Package.swift"
+    ],
+    "exitCode": 0,
+    "outputEmpty": true
+  },
+  "captureProcedureASTValid": true,
+  "localLinksVerified": 1,
+  "physicalDeviceQualification": "unexecuted; no connected physical iPhone/iPad/Watch in recorded inventory",
+  "recordedUTC": "2026-11-04T05:49:39.292422+00:00",
+  "testMethods": 11,
+  "testOutputSummary": "Ran 11 tests in 0.090s\n\nOK\n",
+  "testOutputSource": "Actual exec_command result retained in the task transcript; all eleven named unittest methods passed. No codec or device command ran.",
+  "positiveScope": "Synthetic record-parser, provenance/hash and copy-cache utility assertions only; no positive physical end-to-end fixture or qualification receipt.",
+  "previousCheck": {
+    "path": "watch-device-verifier-checks-before-provenance-fix.json",
+    "sha256": "f1c0155b846e91ceb8048a3f50ec2960e11ed9fd1f93642b092afb48e7e8b7e5",
+    "scope": "Original nine-method checks retained verbatim, before the independent provenance finding."
+  },
+  "reviewCorrection": {
+    "finding": "P2: result path/working directory and capture-time log/bundle binding were missing.",
+    "resolvedBy": "Require exactly one original -resultBundlePath matching original evidence/Tests.xcresult, test cwd matching original repository/Examples/WatchQualification, capture-time hashes for all input logs/metadata and test stdout/stderr, and original bundle manifest. Relocation keeps the original absolute paths and verifies identical supplied bytes.",
+    "newControls": [
+      "wrong command cwd",
+      "wrong -resultBundlePath",
+      "duplicate -resultBundlePath",
+      "wrong recorded result bundle path",
+      "substituted original bundle",
+      "substituted stdout/stderr/device inventory",
+      "mismatched command stderr hash",
+      "relocated synthetic provenance utility acceptance only"
+    ]
+  },
+  "files": {
+    "Scripts/verify-watch-device-tests.py": "d169871e2ae8b8ade4603b73268f8815ab8c77ad78e62436d78894346e31a9d2",
+    "Scripts/tests/test_watch_device_verifier.py": "509752a288ac9be08e53c1f339286343826ec0cac2d11f3b471f09d82f8c8609",
+    "Examples/WatchQualification/README.md": "0d51bcd98e5082989734f7bb7ece0f85d03b7c4bbc155f6dc480b1b3364ed2e3"
+  }
+}
