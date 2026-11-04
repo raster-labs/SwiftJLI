@@ -1,6 +1,14 @@
 # Migration acceptance ledger — 4 November 2026
 
-**The [expanded Milestone 5 assignment](Qualification/Milestone5/ReleaseCompletion/README.md) is in progress: physical-device qualification, actual DICOMKit integration and stable publication were assigned on 4 November.** The earlier frozen-candidate, simulator-only release preparation remains complete within its recorded scope. Milestone 4 software retains its recorded qualification scope.
+**Milestone 5 library release preparation is complete for the owner's resumed library-only scope.** The owner expressly keeps actual DICOMKit integration and physical-device testing pending. Stable publication remains gated; no tag, release, merge or predecessor retirement is claimed.
+
+## Current library-only acceptance — 4 November 2026
+
+The [completion record](Qualification/Milestone5/LibraryCompletion/README.md) binds prepared shipping revision `7739dba554cabebcc25e3593af3feb6ba27f8489`, unchanged library source `f548e5048e5c71204c2a2ec4036bf66c4f040285` and suite policy 0.10.0. The final review verifies all 46 shipping source files, the seven common documents and the 17 retained original acceptance references. It refreshes hosted CI and private-reporting status and archives the two-product, 12-output SBOM replay. This documentation/evidence closure does not rerun the codec suite or relabel earlier measurements.
+
+[PR #27](https://github.com/raster-labs/SwiftJLI/pull/27) preserves immutable base `87bc4e9f99ddaf8c592ec9dfe09120c043a768ff`. All 13 jobs of [hosted run 41781795793](https://github.com/raster-labs/SwiftJLI/actions/runs/41781795793) pass for its prepared executable source, including complete Apple SDK compilation and Watch simulator runtime/verification. Fresh exact-revision consumer builds, 250 CLI process checks, both product SBOMs and the separately retained library correctness/oracle/memory/fuzz/performance gates cover this scope. Raw SBOM producer failures remain preserved beside the validated derivatives.
+
+The integration extension in [draft PR #28](https://github.com/raster-labs/SwiftJLI/pull/28), actual four-codec DICOMKit cutover, physical Watch and representative iPhone/iPad qualification, stable-tag consumption/publication and predecessor retirement remain outside this completion. The original frozen candidate and the partial integration work retain separate source pins and evidence.
 
 ## Retained Milestone 5 release-preparation evidence — 3 November 2026
 

@@ -1,6 +1,6 @@
 # Milestone 5 release preparation — 3 November 2026
 
-**The original frozen-candidate, simulator-only scope is complete. The [4 November extension](ReleaseCompletion/README.md) assigns physical-device qualification, DICOMKit integration and stable publication; that expanded scope is in progress.** The owner assigned
+**The original frozen-candidate, simulator-only scope is complete. The [4 November library-only closure](LibraryCompletion/README.md) also completes prepared-version consumer/SBOM and final evidence reconciliation. Actual DICOMKit integration and physical-device testing remain pending at the owner's request, and stable publication remains gated.** The owner assigned
 Milestone 5 on 3 November 2026. This record supersedes earlier statements that
 the milestone is deferred, without rewriting historical qualification results.
 
@@ -94,11 +94,11 @@ or security reports were changed by the agent. This closed the original 3 Novemb
 release-preparation prerequisite; [administrator verification steps](../../../../SECURITY.md#administrator-activation)
 remain available for future maintenance.
 
-The owner-selected scope on 3 November was simulator qualification. The expanded
-4 November task now includes physical Watch and representative iPhone/iPad
-qualification. The seven common contracts and their device requirements remain
+The owner-selected scope on 3 November was simulator qualification. The initial expanded
+4 November task assigned physical Watch and representative iPhone/iPad
+qualification; the latest resumed task leaves those checks pending. The seven common contracts and their device requirements remain
 unchanged; the earlier simulator results do not establish these new passes.
 
 The current DICOMKit source audit finds predecessor-only caller-workspace and
 managed-allocation obligations. A basic SwiftJLI consumer does not prove those
-obligations; the adoption report identifies the integration work now assigned.
+obligations; the adoption report identifies the separate integration work, now left pending.

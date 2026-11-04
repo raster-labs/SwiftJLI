@@ -2,9 +2,11 @@
 
 Read AGENTS.md and every common contract document first. Milestone 1 implements API shapes and owning storage; see [executed evidence](Documentation/MILESTONE1.md). Later milestones require an owner-assigned implementation task. Follow the common contract when predecessor conventions differ. Maintain performance, reliability and security together.
 
-## Expanded assignment — 4 November 2026
+## Current library-only completion — 4 November 2026
 
-The owner has now assigned physical-device qualification, actual DICOMKit integration and stable-release publication within Milestone 5. This expanded scope is in progress. The [release-completion record](Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/README.md) records the current source pins, hardware availability, consumer contract and publication prerequisites. The earlier completion below retains its original frozen-candidate and simulator-only scope.
+The owner resumed Milestone 5 with the instruction to complete all remaining library tasks while keeping DICOMKit integration and physical-device testing pending. The frozen prepared revision `7739dba554cabebcc25e3593af3feb6ba27f8489` is complete for that library release-preparation scope. The [completion record](Documentation/Migration/Qualification/Milestone5/LibraryCompletion/README.md) verifies source identity, existing qualification, current hosted/security state and deterministic SBOM replay. No library implementation, public API, resource policy, fidelity or shared contract changes accompany this closure.
+
+Actual four-codec DICOMKit work remains separate in [draft PR #28](https://github.com/raster-labs/SwiftJLI/pull/28) and its consumer worktrees. It is not part of the frozen candidate or this acceptance. Physical Watch and representative iPhone/iPad execution, stable publication and predecessor retirement remain pending. The [earlier expanded assignment](Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/README.md) retains its preparation evidence and history.
 
 ## Completed release-preparation scope — 3 November 2026
 

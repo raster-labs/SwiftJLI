@@ -1,6 +1,8 @@
-# Milestone 5 consumer and stable-release completion — 4 November 2026
+# Milestone 5 release preparation — 4 November 2026
 
-**In progress. Physical-device qualification, actual DICOMKit integration and stable publication are now assigned.** The owner expanded the earlier release-preparation scope on 4 November. The [3 November completion receipt](../completion.json) remains evidence for its explicitly frozen, simulator-only task scope; it does not close these newly assigned requirements.
+**Library release preparation is complete for the owner's resumed scope. Actual DICOMKit integration and physical-device testing remain pending; stable publication remains gated.** The [current completion record](../LibraryCompletion/README.md) records this disposition and the final audit. The owner initially expanded the task to consumer/device/publication work, then paused it and resumed only the remaining library tasks. The preparation evidence below remains bound to its original revisions and capture times.
+
+The [3 November completion receipt](../completion.json) remains evidence for its earlier frozen, simulator-only scope. Neither that receipt nor this library closure completes the separately pending consumer and hardware requirements.
 
 The [source-preservation checks](source-preservation.json) retain the qualified library, original completion receipt and all seven common contracts unchanged.
 
@@ -11,13 +13,13 @@ The [source-preservation checks](source-preservation.json) retain the qualified 
 - Current DICOMKit baseline: `5756e6408a95649b463d4a6408f2957fe1b4c212`, freshly retrieved from `raster-labs/DICOMKit` on 4 November. Its manifest, dependency lock, JPEG adapter, image-codec protocols and allocation contract are byte-identical to the earlier inspected `ff9d26fc6336340f7a5046419d9ac164e341eb0d`.
 - Intended stable version: `1.1.0`. The starting candidate identifies itself as `1.1.0-dev.2`. This branch prepares `1.1.0` consistently in VERSION, CLI source, manual and current guides. No stable tag or release is published. Metadata promotion creates a new revision and requires matching CLI, manual, installer, consumer and SBOM evidence.
 
-## Required work
+## Separate pending work
 
 | Requirement | Current disposition |
 | --- | --- |
-| Physical devices | The [owner confirms](hardware-availability.json) no physical devices are available on 4 November. Current inventory exposes simulators and the host Mac. Real hardware, signing and synthetic test execution remain necessary. SDK compilation and simulator results do not satisfy this gate. |
-| DICOMKit integration | Existing managed paths require admitted caller workspace, scalar failure outcomes and a synchronous worker. The frozen SwiftJLI public API exposes owning async operations but not this managed interface. Consumer baseline qualification and an explicit adoption design precede changes. |
-| Consumer scope | Suite policy Decision D3 requires a coordinated four-codec cutover and Apple minima of 26.0. The owner has been asked whether this assignment means that full migration or an explicitly staged SwiftJLI integration retaining the existing managed routes. No scope exception or weakened allocation contract is inferred. |
+| Physical devices | Pending at the owner's request. The [recorded confirmation](hardware-availability.json) states no physical devices are available. Real hardware, signing and synthetic test execution remain necessary; SDK compilation and simulator results do not satisfy this gate. |
+| DICOMKit integration | Pending at the owner's request. Partial managed/ordinary successor integration exists separately in [draft PR #28](https://github.com/raster-labs/SwiftJLI/pull/28) and isolated consumer worktrees. It has not completed combined acceptance and is excluded from this frozen candidate. |
+| Consumer scope | Suite policy Decision D3 requires a coordinated four-codec cutover and Apple minima of 26.0. That migration remains separate and pending; no exception or weakened allocation contract is inferred. |
 | Stable publication | Authorised after the required gates pass. Select the exact qualified revision, reconcile release metadata, validate clean versioned consumption and publish precise capability/release notes. Publication is pending physical and consumer acceptance. |
 
 The [four-codec source inventory](ConsumerPrerequisites.md) records available managed JPEG-LS support, the remaining JPEG gap and concrete JPEG XL/JPEG 2000 adapter constraints. It does not claim successor integration.
@@ -29,6 +31,8 @@ The [physical Watch verifier checks](watch-device-verifier-checks.json) pass ele
 The [prepared 1.1.0 CLI metadata](release-metadata/README.md) passes the explicit Swift Build Release build and 250 process checks, including staged installation and matching manual validation. The library implementation remains frozen.
 
 The [fresh URL consumer and product SBOM checks](prepared-consumer-sbom/README.md) pass for prepared revision `7739dba554cabebcc25e3593af3feb6ba27f8489`. Clean and incremental Debug/Release consumer builds and both executions pass. Both library and CLI derived SBOMs pass official schemas and SPDX SHACL validation; original producer defects and failed raw SPDX validation remain preserved. This verifies exact-revision consumption, not a stable tag, DICOMKit integration or physical execution.
+
+The [separate deterministic replay](prepared-consumer-sbom-replay/README.md) reproduces all 12 compared library/CLI derivative outputs byte-for-byte. It preserves the original committed archive and adds no runtime or device claim.
 
 The [archive review](archive-review.json) verifies evidence hashes and documentation links. Two generated SHACL results and two raw Watch compiler/test logs retain their original whitespace; the unfiltered check and the otherwise-clean filtered check are recorded without rewriting captured output.
 
