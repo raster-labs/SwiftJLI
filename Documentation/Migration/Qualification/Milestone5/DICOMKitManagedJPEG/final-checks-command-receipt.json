@@ -1,0 +1,65 @@
+[
+  {
+    "argv": [
+      "xcrun",
+      "swift",
+      "test",
+      "--jobs",
+      "2",
+      "--scratch-path",
+      "/private/tmp/swiftjli-qualified-asan",
+      "--sanitize",
+      "address",
+      "--filter",
+      "QualifiedJPEGTests"
+    ],
+    "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+    "exitCode": 0,
+    "log": "asan-tests-final.log"
+  },
+  {
+    "argv": [
+      "xcrun",
+      "swift",
+      "test",
+      "--jobs",
+      "2",
+      "--scratch-path",
+      "/private/tmp/swiftjli-qualified-tsan",
+      "--sanitize",
+      "thread",
+      "--filter",
+      "QualifiedJPEGTests"
+    ],
+    "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+    "exitCode": 0,
+    "log": "tsan-tests-final.log"
+  },
+  {
+    "argv": [
+      "xcrun",
+      "swiftc",
+      "-O",
+      "-swift-version",
+      "6",
+      "-I",
+      "/private/tmp/swiftjli-qualified-heap-final-build/build/out/Products/Release",
+      "/private/tmp/swiftjli-qualified-adapter-probe/parity-candidate.swift",
+      "/private/tmp/swiftjli-qualified-heap-final-build/build/out/Products/Release/SwiftJLI.o",
+      "-o",
+      "/private/tmp/swiftjli-qualified-adapter-probe/parity-candidate"
+    ],
+    "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+    "exitCode": 0,
+    "log": "parity-compile-final.log"
+  },
+  {
+    "argv": [
+      "python3",
+      "/private/tmp/swiftjli-qualified-adapter-probe/parity.py"
+    ],
+    "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+    "exitCode": 0,
+    "log": "parity-final.log"
+  }
+]

@@ -72,9 +72,14 @@ public struct DCTOptions: Sendable, Equatable {
 public struct CodecOptions: Sendable, Equatable {
     public let predictor: Int
     public let restartInterval: Int
+    /// Explicit external component interpretation for predictive JPEG. JPEG does
+    /// not carry DICOM photometric interpretation; callers retain that metadata.
+    public let predictiveSourceColourModel: JPEGSourceColourModel?
     public let dct: DCTOptions
-    public init(predictor: Int = 1, restartInterval: Int = 0, dct: DCTOptions = .init()) {
+    public init(predictor: Int = 1, restartInterval: Int = 0, dct: DCTOptions = .init(),
+                predictiveSourceColourModel: JPEGSourceColourModel? = nil) {
         self.predictor = predictor; self.restartInterval = restartInterval; self.dct = dct
+        self.predictiveSourceColourModel = predictiveSourceColourModel
     }
 }
 public struct EncoderConfiguration: Sendable, Equatable {
@@ -86,6 +91,9 @@ public struct EncoderConfiguration: Sendable, Equatable {
         }
         if case .nearLossless(let bound) = mode, bound <= 0 {
             throw CodecError(.invalidArgument, "Near-lossless error must be positive.")
+        }
+        guard mode != .lossy || codecOptions.predictiveSourceColourModel == nil else {
+            throw CodecError(.invalidArgument, "Predictive source interpretation requires predictive JPEG mode.")
         }
         let dct = codecOptions.dct
         guard dct.quality.isFinite, (0...100).contains(dct.quality),
@@ -142,11 +150,17 @@ public struct DecoderConfiguration: Sendable, Equatable {
     public let sampleFormat: DecoderSampleFormat
     /// For unmarked three-component DCT input only; cannot override Adobe or XYB metadata.
     public let sourceColourModel: JPEGSourceColourModel?
+    /// Explicit external interpretation of three-component predictive JPEG.
+    /// Values are never colour-transformed. Keep the external interpretation with
+    /// the codestream; no JPEG marker is claimed to encode this choice.
+    public let predictiveSourceColourModel: JPEGSourceColourModel?
     public init(codecOptions: CodecOptions = .init(), scale: Int = 1,
                 sampleFormat: DecoderSampleFormat = .nativeInteger,
-                sourceColourModel: JPEGSourceColourModel? = nil) {
+                sourceColourModel: JPEGSourceColourModel? = nil,
+                predictiveSourceColourModel: JPEGSourceColourModel? = nil) {
         self.codecOptions = codecOptions; self.scale = scale; self.sampleFormat = sampleFormat
         self.sourceColourModel = sourceColourModel
+        self.predictiveSourceColourModel = predictiveSourceColourModel
     }
 }
 
@@ -252,7 +266,8 @@ public struct Decoder: Sendable {
     }
 
     public func inspect(_ data: Data, options: DecodeOptions = .init()) throws -> ImageInfo {
-        try JPEGCodec.inspect(data, sourceColourModel: configuration.sourceColourModel, options: options)
+        try JPEGCodec.inspect(data, sourceColourModel: configuration.sourceColourModel,
+                              predictiveSourceColourModel: configuration.predictiveSourceColourModel, options: options)
     }
     @concurrent public func decode(_ data: Data, options: DecodeOptions = .init()) async throws -> DecodedImage {
         try await NativeOperation.withCancellation {

@@ -1,0 +1,350 @@
+{
+  "date": "2026-11-04",
+  "base": "ec9843013adc7b0b6064312a1333354e601509b1",
+  "contract": "0.10.0",
+  "predecessor": "b6df774a3c3ecdf4b98971f31543fdd18074ace2",
+  "sources": {
+    "Sources/SwiftJLI/CLISynchronousExecution.swift": "af92520630934f03632d37b87129cb2b9fcd2662503c62988a9611e9ccf87cde",
+    "Sources/SwiftJLI/CodecAPI.swift": "e89ec80550bd70eabea94da8008de44cb9d2d04a7aae1922b4e70ccb52f64035",
+    "Sources/SwiftJLI/Errors.swift": "f71dd532405f2bca468ef39b29117513c686a89c64dd908ef598d1bca4f4fe6b",
+    "Sources/SwiftJLI/Image.swift": "fd4aa6679c4ab50738eb4266fe62c0db21cb46bf157d26db1daaa7b5e36dede5",
+    "Sources/SwiftJLI/ImageDescriptor.swift": "44cf8b2f796c0c39a17a4ff11ea8e97dc08f1f496cddc0197696a822922a1656",
+    "Sources/SwiftJLI/ImageStorage.swift": "a7ae2697bcf45996c4d556aa7fc8303fc0616cef9b86c13e9dd56e7a58cc36fb",
+    "Sources/SwiftJLI/JPEGCodec.swift": "97017c69293aed0fa295b2cdb8a6e7607e273a120ab9c61db709e2f81bfa32fe",
+    "Sources/SwiftJLI/JPEGDCTValidation.swift": "ce87c6e59437ed587ac5110655f544b8d794c8722158b4a37fe14827b8d65e99",
+    "Sources/SwiftJLI/JPEGEntropyBoundary.swift": "31540a448da9a40600bf623e98af022ad80b709735c2d88e8baacde3d8d7d248",
+    "Sources/SwiftJLI/JPEGEnvelope.swift": "5c49e236858e3ad26f76edbe77916f906416b41314f4f6d5791aa770ca850c43",
+    "Sources/SwiftJLI/JPEGInspection.swift": "5d671f2ce2e5dfdcb20ce01084861b6d6837d2bb3d67f2fbafa89c9689d94e34",
+    "Sources/SwiftJLI/Native/ColorSpace/ICCProfileMD5.swift": "3f891177070f29418586736e502432b893fd4936eacb81e9cfb914012f185942",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIChromaSampling.swift": "e1cc179fa5222797d585505cc9725e5097f87ae00ac9707ea03aedad5ed0121b",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIColorConversion.swift": "1554c7b953937b6faed37c2594af645168d1641a979ae6833a7279a7a394ff99",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIXYBICCProfile.swift": "68942179aa518b418022f33d7be9c2657d32aa3df13eca740f6e716eaaff9c9b",
+    "Sources/SwiftJLI/Native/ColorSpace/SRGBICCProfile.swift": "e1bf95403549f922e24d219cad2e5d526aa813f8948ce5ef601ee8d1dde1687a",
+    "Sources/SwiftJLI/Native/Contract/BorrowedPlane.swift": "09cc85db6b1268760f0e27f8db4697544af2049ca2266b9520deb007f4b398f4",
+    "Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift": "194d57b1ccbe89875f474ad101cace3a8464e23cf339a962935e4fc681c2972a",
+    "Sources/SwiftJLI/Native/Contract/SharedRGBInput.swift": "7902000f7f7f9a05b50b5bce717818e3c46e7bb4bb101013a0b206c2ee23a317",
+    "Sources/SwiftJLI/Native/Core/JLIConfiguration.swift": "59fae13f77a57efaae10229e3d09958f69cf4ad4a9209ee33802abe4be7de262",
+    "Sources/SwiftJLI/Native/Core/JLIError.swift": "c084ca38d2c22faaef784f9272bb6f4ee5a7e344f832234c14949e848dcc9d0d",
+    "Sources/SwiftJLI/Native/Core/JLIImage.swift": "37f94c32307e5a6396cf300be242d57a5f4f1190cc756609b8f36174d02344d0",
+    "Sources/SwiftJLI/Native/Core/JLIJPEGInfo.swift": "4cee6d0e2ad859215eef3814f9ee87d12c77db5a47ebe1a7849b7445e5fa60a1",
+    "Sources/SwiftJLI/Native/DSP/JLIAdaptiveQuant.swift": "02dcfd5a5a9d327ce6db7cebcc59e46a1c6dafa97406c247f6752a281037c938",
+    "Sources/SwiftJLI/Native/DSP/JLIDCT.swift": "c9cbb8386b8a03b49e0039212cbf9a035f52d0a929ed6a5400bd7ae5bbf18d49",
+    "Sources/SwiftJLI/Native/DSP/JLIPerceptualQuant.swift": "b3a2d4eb518dee9859110060dec0d4f048460b6f06ba3e2a349982488cf202a2",
+    "Sources/SwiftJLI/Native/DSP/JLIQuantization.swift": "1b4658d05ab71c9d05e16137037ffc55e0d9a77ddc81b286afd3c7b7e109d4b2",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "cd7f6c4ef4b6d114834e830c7b32e5410241473f88312f0bf71ce28c319de332",
+    "Sources/SwiftJLI/Native/Decoder/JLIProgressiveDecoder.swift": "7eabfcf26b729a78bb6a7000cc9afa6fff8367d22e3905802311f82177dd4910",
+    "Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift": "9c1eee6ca5f3d9c774cc2902ed30fe1cae6c0f53a387d4d080e514ced2f54998",
+    "Sources/SwiftJLI/Native/Encoder/JLIProgressiveEncoder.swift": "46236de2f77317225ea2f5daa2b6a981c9b5df65c1e42de3af6cb95d23cd0758",
+    "Sources/SwiftJLI/Native/Entropy/ACLookahead.swift": "55256a6631fd59c12eedef3ba9d3e059d473f979931333ba4f70d878322e6ce6",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": "a33f90f3643de89a0d57744f44ec09cce9bcacdc3d3668245cb82127b05e769d",
+    "Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift": "ac64d194ac01ae04eaad8b3f339f252727c557daf4172359e3d2c8d2d6cf5dba",
+    "Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift": "f06c26bb00f4140a99b14c8c600af1f29f8fc86aad394c317015e4720bafbd33",
+    "Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift": "b40b47062c1b393fc3d1fa02aa97ca73b9b446729d9d214ea011579659414ff1",
+    "Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift": "b53d7d3c11defbe73794f6f4fbdfdc864e69f76724f0a993a86a19a71cb0f9ae",
+    "Sources/SwiftJLI/Native/Entropy/ZeroRunLosslessDecoder.swift": "23610c0a0c8e81f9bd793c4124e20ff4957eec741f76d170a55c27b693d8f106",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift": "e7b8d000586e9ffba39acc3298e2b221e0e89592398297ee9c006545fb3299c9",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerWriter.swift": "b16d4fcde67541c67cda5078b6c1fa382ec1bd4433b76dbe70047d85fc00ab8d",
+    "Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift": "8f74be440f1d985d99c3ef995984ea1a64d3a4d8e86d928a97bc32ce1a4dd5c0",
+    "Sources/SwiftJLI/Native/Platform/PlatformDetection.swift": "f3b15878ee0ef7c661de5a8f37d33e15691dbd0f2932ec55ffa3ff04f1609e39",
+    "Sources/SwiftJLI/Native/Platform/ScalarDSP.swift": "865685933c007c336d91cc1810fb2623c4b26c42c87c8e0f483d801c642ad72a",
+    "Sources/SwiftJLI/NativeExecution.swift": "695d091246e8ed32a196d55e1722f08dcdf0785e579693963ce37df999b85d2e",
+    "Sources/SwiftJLI/Options.swift": "dd43c63592bf4d74c53626374fb4494b0815315f0f64bc1a2831f9c066b5d787",
+    "Sources/SwiftJLI/Qualified/QualifiedBaselineCallerStorage.swift": "03a09df0ac69c5c185a100cbd4762d10442367b362435cae1a1fd4f1b87587f1",
+    "Sources/SwiftJLI/Qualified/QualifiedBaselineParseStorage.swift": "e616fd77f479ce9f323a24c51b80d4c231a22640e9104e65ed4868dffc60963c",
+    "Sources/SwiftJLI/Qualified/QualifiedBitReader.swift": "f413cefab4b5fcb5070714f63468bd875477ee57388d370f72241e90124096bb",
+    "Sources/SwiftJLI/Qualified/QualifiedChroma.swift": "fd230b43e70d2cf91458866d1f480e24a0a3d18ce93b9086974818f32e71ed4d",
+    "Sources/SwiftJLI/Qualified/QualifiedHeaders.swift": "1398e2d702ad5d665865f5f1cded4140eede82a8a908d53d4ed5f5bd9bad8c06",
+    "Sources/SwiftJLI/Qualified/QualifiedHuffman.swift": "a86d07938c0d93039d61f79767b95d5a2dde256f8261246584dac934059bf752",
+    "Sources/SwiftJLI/Qualified/QualifiedJPEGDecoder.swift": "f34ff7fb6ca79537a71b2601461976bb198912bc08b685b0113322551ed1d9f3",
+    "Sources/SwiftJLI/Qualified/QualifiedKernels.swift": "be8a5e3a38681b7cf5ade59f4243badb642db42e4a880a6d0fc6821540900568",
+    "Sources/SwiftJLI/Qualified/QualifiedLosslessCallerStorage.swift": "f5a6493ebd9c739b49a9a4c2cf1ee65498115954464a4a80b935a1cbf7681a45",
+    "Sources/SwiftJLI/Qualified/QualifiedLosslessParseStorage.swift": "5c2f4c17b20babb4d710360a894cb17bcd9b3b4f5ccd1caf93cb86245433b804",
+    "Sources/SwiftJLI/Qualified/QualifiedMarkers.swift": "8d883a1057be5264954b281610b7a00a0ae9d373395ea7f3fa1d312729557c13",
+    "Sources/SwiftJLI/Qualified/QualifiedOutcome.swift": "6e60916bbeea4f9ca6ccd570ef634af074202bf139880db82fe7e0dfc4b643ec",
+    "Sources/SwiftJLI/Qualified/QualifiedParser.swift": "9216a1b6a44ac03754bbdfc4862df36f05990241c1c46c5ca5841094ba63a511",
+    "Sources/SwiftJLI/Qualified/QualifiedQuantization.swift": "c909234bf347fb4c73f83c4a0d47f9ed37c0aed3d4b3a4920edae918dac99107",
+    "Sources/SwiftJLI/Qualified/QualifiedReconstruction.swift": "6283abc6f885fd0338d893e214c440c01472c643067934e0787f595ef306a278",
+    "Sources/SwiftJLI/Qualified/QualifiedStorage.swift": "968a577e0f68a85cb3ae9b74d7d66fb1b635b1f40bff1c6081b0b07753e17995",
+    "Sources/SwiftJLI/Qualified/QualifiedXYBProfile.swift": "90e54b8834ea9fd6d7e0d7ca868abfaac5ea851751a7ae09451899bcf267dae2",
+    "Sources/SwiftJLICLI/main.swift": "d233714b13970668841e38cf027f679e405cbfc373b0476477977a44d58887f3"
+  },
+  "tests": {
+    "Tests/SwiftJLITests/APITests.swift": "c38a8cce259132558dccdb69de489514aeac7e5e00156cb25e149d402022c4c2",
+    "Tests/SwiftJLITests/AdvancedDCTTests.swift": "c317327e6b9ca5af86448065cfa18617f40488e08c16990cfe023692a2ea703e",
+    "Tests/SwiftJLITests/BulkBitWriterTests.swift": "61a2138ad1de7d7ed70df37032da30b55b432c7e7a3a09b3b5d201c1e7f84642",
+    "Tests/SwiftJLITests/CLISynchronousExecutionTests.swift": "35d3563e163759a0eb4741e5c6600c32800dd93f1d3497106ca1fb4cbd94bbf2",
+    "Tests/SwiftJLITests/CancellationPublicationTests.swift": "bce59b41b03ab124b52661014db2d49f88445caafa6fbf735dc99b24f0598a97",
+    "Tests/SwiftJLITests/ChromaReferenceFixtures.swift": "81aae9c2dd16829049661d501e9fcc4758f69c851b5c898840653a853fff01d3",
+    "Tests/SwiftJLITests/ColourInputTests.swift": "618fbb51938ae3c866ab5e647f75f97ed4d3d9975478aa0b70f14d0c9894d087",
+    "Tests/SwiftJLITests/CorpusDigestTests.swift": "fd334ae067ee6e5214ea8dedfd879887dbf0626285bfc4ea16800cd3e25e1b36",
+    "Tests/SwiftJLITests/DescriptorTests.swift": "6cd219630d63ebdeb4b084a61fb39af6757eef5ff6c3a8acecfa44812b64e197",
+    "Tests/SwiftJLITests/DistanceRangeTests.swift": "4a566952d4d8a54327be2ec90cf01c283bb93f6078935fa73421fe63d1508e2f",
+    "Tests/SwiftJLITests/EntropyBoundaryTests.swift": "594f9d02a1c89ee1163dec4fcfd37072f201b181a2038b663ab6da0215470b8b",
+    "Tests/SwiftJLITests/FloatDecodeTests.swift": "98730b8312291e9295c14518c6df85c1acee14e352e9fe4b29e659142921191c",
+    "Tests/SwiftJLITests/FloatEncodeTests.swift": "bfef7582703b33d95e5add4dcae58b0723645f45fa958f9c6d93ad8fea6286e5",
+    "Tests/SwiftJLITests/IdentityRegressionTests.swift": "2aa75faae0b8cae09bc0166291b649a04affdb858f67360f3c46cd1972c88d50",
+    "Tests/SwiftJLITests/JPEGDecodeParityTests.swift": "d7f302d740dfed5569f0b842a74ff0dd0becd8994d3f86103d65fb1f3b0e742f",
+    "Tests/SwiftJLITests/JPEGInspectionTests.swift": "a8970875e658ab9f9e5b44995f001cbac67d870cbc5db4887db9753491b130bf",
+    "Tests/SwiftJLITests/JPEGMigrationTests.swift": "b9baa3af3a0be0fe277d7268cd75cc28a83a9f29252a46effd9a9cb56285244a",
+    "Tests/SwiftJLITests/LimitTests.swift": "4375c5d32b991ad7d2750cf53d428b1891a0d168cb7d71950bdaa09d99b13d1a",
+    "Tests/SwiftJLITests/LossyAPITests.swift": "f63321fec55f4e3e746c50b65db70a3e9eb62a264309cbcb21ba8724081e336d",
+    "Tests/SwiftJLITests/Native/ACLookaheadTests.swift": "cf016eabbf17566225f0e09674bc50d466d339e6f170e4a3f7cfd46e07edd97d",
+    "Tests/SwiftJLITests/Native/AdaptiveQuantFieldTests.swift": "8dd265d3935dbd57c256217ce3b2582dfe3ce3cf41554ac8345d0622818c0630",
+    "Tests/SwiftJLITests/Native/BackendSelectionTests.swift": "5c1686f37a404b89dbf124709704ea6311e9ac05cac43080e240aa0571722ba7",
+    "Tests/SwiftJLITests/Native/ColorSpaceTests.swift": "b1a0dc07329c3dd790db3f0d169a5c6bc1d2352fa8af1ee70b931a564ae62c0c",
+    "Tests/SwiftJLITests/Native/ConcurrentDecodeTests.swift": "b61d9a0662d31197b059355b7a39a412cf3c4bed835ddc3877590f9206487079",
+    "Tests/SwiftJLITests/Native/ConformanceEvidenceTests.swift": "fb9cb37197cf27be9966aa6a3594e23fcc570d2536e65041933906f6f02465e3",
+    "Tests/SwiftJLITests/Native/ContractImageLayerTests.swift": "90f38460eb8a9109c2b6e4d5955f8b473905dfdb2b6d523e4e05f85de2ffe953",
+    "Tests/SwiftJLITests/Native/DCTTests.swift": "c8bc659fd13e844cf49ec2b8e4855d95107844d7cf68392a85e0d91d87caae6c",
+    "Tests/SwiftJLITests/Native/DICOMColorTests.swift": "f97590ab0fbb03f99d776b7732d8533316a5e3016f7e961da2f710befa29bb71",
+    "Tests/SwiftJLITests/Native/DICOMFuzzTests.swift": "94d118d6898fbf72753531f21579e908da9fc267a838cf5448f2bbf0cff9a220",
+    "Tests/SwiftJLITests/Native/DICOMReaderTests.swift": "32e3766c0e307bee2826ce6b296117d498307742eb361915b5451a4aa90ef428",
+    "Tests/SwiftJLITests/Native/DICOMWriterTests.swift": "dd86cf432ddcc4f349797f75a80103daaacc267ebe6154c58c44d043478a131a",
+    "Tests/SwiftJLITests/Native/EdgeCaseTests.swift": "4fd4fe6988a75b0333cb75ed56d557ee174dc923e96b3d879ce8c2df6a5cb452",
+    "Tests/SwiftJLITests/Native/EncoderDecoderTests.swift": "b6960c161da96a25254b61ba02345fe343a637c50719034516465db46c828403",
+    "Tests/SwiftJLITests/Native/Float32DecodeTests.swift": "e6f7f863fa103025a7b9d3818c815008ff3becc8e05d0a776705142b4e941c18",
+    "Tests/SwiftJLITests/Native/FuzzTests.swift": "49738f627ee9afb848dd34d65c2e231ac436bcb28de02205a50cbe80878a0b03",
+    "Tests/SwiftJLITests/Native/HuffmanTests.swift": "f486b05db750770f1d5f35f8c7fe8d5052808b0f4b31326e13a0c263e9f8b33c",
+    "Tests/SwiftJLITests/Native/ICCProfileIdentityTests.swift": "471f042f730393d009ee0ceea4553dc65d6d27e9c2e66612e34f1199c505c418",
+    "Tests/SwiftJLITests/Native/IDCTConformanceTests.swift": "6d302ee0d4494820979d005c54264c518cdfe0b7992b0bc0720fe9d1bdf1659f",
+    "Tests/SwiftJLITests/Native/LosslessDifferenceTests.swift": "efbf3f125d878ecc67fda6d9b60ed97fecdfa76d3a6854f9479a0703c647cce3",
+    "Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift": "e4e866e294ea107bb86be86d674f8f62a2ee48f364656faec7a0fb41686a4f47",
+    "Tests/SwiftJLITests/Native/LosslessRestartTests.swift": "5c8184dbcacc47a598518a538137f85eeb015bd4814743d41017792ea0ec36cb",
+    "Tests/SwiftJLITests/Native/LosslessRowStorageTests.swift": "17cd8903ce9a1f97fb9c1e54f4b838a0c0b17d3982a9277fca37d52a40d3cacb",
+    "Tests/SwiftJLITests/Native/LosslessTests.swift": "f4c0cfcee635631bd16c247caabcf2973e74f91a8db7117bd3313f7b4b522271",
+    "Tests/SwiftJLITests/Native/MarkerTests.swift": "15b81d09f1b665418cbaf6e53850df0e503fb4c342c109939a7cb3e9e60142d2",
+    "Tests/SwiftJLITests/Native/MedicalSafetyTests.swift": "c18f9bdab25627da8215e201eb9b7e1e5daa0e1d54e8bd476695ce8b963c61b7",
+    "Tests/SwiftJLITests/Native/MetadataTests.swift": "5cd8bc6970ad6a55432e38eb9ce98949f4c638706addca9f255d201000c8a427",
+    "Tests/SwiftJLITests/Native/NativeCoreTests.swift": "36fc1ed21866a5495f38bf8b31a6d5a631c4244e618815f0386d4e741bf3fb5b",
+    "Tests/SwiftJLITests/Native/PerceptualQuantTests.swift": "f78baae6def23d881b2454f84896780531ab5ed0c780436e7e17c19e08ab795f",
+    "Tests/SwiftJLITests/Native/ProgressiveTests.swift": "dcdbb4da763af630ca515c00ab82a5273110d8dd60a92d27e1f9a88d966dad4f",
+    "Tests/SwiftJLITests/Native/QuantizationTests.swift": "d41acfbd1eedfc4e79878a4f90c44682e5920b00c97cf80112873e79c80f841c",
+    "Tests/SwiftJLITests/Native/RegressionCorpusTests.swift": "2e892d57c2308fa094b738057bc93a220c7c2baf2586e21c32abafa22e27f58a",
+    "Tests/SwiftJLITests/Native/ScaledDecodeConformanceTests.swift": "47f49f16bd02f511945a1b1853430a3629338884b93ae4286883f883ef206416",
+    "Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift": "8b6d0ed01b6fd19625c9095eef0a4f7d3bb5bb03794f5fa75de4c189acdb44bf",
+    "Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift": "7ce2a061313b202e04fbfef308751f9e7864a11db2307a4e029d1d8e27bba5ee",
+    "Tests/SwiftJLITests/Native/SharedDCTStorageTests.swift": "124fefd10956574042aa2cd96f76594b98eb0d45d0f9eb74618840879703e00d",
+    "Tests/SwiftJLITests/Native/XYBTests.swift": "33fba6e22152e0d03316db6b8fc9ad40419da5f7efc4b26d261e132775160e44",
+    "Tests/SwiftJLITests/Native/ZeroRunLosslessTests.swift": "b7f8a44e7b6918f73928333f4f6263d2952f831dbc02d1815b9bd42bd40bf559",
+    "Tests/SwiftJLITests/NativeExecutionTests.swift": "c92ab7d691caefd1bb971bdf7a255ca78162585521b2ab6c3cf3d51bf38e0050",
+    "Tests/SwiftJLITests/NearLosslessAPITests.swift": "e98157397d01b432707e6cd21d3fd430651ff1c602d11457c98096fd151ee407",
+    "Tests/SwiftJLITests/OwnershipTests.swift": "0c5d97c65b9b3f36eca952bc455949cda8e422ec2010e93aa146d85730642b12",
+    "Tests/SwiftJLITests/PredictiveColourInterpretationTests.swift": "9469ace641ad4970f613ddd9102e98f2ffdbca703c33612da5c3e6fd748856dc",
+    "Tests/SwiftJLITests/QualifiedJPEGTests.swift": "e95bbae1b6d50dad177ad213d4bf22bddbda347bcf1c133a99b7ccfac1ab560b",
+    "Tests/SwiftJLITests/RGBInputBatchTests.swift": "4e50381c7082644676eac09c5bbaaaf60688b97e6c22e978a87c539773b248bc",
+    "Tests/SwiftJLITests/RGBOutputBatchTests.swift": "d58a2ca36e65dd1bf2cf143ee29fe9102139619eac29493e87e501cedbf9ce98",
+    "Tests/SwiftJLITests/SampleAccessTests.swift": "47959c895f962a2fb13ead3a4fa239f18b8e432c74007c9b9823e11e529a8383",
+    "Tests/SwiftJLITests/ScaledDecodeTests.swift": "8930ee9210558d44ba84a2c8e8fa8a4d35e644fb29b1686821b3feb081bec263",
+    "Tests/SwiftJLITests/Support/Baseline.swift": "ba10af79942614379eb5c18d57aa28b329f6ce845dae3e37e09bfcfc1d62d6f4",
+    "Tests/SwiftJLITests/Support/CorpusSHA256.swift": "e67394bce93e8a7a490c2c17b1ea94a10ac1338ea76672c905faeec6ec4f74c1",
+    "Tests/SwiftJLITests/Support/DICOMReader.swift": "227a4f1b3f42c527c5bd7fcf457be0483fe8e6cf9aaf07397adf2bc9edd8cc74",
+    "Tests/SwiftJLITests/Support/DICOMWindowRenderer.swift": "50d79a71adb1c6a4497fb80e0c8e083d5a77f8b22d1bbad1ca5915495390a6c1",
+    "Tests/SwiftJLITests/Support/DICOMWriter.swift": "5634c69453e016f9a36ddb2a72f0c2b4f0c018db8b061b94bd05e6e1f8bdf5f7",
+    "Tests/SwiftJLITests/Support/IdentityHashes.swift": "01efcb08d5f4c731d6ab78c5ac9258d7dd35044f0f024363ed5d86b2f0f76707",
+    "Tests/SwiftJLITests/Support/SyntheticFixtures.swift": "1835b0fada22cc65bc5c1674f65dcd817a505572195d35666e0a172b3425c966",
+    "Tests/SwiftJLITests/UInt12InputTests.swift": "d0c2ec581da3daaf4eb726e515c7874e138629a416bdd15b5bb7cf25dc14c279",
+    "Tests/SwiftJLITests/UpstreamJPEGTests.swift": "4c97eafabbeb7303f23381a9d324f45543bbd7bc91b214e58ac51cddf6e165c2",
+    "Tests/SwiftJLITests/ValidatedEnvelopeTests.swift": "e3df3475e4e53800fe8e7709e07361b5dca47b7a99312210da448f3b68f100d6",
+    "Tests/SwiftJLITests/XYBAPITests.swift": "ad0f502e62471b9d755cc6a230e49a7ad91366622bb4e76baec641d6fc299075",
+    "Tests/SwiftJLITests/XYBFloatDecodeTests.swift": "3fd2910b8696e9b85af09c1bad3f5f34c80d337a4a981da182b274b8c9d95591"
+  },
+  "commandResults": [
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "-swift-version",
+        "6",
+        "-strict-concurrency=complete",
+        "-target",
+        "arm64-apple-macos26.0",
+        "/private/tmp/swiftjli-qualified-adapter-probe/main.swift",
+        "-o",
+        "/private/tmp/swiftjli-qualified-adapter-probe/probe"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-qualified-adapter-probe/probe"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swift",
+        "test",
+        "--package-path",
+        "/Users/pushparaj/projects/DICOMKit-milestone5/.build/checkouts/JLISwift",
+        "--scratch-path",
+        "/private/tmp/swiftjli-qualified-predecessor",
+        "--jobs",
+        "2",
+        "--filter",
+        "LosslessCallerStorageTests|BaselineCallerStorageTests|CoreCallerControlTests"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swift",
+        "test",
+        "--jobs",
+        "2",
+        "--scratch-path",
+        "/private/tmp/swiftjli-qualified-release",
+        "-c",
+        "release",
+        "--filter",
+        "QualifiedJPEGTests"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swift",
+        "test",
+        "--jobs",
+        "2",
+        "--scratch-path",
+        "/private/tmp/swiftjli-qualified-asan",
+        "--sanitize",
+        "address",
+        "--filter",
+        "QualifiedJPEGTests"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swift",
+        "test",
+        "--jobs",
+        "2",
+        "--scratch-path",
+        "/private/tmp/swiftjli-qualified-tsan",
+        "--sanitize",
+        "thread",
+        "--filter",
+        "QualifiedJPEGTests"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "python3",
+        "Examples/QualifiedJPEGProbe/run.py",
+        "--output",
+        "/private/tmp/swiftjli-qualified-heap-attempt6",
+        "--scratch",
+        "/private/tmp/swiftjli-qualified-heap-attempt6-build"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "python3",
+        "/private/tmp/swiftjli-qualified-adapter-probe/parity.py"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "-O",
+        "-swift-version",
+        "6",
+        "-I",
+        "/private/tmp/swiftjli-qualified-predecessor/out/Products/Debug",
+        "/private/tmp/swiftjli-qualified-adapter-probe/parity-predecessor.swift",
+        "/private/tmp/swiftjli-qualified-predecessor/out/Products/Debug/JLISwift.o",
+        "-o",
+        "/private/tmp/swiftjli-qualified-adapter-probe/parity-predecessor"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "-O",
+        "-swift-version",
+        "6",
+        "-I",
+        "/private/tmp/swiftjli-qualified-heap-attempt6-build/build/out/Products/Release",
+        "/private/tmp/swiftjli-qualified-adapter-probe/parity-candidate.swift",
+        "/private/tmp/swiftjli-qualified-heap-attempt6-build/build/out/Products/Release/SwiftJLI.o",
+        "-o",
+        "/private/tmp/swiftjli-qualified-adapter-probe/parity-candidate"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0
+    }
+  ],
+  "passed": {
+    "predecessorTestDeclarations": 17,
+    "predecessorSuites": 3,
+    "candidateReleaseTestDeclarations": 12,
+    "candidateASanTestDeclarations": 12,
+    "candidateTSanTestDeclarations": 12,
+    "independentBaselineParameterCases": 13,
+    "predictorParameterCases": 7,
+    "exactPredecessorPixelComparisons": 41,
+    "coldAllocationProcesses": 16,
+    "allocationPositiveControls": 2,
+    "zeroAllocationCases": 14
+  },
+  "qualificationLimits": [
+    "Only focused qualified API suites executed, not full candidate suite.",
+    "Allocation counters exclude caller-owned setup, worker/bootstrap and callbacks; ordinary Release only.",
+    "No new performance measurement, hour-long fuzz campaign, Linux/remote Swift6.2 or physical-device run in this scoped handback.",
+    "DICOMKit actual adapter acceptance is a separate integration gate.",
+    "Predecessor pixel parity used Debug objects versus candidate Release objects; no timing comparison."
+  ],
+  "developmentFailures": [
+    {
+      "attempt": "first-tests",
+      "cause": "two generated source filenames initially lacked .swift extensions; build failed, fixed before first successful test."
+    },
+    {
+      "attempt": "third-tests",
+      "cause": "test expression needed parentheses around adjacent shifts; build failure, corrected."
+    },
+    {
+      "attempt": "initial allocator",
+      "cause": "TLS in injected allocator triggered _tlv_bootstrap_error before codec; removed TLS."
+    },
+    {
+      "attempt": "allocator second",
+      "cause": "unresolved probe lookup in old binary; builds2/3 overlapped intermediate common API edits and failed, so no codec allocation result accepted."
+    },
+    {
+      "attempt": "heap4",
+      "cause": "C positive control inside interposer calls original malloc and was invisible; no measurement accepted."
+    },
+    {
+      "attempt": "heap5",
+      "cause": "Swift compiler optimised C malloc control away; Swift control separately observed1. Fixed with separate C control target."
+    }
+  ],
+  "objectHashes": {
+    "/private/tmp/swiftjli-qualified-predecessor/out/Products/Debug/JLISwift.o": "e575c6406df2c80b8c841d4378f6137c78fe66472f4efed89b778b942b707256",
+    "/private/tmp/swiftjli-qualified-heap-attempt6-build/build/out/Products/Release/SwiftJLI.o": "7e6cf0367767ebd802d4ea18e24b6ffbee8345965ff91abe59b1ca549d1f09bc",
+    "/private/tmp/swiftjli-qualified-adapter-probe/parity-predecessor": "0f2855931efb3c78d5d15440d8242654daab1618ba611e71793f8fa329fb711d",
+    "/private/tmp/swiftjli-qualified-adapter-probe/parity-candidate": "9547afbf523dbbb8b1df481182369cf4609c921cff15474e6fb8d464477fe648"
+  }
+}

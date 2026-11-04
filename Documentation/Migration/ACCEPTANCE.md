@@ -2,6 +2,14 @@
 
 **The [expanded Milestone 5 assignment](Qualification/Milestone5/ReleaseCompletion/README.md) is in progress: physical-device qualification, actual DICOMKit integration and stable publication were assigned on 4 November.** The earlier frozen-candidate, simulator-only release preparation remains complete within its recorded scope. Milestone 4 software retains its recorded qualification scope.
 
+## DICOMKit integration candidate — 4 November 2026
+
+A separate candidate based on `ec9843013adc7b0b6064312a1333354e601509b1` adds the [synchronous caller-storage JPEG profile](QualifiedJPEG.md) from pinned JLISwift `b6df774a3c3ecdf4b98971f31543fdd18074ace2`, plus explicit external predictive colour interpretation in the common owning API. The owner-approved frozen release-preparation candidate is preserved; its old test results do not qualify these new runtime paths. Suite policy remains 0.10.0, with the seven common documents unchanged.
+
+The [source-bound audit](Qualification/Milestone5/DICOMKitManagedJPEGAudit/README.md) records 405 full Release tests, focused sanitizer results, 41 exact predecessor comparisons and optimised caller-storage allocation probes. The [cold XYB extension](Qualification/Milestone5/DICOMKitManagedJPEGColdXYB/release/receipt.json) records 18 zero-allocation/mapping operations and two positive allocation controls. A Debug cold probe allocated and is retained as a failed allocation gate; only the recorded optimised build is allocation-qualified.
+
+Actual DICOMKit adopts all four successors in its isolated integration branch at consumer baseline `5756e6408a95649b463d4a6408f2957fe1b4c212`. Its full product build passes, but combined runtime tests, immutable remote dependency pins, GPU routes, final consumer resource/lifetime evidence and release acceptance are still being resolved. The new library candidate also needs final hosted platform/toolchain, fuzz, performance, consumer and SBOM qualification. No physical Watch or representative iPhone/iPad is available, as reconfirmed by the owner; those gates and stable publication remain open.
+
 ## Retained Milestone 5 release-preparation evidence — 3 November 2026
 
 The owner assigned Milestone 5 on 3 November 2026 from `8ae2762710d6279cd92222f5bb5ca95f042f694e`, whose 46 shipping Swift source hashes matched `5351088`. The current shipping candidate is **`f548e5048e5c71204c2a2ec4036bf66c4f040285`**, under suite policy **0.10.0**. It addresses the observed native macOS release crash with an immutable owner for task-local host cancellation callbacks and adds nested throwing-scope restoration coverage. Only `NativeExecution.swift` changes in shipping source; the other 45 files retain their starting hashes. The [Milestone 5 record](Qualification/Milestone5/README.md) and [source manifest](Qualification/Milestone5/final-candidate.json) identify current qualification and supersede the earlier milestone deferral.

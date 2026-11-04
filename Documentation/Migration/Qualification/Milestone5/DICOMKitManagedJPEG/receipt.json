@@ -1,0 +1,142 @@
+{
+  "base": "ec9843013adc7b0b6064312a1333354e601509b1",
+  "predecessor": "b6df774a3c3ecdf4b98971f31543fdd18074ace2",
+  "contract": "0.10.0",
+  "sources": {
+    "Sources/SwiftJLI/CLISynchronousExecution.swift": "af92520630934f03632d37b87129cb2b9fcd2662503c62988a9611e9ccf87cde",
+    "Sources/SwiftJLI/CodecAPI.swift": "e89ec80550bd70eabea94da8008de44cb9d2d04a7aae1922b4e70ccb52f64035",
+    "Sources/SwiftJLI/Errors.swift": "f71dd532405f2bca468ef39b29117513c686a89c64dd908ef598d1bca4f4fe6b",
+    "Sources/SwiftJLI/Image.swift": "fd4aa6679c4ab50738eb4266fe62c0db21cb46bf157d26db1daaa7b5e36dede5",
+    "Sources/SwiftJLI/ImageDescriptor.swift": "44cf8b2f796c0c39a17a4ff11ea8e97dc08f1f496cddc0197696a822922a1656",
+    "Sources/SwiftJLI/ImageStorage.swift": "a7ae2697bcf45996c4d556aa7fc8303fc0616cef9b86c13e9dd56e7a58cc36fb",
+    "Sources/SwiftJLI/JPEGCodec.swift": "97017c69293aed0fa295b2cdb8a6e7607e273a120ab9c61db709e2f81bfa32fe",
+    "Sources/SwiftJLI/JPEGDCTValidation.swift": "ce87c6e59437ed587ac5110655f544b8d794c8722158b4a37fe14827b8d65e99",
+    "Sources/SwiftJLI/JPEGEntropyBoundary.swift": "31540a448da9a40600bf623e98af022ad80b709735c2d88e8baacde3d8d7d248",
+    "Sources/SwiftJLI/JPEGEnvelope.swift": "5c49e236858e3ad26f76edbe77916f906416b41314f4f6d5791aa770ca850c43",
+    "Sources/SwiftJLI/JPEGInspection.swift": "5d671f2ce2e5dfdcb20ce01084861b6d6837d2bb3d67f2fbafa89c9689d94e34",
+    "Sources/SwiftJLI/Native/ColorSpace/ICCProfileMD5.swift": "3f891177070f29418586736e502432b893fd4936eacb81e9cfb914012f185942",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIChromaSampling.swift": "e1cc179fa5222797d585505cc9725e5097f87ae00ac9707ea03aedad5ed0121b",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIColorConversion.swift": "1554c7b953937b6faed37c2594af645168d1641a979ae6833a7279a7a394ff99",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIXYBICCProfile.swift": "68942179aa518b418022f33d7be9c2657d32aa3df13eca740f6e716eaaff9c9b",
+    "Sources/SwiftJLI/Native/ColorSpace/SRGBICCProfile.swift": "e1bf95403549f922e24d219cad2e5d526aa813f8948ce5ef601ee8d1dde1687a",
+    "Sources/SwiftJLI/Native/Contract/BorrowedPlane.swift": "09cc85db6b1268760f0e27f8db4697544af2049ca2266b9520deb007f4b398f4",
+    "Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift": "194d57b1ccbe89875f474ad101cace3a8464e23cf339a962935e4fc681c2972a",
+    "Sources/SwiftJLI/Native/Contract/SharedRGBInput.swift": "7902000f7f7f9a05b50b5bce717818e3c46e7bb4bb101013a0b206c2ee23a317",
+    "Sources/SwiftJLI/Native/Core/JLIConfiguration.swift": "59fae13f77a57efaae10229e3d09958f69cf4ad4a9209ee33802abe4be7de262",
+    "Sources/SwiftJLI/Native/Core/JLIError.swift": "c084ca38d2c22faaef784f9272bb6f4ee5a7e344f832234c14949e848dcc9d0d",
+    "Sources/SwiftJLI/Native/Core/JLIImage.swift": "37f94c32307e5a6396cf300be242d57a5f4f1190cc756609b8f36174d02344d0",
+    "Sources/SwiftJLI/Native/Core/JLIJPEGInfo.swift": "4cee6d0e2ad859215eef3814f9ee87d12c77db5a47ebe1a7849b7445e5fa60a1",
+    "Sources/SwiftJLI/Native/DSP/JLIAdaptiveQuant.swift": "02dcfd5a5a9d327ce6db7cebcc59e46a1c6dafa97406c247f6752a281037c938",
+    "Sources/SwiftJLI/Native/DSP/JLIDCT.swift": "c9cbb8386b8a03b49e0039212cbf9a035f52d0a929ed6a5400bd7ae5bbf18d49",
+    "Sources/SwiftJLI/Native/DSP/JLIPerceptualQuant.swift": "b3a2d4eb518dee9859110060dec0d4f048460b6f06ba3e2a349982488cf202a2",
+    "Sources/SwiftJLI/Native/DSP/JLIQuantization.swift": "1b4658d05ab71c9d05e16137037ffc55e0d9a77ddc81b286afd3c7b7e109d4b2",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "cd7f6c4ef4b6d114834e830c7b32e5410241473f88312f0bf71ce28c319de332",
+    "Sources/SwiftJLI/Native/Decoder/JLIProgressiveDecoder.swift": "7eabfcf26b729a78bb6a7000cc9afa6fff8367d22e3905802311f82177dd4910",
+    "Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift": "9c1eee6ca5f3d9c774cc2902ed30fe1cae6c0f53a387d4d080e514ced2f54998",
+    "Sources/SwiftJLI/Native/Encoder/JLIProgressiveEncoder.swift": "46236de2f77317225ea2f5daa2b6a981c9b5df65c1e42de3af6cb95d23cd0758",
+    "Sources/SwiftJLI/Native/Entropy/ACLookahead.swift": "55256a6631fd59c12eedef3ba9d3e059d473f979931333ba4f70d878322e6ce6",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": "a33f90f3643de89a0d57744f44ec09cce9bcacdc3d3668245cb82127b05e769d",
+    "Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift": "ac64d194ac01ae04eaad8b3f339f252727c557daf4172359e3d2c8d2d6cf5dba",
+    "Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift": "f06c26bb00f4140a99b14c8c600af1f29f8fc86aad394c317015e4720bafbd33",
+    "Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift": "b40b47062c1b393fc3d1fa02aa97ca73b9b446729d9d214ea011579659414ff1",
+    "Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift": "b53d7d3c11defbe73794f6f4fbdfdc864e69f76724f0a993a86a19a71cb0f9ae",
+    "Sources/SwiftJLI/Native/Entropy/ZeroRunLosslessDecoder.swift": "23610c0a0c8e81f9bd793c4124e20ff4957eec741f76d170a55c27b693d8f106",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift": "e7b8d000586e9ffba39acc3298e2b221e0e89592398297ee9c006545fb3299c9",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerWriter.swift": "b16d4fcde67541c67cda5078b6c1fa382ec1bd4433b76dbe70047d85fc00ab8d",
+    "Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift": "8f74be440f1d985d99c3ef995984ea1a64d3a4d8e86d928a97bc32ce1a4dd5c0",
+    "Sources/SwiftJLI/Native/Platform/PlatformDetection.swift": "f3b15878ee0ef7c661de5a8f37d33e15691dbd0f2932ec55ffa3ff04f1609e39",
+    "Sources/SwiftJLI/Native/Platform/ScalarDSP.swift": "865685933c007c336d91cc1810fb2623c4b26c42c87c8e0f483d801c642ad72a",
+    "Sources/SwiftJLI/NativeExecution.swift": "695d091246e8ed32a196d55e1722f08dcdf0785e579693963ce37df999b85d2e",
+    "Sources/SwiftJLI/Options.swift": "dd43c63592bf4d74c53626374fb4494b0815315f0f64bc1a2831f9c066b5d787",
+    "Sources/SwiftJLI/Qualified/QualifiedBaselineCallerStorage.swift": "49efb529eb0e8da82f9bb17953afeacdf7dd04ed6d5732ba19b5ce31c6cfb54c",
+    "Sources/SwiftJLI/Qualified/QualifiedBaselineParseStorage.swift": "3e79e18622211fc8e018638240afe9d855a9bb40777b4e76a2c21238007602a8",
+    "Sources/SwiftJLI/Qualified/QualifiedBitReader.swift": "f413cefab4b5fcb5070714f63468bd875477ee57388d370f72241e90124096bb",
+    "Sources/SwiftJLI/Qualified/QualifiedChroma.swift": "fd230b43e70d2cf91458866d1f480e24a0a3d18ce93b9086974818f32e71ed4d",
+    "Sources/SwiftJLI/Qualified/QualifiedHeaders.swift": "1398e2d702ad5d665865f5f1cded4140eede82a8a908d53d4ed5f5bd9bad8c06",
+    "Sources/SwiftJLI/Qualified/QualifiedHuffman.swift": "a86d07938c0d93039d61f79767b95d5a2dde256f8261246584dac934059bf752",
+    "Sources/SwiftJLI/Qualified/QualifiedJPEGDecoder.swift": "6eb994f8a0c92d276b7d2fe512d600538dddd5722093a2c4d5ac859845036185",
+    "Sources/SwiftJLI/Qualified/QualifiedKernels.swift": "be8a5e3a38681b7cf5ade59f4243badb642db42e4a880a6d0fc6821540900568",
+    "Sources/SwiftJLI/Qualified/QualifiedLosslessCallerStorage.swift": "17bd8f08627476be49b9c1a9d951f3896e4d6fb960b220cd3d66e2703946fe60",
+    "Sources/SwiftJLI/Qualified/QualifiedLosslessParseStorage.swift": "5c2f4c17b20babb4d710360a894cb17bcd9b3b4f5ccd1caf93cb86245433b804",
+    "Sources/SwiftJLI/Qualified/QualifiedMarkers.swift": "8d883a1057be5264954b281610b7a00a0ae9d373395ea7f3fa1d312729557c13",
+    "Sources/SwiftJLI/Qualified/QualifiedOutcome.swift": "6e60916bbeea4f9ca6ccd570ef634af074202bf139880db82fe7e0dfc4b643ec",
+    "Sources/SwiftJLI/Qualified/QualifiedParser.swift": "9216a1b6a44ac03754bbdfc4862df36f05990241c1c46c5ca5841094ba63a511",
+    "Sources/SwiftJLI/Qualified/QualifiedQuantization.swift": "c909234bf347fb4c73f83c4a0d47f9ed37c0aed3d4b3a4920edae918dac99107",
+    "Sources/SwiftJLI/Qualified/QualifiedReconstruction.swift": "6283abc6f885fd0338d893e214c440c01472c643067934e0787f595ef306a278",
+    "Sources/SwiftJLI/Qualified/QualifiedStorage.swift": "968a577e0f68a85cb3ae9b74d7d66fb1b635b1f40bff1c6081b0b07753e17995",
+    "Sources/SwiftJLI/Qualified/QualifiedXYBProfile.swift": "90e54b8834ea9fd6d7e0d7ca868abfaac5ea851751a7ae09451899bcf267dae2",
+    "Sources/SwiftJLICLI/main.swift": "d233714b13970668841e38cf027f679e405cbfc373b0476477977a44d58887f3"
+  },
+  "qualifiedTestSHA256": "1c6e5c67eca77493ee56ba581e7b8021ce2b658e5791d7eba3a66f5b7b076b52",
+  "passed": {
+    "releaseTestDeclarations": 13,
+    "ASanTestDeclarations": 13,
+    "TSanTestDeclarations": 13,
+    "independentBaselineParameterCases": 13,
+    "predictorParameterCases": 7,
+    "exactPredecessorByteComparisons": 41,
+    "coldProcesses": 18,
+    "CAndSwiftAllocationPositiveControls": 2,
+    "zeroAllocationAndMappingCases": 16,
+    "separateMappingPositiveControl": 1
+  },
+  "releaseCommand": {
+    "argv": [
+      "xcrun",
+      "swift",
+      "test",
+      "--jobs",
+      "2",
+      "--scratch-path",
+      "/private/tmp/swiftjli-qualified-release",
+      "-c",
+      "release",
+      "--filter",
+      "QualifiedJPEGTests"
+    ],
+    "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+    "exitCode": 0
+  },
+  "mappingCalibration": {
+    "source": "Examples/QualifiedJPEGProbe/calibrate_mmap.c",
+    "sourceSHA256": "9a287c6e82012eb11c304ec62d90359dbf0e47258efacd96ac5652e9dff7932a",
+    "compile": [
+      "xcrun",
+      "clang",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-O2",
+      "Examples/QualifiedJPEGProbe/calibrate_mmap.c",
+      "-o",
+      "/private/tmp/swiftjli-qualified-adapter-probe/calibrate-mmap"
+    ],
+    "argv": [
+      "/private/tmp/swiftjli-qualified-adapter-probe/calibrate-mmap",
+      "/private/tmp/swiftjli-qualified-heap-final-build/libheap.dylib"
+    ],
+    "environment": {
+      "DYLD_INSERT_LIBRARIES": "/private/tmp/swiftjli-qualified-heap-final-build/libheap.dylib"
+    },
+    "compileExitCode": 0,
+    "exitCode": 0
+  },
+  "parityObjects": {
+    "predecessor": {
+      "configuration": "Debug",
+      "sha256": "e575c6406df2c80b8c841d4378f6137c78fe66472f4efed89b778b942b707256"
+    },
+    "candidate": {
+      "configuration": "Release",
+      "sha256": "396d539c3af33a7d5065f5169604fb10165c265aad48502494fd2676156d005e"
+    }
+  },
+  "priorEvidence": "../DICOMKitManagedJPEG-before-missing-dqt/",
+  "limitations": [
+    "Focused qualified API suites only; full library/CLI/consumer/platform gates are separate.",
+    "No new controlled performance measurement or full-hour fuzz campaign in this handback.",
+    "No physical-device result or general conformance claim.",
+    "Telemetry excludes caller-owned setup/bootstrap/worker/stack and arbitrary callback work.",
+    "Parity compares Debug predecessor with Release candidate for exact pixels only, never performance."
+  ]
+}
