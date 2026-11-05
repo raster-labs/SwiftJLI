@@ -1,0 +1,196 @@
+{
+  "status": "passed",
+  "scope": "MOCK fixtures only; no genuine Watch runtime/test evidence",
+  "helperSHA256": "a128b8aae5f65433b2fc07453a889c556509cbcd0ec1976f21df939324e3a964",
+  "fixtureRunnerSHA256": "a20f036c1709f5075f2c1781700026aab8b5662459561eeac209da5ba9c26f86",
+  "fixtures": [
+    {
+      "fixture": "positive mock",
+      "expected": "accepted",
+      "actual": "accepted",
+      "error": null
+    },
+    {
+      "fixture": "missing case",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Exactly six WATCH_QUALIFICATION records are required"
+    },
+    {
+      "fixture": "duplicate case",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch case names must be the six unique expected cases"
+    },
+    {
+      "fixture": "host record environment",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Every Watch record must identify watch-simulator"
+    },
+    {
+      "fixture": "physical record environment",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Every Watch record must identify watch-simulator"
+    },
+    {
+      "fixture": "skipped summary",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "xcresult skippedTests must be 0"
+    },
+    {
+      "fixture": "failed summary",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "xcresult result must be 'Passed'"
+    },
+    {
+      "fixture": "skipped device summary",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "xcresult device skippedTests must be 0"
+    },
+    {
+      "fixture": "failed device summary",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "xcresult device failedTests must be 0"
+    },
+    {
+      "fixture": "physical xcresult",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "xcresult environment is not a Watch simulator"
+    },
+    {
+      "fixture": "different xcresult device",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "xcresult and runner simulator IDs differ"
+    },
+    {
+      "fixture": "different xcresult OS version",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "xcresult OS version differs from the recorded Watch runtime"
+    },
+    {
+      "fixture": "old Watch runtime",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch runtime must be OS 26 or later"
+    },
+    {
+      "fixture": "failed runner command",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Every runner command must have a successful exit receipt"
+    },
+    {
+      "fixture": "missing command exit",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Every runner command must have a successful exit receipt"
+    },
+    {
+      "fixture": "Debug runner",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Runner configuration must be 'Release'"
+    },
+    {
+      "fixture": "Debug invocation",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Test argv must select -configuration Release"
+    },
+    {
+      "fixture": "wrong suite count",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "xcresult totalTestCount must be 6"
+    },
+    {
+      "fixture": "unknown case",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch case names must be the six unique expected cases"
+    },
+    {
+      "fixture": "extra record",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Exactly six WATCH_QUALIFICATION records are required"
+    },
+    {
+      "fixture": "missing budget",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch budget changed: maximumMemoryBytes"
+    },
+    {
+      "fixture": "nonfinite timing",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch elapsed time must be finite and nonnegative"
+    },
+    {
+      "fixture": "budget drift maximumCompressedBytes",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch budget changed: maximumCompressedBytes"
+    },
+    {
+      "fixture": "budget drift maximumDecodedBytes",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch budget changed: maximumDecodedBytes"
+    },
+    {
+      "fixture": "budget drift maximumWorkspaceBytes",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch budget changed: maximumWorkspaceBytes"
+    },
+    {
+      "fixture": "budget drift maximumMemoryBytes",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch budget changed: maximumMemoryBytes"
+    },
+    {
+      "fixture": "budget drift maximumWorkers",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch budget changed: maximumWorkers"
+    },
+    {
+      "fixture": "budget drift deadlineSeconds",
+      "expected": "rejected",
+      "actual": "rejected",
+      "error": "Watch budget changed: deadlineSeconds"
+    }
+  ],
+  "positiveMocks": 1,
+  "negativeMocks": 27,
+  "existingOutputGuard": {
+    "command": [
+      "/opt/homebrew/opt/python@3.15/bin/python3.15",
+      "/Users/pushparaj/projects/SwiftJLI-milestone5/Scripts/verify-watch-qualification.py",
+      "--evidence",
+      "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/watch-verifier-tests/attempt-2/no-real-evidence",
+      "--output",
+      "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/watch-verifier-tests/attempt-2/already-exists"
+    ],
+    "exitCode": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/Users/pushparaj/projects/SwiftJLI-milestone5/Scripts/verify-watch-qualification.py\", line 213, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pushparaj/projects/SwiftJLI-milestone5/Scripts/verify-watch-qualification.py\", line 144, in main\n    out.mkdir(parents=True, exist_ok=False)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/lib/python3.15/pathlib/__init__.py\", line 1210, in mkdir\n    os.mkdir(self, mode)\n    ~~~~~~~~^^^^^^^^^^^^\nFileExistsError: [Errno 17] File exists: '/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/watch-verifier-tests/attempt-2/already-exists'\n",
+    "sentinelUnchanged": true
+  },
+  "summaryFieldShapeReference": {
+    "path": "Documentation/Migration/Qualification/Milestone5/ci/test-isolation/visionos-xcresult-summary.json",
+    "sha256": "6dd837845d7ca197d17437fc5743bf3575c3884e73dae740a73dd1e76ade86b6",
+    "scope": "Field shape from a real hosted visionOS xcresult summary; all six-test Watch fixture values remain synthetic."
+  }
+}

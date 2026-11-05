@@ -1,0 +1,364 @@
+{
+  "status": "passed",
+  "startedUTC": "2026-11-03T07:28:22.127344+00:00",
+  "sourceHashes": {
+    "Package.swift": "b80b2ba943f394801f85d9140e4ef66dbc7e0c6505c8505f90b7b9fe513f4f93",
+    "Sources/SwiftJLI/CLISynchronousExecution.swift": "af92520630934f03632d37b87129cb2b9fcd2662503c62988a9611e9ccf87cde",
+    "Sources/SwiftJLI/CodecAPI.swift": "5d7deea6d873281217954083138d04ec7453b9c3c4a7037455b958c4b4948026",
+    "Sources/SwiftJLI/Errors.swift": "f71dd532405f2bca468ef39b29117513c686a89c64dd908ef598d1bca4f4fe6b",
+    "Sources/SwiftJLI/Image.swift": "fd4aa6679c4ab50738eb4266fe62c0db21cb46bf157d26db1daaa7b5e36dede5",
+    "Sources/SwiftJLI/ImageDescriptor.swift": "44cf8b2f796c0c39a17a4ff11ea8e97dc08f1f496cddc0197696a822922a1656",
+    "Sources/SwiftJLI/ImageStorage.swift": "a7ae2697bcf45996c4d556aa7fc8303fc0616cef9b86c13e9dd56e7a58cc36fb",
+    "Sources/SwiftJLI/JPEGCodec.swift": "3b4c221e4d9b4ac2f89814af93507fe96e172a64e0b6f878806f5afa1aa31aa5",
+    "Sources/SwiftJLI/JPEGDCTValidation.swift": "ce87c6e59437ed587ac5110655f544b8d794c8722158b4a37fe14827b8d65e99",
+    "Sources/SwiftJLI/JPEGEntropyBoundary.swift": "31540a448da9a40600bf623e98af022ad80b709735c2d88e8baacde3d8d7d248",
+    "Sources/SwiftJLI/JPEGEnvelope.swift": "5c49e236858e3ad26f76edbe77916f906416b41314f4f6d5791aa770ca850c43",
+    "Sources/SwiftJLI/JPEGInspection.swift": "5d671f2ce2e5dfdcb20ce01084861b6d6837d2bb3d67f2fbafa89c9689d94e34",
+    "Sources/SwiftJLI/Native/ColorSpace/ICCProfileMD5.swift": "3f891177070f29418586736e502432b893fd4936eacb81e9cfb914012f185942",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIChromaSampling.swift": "e1cc179fa5222797d585505cc9725e5097f87ae00ac9707ea03aedad5ed0121b",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIColorConversion.swift": "1554c7b953937b6faed37c2594af645168d1641a979ae6833a7279a7a394ff99",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIXYBICCProfile.swift": "68942179aa518b418022f33d7be9c2657d32aa3df13eca740f6e716eaaff9c9b",
+    "Sources/SwiftJLI/Native/ColorSpace/SRGBICCProfile.swift": "e1bf95403549f922e24d219cad2e5d526aa813f8948ce5ef601ee8d1dde1687a",
+    "Sources/SwiftJLI/Native/Contract/BorrowedPlane.swift": "09cc85db6b1268760f0e27f8db4697544af2049ca2266b9520deb007f4b398f4",
+    "Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift": "194d57b1ccbe89875f474ad101cace3a8464e23cf339a962935e4fc681c2972a",
+    "Sources/SwiftJLI/Native/Contract/SharedRGBInput.swift": "7902000f7f7f9a05b50b5bce717818e3c46e7bb4bb101013a0b206c2ee23a317",
+    "Sources/SwiftJLI/Native/Core/JLIConfiguration.swift": "59fae13f77a57efaae10229e3d09958f69cf4ad4a9209ee33802abe4be7de262",
+    "Sources/SwiftJLI/Native/Core/JLIError.swift": "c084ca38d2c22faaef784f9272bb6f4ee5a7e344f832234c14949e848dcc9d0d",
+    "Sources/SwiftJLI/Native/Core/JLIImage.swift": "37f94c32307e5a6396cf300be242d57a5f4f1190cc756609b8f36174d02344d0",
+    "Sources/SwiftJLI/Native/Core/JLIJPEGInfo.swift": "4cee6d0e2ad859215eef3814f9ee87d12c77db5a47ebe1a7849b7445e5fa60a1",
+    "Sources/SwiftJLI/Native/DSP/JLIAdaptiveQuant.swift": "02dcfd5a5a9d327ce6db7cebcc59e46a1c6dafa97406c247f6752a281037c938",
+    "Sources/SwiftJLI/Native/DSP/JLIDCT.swift": "c9cbb8386b8a03b49e0039212cbf9a035f52d0a929ed6a5400bd7ae5bbf18d49",
+    "Sources/SwiftJLI/Native/DSP/JLIPerceptualQuant.swift": "b3a2d4eb518dee9859110060dec0d4f048460b6f06ba3e2a349982488cf202a2",
+    "Sources/SwiftJLI/Native/DSP/JLIQuantization.swift": "1b4658d05ab71c9d05e16137037ffc55e0d9a77ddc81b286afd3c7b7e109d4b2",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "cd7f6c4ef4b6d114834e830c7b32e5410241473f88312f0bf71ce28c319de332",
+    "Sources/SwiftJLI/Native/Decoder/JLIProgressiveDecoder.swift": "7eabfcf26b729a78bb6a7000cc9afa6fff8367d22e3905802311f82177dd4910",
+    "Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift": "9c1eee6ca5f3d9c774cc2902ed30fe1cae6c0f53a387d4d080e514ced2f54998",
+    "Sources/SwiftJLI/Native/Encoder/JLIProgressiveEncoder.swift": "46236de2f77317225ea2f5daa2b6a981c9b5df65c1e42de3af6cb95d23cd0758",
+    "Sources/SwiftJLI/Native/Entropy/ACLookahead.swift": "55256a6631fd59c12eedef3ba9d3e059d473f979931333ba4f70d878322e6ce6",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": "a33f90f3643de89a0d57744f44ec09cce9bcacdc3d3668245cb82127b05e769d",
+    "Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift": "ac64d194ac01ae04eaad8b3f339f252727c557daf4172359e3d2c8d2d6cf5dba",
+    "Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift": "f06c26bb00f4140a99b14c8c600af1f29f8fc86aad394c317015e4720bafbd33",
+    "Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift": "b40b47062c1b393fc3d1fa02aa97ca73b9b446729d9d214ea011579659414ff1",
+    "Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift": "b53d7d3c11defbe73794f6f4fbdfdc864e69f76724f0a993a86a19a71cb0f9ae",
+    "Sources/SwiftJLI/Native/Entropy/ZeroRunLosslessDecoder.swift": "23610c0a0c8e81f9bd793c4124e20ff4957eec741f76d170a55c27b693d8f106",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift": "e7b8d000586e9ffba39acc3298e2b221e0e89592398297ee9c006545fb3299c9",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerWriter.swift": "b16d4fcde67541c67cda5078b6c1fa382ec1bd4433b76dbe70047d85fc00ab8d",
+    "Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift": "8f74be440f1d985d99c3ef995984ea1a64d3a4d8e86d928a97bc32ce1a4dd5c0",
+    "Sources/SwiftJLI/Native/Platform/PlatformDetection.swift": "f3b15878ee0ef7c661de5a8f37d33e15691dbd0f2932ec55ffa3ff04f1609e39",
+    "Sources/SwiftJLI/Native/Platform/ScalarDSP.swift": "865685933c007c336d91cc1810fb2623c4b26c42c87c8e0f483d801c642ad72a",
+    "Sources/SwiftJLI/NativeExecution.swift": "5bd69a699f23a0559ab2b05aeb28e8cc8b9c3639f35e868eb0c793cda9894608",
+    "Sources/SwiftJLI/Options.swift": "dd43c63592bf4d74c53626374fb4494b0815315f0f64bc1a2831f9c066b5d787",
+    "Sources/SwiftJLICLI/main.swift": "8099c26e254d45f2e703520a1c33ef97d8393f4f149d8f3f541dd710f1b1813e",
+    "Examples/AppleMemoryProbe/Package.swift": "22df02682418b8b89bc05f095349a1461a58939348d913c570a9136fb0052a47",
+    "Examples/AppleMemoryProbe/Sources/AppleMemoryProbe/Probe.swift": "752f93518356eaad7956e3df1ccb7c5c2f91273b3d5aa35b32c224fced37dd15",
+    "Examples/AppleMemoryProbe/Sources/AppleMemoryProbe/Stress.swift": "c41290506eb7e82fd83261361bc2ce6da908e38810448f2434dd9f6ecde6e12a"
+  },
+  "commands": [
+    {
+      "label": "revision",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:22.131282+00:00",
+      "stdout": "revision.stdout",
+      "stderr": "revision.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:22.140631+00:00",
+      "stdoutSHA256": "3eb0ba9d185c628d4277b8d7ecd7527e0abcfb7477338590605d7c7f6b5e8ed9",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "working-tree",
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:22.141055+00:00",
+      "stdout": "working-tree.stdout",
+      "stderr": "working-tree.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:22.165874+00:00",
+      "stdoutSHA256": "91418a0dad72826c70e477a3733a57ea0d44a52056c46e3ddb5b2f361bdde1c7",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "compiler",
+      "command": [
+        "xcrun",
+        "swift",
+        "--version"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:22.166276+00:00",
+      "stdout": "compiler.stdout",
+      "stderr": "compiler.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:22.310434+00:00",
+      "stdoutSHA256": "4b59da256292ae42e3f04ef6d06ea3e139678613a3cd3d0dc37a6757c0bd290a",
+      "stderrSHA256": "bbc8b176d3c74d4c5a7fd00b40280f98168e116d5272273bfe8e71407625540e"
+    },
+    {
+      "label": "xcode",
+      "command": [
+        "xcodebuild",
+        "-version"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:22.310831+00:00",
+      "stdout": "xcode.stdout",
+      "stderr": "xcode.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:22.387944+00:00",
+      "stdoutSHA256": "67c5b47bcf0e788aecae2f9b3af345813bdf7fe736faefb9666a7f4b2bf27ba7",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "host",
+      "command": [
+        "sw_vers"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:22.388827+00:00",
+      "stdout": "host.stdout",
+      "stderr": "host.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:22.403641+00:00",
+      "stdoutSHA256": "4ef10a0fc370704ea84699cf3851e51488598c5f1ab35cb572eb6b96278a8e5c",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "build",
+      "command": [
+        "xcrun",
+        "swift",
+        "build",
+        "--package-path",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Examples/AppleMemoryProbe",
+        "--scratch-path",
+        "/private/tmp/swiftjli-m5-apple-memory-vafgoam8/build",
+        "--build-system",
+        "swiftbuild",
+        "-c",
+        "release",
+        "-j",
+        "2",
+        "--product",
+        "AppleMemoryProbe"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:22.404559+00:00",
+      "stdout": "build.stdout",
+      "stderr": "build.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:48.766163+00:00",
+      "stdoutSHA256": "6a25612bbe1cce1dd25de5f45b4946192b723bb9bef5dcde28155d580931550c",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "binary-path",
+      "command": [
+        "xcrun",
+        "swift",
+        "build",
+        "--package-path",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Examples/AppleMemoryProbe",
+        "--scratch-path",
+        "/private/tmp/swiftjli-m5-apple-memory-vafgoam8/build",
+        "--build-system",
+        "swiftbuild",
+        "-c",
+        "release",
+        "-j",
+        "2",
+        "--product",
+        "AppleMemoryProbe",
+        "--show-bin-path"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:48.766676+00:00",
+      "stdout": "binary-path.stdout",
+      "stderr": "binary-path.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:49.399471+00:00",
+      "stdoutSHA256": "55eaf669eb8c1f8629b1c67dd8e0efdbe45372cc8b14dc020bb5ab14aff6b115",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "dct12-baseline",
+      "command": [
+        "/private/tmp/swiftjli-m5-apple-memory-vafgoam8/build/out/Products/Release/AppleMemoryProbe"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:49.403293+00:00",
+      "stdout": "dct12-baseline.stdout",
+      "stderr": "dct12-baseline.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:50.269020+00:00",
+      "stdoutSHA256": "842b760d7e9144f1447f6c65ffe56044464203fc3137888318b2a2cef4a838cd",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "dct12-control",
+      "command": [
+        "/private/tmp/swiftjli-m5-apple-memory-vafgoam8/build/out/Products/Release/AppleMemoryProbe",
+        "--control-copy"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:50.270249+00:00",
+      "stdout": "dct12-control.stdout",
+      "stderr": "dct12-control.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:50.956555+00:00",
+      "stdoutSHA256": "10eb163aa711eff7be8cc165970a33046b6c39b87ab0335ddaaf79a4934358b8",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "rgb8-baseline",
+      "command": [
+        "/private/tmp/swiftjli-m5-apple-memory-vafgoam8/build/out/Products/Release/AppleMemoryProbe",
+        "--rgb8"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:50.958117+00:00",
+      "stdout": "rgb8-baseline.stdout",
+      "stderr": "rgb8-baseline.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:53.401113+00:00",
+      "stdoutSHA256": "4d00ff263fb18ceeefb4273803194cc0f5d63ccdf5404cda1045606d6ed2e0e9",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "rgb8-control",
+      "command": [
+        "/private/tmp/swiftjli-m5-apple-memory-vafgoam8/build/out/Products/Release/AppleMemoryProbe",
+        "--rgb8",
+        "--control-copy"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:28:53.402017+00:00",
+      "stdout": "rgb8-control.stdout",
+      "stderr": "rgb8-control.stderr",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:28:55.098697+00:00",
+      "stdoutSHA256": "09676955bcbda4e5f965065dc6d55cf01b019a6e9559e872ece15c969a0ed4b6",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scratch": "/private/tmp/swiftjli-m5-apple-memory-vafgoam8",
+  "buildEngine": "swiftbuild",
+  "configuration": "release",
+  "sanitizers": false,
+  "jobs": 2,
+  "scope": "Apple process allocator retained-frame controls, not performance timings or pure workspace measurements",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+    "CLANG_MODULE_CACHE_PATH": "/private/tmp/swiftjli-m5-apple-memory-vafgoam8/clang-cache",
+    "SWIFTPM_MODULECACHE_OVERRIDE": "/private/tmp/swiftjli-m5-apple-memory-vafgoam8/swift-cache"
+  },
+  "runnerSHA256": "620acd93f90cd9c21ccd9582b9e4bf5a13c8c426f7314e97b6b7b233fe9ca744",
+  "profiles": [
+    {
+      "profile": "dct12",
+      "controlCopy": false,
+      "status": "passed",
+      "records": 28,
+      "summary": [
+        {
+          "width": 257,
+          "records": 14,
+          "maximumLiveIncreaseBytes": 0,
+          "maximumCumulativeProcessRSSBytes": 21069824,
+          "highWaterFieldUnavailableRecords": 14
+        },
+        {
+          "width": 1024,
+          "records": 14,
+          "maximumLiveIncreaseBytes": 0,
+          "maximumCumulativeProcessRSSBytes": 73842688,
+          "highWaterFieldUnavailableRecords": 14
+        }
+      ]
+    },
+    {
+      "profile": "dct12",
+      "controlCopy": true,
+      "status": "passed",
+      "records": 28,
+      "summary": [
+        {
+          "width": 257,
+          "records": 14,
+          "maximumLiveIncreaseBytes": 4718512,
+          "maximumCumulativeProcessRSSBytes": 27803648,
+          "highWaterFieldUnavailableRecords": 14
+        },
+        {
+          "width": 1024,
+          "records": 14,
+          "maximumLiveIncreaseBytes": 132644816,
+          "maximumCumulativeProcessRSSBytes": 202522624,
+          "highWaterFieldUnavailableRecords": 14
+        }
+      ]
+    },
+    {
+      "profile": "rgb8",
+      "controlCopy": false,
+      "status": "passed",
+      "records": 28,
+      "summary": [
+        {
+          "width": 257,
+          "records": 14,
+          "maximumLiveIncreaseBytes": 7824,
+          "maximumCumulativeProcessRSSBytes": 27164672,
+          "highWaterFieldUnavailableRecords": 14
+        },
+        {
+          "width": 1024,
+          "records": 14,
+          "maximumLiveIncreaseBytes": 0,
+          "maximumCumulativeProcessRSSBytes": 127811584,
+          "highWaterFieldUnavailableRecords": 14
+        }
+      ]
+    },
+    {
+      "profile": "rgb8",
+      "controlCopy": true,
+      "status": "passed",
+      "records": 28,
+      "summary": [
+        {
+          "width": 257,
+          "records": 14,
+          "maximumLiveIncreaseBytes": 6819680,
+          "maximumCumulativeProcessRSSBytes": 33193984,
+          "highWaterFieldUnavailableRecords": 14
+        },
+        {
+          "width": 1024,
+          "records": 14,
+          "maximumLiveIncreaseBytes": 132640704,
+          "maximumCumulativeProcessRSSBytes": 245366784,
+          "highWaterFieldUnavailableRecords": 14
+        }
+      ]
+    }
+  ],
+  "repositoryRevision": "f4e6e6562b32056affbb375f8cd6bb708bc7d8ad",
+  "workingTree": " M Documentation/Migration/ACCEPTANCE.md\n M IMPLEMENTATION.md\n M MIGRATION.md\n M README.md\n M Scripts/README.md\n?? Documentation/Migration/Qualification/Milestone5/apple-memory/\n?? Documentation/Migration/Qualification/Milestone5/fuzz/\n",
+  "compiler": "Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)\nTarget: arm64-apple-macosx27.0.0",
+  "binaryPath": "/private/tmp/swiftjli-m5-apple-memory-vafgoam8/build/out/Products/Release/AppleMemoryProbe",
+  "binarySHA256": "d3b8d02768d529588b4bc0d0e5a2685279408c10a25c6104f0f2f0f44f931cd1",
+  "shippingSourcesMatch5351088": true,
+  "shippingSourceCount": 46,
+  "measurements": 56,
+  "controls": 56,
+  "finishedUTC": "2026-11-03T07:28:55.105227+00:00"
+}

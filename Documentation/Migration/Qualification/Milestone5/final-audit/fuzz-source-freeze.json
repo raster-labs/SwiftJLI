@@ -1,0 +1,519 @@
+{
+  "auditedUTC": "2026-11-03T09:16:50.260169+00:00",
+  "status": "passed",
+  "scope": "Read-only raw-log/source-freeze/evidence-packaging audit; no builds, fuzz reruns, benchmarks or CI-pass inference",
+  "checkoutRevision": "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed",
+  "shippingRevision": "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+  "archiveSHA256": "9b15cf200df274e1c3d7bb4ea9ac9118b08d8954c3f7b531f275de6788769d05",
+  "campaignSHA256": "734a11e34f1e2d5fbc5d5dfbdeb8ba25aac7c0a94ced9b2c2129daef5d0f3e05",
+  "logs": [
+    {
+      "retained": "build.log.gz",
+      "gzipSHA256": "73d890c582ff961c7e2f08adf71408d8e8069a4ab294a4710776a43288f2de16",
+      "rawSHA256": "fc43519990d786d58ffdbd58caf7eda60a8f3c545c2c7d7586ad2d0fb3a1cebe",
+      "rawBytes": 143,
+      "matched": true
+    },
+    {
+      "retained": "inspect.jsonl.gz",
+      "gzipSHA256": "a826c2e7f7a73542f9dd71849e6552a3965d0b10d60cca40b0bf6a44c22483aa",
+      "rawSHA256": "ec6d1370a8a68599a93b72356844568323c5fa52cd6973173631fbceedfdd1be",
+      "rawBytes": 457611,
+      "matched": true
+    },
+    {
+      "retained": "inspectJPEG.jsonl.gz",
+      "gzipSHA256": "d69f1ce1447e10747f171baf98eec6193f86a7d60c0475384622aa268bccf80c",
+      "rawSHA256": "5ab55e27e49f6a8ba6b8f450e12f30f1174a39885cf3b4f3807f6951d45e473c",
+      "rawBytes": 471965,
+      "matched": true
+    },
+    {
+      "retained": "allocate.jsonl.gz",
+      "gzipSHA256": "bd5fe9178ff4df1d3bf41ab42fe9d3979f89d1ef51925fad5e9279abedb0c95e",
+      "rawSHA256": "3da46de599cb408e27db790595dfa1068321a064ecdb001742a2115dc8d90eba",
+      "rawBytes": 449975,
+      "matched": true
+    },
+    {
+      "retained": "destination.jsonl.gz",
+      "gzipSHA256": "3b1516261cf95873215da78fe80d29ded411dbd1e14a28cb8f0acd91214ad399",
+      "rawSHA256": "a1ad1e1ff8b35d3f31905d53ae73a1d51265d3280eca8d1a47fedba217d17f2c",
+      "rawBytes": 460500,
+      "matched": true
+    }
+  ],
+  "entries": [
+    {
+      "entry": "inspect",
+      "events": 3601,
+      "progressRecords": 3599,
+      "completion": {
+        "accepted": 226601867,
+        "attempts": 613452420,
+        "elapsed_seconds": 3600.000041549,
+        "entry": "inspect",
+        "errors": {
+          "malformedInput": 355271976,
+          "resourceLimitExceeded": 3460212,
+          "unsupportedFeature": 28118365
+        },
+        "event": "complete",
+        "peak_rss_bytes": 24248320,
+        "rejected": 386850553
+      },
+      "exitCode": 0,
+      "monotonicCounters": true,
+      "attemptsEqualAcceptedPlusRejectedAtEveryCheckpoint": true,
+      "errorCategorySumMatchesRejections": true,
+      "failureEvents": 0,
+      "failureSeedExists": false,
+      "limitsVerified": true
+    },
+    {
+      "entry": "inspectJPEG",
+      "events": 3601,
+      "progressRecords": 3599,
+      "completion": {
+        "accepted": 223495207,
+        "attempts": 605043714,
+        "elapsed_seconds": 3600.000055446,
+        "entry": "inspectJPEG",
+        "errors": {
+          "malformedInput": 350402888,
+          "resourceLimitExceeded": 3412842,
+          "unsupportedFeature": 27732777
+        },
+        "event": "complete",
+        "peak_rss_bytes": 24154112,
+        "rejected": 381548507
+      },
+      "exitCode": 0,
+      "monotonicCounters": true,
+      "attemptsEqualAcceptedPlusRejectedAtEveryCheckpoint": true,
+      "errorCategorySumMatchesRejections": true,
+      "failureEvents": 0,
+      "failureSeedExists": false,
+      "limitsVerified": true
+    },
+    {
+      "entry": "allocate",
+      "events": 3601,
+      "progressRecords": 3599,
+      "completion": {
+        "accepted": 16393624,
+        "attempts": 63780834,
+        "elapsed_seconds": 3600.000024477,
+        "entry": "allocate",
+        "errors": {
+          "malformedInput": 44104203,
+          "resourceLimitExceeded": 360343,
+          "unsupportedFeature": 2922664
+        },
+        "event": "complete",
+        "peak_rss_bytes": 25899008,
+        "rejected": 47387210
+      },
+      "exitCode": 0,
+      "monotonicCounters": true,
+      "attemptsEqualAcceptedPlusRejectedAtEveryCheckpoint": true,
+      "errorCategorySumMatchesRejections": true,
+      "failureEvents": 0,
+      "failureSeedExists": false,
+      "limitsVerified": true
+    },
+    {
+      "entry": "destination",
+      "events": 3601,
+      "progressRecords": 3599,
+      "completion": {
+        "accepted": 15239049,
+        "attempts": 59345839,
+        "elapsed_seconds": 3600.000053916,
+        "entry": "destination",
+        "errors": {
+          "incompatibleImageLayout": 51854,
+          "malformedInput": 41000187,
+          "resourceLimitExceeded": 335311,
+          "unsupportedFeature": 2719438
+        },
+        "event": "complete",
+        "peak_rss_bytes": 25792512,
+        "rejected": 44106790
+      },
+      "exitCode": 0,
+      "monotonicCounters": true,
+      "attemptsEqualAcceptedPlusRejectedAtEveryCheckpoint": true,
+      "errorCategorySumMatchesRejections": true,
+      "failureEvents": 0,
+      "failureSeedExists": false,
+      "limitsVerified": true
+    }
+  ],
+  "sourceChecks": {
+    "Package.swift": {
+      "sha256": "b80b2ba943f394801f85d9140e4ef66dbc7e0c6505c8505f90b7b9fe513f4f93",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/CLISynchronousExecution.swift": {
+      "sha256": "af92520630934f03632d37b87129cb2b9fcd2662503c62988a9611e9ccf87cde",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/CodecAPI.swift": {
+      "sha256": "5d7deea6d873281217954083138d04ec7453b9c3c4a7037455b958c4b4948026",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Errors.swift": {
+      "sha256": "f71dd532405f2bca468ef39b29117513c686a89c64dd908ef598d1bca4f4fe6b",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Image.swift": {
+      "sha256": "fd4aa6679c4ab50738eb4266fe62c0db21cb46bf157d26db1daaa7b5e36dede5",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/ImageDescriptor.swift": {
+      "sha256": "44cf8b2f796c0c39a17a4ff11ea8e97dc08f1f496cddc0197696a822922a1656",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/ImageStorage.swift": {
+      "sha256": "a7ae2697bcf45996c4d556aa7fc8303fc0616cef9b86c13e9dd56e7a58cc36fb",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/JPEGCodec.swift": {
+      "sha256": "3b4c221e4d9b4ac2f89814af93507fe96e172a64e0b6f878806f5afa1aa31aa5",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/JPEGDCTValidation.swift": {
+      "sha256": "ce87c6e59437ed587ac5110655f544b8d794c8722158b4a37fe14827b8d65e99",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/JPEGEntropyBoundary.swift": {
+      "sha256": "31540a448da9a40600bf623e98af022ad80b709735c2d88e8baacde3d8d7d248",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/JPEGEnvelope.swift": {
+      "sha256": "5c49e236858e3ad26f76edbe77916f906416b41314f4f6d5791aa770ca850c43",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/JPEGInspection.swift": {
+      "sha256": "5d671f2ce2e5dfdcb20ce01084861b6d6837d2bb3d67f2fbafa89c9689d94e34",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/ColorSpace/ICCProfileMD5.swift": {
+      "sha256": "3f891177070f29418586736e502432b893fd4936eacb81e9cfb914012f185942",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/ColorSpace/JLIChromaSampling.swift": {
+      "sha256": "e1cc179fa5222797d585505cc9725e5097f87ae00ac9707ea03aedad5ed0121b",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/ColorSpace/JLIColorConversion.swift": {
+      "sha256": "1554c7b953937b6faed37c2594af645168d1641a979ae6833a7279a7a394ff99",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/ColorSpace/JLIXYBICCProfile.swift": {
+      "sha256": "68942179aa518b418022f33d7be9c2657d32aa3df13eca740f6e716eaaff9c9b",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/ColorSpace/SRGBICCProfile.swift": {
+      "sha256": "e1bf95403549f922e24d219cad2e5d526aa813f8948ce5ef601ee8d1dde1687a",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Contract/BorrowedPlane.swift": {
+      "sha256": "09cc85db6b1268760f0e27f8db4697544af2049ca2266b9520deb007f4b398f4",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift": {
+      "sha256": "194d57b1ccbe89875f474ad101cace3a8464e23cf339a962935e4fc681c2972a",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Contract/SharedRGBInput.swift": {
+      "sha256": "7902000f7f7f9a05b50b5bce717818e3c46e7bb4bb101013a0b206c2ee23a317",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Core/JLIConfiguration.swift": {
+      "sha256": "59fae13f77a57efaae10229e3d09958f69cf4ad4a9209ee33802abe4be7de262",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Core/JLIError.swift": {
+      "sha256": "c084ca38d2c22faaef784f9272bb6f4ee5a7e344f832234c14949e848dcc9d0d",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Core/JLIImage.swift": {
+      "sha256": "37f94c32307e5a6396cf300be242d57a5f4f1190cc756609b8f36174d02344d0",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Core/JLIJPEGInfo.swift": {
+      "sha256": "4cee6d0e2ad859215eef3814f9ee87d12c77db5a47ebe1a7849b7445e5fa60a1",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/DSP/JLIAdaptiveQuant.swift": {
+      "sha256": "02dcfd5a5a9d327ce6db7cebcc59e46a1c6dafa97406c247f6752a281037c938",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/DSP/JLIDCT.swift": {
+      "sha256": "c9cbb8386b8a03b49e0039212cbf9a035f52d0a929ed6a5400bd7ae5bbf18d49",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/DSP/JLIPerceptualQuant.swift": {
+      "sha256": "b3a2d4eb518dee9859110060dec0d4f048460b6f06ba3e2a349982488cf202a2",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/DSP/JLIQuantization.swift": {
+      "sha256": "1b4658d05ab71c9d05e16137037ffc55e0d9a77ddc81b286afd3c7b7e109d4b2",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": {
+      "sha256": "cd7f6c4ef4b6d114834e830c7b32e5410241473f88312f0bf71ce28c319de332",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Decoder/JLIProgressiveDecoder.swift": {
+      "sha256": "7eabfcf26b729a78bb6a7000cc9afa6fff8367d22e3905802311f82177dd4910",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift": {
+      "sha256": "9c1eee6ca5f3d9c774cc2902ed30fe1cae6c0f53a387d4d080e514ced2f54998",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Encoder/JLIProgressiveEncoder.swift": {
+      "sha256": "46236de2f77317225ea2f5daa2b6a981c9b5df65c1e42de3af6cb95d23cd0758",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Entropy/ACLookahead.swift": {
+      "sha256": "55256a6631fd59c12eedef3ba9d3e059d473f979931333ba4f70d878322e6ce6",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": {
+      "sha256": "a33f90f3643de89a0d57744f44ec09cce9bcacdc3d3668245cb82127b05e769d",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift": {
+      "sha256": "ac64d194ac01ae04eaad8b3f339f252727c557daf4172359e3d2c8d2d6cf5dba",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift": {
+      "sha256": "f06c26bb00f4140a99b14c8c600af1f29f8fc86aad394c317015e4720bafbd33",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift": {
+      "sha256": "b40b47062c1b393fc3d1fa02aa97ca73b9b446729d9d214ea011579659414ff1",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift": {
+      "sha256": "b53d7d3c11defbe73794f6f4fbdfdc864e69f76724f0a993a86a19a71cb0f9ae",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Entropy/ZeroRunLosslessDecoder.swift": {
+      "sha256": "23610c0a0c8e81f9bd793c4124e20ff4957eec741f76d170a55c27b693d8f106",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift": {
+      "sha256": "e7b8d000586e9ffba39acc3298e2b221e0e89592398297ee9c006545fb3299c9",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerWriter.swift": {
+      "sha256": "b16d4fcde67541c67cda5078b6c1fa382ec1bd4433b76dbe70047d85fc00ab8d",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift": {
+      "sha256": "8f74be440f1d985d99c3ef995984ea1a64d3a4d8e86d928a97bc32ce1a4dd5c0",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Platform/PlatformDetection.swift": {
+      "sha256": "f3b15878ee0ef7c661de5a8f37d33e15691dbd0f2932ec55ffa3ff04f1609e39",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Native/Platform/ScalarDSP.swift": {
+      "sha256": "865685933c007c336d91cc1810fb2623c4b26c42c87c8e0f483d801c642ad72a",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/NativeExecution.swift": {
+      "sha256": "695d091246e8ed32a196d55e1722f08dcdf0785e579693963ce37df999b85d2e",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLI/Options.swift": {
+      "sha256": "dd43c63592bf4d74c53626374fb4494b0815315f0f64bc1a2831f9c066b5d787",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Sources/SwiftJLICLI/main.swift": {
+      "sha256": "8099c26e254d45f2e703520a1c33ef97d8393f4f149d8f3f541dd710f1b1813e",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Examples/DecoderFuzz/Package.swift": {
+      "sha256": "8d20f5b207239c561734a4177af793b266ccfa3cc1f25af1324f85df026d1dac",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    },
+    "Examples/DecoderFuzz/Sources/DecoderFuzz/main.swift": {
+      "sha256": "d067b756c6ae9b3083bfc63f3d81c1f14c079ddea8ec192dce3d3a3ae753cf16",
+      "matchesPinnedGitBytes": true,
+      "matchesCurrentBytes": true
+    }
+  },
+  "supervisorSHA256": "61544ac48bcee7d7be64855a7a3d0616a2dcb8485ef7e02dffcd4bf2c7d97f31",
+  "privateExecutable": {
+    "path": "/private/tmp/swiftjli-m5-fuzz-executable-b1x6fsrw/DecoderFuzz",
+    "exists": true,
+    "sha256": "345f5ae488f3ee0d2d7022580204bbba2e8af41a397d0dc4a4c7bd0468cc12fc",
+    "bytes": 3481008
+  },
+  "imageReceiptVerified": {
+    "id": "sha256:bca121f6eb59fd80340d1296887b2698ed8f3eb9eca7d80c181f8af769dc7ee0",
+    "repoDigests": [
+      "swift@sha256:bca121f6eb59fd80340d1296887b2698ed8f3eb9eca7d80c181f8af769dc7ee0"
+    ],
+    "architecture": "arm64",
+    "os": "linux"
+  },
+  "sourceFreeze": {
+    "gitCommands": [
+      {
+        "argv": [
+          "git",
+          "merge-base",
+          "--is-ancestor",
+          "8ae2762710d6279cd92222f5bb5ca95f042f694e",
+          "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "git",
+          "merge-base",
+          "--is-ancestor",
+          "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+          "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "git",
+          "merge-base",
+          "--is-ancestor",
+          "bbb0b1a9a602807643fc254fb4e0d54a162d5ae8",
+          "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed"
+        ],
+        "exitCode": 1,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--name-only",
+          "8ae2762710d6279cd92222f5bb5ca95f042f694e",
+          "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed",
+          "--",
+          "Sources",
+          "Package.swift"
+        ],
+        "exitCode": 0,
+        "stdout": "Sources/SwiftJLI/NativeExecution.swift\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--name-only",
+          "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+          "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed",
+          "--",
+          "Sources",
+          "Package.swift"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "ownerConfirmationSHA256": "6273d80e02d555688d0b3985cf225f02446ddc5982684d055ee8984b7a8a33d7",
+    "ownerConfirmation": {
+      "recordedUTC": "2026-11-03T08:46:49.411419+00:00",
+      "ownerAnswer": "Keep the frozen candidate and use an immutable PR base (Recommended)",
+      "pinnedBaseBranch": "codex/milestone-5-baseline-8ae2762",
+      "pinnedBaseSHA": "8ae2762710d6279cd92222f5bb5ca95f042f694e",
+      "shippingRevision": "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+      "excludedConcurrentPerformanceHead": "bbb0b1a9a602807643fc254fb4e0d54a162d5ae8",
+      "relationshipToEarlierRecord": "Confirms the previously stated frozen-candidate assumption in base-resolution.json; the earlier decision chronology remains unchanged."
+    },
+    "livePRSnapshot": "pr-source-freeze.json"
+  },
+  "documentation": {
+    "localLinksChecked": 98,
+    "missingLocalLinks": [],
+    "reviewedFileHashes": {
+      "README.md": "547c738bc1520e31baff02d9de831f48a7c8fa013f11fe2870fc7f43e4aa95c5",
+      "IMPLEMENTATION.md": "466a79bc597cc0b587fc15db0eb5f9669f586a860db985d5da39e006024781e6",
+      "MIGRATION.md": "f3888eb4855c0df98f873db06a239142ac2dd43334be480ddf6b35930a8937be",
+      "CHANGELOG.md": "92f3dc01e5efc25441258565946d4f4777d8928eeb40ad301f2f27f8b4355d15",
+      "Documentation/Migration/ACCEPTANCE.md": "832e31597cb4adcdee88f23f315cfa27c23e39ad5db9d90d9710f2f6c432de34",
+      "Documentation/Migration/Qualification/Milestone5/README.md": "2ad6e9d292ae528f8707f4ea01199366300f83389f2092bdc7693533cc241793",
+      "Documentation/Migration/Qualification/Milestone5/final-fuzz/README.md": "5416f38e992d8d7acba0f5053cfaa75b1874339adfb9e57651ba8d1c1a6a3015",
+      "Documentation/Migration/Qualification/Milestone5/performance/controlled-summary.md": "93fb0dd12119a83d608e98b5d617cf790f7feb64a4227c8a9e6fbf3b3cb3fc3d"
+    },
+    "performanceScope": "Current M5 docs identify matched8ae-to-f548 callback-owner regression comparison only; explicitly exclude bbb0b1a and state desktop/tail limitations. No latest-concurrent-code qualification found.",
+    "followUp": "Live PR body still says full-hour fuzz and controlled performance are pending; update at final reconciliation. Latest07cc CI remains outside this audit and pending per owner."
+  },
+  "securityReceipt": {
+    "path": "../security-follow-up.json",
+    "sha256": "06383032f2082e72acf428416cfc75fdf7f2248913a4f1c57a689cb44ead99a4",
+    "enabled": false,
+    "admin": false,
+    "scope": "Reviewed just-recorded read-only receipt; no second API call or setting change"
+  }
+}

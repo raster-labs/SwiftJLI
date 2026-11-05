@@ -1,0 +1,77 @@
+{
+  "scope": "Direct field/provenance audit only; not full semantic validation",
+  "records": [
+    {
+      "file": "spdx/spdx3-3.0.1-SwiftJLI-f548e5048e5c71204c2a2ec4036bf66c4f040285-all-2026-11-03T07_43_18Z.json",
+      "sha256": "53b1153c041417e953db85afba47e6e4c6d9015e0adfb075ae140851da5ebc01",
+      "findings": [
+        {
+          "kind": "producer_nonstandard_properties",
+          "name": "swiftjli",
+          "properties": [
+            "externalUrl",
+            "software_internalVersion"
+          ]
+        },
+        {
+          "kind": "producer_nonstandard_properties",
+          "name": "SwiftJLI",
+          "properties": [
+            "externalUrl",
+            "software_internalVersion"
+          ]
+        }
+      ],
+      "componentVersionsMatchCandidate": true,
+      "declaredComponents": [
+        {
+          "name": "swiftjli",
+          "version": "f548e5048e5c71204c2a2ec4036bf66c4f040285"
+        },
+        {
+          "name": "SwiftJLI",
+          "version": "f548e5048e5c71204c2a2ec4036bf66c4f040285"
+        }
+      ],
+      "sdkRuntimeComponentsPresent": false
+    },
+    {
+      "file": "cyclonedx/cyclonedx1-1.7-SwiftJLI-f548e5048e5c71204c2a2ec4036bf66c4f040285-all-2026-11-03T07_43_19Z.json",
+      "sha256": "378f90418bd877554ca8e3cc1fef06833c65e690a1fae4bcfdf6fdb4e49d9d5d",
+      "findings": [
+        {
+          "kind": "duplicate_bom_ref",
+          "value": "swiftjli:SwiftJLI",
+          "paths": [
+            "/components/1/bom-ref",
+            "/metadata/component/bom-ref"
+          ]
+        }
+      ],
+      "componentVersionsMatchCandidate": true,
+      "declaredComponents": [
+        {
+          "name": "swiftjli",
+          "version": "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+          "type": "application"
+        },
+        {
+          "name": "SwiftJLI",
+          "version": "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+          "type": "library"
+        }
+      ],
+      "coreProductLicenceFieldPresent": false,
+      "dependencyGraph": [
+        {
+          "dependsOn": [
+            "swiftjli:SwiftJLI"
+          ],
+          "ref": "swiftjli"
+        }
+      ],
+      "sdkRuntimeComponentsPresent": false
+    }
+  ],
+  "disposition": "Retain unmodified producer output and report findings. Repository licence and toolchain/SDK evidence remain separate."
+}

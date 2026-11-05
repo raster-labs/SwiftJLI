@@ -1,0 +1,25 @@
+{
+  "observedUTC": "2026-11-03T11:00:18.883Z",
+  "scope": "One bounded attempt to read partial active-job logs; no test or workflow mutation.",
+  "tool": "github.fetch_workflow_job_logs",
+  "arguments": {
+    "repo_full_name": "raster-labs/SwiftJLI",
+    "job_id": 125870060668
+  },
+  "result": {
+    "error": "GitHub API error 404: ﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>The specified blob does not exist.\nRequestId:3570220e-a01e-0002-2682-6b263c000000\nTime:2026-11-03T11:00:11.6798500Z</Message></Error>",
+    "error_code": "NOT_FOUND",
+    "error_data": {
+      "error_str": "GitHub API error 404: ﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>The specified blob does not exist.\nRequestId:3570220e-a01e-0002-2682-6b263c000000\nTime:2026-11-03T11:00:11.6798500Z</Message></Error>"
+    }
+  },
+  "conclusion": "Partial logs unavailable (404 BlobNotFound). Existing runner buffers xcodebuild output; no build/launch/test subphase inferred. Continue existing bounded job without cancellation or relaxed checks.",
+  "earlierJobMetadataEndpoint": {
+    "url": "https://api.github.com/repos/raster-labs/SwiftJLI/actions/jobs/125870060668",
+    "result": {
+      "error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
+      "error_code": "INVALID_ARGUMENT"
+    },
+    "followUp": "The permitted run/jobs endpoint returned fresh job metadata successfully."
+  }
+}

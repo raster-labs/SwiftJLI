@@ -1,0 +1,235 @@
+{
+  "status": "failed",
+  "startedUTC": "2026-11-03T07:29:06.830316+00:00",
+  "commands": [
+    {
+      "name": "revision",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:29:06.838283+00:00",
+      "stdout": "revision.stdout.log",
+      "stderr": "revision.stderr.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:29:06.846309+00:00"
+    },
+    {
+      "name": "image",
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "swift:6.4-noble"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:29:06.846641+00:00",
+      "stdout": "image.stdout.log",
+      "stderr": "image.stderr.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:29:06.898010+00:00"
+    },
+    {
+      "name": "compiler",
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "swift:6.4-noble",
+        "swift",
+        "--version"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:29:06.898416+00:00",
+      "stdout": "compiler.stdout.log",
+      "stderr": "compiler.stderr.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:29:07.196849+00:00"
+    },
+    {
+      "name": "build",
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5:/src:ro",
+        "-v",
+        "/private/tmp/swiftjli-m5-suite-build:/work",
+        "swift:6.4-noble",
+        "swift",
+        "build",
+        "--package-path",
+        "/src/Examples/SuitePairIntegration",
+        "--scratch-path",
+        "/work/build",
+        "--cache-path",
+        "/work/cache",
+        "-c",
+        "release",
+        "--jobs",
+        "2",
+        "--force-resolved-versions"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:29:07.197616+00:00",
+      "stdout": "build.stdout.log",
+      "stderr": "build.stderr.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:31:30.814667+00:00"
+    },
+    {
+      "name": "products",
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5:/src:ro",
+        "-v",
+        "/private/tmp/swiftjli-m5-suite-build:/work",
+        "swift:6.4-noble",
+        "swift",
+        "build",
+        "--package-path",
+        "/src/Examples/SuitePairIntegration",
+        "--scratch-path",
+        "/work/build",
+        "-c",
+        "release",
+        "--show-bin-path"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-milestone5",
+      "startedUTC": "2026-11-03T07:31:30.815223+00:00",
+      "stdout": "products.stdout.log",
+      "stderr": "products.stderr.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:31:31.293739+00:00"
+    }
+  ],
+  "sourceManifest": {
+    "Package.swift": "b80b2ba943f394801f85d9140e4ef66dbc7e0c6505c8505f90b7b9fe513f4f93",
+    "Sources/SwiftJLI/CLISynchronousExecution.swift": "af92520630934f03632d37b87129cb2b9fcd2662503c62988a9611e9ccf87cde",
+    "Sources/SwiftJLI/CodecAPI.swift": "5d7deea6d873281217954083138d04ec7453b9c3c4a7037455b958c4b4948026",
+    "Sources/SwiftJLI/Errors.swift": "f71dd532405f2bca468ef39b29117513c686a89c64dd908ef598d1bca4f4fe6b",
+    "Sources/SwiftJLI/Image.swift": "fd4aa6679c4ab50738eb4266fe62c0db21cb46bf157d26db1daaa7b5e36dede5",
+    "Sources/SwiftJLI/ImageDescriptor.swift": "44cf8b2f796c0c39a17a4ff11ea8e97dc08f1f496cddc0197696a822922a1656",
+    "Sources/SwiftJLI/ImageStorage.swift": "a7ae2697bcf45996c4d556aa7fc8303fc0616cef9b86c13e9dd56e7a58cc36fb",
+    "Sources/SwiftJLI/JPEGCodec.swift": "3b4c221e4d9b4ac2f89814af93507fe96e172a64e0b6f878806f5afa1aa31aa5",
+    "Sources/SwiftJLI/JPEGDCTValidation.swift": "ce87c6e59437ed587ac5110655f544b8d794c8722158b4a37fe14827b8d65e99",
+    "Sources/SwiftJLI/JPEGEntropyBoundary.swift": "31540a448da9a40600bf623e98af022ad80b709735c2d88e8baacde3d8d7d248",
+    "Sources/SwiftJLI/JPEGEnvelope.swift": "5c49e236858e3ad26f76edbe77916f906416b41314f4f6d5791aa770ca850c43",
+    "Sources/SwiftJLI/JPEGInspection.swift": "5d671f2ce2e5dfdcb20ce01084861b6d6837d2bb3d67f2fbafa89c9689d94e34",
+    "Sources/SwiftJLI/Native/ColorSpace/ICCProfileMD5.swift": "3f891177070f29418586736e502432b893fd4936eacb81e9cfb914012f185942",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIChromaSampling.swift": "e1cc179fa5222797d585505cc9725e5097f87ae00ac9707ea03aedad5ed0121b",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIColorConversion.swift": "1554c7b953937b6faed37c2594af645168d1641a979ae6833a7279a7a394ff99",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIXYBICCProfile.swift": "68942179aa518b418022f33d7be9c2657d32aa3df13eca740f6e716eaaff9c9b",
+    "Sources/SwiftJLI/Native/ColorSpace/SRGBICCProfile.swift": "e1bf95403549f922e24d219cad2e5d526aa813f8948ce5ef601ee8d1dde1687a",
+    "Sources/SwiftJLI/Native/Contract/BorrowedPlane.swift": "09cc85db6b1268760f0e27f8db4697544af2049ca2266b9520deb007f4b398f4",
+    "Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift": "194d57b1ccbe89875f474ad101cace3a8464e23cf339a962935e4fc681c2972a",
+    "Sources/SwiftJLI/Native/Contract/SharedRGBInput.swift": "7902000f7f7f9a05b50b5bce717818e3c46e7bb4bb101013a0b206c2ee23a317",
+    "Sources/SwiftJLI/Native/Core/JLIConfiguration.swift": "59fae13f77a57efaae10229e3d09958f69cf4ad4a9209ee33802abe4be7de262",
+    "Sources/SwiftJLI/Native/Core/JLIError.swift": "c084ca38d2c22faaef784f9272bb6f4ee5a7e344f832234c14949e848dcc9d0d",
+    "Sources/SwiftJLI/Native/Core/JLIImage.swift": "37f94c32307e5a6396cf300be242d57a5f4f1190cc756609b8f36174d02344d0",
+    "Sources/SwiftJLI/Native/Core/JLIJPEGInfo.swift": "4cee6d0e2ad859215eef3814f9ee87d12c77db5a47ebe1a7849b7445e5fa60a1",
+    "Sources/SwiftJLI/Native/DSP/JLIAdaptiveQuant.swift": "02dcfd5a5a9d327ce6db7cebcc59e46a1c6dafa97406c247f6752a281037c938",
+    "Sources/SwiftJLI/Native/DSP/JLIDCT.swift": "c9cbb8386b8a03b49e0039212cbf9a035f52d0a929ed6a5400bd7ae5bbf18d49",
+    "Sources/SwiftJLI/Native/DSP/JLIPerceptualQuant.swift": "b3a2d4eb518dee9859110060dec0d4f048460b6f06ba3e2a349982488cf202a2",
+    "Sources/SwiftJLI/Native/DSP/JLIQuantization.swift": "1b4658d05ab71c9d05e16137037ffc55e0d9a77ddc81b286afd3c7b7e109d4b2",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "cd7f6c4ef4b6d114834e830c7b32e5410241473f88312f0bf71ce28c319de332",
+    "Sources/SwiftJLI/Native/Decoder/JLIProgressiveDecoder.swift": "7eabfcf26b729a78bb6a7000cc9afa6fff8367d22e3905802311f82177dd4910",
+    "Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift": "9c1eee6ca5f3d9c774cc2902ed30fe1cae6c0f53a387d4d080e514ced2f54998",
+    "Sources/SwiftJLI/Native/Encoder/JLIProgressiveEncoder.swift": "46236de2f77317225ea2f5daa2b6a981c9b5df65c1e42de3af6cb95d23cd0758",
+    "Sources/SwiftJLI/Native/Entropy/ACLookahead.swift": "55256a6631fd59c12eedef3ba9d3e059d473f979931333ba4f70d878322e6ce6",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": "a33f90f3643de89a0d57744f44ec09cce9bcacdc3d3668245cb82127b05e769d",
+    "Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift": "ac64d194ac01ae04eaad8b3f339f252727c557daf4172359e3d2c8d2d6cf5dba",
+    "Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift": "f06c26bb00f4140a99b14c8c600af1f29f8fc86aad394c317015e4720bafbd33",
+    "Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift": "b40b47062c1b393fc3d1fa02aa97ca73b9b446729d9d214ea011579659414ff1",
+    "Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift": "b53d7d3c11defbe73794f6f4fbdfdc864e69f76724f0a993a86a19a71cb0f9ae",
+    "Sources/SwiftJLI/Native/Entropy/ZeroRunLosslessDecoder.swift": "23610c0a0c8e81f9bd793c4124e20ff4957eec741f76d170a55c27b693d8f106",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift": "e7b8d000586e9ffba39acc3298e2b221e0e89592398297ee9c006545fb3299c9",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerWriter.swift": "b16d4fcde67541c67cda5078b6c1fa382ec1bd4433b76dbe70047d85fc00ab8d",
+    "Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift": "8f74be440f1d985d99c3ef995984ea1a64d3a4d8e86d928a97bc32ce1a4dd5c0",
+    "Sources/SwiftJLI/Native/Platform/PlatformDetection.swift": "f3b15878ee0ef7c661de5a8f37d33e15691dbd0f2932ec55ffa3ff04f1609e39",
+    "Sources/SwiftJLI/Native/Platform/ScalarDSP.swift": "865685933c007c336d91cc1810fb2623c4b26c42c87c8e0f483d801c642ad72a",
+    "Sources/SwiftJLI/NativeExecution.swift": "5bd69a699f23a0559ab2b05aeb28e8cc8b9c3639f35e868eb0c793cda9894608",
+    "Sources/SwiftJLI/Options.swift": "dd43c63592bf4d74c53626374fb4494b0815315f0f64bc1a2831f9c066b5d787",
+    "Sources/SwiftJLICLI/main.swift": "8099c26e254d45f2e703520a1c33ef97d8393f4f149d8f3f541dd710f1b1813e",
+    "Examples/SuitePairIntegration/Package.swift": "3e5cdebf645f9c28a6141d934e5fb8c5badfc3ec16876834cc8a47e6872f806e",
+    "Examples/SuitePairIntegration/Sources/SuitePairIntegration/main.swift": "978eadabc835166427247b62f428bd8838e3a668ff57e9dcd846c446e2acea70",
+    "Examples/SuitePairIntegration/Package.resolved": "1b9792bbbb066eb3473d9d87b08152b5f61088ba0b21247f5bc38e0287feeacc",
+    "Examples/SuitePairIntegration/Oracle/charls-pgm.cpp": "992ea9f33dc2805809beb7bafb0438f88a1fdedcf5c1effc8bc680771f9d2c68",
+    "Examples/AllocationProbe/Sources/HeapProbe/HeapProbe.c": "07493d6aeb4cf7477f058cc3afd4a4284390eb9340ba228e379ef640d934b878",
+    "Examples/AllocationProbe/Sources/HeapProbe/include/HeapProbe.h": "b19f2b7cf2944836a184f7035dd7fc79c84045763afc3d783abe21f9bdbc1931"
+  },
+  "contractVersion": "0.10.0",
+  "scratch": "/private/tmp/swiftjli-m5-suite-build",
+  "image": "swift:6.4-noble",
+  "scope": "Unsigned greyscale 12/16-bit, six geometries/precisions, twelve ordered codec pairs; no benchmarks or sanitizer allocation figures",
+  "revision": "f4e6e6562b32056affbb375f8cd6bb708bc7d8ad",
+  "imageMetadata": {
+    "Id": "sha256:bca121f6eb59fd80340d1296887b2698ed8f3eb9eca7d80c181f8af769dc7ee0",
+    "RepoTags": [
+      "swift:6.4-noble"
+    ],
+    "RepoDigests": [
+      "swift@sha256:bca121f6eb59fd80340d1296887b2698ed8f3eb9eca7d80c181f8af769dc7ee0"
+    ],
+    "Comment": "buildkit.dockerfile.v0",
+    "Created": "2026-10-30T17:31:16.351864654Z",
+    "Config": {
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "SWIFT_SIGNING_KEY=52BB7E3DE28A71BE22EC05FFEF80A866B47A981F",
+        "SWIFT_PLATFORM=ubuntu24.04",
+        "SWIFT_BRANCH=swift-6.4.2-release",
+        "SWIFT_VERSION=swift-6.4.2-RELEASE",
+        "SWIFT_WEBROOT=https://download.swift.org"
+      ],
+      "Cmd": [
+        "/bin/bash"
+      ],
+      "Labels": {
+        "description": "Docker Container for the Swift programming language",
+        "maintainer": "Swift Infrastructure <swift-infrastructure@forums.swift.org>",
+        "org.opencontainers.image.version": "24.04"
+      }
+    },
+    "Architecture": "arm64",
+    "Variant": "v8",
+    "Os": "linux",
+    "Size": 1298000160,
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:107ffca6dcd3fc87a7bed8c062f5ddc0d6a4b107205c82c0b49efdb7c1aff967",
+        "sha256:73001a91da9c39c94c4ae5d47cf6c18c186b82bf47d65be82d49dd89435eb2bc",
+        "sha256:5caf6bba867618a0304da71bb2956c57a638d69c276ec3a5e11e5116c0012f45",
+        "sha256:b24cf6707c5bf31dc43d40d1ae2b57856cd5306e42f500b57d4db1d1b9cace8b"
+      ]
+    },
+    "Metadata": {
+      "LastTagTime": "2026-11-02T12:05:15.084740357Z"
+    },
+    "Descriptor": {
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "digest": "sha256:bca121f6eb59fd80340d1296887b2698ed8f3eb9eca7d80c181f8af769dc7ee0",
+      "size": 2629
+    },
+    "Identity": {
+      "Pull": [
+        {
+          "Repository": "docker.io/library/swift"
+        }
+      ]
+    }
+  },
+  "compiler": "Swift version 6.4.2 (swift-6.4.2-RELEASE)\nTarget: aarch64-unknown-linux-gnu",
+  "error": "FileNotFoundError(2, 'No such file or directory')",
+  "finishedUTC": "2026-11-03T07:31:31.294208+00:00",
+  "runnerSHA256": "a64222fa7687a11411bd0d3cb4e7fbbf464b272fe467189066d75afc16367b51"
+}

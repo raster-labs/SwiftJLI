@@ -1,0 +1,66 @@
+{
+  "recordedUTC": "2026-11-03T10:46:43.629093+00:00",
+  "headSHA": "8c1b9655319771d1fcaaa7f03c2d165ec3e7a333",
+  "PR": {
+    "base": "8ae2762710d6279cd92222f5bb5ca95f042f694e",
+    "draft": true,
+    "head": "8c1b9655319771d1fcaaa7f03c2d165ec3e7a333"
+  },
+  "commands": [
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI/pulls/26",
+        "--jq",
+        "{head: .head.sha, base: .base.sha, draft: .draft}"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"base\":\"8ae2762710d6279cd92222f5bb5ca95f042f694e\",\"draft\":true,\"head\":\"8c1b9655319771d1fcaaa7f03c2d165ec3e7a333\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+        "HEAD",
+        "--",
+        "Sources",
+        "Package.swift"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "07cc31e2f3eeb8e22cb12d1fe519e605ef5cffed",
+        "HEAD",
+        "--",
+        "Tests",
+        "Examples",
+        "Scripts/verify-watch-qualification.py",
+        "Scripts/test-apple-simulator.py"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI/actions/workflows/contract.yml"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"id\":361085759,\"node_id\":\"W_kwDOUeVGWs4Vhbs_\",\"name\":\"Codec and contract\",\"path\":\".github/workflows/contract.yml\",\"state\":\"active\",\"created_at\":\"2026-09-18T10:32:01.000+05:30\",\"updated_at\":\"2026-10-09T13:39:34.000+05:30\",\"url\":\"https://api.github.com/repos/raster-labs/SwiftJLI/actions/workflows/361085759\",\"html_url\":\"https://github.com/raster-labs/SwiftJLI/blob/main/.github/workflows/contract.yml\",\"badge_url\":\"https://github.com/raster-labs/SwiftJLI/workflows/Codec%20and%20contract/badge.svg\"}",
+      "stderr": ""
+    }
+  ],
+  "scope": "Manual Intel Watch-only qualification; shipping source, tests and verification helpers are unchanged. Normal PR matrix is statically verified unchanged."
+}

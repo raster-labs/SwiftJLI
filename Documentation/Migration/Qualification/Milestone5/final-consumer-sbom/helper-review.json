@@ -1,0 +1,92 @@
+{
+  "checkedUTC": "2026-11-03T07:45:14.395440+00:00",
+  "status": "passed",
+  "scope": "Explicit immutable revision and existing-output rejection checks; no repeated builds/probes or schema validations",
+  "preservedOriginalConsumerHelper": {
+    "path": "../consumer-qualify-executed-8ae2762.py",
+    "sha256": "29657e9258097f23275b163c912d0ea066066dd077ee25d20832f7ac15bc7d27"
+  },
+  "currentConsumerHelperSHA256": "74561044d6c3344a8dd3c21d6c65cfca4fd5ed1a62130e74129ebde6d747522f",
+  "currentAppleHelperSHA256": "8c31879b284b78d2531bd31fd57590d95995c2d314f32a4d9e922b4049657e98",
+  "preFixEvidenceFilesVerifiedUnchanged": 63,
+  "checks": [
+    {
+      "label": "moving-reference",
+      "command": [
+        "/opt/homebrew/opt/python@3.15/bin/python3.15",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/consumer-qualify.py",
+        "--revision",
+        "main",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdout": "",
+      "stderr": "usage: consumer-qualify.py [-h] --evidence EVIDENCE --revision REVISION\nconsumer-qualify.py: error: --revision must be an explicit immutable 40-character Git commit\n",
+      "completedEvidenceUnchanged": true
+    },
+    {
+      "label": "consumer-existing",
+      "command": [
+        "/opt/homebrew/opt/python@3.15/bin/python3.15",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/consumer-qualify.py",
+        "--revision",
+        "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/consumer-qualify.py\", line 148, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/consumer-qualify.py\", line 31, in main\n    consumer_evidence.mkdir(parents=True, exist_ok=False)\n    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/lib/python3.15/pathlib/__init__.py\", line 1210, in mkdir\n    os.mkdir(self, mode)\n    ~~~~~~~~^^^^^^^^^^^^\nFileExistsError: [Errno 17] File exists: '/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/consumer'\n",
+      "completedEvidenceUnchanged": true
+    },
+    {
+      "label": "apple-existing",
+      "command": [
+        "/opt/homebrew/opt/python@3.15/bin/python3.15",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-apple-memory/run.py",
+        "--repository",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5",
+        "--revision",
+        "f548e5048e5c71204c2a2ec4036bf66c4f040285",
+        "--output",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-apple-memory"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdout": "",
+      "stderr": "usage: run.py [-h] --repository REPOSITORY --output OUTPUT --revision REVISION\n              [--scratch SCRATCH]\nrun.py: error: Choose fresh output; an earlier result must not be overwritten\n",
+      "completedEvidenceUnchanged": true
+    },
+    {
+      "label": "schema-existing",
+      "command": [
+        "/private/tmp/swiftjli-m5-sbom-validator-yr_iy5on/venv/bin/python",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/sbom-validate.py",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/sbom"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdout": "",
+      "stderr": "usage: sbom-validate.py [-h] --evidence EVIDENCE\nsbom-validate.py: error: Existing schema results must be preserved; choose fresh evidence\n",
+      "completedEvidenceUnchanged": true
+    },
+    {
+      "label": "field-existing",
+      "command": [
+        "/opt/homebrew/opt/python@3.15/bin/python3.15",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/sbom-audit.py",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/sbom"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdout": "",
+      "stderr": "usage: sbom-audit.py [-h] --evidence EVIDENCE\nsbom-audit.py: error: Existing field-audit results must be preserved; choose fresh evidence\n",
+      "completedEvidenceUnchanged": true
+    }
+  ]
+}

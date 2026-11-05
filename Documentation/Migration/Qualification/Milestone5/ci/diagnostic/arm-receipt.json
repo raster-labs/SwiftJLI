@@ -1,0 +1,122 @@
+{
+  "repository": "raster-labs/SwiftJLI",
+  "pullRequest": 26,
+  "commit": "f4e6e6562b32056affbb375f8cd6bb708bc7d8ad",
+  "workflowRun": 41596335122,
+  "job": 125784455873,
+  "artifact": 13212594039,
+  "artifactName": "macos-arm-release-evidence",
+  "artifactSHA256": "44b6786e13219fd858bde0f6d08ef6473fd294f3fdc2667117038ceaf8ba8b0f",
+  "rawCrashSHA256": "3757318e25586b6bb917a387c0c9fac4e8dac658ac30ac6c95f515b5da4ee82e",
+  "originalCrashFile": "arm-original-crash.ips.gz",
+  "timestamp": "2026-11-03 07:38:27.00 +0000",
+  "osVersion": "macOS 26.6.2 (25G83)",
+  "compiler": "Apple Swift 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101), Xcode 26.6",
+  "originalReleaseTestConclusion": "failure",
+  "exception": {
+    "codes": "0x0000000000000001, 0xfffffffffffffff8",
+    "rawCodes": [
+      1,
+      -8
+    ],
+    "type": "EXC_BAD_ACCESS",
+    "signal": "SIGSEGV",
+    "subtype": "KERN_INVALID_ADDRESS at 0xfffffffffffffff8"
+  },
+  "faultingThread": 2,
+  "triggeredFrames": [
+    {
+      "imageOffset": 75532,
+      "symbol": "swift_task_localValuePushImpl(swift::HeapObject const*, swift::OpaqueValue*, swift::TargetMetadata<swift::InProcess> const*)",
+      "symbolLocation": 68,
+      "imageIndex": 6
+    },
+    {
+      "imageOffset": 56448,
+      "sourceFile": "NativeExecution.swift",
+      "symbol": "specialized TaskLocal.withValue<A>(_:operation:file:line:)",
+      "imageIndex": 1,
+      "symbolLocation": 36,
+      "inline": true
+    },
+    {
+      "symbol": "specialized static NativeOperation.withSynchronousCancellation<A>(_:_:)",
+      "inline": true,
+      "imageIndex": 1,
+      "imageOffset": 56448,
+      "symbolLocation": 36,
+      "sourceLine": 50,
+      "sourceFile": "NativeExecution.swift"
+    },
+    {
+      "imageOffset": 56448,
+      "sourceLine": 15,
+      "sourceFile": "CLISynchronousExecution.swift",
+      "symbol": "Decoder.decodeSynchronously(_:into:options:cancellationCheck:)",
+      "imageIndex": 1,
+      "symbolLocation": 612
+    },
+    {
+      "imageOffset": 688012,
+      "sourceLine": 2,
+      "sourceFile": "@__swiftmacro_13SwiftJLITests0039CLISynchronousExecutionTestsswift_jrGEmfMX110_8_6expectfMf_.swift",
+      "symbol": "closure #3 in CLISynchronousExecutionTests.hostDeadlineAndMalformedCategoriesRemainDistinct()",
+      "imageIndex": 1,
+      "symbolLocation": 80
+    },
+    {
+      "imageOffset": 700564,
+      "sourceFile": "/<compiler-generated>",
+      "symbol": "partial apply for closure #3 in CLISynchronousExecutionTests.hostDeadlineAndMalformedCategoriesRemainDistinct()",
+      "symbolLocation": 16,
+      "imageIndex": 1
+    },
+    {
+      "imageOffset": 537432,
+      "symbol": "__checkClosureCall<A>(performing:throws:mismatchExplanation:expression:comments:isRequired:sourceLocation:)",
+      "symbolLocation": 344,
+      "imageIndex": 2
+    },
+    {
+      "imageOffset": 532496,
+      "symbol": "__checkClosureCall<A, B>(throws:performing:expression:comments:isRequired:sourceLocation:)",
+      "symbolLocation": 292,
+      "imageIndex": 2
+    },
+    {
+      "symbol": "freestanding macro expansion #1 of expect in module SwiftJLITests file CLISynchronousExecutionTests.swift line 111 column 9",
+      "inline": true,
+      "imageIndex": 1,
+      "imageOffset": 698792,
+      "symbolLocation": 516,
+      "sourceLine": 1,
+      "sourceFile": "@__swiftmacro_13SwiftJLITests0039CLISynchronousExecutionTestsswift_jrGEmfMX110_8_6expectfMf_.swift"
+    },
+    {
+      "imageOffset": 698792,
+      "sourceLine": 111,
+      "sourceFile": "CLISynchronousExecutionTests.swift",
+      "symbol": "specialized CLISynchronousExecutionTests.hostDeadlineAndMalformedCategoriesRemainDistinct()",
+      "imageIndex": 1,
+      "symbolLocation": 688
+    },
+    {
+      "imageOffset": 688900,
+      "sourceFile": "/<compiler-generated>",
+      "symbol": "CLISynchronousExecutionTests.hostDeadlineAndMalformedCategoriesRemainDistinct()",
+      "imageIndex": 1,
+      "symbolLocation": 8,
+      "inline": true
+    },
+    {
+      "symbol": "$s13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_7__localfMu0_ #1 @Sendable (_:) in static CLISynchronousExecutionTests.$s13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_17Z420bb98adbcfd3e2fMu_@Sendable ()",
+      "inline": true,
+      "imageIndex": 1,
+      "imageOffset": 688900,
+      "symbolLocation": 8,
+      "sourceLine": 5,
+      "sourceFile": "@__swiftmacro_13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_.swift"
+    }
+  ],
+  "diagnosis": "Original native release crash; retain exact triggered frames. The raw report is independent of the separately launched debugger helper."
+}

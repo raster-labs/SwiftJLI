@@ -1,0 +1,2288 @@
+{
+  "status": "accepted_scoped_incremental_regression_comparison",
+  "reviewedUTC": "2026-11-03T09:07:22.888995+00:00",
+  "scope": "Callback-owner correction: matched Release CLI product builds, six synthetic fixtures, encode/decode, two interleaved rounds on this ARM64 Mac. No universal speed, isolated-host, device, pure-kernel or full-workspace claim.",
+  "rawResults": {
+    "path": "controlled/results.json",
+    "sha256": "8e22b4071982608204e5e786ce0252252da29d606d160f292336bf51393e75b7",
+    "revisionAtMeasurement": "1f6f5a132f656bb2babdab52c94f7c711d7e1fd3",
+    "startedUTC": "2026-11-03T09:00:23.230660+00:00",
+    "finishedUTC": "2026-11-03T09:00:46.319335+00:00"
+  },
+  "sourceRevisions": {
+    "baseline": "8ae2762710d6279cd92222f5bb5ca95f042f694e",
+    "candidate": "f548e5048e5c71204c2a2ec4036bf66c4f040285"
+  },
+  "binarySHA256": {
+    "baseline": "982c1deace1d0346868f2d7a5c4bd493a760ee2cb88d3d4fc2b1b03c44f022b4",
+    "candidate": "6f3bdedf4007474c31210703f5ba22ac926d9248e62ce91f186b2112f1283b47"
+  },
+  "runnerSHA256": "0cecd73e2e4dba45ca876486853253de770b6e8626e4e67d9b44e797fd29e07e",
+  "buildMetadataSHA256": "319e8c9b66d55aec9cffe5fda581f151dd50dfc7f25889c3dc1fcadd48f1a584",
+  "fixtureProvenanceSHA256": "97ae18f619f0a115aba2b4b053b6e0da0ec25140b0a9c8f1e50a59b14f247891",
+  "policy": {
+    "suitePolicy": "0.10.0",
+    "document": "Documentation/PERFORMANCE.md",
+    "sha256": "139e83f4c670b514940bcbae2d69560e0b28f866b266019ff8c112c0f388343b",
+    "rules": [
+      "PERF-01",
+      "PERF-02",
+      "PERF-03"
+    ],
+    "investigationThresholdPercent": 5,
+    "latencyStatistic": "ratio of candidate/baseline medians within each round",
+    "memoryStatistic": "ratio of maximum observed per-process peak RSS within each round; median and p95 also reported",
+    "trigger": "A reproducible median-latency or peak-memory increase over 5%; observed crossings require investigation, not automatic waiver."
+  },
+  "method": {
+    "rows": 24,
+    "distinctCaseOperations": 12,
+    "rounds": 2,
+    "warmupsPerBinaryPerRow": 5,
+    "timedIterationsPerBinaryPerRow": 20,
+    "commandCount": 1248,
+    "timedCommands": 960,
+    "warmupCommands": 240,
+    "untimedOutputValidationCommands": 48,
+    "outputComparisons": 24,
+    "outputEqualityScope": "Baseline/candidate bytes were compared before timing each operation in each round. Timed outputs went to /dev/null and were not compared individually.",
+    "statistics": "Percent change = 100 * (candidate / baseline - 1). Median is the middle-pair mean; nearest-rank p95 uses sorted sample 19 of 20. Spread is minimum/maximum and median absolute deviation. Paired diagnostics align the two binaries at each loop iteration. No inferential confidence interval or significance claim is made.",
+    "order": "Five warmups then twenty samples; adjacent baseline/candidate runs alternate first position each iteration, reversed across the second round.",
+    "verification": "All 96 recorded latency/RSS distributions and 48 throughput values independently recalculated; executed runner, build/provenance/helper, binaries and 46 current shipping source hashes matched."
+  },
+  "environment": {
+    "os": "macOS 27.0.1 (26A434)",
+    "architecture": "arm64",
+    "compiler": "Apple Swift 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)",
+    "power": "AC power, 100% charged at both snapshots",
+    "thermal": "pmset reported no recorded thermal/performance warning at both endpoints; no continuous thermal trace was captured.",
+    "competingCodecWork": "Before/after snapshots contain no competing codec benchmark, fuzz target or compiler/build job. Those jobs had completed, per coordinator. Snapshots are not continuous process monitoring.",
+    "desktopLoad": [
+      {
+        "stage": "before",
+        "processes": [
+          {
+            "pid": 413,
+            "cpuPercentSnapshot": 73.4,
+            "command": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+          },
+          {
+            "pid": 1217,
+            "cpuPercentSnapshot": 98.8,
+            "command": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.GPU.xpc/Contents/MacOS/com.apple.WebKit.GPU"
+          },
+          {
+            "pid": 14342,
+            "cpuPercentSnapshot": 0.0,
+            "command": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.GPU.xpc/Contents/MacOS/com.apple.WebKit.GPU"
+          },
+          {
+            "pid": 14939,
+            "cpuPercentSnapshot": 0.0,
+            "command": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.GPU.xpc/Contents/MacOS/com.apple.WebKit.GPU"
+          },
+          {
+            "pid": 20329,
+            "cpuPercentSnapshot": 75.8,
+            "command": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+          }
+        ]
+      },
+      {
+        "stage": "after",
+        "processes": [
+          {
+            "pid": 413,
+            "cpuPercentSnapshot": 73.5,
+            "command": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+          },
+          {
+            "pid": 1217,
+            "cpuPercentSnapshot": 100.0,
+            "command": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.GPU.xpc/Contents/MacOS/com.apple.WebKit.GPU"
+          },
+          {
+            "pid": 14342,
+            "cpuPercentSnapshot": 0.0,
+            "command": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.GPU.xpc/Contents/MacOS/com.apple.WebKit.GPU"
+          },
+          {
+            "pid": 14939,
+            "cpuPercentSnapshot": 0.0,
+            "command": "/System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.GPU.xpc/Contents/MacOS/com.apple.WebKit.GPU"
+          },
+          {
+            "pid": 20329,
+            "cpuPercentSnapshot": 18.8,
+            "command": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+          }
+        ]
+      }
+    ],
+    "interpretation": "This was a local matched paired comparison with ordinary desktop activity, not an exclusive or fully idle host. The VM process CPU snapshot fell during the short run; this is a documented possible source of nonstationary noise.",
+    "timingWindowSeconds": 23.088675
+  },
+  "ranges": {
+    "elapsedSeconds": {
+      "median": {
+        "minimum": {
+          "percent": -3.3720428836072625,
+          "round": 2,
+          "case": "lossless16-2048",
+          "operation": "encode",
+          "baseline": 0.025370999999999998,
+          "candidate": 0.024515479
+        },
+        "maximum": {
+          "percent": 1.333704391758106,
+          "round": 2,
+          "case": "flat-19",
+          "operation": "decode",
+          "baseline": 0.007740021,
+          "candidate": 0.00784325
+        }
+      },
+      "p95": {
+        "minimum": {
+          "percent": -5.735429642728896,
+          "round": 1,
+          "case": "flat-19",
+          "operation": "encode",
+          "baseline": 0.008629833,
+          "candidate": 0.008134875
+        },
+        "maximum": {
+          "percent": 45.11309131961681,
+          "round": 1,
+          "case": "flat-19",
+          "operation": "decode",
+          "baseline": 0.008414041,
+          "candidate": 0.012209875
+        }
+      },
+      "minimum": {
+        "minimum": {
+          "percent": -6.08985557884928,
+          "round": 2,
+          "case": "lossless16-512",
+          "operation": "decode",
+          "baseline": 0.008586,
+          "candidate": 0.008063125
+        },
+        "maximum": {
+          "percent": 3.627267813163204,
+          "round": 2,
+          "case": "lossless16-2048",
+          "operation": "encode",
+          "baseline": 0.023109708,
+          "candidate": 0.023947959
+        }
+      },
+      "maximum": {
+        "minimum": {
+          "percent": -21.949918036255855,
+          "round": 2,
+          "case": "lossless16-512",
+          "operation": "encode",
+          "baseline": 0.012428666,
+          "candidate": 0.009700584
+        },
+        "maximum": {
+          "percent": 114.05372978275143,
+          "round": 1,
+          "case": "flat-19",
+          "operation": "decode",
+          "baseline": 0.008661416,
+          "candidate": 0.018540084
+        }
+      }
+    },
+    "peakRSSBytes": {
+      "median": {
+        "minimum": {
+          "percent": -1.4580801944106936,
+          "round": 1,
+          "case": "dct12-512",
+          "operation": "encode",
+          "baseline": 13484032.0,
+          "candidate": 13287424.0
+        },
+        "maximum": {
+          "percent": 0.36023054755043304,
+          "round": 2,
+          "case": "lossless16-512",
+          "operation": "encode",
+          "baseline": 11370496.0,
+          "candidate": 11411456.0
+        }
+      },
+      "p95": {
+        "minimum": {
+          "percent": -4.32372505543237,
+          "round": 1,
+          "case": "dct12-512",
+          "operation": "encode",
+          "baseline": 14778368,
+          "candidate": 14139392
+        },
+        "maximum": {
+          "percent": 3.176043557168784,
+          "round": 1,
+          "case": "progressiveRGB8-512",
+          "operation": "decode",
+          "baseline": 18055168,
+          "candidate": 18628608
+        }
+      },
+      "minimum": {
+        "minimum": {
+          "percent": -5.432595573440646,
+          "round": 2,
+          "case": "progressiveRGB8-512",
+          "operation": "encode",
+          "baseline": 16285696,
+          "candidate": 15400960
+        },
+        "maximum": {
+          "percent": 6.84039087947883,
+          "round": 2,
+          "case": "rgb8-512",
+          "operation": "encode",
+          "baseline": 15089664,
+          "candidate": 16121856
+        }
+      },
+      "maximum": {
+        "minimum": {
+          "percent": -3.4482758620689613,
+          "round": 2,
+          "case": "progressiveRGB8-512",
+          "operation": "encode",
+          "baseline": 18530304,
+          "candidate": 17891328
+        },
+        "maximum": {
+          "percent": 3.00272975432212,
+          "round": 1,
+          "case": "rgb8-512",
+          "operation": "encode",
+          "baseline": 18006016,
+          "candidate": 18546688
+        }
+      }
+    }
+  },
+  "latencyMedianCrossingsAbove5Percent": [],
+  "maximumPeakRSSCrossingsAbove5Percent": [],
+  "latencyP95CrossingsAbove5Percent": [
+    {
+      "round": 1,
+      "case": "lossless16-512",
+      "operation": "decode",
+      "percent": 8.370827543509662
+    },
+    {
+      "round": 1,
+      "case": "dct12-512",
+      "operation": "encode",
+      "percent": 5.159452162638423
+    },
+    {
+      "round": 1,
+      "case": "progressiveRGB8-512",
+      "operation": "encode",
+      "percent": 21.052991886263683
+    },
+    {
+      "round": 1,
+      "case": "flat-19",
+      "operation": "decode",
+      "percent": 45.11309131961681
+    },
+    {
+      "round": 2,
+      "case": "lossless16-2048",
+      "operation": "encode",
+      "percent": 9.721853379762768
+    }
+  ],
+  "disposition": {
+    "acceptedForScopedPERF03Gate": true,
+    "repeatRequiredByObservedThreshold": false,
+    "reason": "All 24 median-latency and maximum-peak-RSS comparisons remain below +5% in both alternating-order rounds. The nearest-rank p95 crossings are isolated to one round for each affected case. The finite paired comparison is sufficient to screen this narrow callback-owner correction for a reproducible PERF-03 regression under the recorded environment. It does not prove the tiny differences are real or eliminate effects of desktop contention.",
+    "tailLimit": "Five one-round p95 increases exceed 5%; flat-19 decode round 1 has a +114.054% maximum-latency outlier. Maximum latency for lossless16-512 decode rises in both rounds; median and p95 do not reproduce a threshold crossing. No tail-latency improvement or guarantee is claimed.",
+    "repeatCondition": "Request a fresh isolated-host run before stronger kernel/tail-latency or tiny-speedup claims, or if a subsequent controlled comparison produces a repeatable >5% median-latency/peak-memory increase. Do not silently combine the excluded loaded run with these samples.",
+    "memoryLimit": "Darwin time -l reports per-process lifetime maximum RSS. This is not algorithm workspace, peak pixel allocation, callback allocation count or a physical-device ceiling. Existing direct allocation/copy evidence is separate.",
+    "fidelityAndSize": "All 24 baseline/candidate output checks are exact. Encoded size is therefore unchanged, including lossless output; no >1% lossless-size trigger exists. Independent oracle tolerances and earlier djpeg benchmark exclusions are unchanged."
+  },
+  "rows": [
+    {
+      "round": 1,
+      "case": "lossless16-512",
+      "operation": "decode",
+      "layout": [
+        "P5",
+        512,
+        512,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 290649,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.00849975,
+          "p95": 0.009085625,
+          "minimum": 0.007508875,
+          "maximum": 0.010317792,
+          "medianAbsoluteDeviation": 0.00029883349999999895,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.008602438,
+          "p95": 0.009846167,
+          "minimum": 0.007563791,
+          "maximum": 0.012111542,
+          "medianAbsoluteDeviation": 0.0004342284999999998,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 1.2081296508720918,
+          "p95": 8.370827543509662,
+          "minimum": 0.7313479049791072,
+          "maximum": 17.385018034866384
+        },
+        "candidateChangeAbsolute": {
+          "median": 0.00010268800000000008,
+          "p95": 0.0007605419999999995,
+          "minimum": 5.491600000000034e-05,
+          "maximum": 0.0017937500000000002
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 8159232.0,
+          "p95": 8241152,
+          "minimum": 8159232,
+          "maximum": 8372224,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 8142848.0,
+          "p95": 8224768,
+          "minimum": 8142848,
+          "maximum": 8323072,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.20080321285140812,
+          "p95": -0.1988071570576566,
+          "minimum": -0.20080321285140812,
+          "maximum": -0.5870841487279899
+        },
+        "candidateChangeAbsolute": {
+          "median": -16384.0,
+          "p95": -16384,
+          "minimum": -16384,
+          "maximum": -49152
+        }
+      },
+      "baselineMedianPixelsPerSecond": 30841377.687579047,
+      "candidateMedianPixelsPerSecond": 30473221.66111514,
+      "pairedIterationLatencyChangePercent": {
+        "median": 0.26150665328661393,
+        "minimum": -19.192982374523538,
+        "maximum": 37.626592390343404
+      }
+    },
+    {
+      "round": 1,
+      "case": "lossless16-512",
+      "operation": "encode",
+      "layout": [
+        "P5",
+        512,
+        512,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 290649,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "7690f836d0d50a8694f7e374410a4808402cbdfbeb22a5c14b73a159d7bfecaf",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0089752915,
+          "p95": 0.009549583,
+          "minimum": 0.008323167,
+          "maximum": 0.009660167,
+          "medianAbsoluteDeviation": 0.00016860399999999928,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0087147085,
+          "p95": 0.009337417,
+          "minimum": 0.008136292,
+          "maximum": 0.009765375,
+          "medianAbsoluteDeviation": 0.0004059379999999998,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -2.903337457061983,
+          "p95": -2.2217305195420534,
+          "minimum": -2.245239101894747,
+          "maximum": 1.0890909028798301
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.000260583,
+          "p95": -0.00021216599999999974,
+          "minimum": -0.00018687499999999954,
+          "maximum": 0.000105207999999999
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 11370496.0,
+          "p95": 11878400,
+          "minimum": 11304960,
+          "maximum": 11911168,
+          "medianAbsoluteDeviation": 65536.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 11378688.0,
+          "p95": 11796480,
+          "minimum": 11272192,
+          "maximum": 11878400,
+          "medianAbsoluteDeviation": 98304.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.07204610951008217,
+          "p95": -0.6896551724137945,
+          "minimum": -0.28985507246376274,
+          "maximum": -0.27510316368638543
+        },
+        "candidateChangeAbsolute": {
+          "median": 8192.0,
+          "p95": -81920,
+          "minimum": -32768,
+          "maximum": -32768
+        }
+      },
+      "baselineMedianPixelsPerSecond": 29207296.498392284,
+      "candidateMedianPixelsPerSecond": 30080638.956541117,
+      "pairedIterationLatencyChangePercent": {
+        "median": -3.1111640428748197,
+        "minimum": -8.408543220336451,
+        "maximum": 6.77646415635893
+      }
+    },
+    {
+      "round": 1,
+      "case": "lossless16-2048",
+      "operation": "decode",
+      "layout": [
+        "P5",
+        2048,
+        2048,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 4647675,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.023617479,
+          "p95": 0.024212791,
+          "minimum": 0.022869041,
+          "maximum": 0.024579125,
+          "medianAbsoluteDeviation": 0.00028983299999999976,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.023621833000000002,
+          "p95": 0.024547917,
+          "minimum": 0.022599208,
+          "maximum": 0.025636041,
+          "medianAbsoluteDeviation": 0.0003209790000000025,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.018435498555979812,
+          "p95": 1.3840866176889621,
+          "minimum": -1.1799051827315443,
+          "maximum": 4.300055433218231
+        },
+        "candidateChangeAbsolute": {
+          "median": 4.354000000001551e-06,
+          "p95": 0.0003351259999999981,
+          "minimum": -0.00026983300000000057,
+          "maximum": 0.001056915999999998
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 29310976.0,
+          "p95": 29310976,
+          "minimum": 29310976,
+          "maximum": 29392896,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 29294592.0,
+          "p95": 29327360,
+          "minimum": 29278208,
+          "maximum": 29360128,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.05589714924538747,
+          "p95": 0.05589714924538747,
+          "minimum": -0.11179429849077493,
+          "maximum": -0.11148272017836858
+        },
+        "candidateChangeAbsolute": {
+          "median": -16384.0,
+          "p95": 16384,
+          "minimum": -32768,
+          "maximum": -32768
+        }
+      },
+      "baselineMedianPixelsPerSecond": 177593213.90737766,
+      "candidateMedianPixelsPerSecond": 177560479.7476978,
+      "pairedIterationLatencyChangePercent": {
+        "median": -0.1279615300051884,
+        "minimum": -4.606957393483713,
+        "maximum": 11.92415591940792
+      }
+    },
+    {
+      "round": 1,
+      "case": "lossless16-2048",
+      "operation": "encode",
+      "layout": [
+        "P5",
+        2048,
+        2048,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 4647675,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.023572291500000002,
+          "p95": 0.024494042,
+          "minimum": 0.021972583,
+          "maximum": 0.025161042,
+          "medianAbsoluteDeviation": 0.00042866700000000063,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.023050125,
+          "p95": 0.024224666,
+          "minimum": 0.022111458,
+          "maximum": 0.025780833,
+          "medianAbsoluteDeviation": 0.0003943334999999999,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -2.2151707227954565,
+          "p95": -1.099761321549142,
+          "minimum": 0.6320376625724933,
+          "maximum": 2.4632962339159015
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.0005221665000000007,
+          "p95": -0.0002693760000000017,
+          "minimum": 0.0001388750000000001,
+          "maximum": 0.000619790999999998
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 71581696.0,
+          "p95": 71614464,
+          "minimum": 71548928,
+          "maximum": 71647232,
+          "medianAbsoluteDeviation": 16384.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 71532544.0,
+          "p95": 71548928,
+          "minimum": 71516160,
+          "maximum": 71548928,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.06866559853513365,
+          "p95": -0.09151223976207046,
+          "minimum": -0.04579803068468502,
+          "maximum": -0.13720557969357783
+        },
+        "candidateChangeAbsolute": {
+          "median": -49152.0,
+          "p95": -65536,
+          "minimum": -32768,
+          "maximum": -98304
+        }
+      },
+      "baselineMedianPixelsPerSecond": 177933655.7075921,
+      "candidateMedianPixelsPerSecond": 181964479.5852517,
+      "pairedIterationLatencyChangePercent": {
+        "median": -1.203085625908762,
+        "minimum": -10.201950300786432,
+        "maximum": 5.578920313915536
+      }
+    },
+    {
+      "round": 1,
+      "case": "dct12-512",
+      "operation": "decode",
+      "layout": [
+        "P5",
+        512,
+        512,
+        4095
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 200993,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.010296333500000001,
+          "p95": 0.010616042,
+          "minimum": 0.00971225,
+          "maximum": 0.010994291,
+          "medianAbsoluteDeviation": 0.00021808400000000033,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.010083896,
+          "p95": 0.010516791,
+          "minimum": 0.009517541,
+          "maximum": 0.010772833,
+          "medianAbsoluteDeviation": 0.00026179150000000054,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -2.063234451370488,
+          "p95": -0.9349152914052139,
+          "minimum": -2.004777471749608,
+          "maximum": -2.0142999671374784
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.00021243750000000082,
+          "p95": -9.925099999999985e-05,
+          "minimum": -0.00019470900000000124,
+          "maximum": -0.00022145799999999903
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 12451840.0,
+          "p95": 12550144,
+          "minimum": 12451840,
+          "maximum": 12566528,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 12435456.0,
+          "p95": 12533760,
+          "minimum": 12419072,
+          "maximum": 12550144,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.1315789473684159,
+          "p95": -0.13054830287205776,
+          "minimum": -0.2631578947368429,
+          "maximum": -0.13037809647978849
+        },
+        "candidateChangeAbsolute": {
+          "median": -16384.0,
+          "p95": -16384,
+          "minimum": -32768,
+          "maximum": -16384
+        }
+      },
+      "baselineMedianPixelsPerSecond": 25459936.782350726,
+      "candidateMedianPixelsPerSecond": 25996301.42952684,
+      "pairedIterationLatencyChangePercent": {
+        "median": -1.9070994708775435,
+        "minimum": -9.611055220735654,
+        "maximum": 7.6758639196574885
+      }
+    },
+    {
+      "round": 1,
+      "case": "dct12-512",
+      "operation": "encode",
+      "layout": [
+        "P5",
+        512,
+        512,
+        4095
+      ],
+      "encoderScanMode": "sequential",
+      "encodedBytes": 180786,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "0293f47e6b5f88b6ecb827e4312a5c5cb084c67a830bafc52e73106f64a1ab1d",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.012236707999999999,
+          "p95": 0.012844542,
+          "minimum": 0.011511084,
+          "maximum": 0.013005792,
+          "medianAbsoluteDeviation": 0.0002045835000000001,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0122014585,
+          "p95": 0.01350725,
+          "minimum": 0.011553125,
+          "maximum": 0.013641792,
+          "medianAbsoluteDeviation": 0.00038135450000000015,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.2880635870366355,
+          "p95": 5.159452162638423,
+          "minimum": 0.3652219026461845,
+          "maximum": 4.8901289517777835
+        },
+        "candidateChangeAbsolute": {
+          "median": -3.524949999999909e-05,
+          "p95": 0.0006627079999999997,
+          "minimum": 4.2040999999999606e-05,
+          "maximum": 0.0006359999999999994
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 13484032.0,
+          "p95": 14778368,
+          "minimum": 13336576,
+          "maximum": 14778368,
+          "medianAbsoluteDeviation": 147456.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 13287424.0,
+          "p95": 14139392,
+          "minimum": 13287424,
+          "maximum": 14336000,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -1.4580801944106936,
+          "p95": -4.32372505543237,
+          "minimum": -0.3685503685503688,
+          "maximum": -2.9933481152993324
+        },
+        "candidateChangeAbsolute": {
+          "median": -196608.0,
+          "p95": -638976,
+          "minimum": -49152,
+          "maximum": -442368
+        }
+      },
+      "baselineMedianPixelsPerSecond": 21422755.2050764,
+      "candidateMedianPixelsPerSecond": 21484644.643097382,
+      "pairedIterationLatencyChangePercent": {
+        "median": 0.18402205453270648,
+        "minimum": -8.781987286894955,
+        "maximum": 10.889720271904245
+      }
+    },
+    {
+      "round": 1,
+      "case": "rgb8-512",
+      "operation": "decode",
+      "layout": [
+        "P6",
+        512,
+        512,
+        255
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 219499,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0117981245,
+          "p95": 0.012239375,
+          "minimum": 0.010989083,
+          "maximum": 0.012663458,
+          "medianAbsoluteDeviation": 0.0003213755000000002,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.011519875,
+          "p95": 0.012062542,
+          "minimum": 0.010837375,
+          "maximum": 0.01216025,
+          "medianAbsoluteDeviation": 0.0002721249999999998,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -2.3584214592751507,
+          "p95": -1.444787826175764,
+          "minimum": -1.380533753362323,
+          "maximum": -3.973701338133717
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.00027824949999999925,
+          "p95": -0.0001768329999999995,
+          "minimum": -0.0001517080000000004,
+          "maximum": -0.0005032080000000015
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 17326080.0,
+          "p95": 18022400,
+          "minimum": 16515072,
+          "maximum": 18038784,
+          "medianAbsoluteDeviation": 188416.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 17252352.0,
+          "p95": 18055168,
+          "minimum": 17055744,
+          "maximum": 18055168,
+          "medianAbsoluteDeviation": 131072.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.42553191489361764,
+          "p95": 0.1818181818181719,
+          "minimum": 3.2738095238095344,
+          "maximum": 0.09082652134422275
+        },
+        "candidateChangeAbsolute": {
+          "median": -73728.0,
+          "p95": 32768,
+          "minimum": 540672,
+          "maximum": 16384
+        }
+      },
+      "baselineMedianPixelsPerSecond": 22219124.743089464,
+      "candidateMedianPixelsPerSecond": 22755802.471815012,
+      "pairedIterationLatencyChangePercent": {
+        "median": -3.2548343100505637,
+        "minimum": -8.29887267765299,
+        "maximum": 5.127990075033195
+      }
+    },
+    {
+      "round": 1,
+      "case": "rgb8-512",
+      "operation": "encode",
+      "layout": [
+        "P6",
+        512,
+        512,
+        255
+      ],
+      "encoderScanMode": "sequential",
+      "encodedBytes": 178928,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "df14abf66a4212b1f12a6b381ecbfacb639eb440ba837f4e5a24e77c11f77b54",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0159625,
+          "p95": 0.016512709,
+          "minimum": 0.014789792,
+          "maximum": 0.016840917,
+          "medianAbsoluteDeviation": 0.0003558954999999999,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.015842625,
+          "p95": 0.016754542,
+          "minimum": 0.015127875,
+          "maximum": 0.016964375,
+          "medianAbsoluteDeviation": 0.0002672709999999995,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.7509788566953945,
+          "p95": 1.4645265050089673,
+          "minimum": 2.285921262449131,
+          "maximum": 0.7330835963386129
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.00011987500000000192,
+          "p95": 0.00024183300000000033,
+          "minimum": 0.0003380830000000012,
+          "maximum": 0.0001234579999999999
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 17293312.0,
+          "p95": 17809408,
+          "minimum": 15106048,
+          "maximum": 18006016,
+          "medianAbsoluteDeviation": 237568.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 17350656.0,
+          "p95": 18038784,
+          "minimum": 15597568,
+          "maximum": 18546688,
+          "medianAbsoluteDeviation": 286720.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.3315963998105076,
+          "p95": 1.2879484820607079,
+          "minimum": 3.2537960954446943,
+          "maximum": 3.00272975432212
+        },
+        "candidateChangeAbsolute": {
+          "median": 57344.0,
+          "p95": 229376,
+          "minimum": 491520,
+          "maximum": 540672
+        }
+      },
+      "baselineMedianPixelsPerSecond": 16422490.211433046,
+      "candidateMedianPixelsPerSecond": 16546752.82663069,
+      "pairedIterationLatencyChangePercent": {
+        "median": 0.0683504020547232,
+        "minimum": -4.403572128098632,
+        "maximum": 9.09591815140689
+      }
+    },
+    {
+      "round": 1,
+      "case": "progressiveRGB8-512",
+      "operation": "decode",
+      "layout": [
+        "P6",
+        512,
+        512,
+        255
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 219582,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0129540835,
+          "p95": 0.013840708,
+          "minimum": 0.011919875,
+          "maximum": 0.014650083,
+          "medianAbsoluteDeviation": 0.00035987499999999995,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0130280625,
+          "p95": 0.013439542,
+          "minimum": 0.012302792,
+          "maximum": 0.013461708,
+          "medianAbsoluteDeviation": 0.00024772900000000035,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.5710863296504165,
+          "p95": -2.898449992587082,
+          "minimum": 3.2124246269360945,
+          "maximum": -8.111728786792538
+        },
+        "candidateChangeAbsolute": {
+          "median": 7.397900000000006e-05,
+          "p95": -0.0004011659999999997,
+          "minimum": 0.000382917,
+          "maximum": -0.0011883750000000002
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 17473536.0,
+          "p95": 18055168,
+          "minimum": 17154048,
+          "maximum": 18612224,
+          "medianAbsoluteDeviation": 73728.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 17448960.0,
+          "p95": 18628608,
+          "minimum": 17219584,
+          "maximum": 18677760,
+          "medianAbsoluteDeviation": 114688.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.14064697609000865,
+          "p95": 3.176043557168784,
+          "minimum": 0.3820439350525229,
+          "maximum": 0.35211267605634866
+        },
+        "candidateChangeAbsolute": {
+          "median": -24576.0,
+          "p95": 573440,
+          "minimum": 65536,
+          "maximum": 65536
+        }
+      },
+      "baselineMedianPixelsPerSecond": 20236398.81586374,
+      "candidateMedianPixelsPerSecond": 20121487.7500012,
+      "pairedIterationLatencyChangePercent": {
+        "median": -0.4793627544785517,
+        "minimum": -8.111728786792538,
+        "maximum": 8.234666344488751
+      }
+    },
+    {
+      "round": 1,
+      "case": "progressiveRGB8-512",
+      "operation": "encode",
+      "layout": [
+        "P6",
+        512,
+        512,
+        255
+      ],
+      "encoderScanMode": "successive-approximation",
+      "encodedBytes": 181153,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "1d859880a909a4692754d1f59a06f8f856ed4bf8bc2c400c5b69d1fc8ec7b5d3",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.038923208,
+          "p95": 0.043398625,
+          "minimum": 0.037467208,
+          "maximum": 0.052962875,
+          "medianAbsoluteDeviation": 0.0005304170000000018,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0383911455,
+          "p95": 0.052535334,
+          "minimum": 0.037213958,
+          "maximum": 0.05835475,
+          "medianAbsoluteDeviation": 0.0005042084999999988,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -1.3669543887543933,
+          "p95": 21.052991886263683,
+          "minimum": -0.6759243976759755,
+          "maximum": 10.18048019485347
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.0005320624999999995,
+          "p95": 0.009136709,
+          "minimum": -0.00025325000000000347,
+          "maximum": 0.005391874999999997
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 17481728.0,
+          "p95": 17989632,
+          "minimum": 15466496,
+          "maximum": 18137088,
+          "medianAbsoluteDeviation": 278528.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 17530880.0,
+          "p95": 17809408,
+          "minimum": 15532032,
+          "maximum": 18055168,
+          "medianAbsoluteDeviation": 122880.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.281162136832247,
+          "p95": -1.0018214936247771,
+          "minimum": 0.4237288135593209,
+          "maximum": -0.4516711833784992
+        },
+        "candidateChangeAbsolute": {
+          "median": 49152.0,
+          "p95": -180224,
+          "minimum": 65536,
+          "maximum": -81920
+        }
+      },
+      "baselineMedianPixelsPerSecond": 6734902.220803589,
+      "candidateMedianPixelsPerSecond": 6828241.163056726,
+      "pairedIterationLatencyChangePercent": {
+        "median": -0.46817830073547784,
+        "minimum": -14.250836288016044,
+        "maximum": 38.486913339998054
+      }
+    },
+    {
+      "round": 1,
+      "case": "flat-19",
+      "operation": "decode",
+      "layout": [
+        "P5",
+        19,
+        19,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 114,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0076307705,
+          "p95": 0.008414041,
+          "minimum": 0.006919666,
+          "maximum": 0.008661416,
+          "medianAbsoluteDeviation": 0.00023635350000000008,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.007616292,
+          "p95": 0.012209875,
+          "minimum": 0.006966083,
+          "maximum": 0.018540084,
+          "medianAbsoluteDeviation": 0.00027889650000000044,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.18973837569875585,
+          "p95": 45.11309131961681,
+          "minimum": 0.6707982726333883,
+          "maximum": 114.05372978275143
+        },
+        "candidateChangeAbsolute": {
+          "median": -1.4478499999999797e-05,
+          "p95": 0.0037958339999999997,
+          "minimum": 4.6416999999999986e-05,
+          "maximum": 0.009878667999999998
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 6766592.0,
+          "p95": 6782976,
+          "minimum": 6766592,
+          "maximum": 6799360,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 6766592.0,
+          "p95": 6782976,
+          "minimum": 6750208,
+          "maximum": 6782976,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.0,
+          "p95": 0.0,
+          "minimum": -0.2421307506053294,
+          "maximum": -0.24096385542168308
+        },
+        "candidateChangeAbsolute": {
+          "median": 0.0,
+          "p95": 0,
+          "minimum": -16384,
+          "maximum": -16384
+        }
+      },
+      "baselineMedianPixelsPerSecond": 47308.45987308883,
+      "candidateMedianPixelsPerSecond": 47398.3928137209,
+      "pairedIterationLatencyChangePercent": {
+        "median": 1.0943383994380995,
+        "minimum": -14.682922515209984,
+        "maximum": 139.41870331985973
+      }
+    },
+    {
+      "round": 1,
+      "case": "flat-19",
+      "operation": "encode",
+      "layout": [
+        "P5",
+        19,
+        19,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 114,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "92804f8c1d4c4bf07d6bc588d8fb2b3d41894258576ff8dd25b5934d9e563aaf",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0075966665,
+          "p95": 0.008629833,
+          "minimum": 0.00695075,
+          "maximum": 0.008759583,
+          "medianAbsoluteDeviation": 0.0003491249999999996,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.007376146,
+          "p95": 0.008134875,
+          "minimum": 0.006683,
+          "maximum": 0.008979125,
+          "medianAbsoluteDeviation": 0.0001493124999999997,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -2.902858773647621,
+          "p95": -5.735429642728896,
+          "minimum": -3.8521022911196745,
+          "maximum": 2.5063065216688996
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.00022052049999999983,
+          "p95": -0.0004949580000000002,
+          "minimum": -0.0002677500000000006,
+          "maximum": 0.00021954199999999965
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 6832128.0,
+          "p95": 6864896,
+          "minimum": 6832128,
+          "maximum": 6864896,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 6799360.0,
+          "p95": 6832128,
+          "minimum": 6799360,
+          "maximum": 6832128,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.47961630695443347,
+          "p95": -0.4773269689737458,
+          "minimum": -0.47961630695443347,
+          "maximum": -0.4773269689737458
+        },
+        "candidateChangeAbsolute": {
+          "median": -32768.0,
+          "p95": -32768,
+          "minimum": -32768,
+          "maximum": -32768
+        }
+      },
+      "baselineMedianPixelsPerSecond": 47520.84351735067,
+      "candidateMedianPixelsPerSecond": 48941.54752359837,
+      "pairedIterationLatencyChangePercent": {
+        "median": -2.5202613092033865,
+        "minimum": -16.99173873601452,
+        "maximum": 11.888790592563803
+      }
+    },
+    {
+      "round": 2,
+      "case": "lossless16-512",
+      "operation": "decode",
+      "layout": [
+        "P5",
+        512,
+        512,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 290649,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0090805835,
+          "p95": 0.009599583,
+          "minimum": 0.008586,
+          "maximum": 0.010635708,
+          "medianAbsoluteDeviation": 0.00028179149999999886,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0089617915,
+          "p95": 0.009639709,
+          "minimum": 0.008063125,
+          "maximum": 0.011969667,
+          "medianAbsoluteDeviation": 0.00027122899999999957,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -1.3081978707645825,
+          "p95": 0.41799732342540086,
+          "minimum": -6.08985557884928,
+          "maximum": 12.542267990057642
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.00011879199999999951,
+          "p95": 4.0125999999999704e-05,
+          "minimum": -0.000522874999999999,
+          "maximum": 0.0013339589999999991
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 8159232.0,
+          "p95": 8192000,
+          "minimum": 8159232,
+          "maximum": 8241152,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 8142848.0,
+          "p95": 8175616,
+          "minimum": 8142848,
+          "maximum": 8323072,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.20080321285140812,
+          "p95": -0.20000000000000018,
+          "minimum": -0.20080321285140812,
+          "maximum": 0.994035785288272
+        },
+        "candidateChangeAbsolute": {
+          "median": -16384.0,
+          "p95": -16384,
+          "minimum": -16384,
+          "maximum": 81920
+        }
+      },
+      "baselineMedianPixelsPerSecond": 28868629.42232732,
+      "candidateMedianPixelsPerSecond": 29251294.23062342,
+      "pairedIterationLatencyChangePercent": {
+        "median": -1.7499485763305955,
+        "minimum": -20.642716027931563,
+        "maximum": 30.87503382672516
+      }
+    },
+    {
+      "round": 2,
+      "case": "lossless16-512",
+      "operation": "encode",
+      "layout": [
+        "P5",
+        512,
+        512,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 290649,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "7690f836d0d50a8694f7e374410a4808402cbdfbeb22a5c14b73a159d7bfecaf",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0092819995,
+          "p95": 0.0100445,
+          "minimum": 0.008475625,
+          "maximum": 0.012428666,
+          "medianAbsoluteDeviation": 0.0003297080000000006,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0091201455,
+          "p95": 0.009639833,
+          "minimum": 0.008707292,
+          "maximum": 0.009700584,
+          "medianAbsoluteDeviation": 0.00011041750000000041,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -1.7437406670836486,
+          "p95": -4.028742097665383,
+          "minimum": 2.7333323501216755,
+          "maximum": -21.949918036255855
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.0001618540000000012,
+          "p95": -0.0004046669999999992,
+          "minimum": 0.00023166699999999964,
+          "maximum": -0.0027280819999999997
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 11370496.0,
+          "p95": 11894784,
+          "minimum": 11337728,
+          "maximum": 11911168,
+          "medianAbsoluteDeviation": 32768.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 11411456.0,
+          "p95": 11763712,
+          "minimum": 11288576,
+          "maximum": 11796480,
+          "medianAbsoluteDeviation": 114688.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.36023054755043304,
+          "p95": -1.1019283746556474,
+          "minimum": -0.43352601156069204,
+          "maximum": -0.9628610729023435
+        },
+        "candidateChangeAbsolute": {
+          "median": 40960.0,
+          "p95": -131072,
+          "minimum": -49152,
+          "maximum": -114688
+        }
+      },
+      "baselineMedianPixelsPerSecond": 28242190.704707533,
+      "candidateMedianPixelsPerSecond": 28743401.078414813,
+      "pairedIterationLatencyChangePercent": {
+        "median": -0.7675016082224095,
+        "minimum": -24.817289321315737,
+        "maximum": 7.7486910994764235
+      }
+    },
+    {
+      "round": 2,
+      "case": "lossless16-2048",
+      "operation": "decode",
+      "layout": [
+        "P5",
+        2048,
+        2048,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 4647675,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "b495f0feba0d71b1718de7548c5e4847234a81539b06e3db1c5ed9b4e1ce9b07",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0241894785,
+          "p95": 0.025519334,
+          "minimum": 0.0232525,
+          "maximum": 0.02578725,
+          "medianAbsoluteDeviation": 0.00026956300000000044,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.024141229,
+          "p95": 0.024640833,
+          "minimum": 0.022915292,
+          "maximum": 0.024820792,
+          "medianAbsoluteDeviation": 0.00027752149999999906,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.19946482103778695,
+          "p95": -3.442491876943188,
+          "minimum": -1.4502010536501353,
+          "maximum": -3.7478133573762173
+        },
+        "candidateChangeAbsolute": {
+          "median": -4.8249499999999945e-05,
+          "p95": -0.0008785010000000003,
+          "minimum": -0.00033720799999999856,
+          "maximum": -0.0009664579999999999
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 29310976.0,
+          "p95": 29392896,
+          "minimum": 29310976,
+          "maximum": 29392896,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 29294592.0,
+          "p95": 29376512,
+          "minimum": 29278208,
+          "maximum": 29376512,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.05589714924538747,
+          "p95": -0.05574136008918984,
+          "minimum": -0.11179429849077493,
+          "maximum": -0.05574136008918984
+        },
+        "candidateChangeAbsolute": {
+          "median": -16384.0,
+          "p95": -16384,
+          "minimum": -32768,
+          "maximum": -16384
+        }
+      },
+      "baselineMedianPixelsPerSecond": 173393733.97404993,
+      "candidateMedianPixelsPerSecond": 173740284.72204128,
+      "pairedIterationLatencyChangePercent": {
+        "median": 0.3104295106205801,
+        "minimum": -10.254261311306944,
+        "maximum": 3.6202214815611367
+      }
+    },
+    {
+      "round": 2,
+      "case": "lossless16-2048",
+      "operation": "encode",
+      "layout": [
+        "P5",
+        2048,
+        2048,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 4647675,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.025370999999999998,
+          "p95": 0.02720975,
+          "minimum": 0.023109708,
+          "maximum": 0.028485458,
+          "medianAbsoluteDeviation": 0.0012731245000000002,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.024515479,
+          "p95": 0.029855042,
+          "minimum": 0.023947959,
+          "maximum": 0.030820625,
+          "medianAbsoluteDeviation": 0.0004127079999999995,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -3.3720428836072625,
+          "p95": 9.721853379762768,
+          "minimum": 3.627267813163204,
+          "maximum": 8.197751287692135
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.000855520999999998,
+          "p95": 0.002645291999999997,
+          "minimum": 0.0008382510000000017,
+          "maximum": 0.002335166999999999
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 71598080.0,
+          "p95": 71614464,
+          "minimum": 71565312,
+          "maximum": 71630848,
+          "medianAbsoluteDeviation": 16384.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 71548928.0,
+          "p95": 71565312,
+          "minimum": 71499776,
+          "maximum": 71598080,
+          "medianAbsoluteDeviation": 16384.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.06864988558352714,
+          "p95": -0.06863417982154729,
+          "minimum": -0.09157509157509125,
+          "maximum": -0.045745654162854255
+        },
+        "candidateChangeAbsolute": {
+          "median": -49152.0,
+          "p95": -49152,
+          "minimum": -65536,
+          "maximum": -32768
+        }
+      },
+      "baselineMedianPixelsPerSecond": 165318828.58381617,
+      "candidateMedianPixelsPerSecond": 171087988.93955937,
+      "pairedIterationLatencyChangePercent": {
+        "median": 2.2060301863140785,
+        "minimum": -11.987581657310342,
+        "maximum": 15.393005261383209
+      }
+    },
+    {
+      "round": 2,
+      "case": "dct12-512",
+      "operation": "decode",
+      "layout": [
+        "P5",
+        512,
+        512,
+        4095
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 200993,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.010347125,
+          "p95": 0.010560833,
+          "minimum": 0.009895333,
+          "maximum": 0.011008,
+          "medianAbsoluteDeviation": 0.00011947899999999959,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0102101665,
+          "p95": 0.010835334,
+          "minimum": 0.009547084,
+          "maximum": 0.0109205,
+          "medianAbsoluteDeviation": 0.0003407499999999999,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -1.323638208681166,
+          "p95": 2.5992362534281055,
+          "minimum": -3.5193257265824007,
+          "maximum": -0.7948764534883801
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.000136958500000001,
+          "p95": 0.0002745009999999999,
+          "minimum": -0.0003482489999999984,
+          "maximum": -8.750000000000077e-05
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 12468224.0,
+          "p95": 12566528,
+          "minimum": 12451840,
+          "maximum": 12566528,
+          "medianAbsoluteDeviation": 16384.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 12443648.0,
+          "p95": 12533760,
+          "minimum": 12419072,
+          "maximum": 12533760,
+          "medianAbsoluteDeviation": 16384.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.1971090670170872,
+          "p95": -0.2607561929595881,
+          "minimum": -0.2631578947368429,
+          "maximum": -0.2607561929595881
+        },
+        "candidateChangeAbsolute": {
+          "median": -24576.0,
+          "p95": -32768,
+          "minimum": -32768,
+          "maximum": -32768
+        }
+      },
+      "baselineMedianPixelsPerSecond": 25334960.194256857,
+      "candidateMedianPixelsPerSecond": 25674801.679287013,
+      "pairedIterationLatencyChangePercent": {
+        "median": 0.31475935475464567,
+        "minimum": -13.27140261627907,
+        "maximum": 7.40416719679875
+      }
+    },
+    {
+      "round": 2,
+      "case": "dct12-512",
+      "operation": "encode",
+      "layout": [
+        "P5",
+        512,
+        512,
+        4095
+      ],
+      "encoderScanMode": "sequential",
+      "encodedBytes": 180786,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "0293f47e6b5f88b6ecb827e4312a5c5cb084c67a830bafc52e73106f64a1ab1d",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.012349479,
+          "p95": 0.013100125,
+          "minimum": 0.011883083,
+          "maximum": 0.01327575,
+          "medianAbsoluteDeviation": 0.0002554580000000001,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0123229585,
+          "p95": 0.012864,
+          "minimum": 0.011949,
+          "maximum": 0.012911833,
+          "medianAbsoluteDeviation": 0.00020716750000000003,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.21474995018008203,
+          "p95": -1.8024637169492652,
+          "minimum": 0.5547129478099322,
+          "maximum": -2.7412161271491264
+        },
+        "candidateChangeAbsolute": {
+          "median": -2.65205000000001e-05,
+          "p95": -0.00023612500000000022,
+          "minimum": 6.59170000000004e-05,
+          "maximum": -0.00036391700000000006
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 13336576.0,
+          "p95": 14401536,
+          "minimum": 13320192,
+          "maximum": 14778368,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 13287424.0,
+          "p95": 14516224,
+          "minimum": 13287424,
+          "maximum": 14729216,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.3685503685503688,
+          "p95": 0.7963594994311762,
+          "minimum": -0.24600246002459691,
+          "maximum": -0.3325942350332567
+        },
+        "candidateChangeAbsolute": {
+          "median": -49152.0,
+          "p95": 114688,
+          "minimum": -32768,
+          "maximum": -49152
+        }
+      },
+      "baselineMedianPixelsPerSecond": 21227130.310517553,
+      "candidateMedianPixelsPerSecond": 21272813.66726992,
+      "pairedIterationLatencyChangePercent": {
+        "median": -0.18817757208528518,
+        "minimum": -5.151347792482907,
+        "maximum": 5.4231236138988725
+      }
+    },
+    {
+      "round": 2,
+      "case": "rgb8-512",
+      "operation": "decode",
+      "layout": [
+        "P6",
+        512,
+        512,
+        255
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 219499,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.012288957999999999,
+          "p95": 0.013165417,
+          "minimum": 0.011239667,
+          "maximum": 0.013196666,
+          "medianAbsoluteDeviation": 0.0002742499999999993,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0119509585,
+          "p95": 0.012684375,
+          "minimum": 0.010979334,
+          "maximum": 0.013236125,
+          "medianAbsoluteDeviation": 0.00031420799999999985,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -2.750432542775383,
+          "p95": -3.653830334428454,
+          "minimum": -2.31619851371041,
+          "maximum": 0.29900734018728503
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.0003379994999999983,
+          "p95": -0.00048104200000000097,
+          "minimum": -0.00026033299999999975,
+          "maximum": 3.945900000000037e-05
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 17227776.0,
+          "p95": 18038784,
+          "minimum": 16842752,
+          "maximum": 18120704,
+          "medianAbsoluteDeviation": 114688.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 17219584.0,
+          "p95": 17989632,
+          "minimum": 16809984,
+          "maximum": 18038784,
+          "medianAbsoluteDeviation": 139264.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.04755111745126106,
+          "p95": -0.27247956403270157,
+          "minimum": -0.1945525291828787,
+          "maximum": -0.4520795660036159
+        },
+        "candidateChangeAbsolute": {
+          "median": -8192.0,
+          "p95": -49152,
+          "minimum": -32768,
+          "maximum": -81920
+        }
+      },
+      "baselineMedianPixelsPerSecond": 21331670.268545147,
+      "candidateMedianPixelsPerSecond": 21934977.014605146,
+      "pairedIterationLatencyChangePercent": {
+        "median": -2.372246712050896,
+        "minimum": -11.85123276746326,
+        "maximum": 5.436953306104431
+      }
+    },
+    {
+      "round": 2,
+      "case": "rgb8-512",
+      "operation": "encode",
+      "layout": [
+        "P6",
+        512,
+        512,
+        255
+      ],
+      "encoderScanMode": "sequential",
+      "encodedBytes": 178928,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "df14abf66a4212b1f12a6b381ecbfacb639eb440ba837f4e5a24e77c11f77b54",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0164976255,
+          "p95": 0.017367458,
+          "minimum": 0.016111333,
+          "maximum": 0.019006375,
+          "medianAbsoluteDeviation": 0.00027670850000000025,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.016417542,
+          "p95": 0.017121208,
+          "minimum": 0.015440916,
+          "maximum": 0.017269458,
+          "medianAbsoluteDeviation": 0.0003204169999999999,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.4854244024390164,
+          "p95": -1.4178816496921987,
+          "minimum": -4.161151656414763,
+          "maximum": -9.138602179531851
+        },
+        "candidateChangeAbsolute": {
+          "median": -8.008350000000136e-05,
+          "p95": -0.00024624999999999994,
+          "minimum": -0.0006704169999999978,
+          "maximum": -0.0017369169999999975
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 17440768.0,
+          "p95": 18006016,
+          "minimum": 15089664,
+          "maximum": 18284544,
+          "medianAbsoluteDeviation": 204800.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 17293312.0,
+          "p95": 17989632,
+          "minimum": 16121856,
+          "maximum": 17989632,
+          "medianAbsoluteDeviation": 655360.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.8454673555659986,
+          "p95": -0.09099181073702889,
+          "minimum": 6.84039087947883,
+          "maximum": -1.6129032258064502
+        },
+        "candidateChangeAbsolute": {
+          "median": -147456.0,
+          "p95": -16384,
+          "minimum": 1032192,
+          "maximum": -294912
+        }
+      },
+      "baselineMedianPixelsPerSecond": 15889801.838452447,
+      "candidateMedianPixelsPerSecond": 15967311.06276445,
+      "pairedIterationLatencyChangePercent": {
+        "median": -0.42810936280317513,
+        "minimum": -14.649689906676045,
+        "maximum": 3.1065282964455543
+      }
+    },
+    {
+      "round": 2,
+      "case": "progressiveRGB8-512",
+      "operation": "decode",
+      "layout": [
+        "P6",
+        512,
+        512,
+        255
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 219582,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "cc7548e93704d319fd88a4d7e646ccdf43e08c5f3b5e5f8e1b0b72a88731522e",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.013398833499999999,
+          "p95": 0.014175583,
+          "minimum": 0.012611958,
+          "maximum": 0.014555167,
+          "medianAbsoluteDeviation": 0.00039591649999999937,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.013485833,
+          "p95": 0.014508291,
+          "minimum": 0.012881375,
+          "maximum": 0.014692583,
+          "medianAbsoluteDeviation": 0.0002521875000000007,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.6493065235865458,
+          "p95": 2.347049853258243,
+          "minimum": 2.1362028005484923,
+          "maximum": 0.9441045918607394
+        },
+        "candidateChangeAbsolute": {
+          "median": 8.699950000000053e-05,
+          "p95": 0.00033270799999999927,
+          "minimum": 0.00026941700000000096,
+          "maximum": 0.00013741599999999958
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 17481728.0,
+          "p95": 18726912,
+          "minimum": 16990208,
+          "maximum": 18841600,
+          "medianAbsoluteDeviation": 180224.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 17416192.0,
+          "p95": 18694144,
+          "minimum": 17055744,
+          "maximum": 18726912,
+          "medianAbsoluteDeviation": 172032.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.37488284910964786,
+          "p95": -0.17497812773403787,
+          "minimum": 0.38572806171648377,
+          "maximum": -0.6086956521739184
+        },
+        "candidateChangeAbsolute": {
+          "median": -65536.0,
+          "p95": -32768,
+          "minimum": 65536,
+          "maximum": -114688
+        }
+      },
+      "baselineMedianPixelsPerSecond": 19564688.224538356,
+      "candidateMedianPixelsPerSecond": 19438472.95157815,
+      "pairedIterationLatencyChangePercent": {
+        "median": 0.5052386276570786,
+        "minimum": -7.637777107283039,
+        "maximum": 12.81323645384802
+      }
+    },
+    {
+      "round": 2,
+      "case": "progressiveRGB8-512",
+      "operation": "encode",
+      "layout": [
+        "P6",
+        512,
+        512,
+        255
+      ],
+      "encoderScanMode": "successive-approximation",
+      "encodedBytes": 181153,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "1d859880a909a4692754d1f59a06f8f856ed4bf8bc2c400c5b69d1fc8ec7b5d3",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.0388238125,
+          "p95": 0.039657708,
+          "minimum": 0.037753167,
+          "maximum": 0.039840917,
+          "medianAbsoluteDeviation": 0.0005650625000000013,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.038656229,
+          "p95": 0.039424209,
+          "minimum": 0.037479833,
+          "maximum": 0.040438708,
+          "medianAbsoluteDeviation": 0.0005733124999999992,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.4316513222394125,
+          "p95": -0.588785917733814,
+          "minimum": -0.724002836636195,
+          "maximum": 1.5004448818283889
+        },
+        "candidateChangeAbsolute": {
+          "median": -0.00016758349999999866,
+          "p95": -0.00023349899999999812,
+          "minimum": -0.0002733340000000001,
+          "maximum": 0.0005977909999999934
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 17498112.0,
+          "p95": 17825792,
+          "minimum": 16285696,
+          "maximum": 18530304,
+          "medianAbsoluteDeviation": 65536.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 17506304.0,
+          "p95": 17793024,
+          "minimum": 15400960,
+          "maximum": 17891328,
+          "medianAbsoluteDeviation": 180224.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.0468164794007464,
+          "p95": -0.18382352941176405,
+          "minimum": -5.432595573440646,
+          "maximum": -3.4482758620689613
+        },
+        "candidateChangeAbsolute": {
+          "median": 8192.0,
+          "p95": -32768,
+          "minimum": -884736,
+          "maximum": -638976
+        }
+      },
+      "baselineMedianPixelsPerSecond": 6752144.705005466,
+      "candidateMedianPixelsPerSecond": 6781416.78020378,
+      "pairedIterationLatencyChangePercent": {
+        "median": 0.270236994583406,
+        "minimum": -4.068000733161281,
+        "maximum": 3.4399009810119674
+      }
+    },
+    {
+      "round": 2,
+      "case": "flat-19",
+      "operation": "decode",
+      "layout": [
+        "P5",
+        19,
+        19,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 114,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.007740021,
+          "p95": 0.008519792,
+          "minimum": 0.007224125,
+          "maximum": 0.009528417,
+          "medianAbsoluteDeviation": 0.0002236460000000001,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.00784325,
+          "p95": 0.008446458,
+          "minimum": 0.0073105,
+          "maximum": 0.008484959,
+          "medianAbsoluteDeviation": 0.00027879149999999976,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 1.333704391758106,
+          "p95": -0.8607487131141123,
+          "minimum": 1.1956465315868803,
+          "maximum": -10.95101106511187
+        },
+        "candidateChangeAbsolute": {
+          "median": 0.00010322899999999982,
+          "p95": -7.333399999999955e-05,
+          "minimum": 8.637500000000051e-05,
+          "maximum": -0.0010434580000000006
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 6766592.0,
+          "p95": 6799360,
+          "minimum": 6766592,
+          "maximum": 6799360,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 6766592.0,
+          "p95": 6782976,
+          "minimum": 6750208,
+          "maximum": 6782976,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": 0.0,
+          "p95": -0.24096385542168308,
+          "minimum": -0.2421307506053294,
+          "maximum": -0.24096385542168308
+        },
+        "candidateChangeAbsolute": {
+          "median": 0.0,
+          "p95": -16384,
+          "minimum": -16384,
+          "maximum": -16384
+        }
+      },
+      "baselineMedianPixelsPerSecond": 46640.70032884924,
+      "candidateMedianPixelsPerSecond": 46026.83836419852,
+      "pairedIterationLatencyChangePercent": {
+        "median": 0.1102186411543804,
+        "minimum": -14.88923081347091,
+        "maximum": 14.530053317135728
+      }
+    },
+    {
+      "round": 2,
+      "case": "flat-19",
+      "operation": "encode",
+      "layout": [
+        "P5",
+        19,
+        19,
+        65535
+      ],
+      "encoderScanMode": null,
+      "encodedBytes": 114,
+      "baselineCandidateExactBytes": true,
+      "outputSHA256": "92804f8c1d4c4bf07d6bc588d8fb2b3d41894258576ff8dd25b5934d9e563aaf",
+      "elapsedSeconds": {
+        "baseline": {
+          "median": 0.007777312999999999,
+          "p95": 0.008176083,
+          "minimum": 0.006834083,
+          "maximum": 0.008402334,
+          "medianAbsoluteDeviation": 0.0002939169999999999,
+          "count": 20
+        },
+        "candidate": {
+          "median": 0.0077235,
+          "p95": 0.008225083,
+          "minimum": 0.00707825,
+          "maximum": 0.008534833,
+          "medianAbsoluteDeviation": 0.00016914600000000023,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.6919227758995783,
+          "p95": 0.5993089845100386,
+          "minimum": 3.5727836492474463,
+          "maximum": 1.576930886108574
+        },
+        "candidateChangeAbsolute": {
+          "median": -5.381299999999891e-05,
+          "p95": 4.89999999999987e-05,
+          "minimum": 0.000244167,
+          "maximum": 0.0001324990000000012
+        }
+      },
+      "peakRSSBytes": {
+        "baseline": {
+          "median": 6832128.0,
+          "p95": 6832128,
+          "minimum": 6832128,
+          "maximum": 6832128,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidate": {
+          "median": 6799360.0,
+          "p95": 6832128,
+          "minimum": 6782976,
+          "maximum": 6832128,
+          "medianAbsoluteDeviation": 0.0,
+          "count": 20
+        },
+        "candidateChangePercent": {
+          "median": -0.47961630695443347,
+          "p95": 0.0,
+          "minimum": -0.7194244604316502,
+          "maximum": 0.0
+        },
+        "candidateChangeAbsolute": {
+          "median": -32768.0,
+          "p95": 0,
+          "minimum": -49152,
+          "maximum": 0
+        }
+      },
+      "baselineMedianPixelsPerSecond": 46417.05946513919,
+      "candidateMedianPixelsPerSecond": 46740.46740467405,
+      "pairedIterationLatencyChangePercent": {
+        "median": 0.3884223745236448,
+        "minimum": -15.758526142855056,
+        "maximum": 16.601794460077635
+      }
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "recordedUTC": "2026-11-03T08:16:23.255795+00:00",
+  "helperSHA256": "6e1eba85d9d5516c218aceb02c21a36b5346f3f07c83ced74787dc9c254c5fa5",
+  "commands": [
+    {
+      "command": [
+        "/private/tmp/swiftjli-m5-derived-sbom-ti1ildpy/venv/bin/python",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/derive.py",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom",
+        "--inputs",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/inputs",
+        "--product",
+        "SwiftJLI",
+        "--output",
+        "/private/tmp/swiftjli-derived-replay-yuw0oyuz/library"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"status\": \"passed\", \"jsonSchema\": [{\"format\": \"spdx\", \"passed\": true, \"errors\": 0}, {\"format\": \"cyclonedx\", \"passed\": true, \"errors\": 0}], \"SHACL\": true}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-m5-derived-sbom-ti1ildpy/venv/bin/python",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/derive.py",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom",
+        "--inputs",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/inputs",
+        "--product",
+        "SwiftJLI",
+        "--output",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/library"
+      ],
+      "exitCode": 2,
+      "stdout": "",
+      "stderr": "usage: derive.py [-h] --evidence EVIDENCE --inputs INPUTS --output OUTPUT\n                 --product {SwiftJLI,swiftjli-cli} [--raw-sbom RAW_SBOM]\nderive.py: error: Existing derived evidence must be preserved; choose a fresh output directory\n"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-m5-derived-sbom-ti1ildpy/venv/bin/python",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/derive.py",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom",
+        "--inputs",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/inputs",
+        "--product",
+        "swiftjli-cli",
+        "--raw-sbom",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/cli-raw",
+        "--output",
+        "/private/tmp/swiftjli-derived-replay-yuw0oyuz/cli"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"status\": \"passed\", \"jsonSchema\": [{\"format\": \"spdx\", \"passed\": true, \"errors\": 0}, {\"format\": \"cyclonedx\", \"passed\": true, \"errors\": 0}], \"SHACL\": true}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-m5-derived-sbom-ti1ildpy/venv/bin/python",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/derive.py",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom",
+        "--inputs",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/inputs",
+        "--product",
+        "swiftjli-cli",
+        "--raw-sbom",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/cli-raw",
+        "--output",
+        "/Users/pushparaj/projects/SwiftJLI-milestone5/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom/derived/cli"
+      ],
+      "exitCode": 2,
+      "stdout": "",
+      "stderr": "usage: derive.py [-h] --evidence EVIDENCE --inputs INPUTS --output OUTPUT\n                 --product {SwiftJLI,swiftjli-cli} [--raw-sbom RAW_SBOM]\nderive.py: error: Existing derived evidence must be preserved; choose a fresh output directory\n"
+    }
+  ],
+  "comparisons": [
+    {
+      "product": "SwiftJLI",
+      "file": "spdx.derived.json",
+      "sha256": "066b2059543a312b63d049ebb822611cd1c93d1e1eb5e5173a95c547fe0878b9",
+      "replayMatches": true
+    },
+    {
+      "product": "SwiftJLI",
+      "file": "cyclonedx.derived.json",
+      "sha256": "7522745de85c6ef4d47d2dada29ee1593842f384b0e4b1378da493e6805e6b65",
+      "replayMatches": true
+    },
+    {
+      "product": "SwiftJLI",
+      "file": "supplement.json",
+      "sha256": "9644af3f4baee20e7b9ec87d8fc93ee10be7d7cacbf04c11f3598eede7d58535",
+      "replayMatches": true
+    },
+    {
+      "product": "SwiftJLI",
+      "file": "transformations.json",
+      "sha256": "08d5dd8c29bf95b2fedcdf19a2377d4544b06b2b5963af5b488f8ed9e8f4011d",
+      "replayMatches": true
+    },
+    {
+      "product": "swiftjli-cli",
+      "file": "spdx.derived.json",
+      "sha256": "5a6fe900baa4981b588ab501d58a9b4788661d770fffc279322519ec2fc77fdd",
+      "replayMatches": true
+    },
+    {
+      "product": "swiftjli-cli",
+      "file": "cyclonedx.derived.json",
+      "sha256": "0343d6e9132c04957da63bdea678b34c4f13345eaa42ba1137621af2d22b12d2",
+      "replayMatches": true
+    },
+    {
+      "product": "swiftjli-cli",
+      "file": "supplement.json",
+      "sha256": "d96d14c4942bdbc07bdf67533ecd78de61bb262006afe38b37d2f346978c05f9",
+      "replayMatches": true
+    },
+    {
+      "product": "swiftjli-cli",
+      "file": "transformations.json",
+      "sha256": "bf803aee4cd9919a0189c1f268aa846dcac369493c416cb2bf601ad760cb0b0f",
+      "replayMatches": true
+    }
+  ],
+  "protectedFileCount": 44,
+  "protectedFilesUnchanged": true,
+  "status": "passed"
+}

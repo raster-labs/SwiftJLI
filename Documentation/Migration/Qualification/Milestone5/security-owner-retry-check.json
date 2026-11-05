@@ -1,0 +1,28 @@
+{
+  "recordedUTC": "2026-11-03T10:34:21.353923+00:00",
+  "scope": "Read-only check after owner requests Watch retry and administrator activation instructions; no settings changed.",
+  "commands": [
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI/private-vulnerability-reporting"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"enabled\":false}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI",
+        "--jq",
+        "{visibility, permissions}"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"permissions\":{\"admin\":false,\"maintain\":false,\"pull\":true,\"push\":true,\"triage\":true},\"visibility\":\"public\"}\n",
+      "stderr": ""
+    }
+  ]
+}

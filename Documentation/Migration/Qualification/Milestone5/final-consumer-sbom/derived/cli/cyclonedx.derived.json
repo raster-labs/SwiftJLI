@@ -1,0 +1,172 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
+  "bomFormat": "CycloneDX",
+  "components": [
+    {
+      "bom-ref": "swiftjli",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/raster-labs/SwiftJLI/tree/f548e5048e5c71204c2a2ec4036bf66c4f040285"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "swiftjli",
+      "pedigree": {},
+      "properties": [
+        {
+          "name": "swift-entity",
+          "value": "swift-package"
+        },
+        {
+          "name": "swiftjli:original-generator-purl",
+          "value": "pkg:swift/swiftjli@f548e5048e5c71204c2a2ec4036bf66c4f040285"
+        },
+        {
+          "name": "swiftjli:licence-scope",
+          "value": "Apache-2.0 in-house source; embedded ICC profile is separately licensed."
+        }
+      ],
+      "purl": "pkg:swift/github.com/raster-labs/SwiftJLI@f548e5048e5c71204c2a2ec4036bf66c4f040285",
+      "scope": "required",
+      "type": "application",
+      "version": "f548e5048e5c71204c2a2ec4036bf66c4f040285"
+    },
+    {
+      "bom-ref": "urn:sha256:384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a",
+      "copyright": "Copyright International Color Consortium, 2015",
+      "description": "Unchanged 3024-byte ICC profile embedded in SRGBICCProfile.swift; not Apache-relicensed.",
+      "externalReferences": [
+        {
+          "type": "distribution",
+          "url": "https://registry.color.org/rgb-registry/profiles/sRGB2014.icc"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "name": "ICC profile terms",
+            "url": "https://registry.color.org/profile-library/"
+          }
+        }
+      ],
+      "name": "sRGB2014.icc",
+      "type": "file"
+    }
+  ],
+  "dependencies": [
+    {
+      "dependsOn": [
+        "swiftjli:swiftjli-cli"
+      ],
+      "ref": "swiftjli"
+    },
+    {
+      "dependsOn": [
+        "urn:sha256:384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a"
+      ],
+      "ref": "swiftjli:swiftjli-cli"
+    },
+    {
+      "dependsOn": [],
+      "ref": "urn:sha256:384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a"
+    }
+  ],
+  "metadata": {
+    "component": {
+      "bom-ref": "swiftjli:swiftjli-cli",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/raster-labs/SwiftJLI/tree/f548e5048e5c71204c2a2ec4036bf66c4f040285"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "swiftjli-cli",
+      "pedigree": {},
+      "properties": [
+        {
+          "name": "swift-entity",
+          "value": "swift-product"
+        },
+        {
+          "name": "swiftjli:original-generator-purl",
+          "value": "pkg:swift/swiftjli/swiftjli:swiftjli-cli@f548e5048e5c71204c2a2ec4036bf66c4f040285"
+        },
+        {
+          "name": "swiftjli:licence-scope",
+          "value": "Apache-2.0 in-house source; embedded ICC profile is separately licensed."
+        }
+      ],
+      "scope": "required",
+      "type": "application",
+      "version": "f548e5048e5c71204c2a2ec4036bf66c4f040285"
+    },
+    "properties": [
+      {
+        "name": "swiftjli:derivation",
+        "value": "derived-v1; raw SHA-256 9ab8a67c30c52f1874767268250893f0f2d9adfbead65cd954ed668375241954"
+      },
+      {
+        "name": "swiftjli:inventory-scope",
+        "value": "SwiftPM package/product plus embedded ICC profile; observed consumer-native linkage is in supplement.json. Complete platform runtime/SDK inventory is not claimed."
+      }
+    ],
+    "timestamp": "2026-11-03T08:14:18Z",
+    "tools": {
+      "components": [
+        {
+          "bom-ref": "urn:uuid:2bef007a-f3b3-4e5c-88db-fe96d989f6f9",
+          "licenses": [
+            {
+              "license": {
+                "id": "Apache-2.0",
+                "url": "http://swift.org/LICENSE.txt"
+              }
+            }
+          ],
+          "name": "swift-package-manager",
+          "purl": "pkg:swift/github.com/swiftlang/swift-package-manager@6.4.2",
+          "scope": "excluded",
+          "type": "application",
+          "version": "6.4.2"
+        },
+        {
+          "bom-ref": "urn:swiftjli:milestone5:derive:6e1eba85d9d5516c218aceb02c21a36b5346f3f07c83ced74787dc9c254c5fa5",
+          "licenses": [
+            {
+              "license": {
+                "id": "Apache-2.0"
+              }
+            }
+          ],
+          "name": "SwiftJLI derived SBOM helper",
+          "scope": "excluded",
+          "type": "application",
+          "version": "6e1eba85d9d5516c218aceb02c21a36b5346f3f07c83ced74787dc9c254c5fa5"
+        }
+      ]
+    }
+  },
+  "serialNumber": "urn:uuid:a463dab1-23c9-5425-868b-329666579fd3",
+  "specVersion": "1.7",
+  "version": 2
+}

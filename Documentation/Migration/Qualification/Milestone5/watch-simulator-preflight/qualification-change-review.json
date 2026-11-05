@@ -1,0 +1,18 @@
+{
+  "scope": "Static review only; hosted execution pending",
+  "script": "Scripts/test-apple-simulator.py",
+  "scriptSHA256": "5b24053f251445d9aabefce1421b721a1bd1401ed62136e429dab02fa8022fbc",
+  "workflowSHA256": "d42a1e33516faf64610033eaef766392c996025a665cd3ef65dc3b2adf593aa2",
+  "checks": {
+    "pythonAST": "passed",
+    "helpConfigurationChoices": [
+      "Debug",
+      "Release"
+    ],
+    "invalidConfigurationExitCode": 2,
+    "invalidConfigurationCreatesOutput": false,
+    "gitDiffCheck": "passed",
+    "workflowReview": "targeted diff and indentation reviewed; PyYAML unavailable"
+  },
+  "behaviour": "Default remains Debug; selected configuration recorded and passed explicitly to xcodebuild. Watch-only CI adds Release six-test package and retains JSON/log/xcresult in existing always-upload step. Existing library step remains."
+}

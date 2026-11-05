@@ -1,0 +1,28 @@
+{
+  "recordedUTC": "2026-11-03T11:11:51.582852+00:00",
+  "scope": "Read-only check after the Intel Watch job succeeded; no settings changed.",
+  "commands": [
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI/private-vulnerability-reporting"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"enabled\":false}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/raster-labs/SwiftJLI",
+        "--jq",
+        "{visibility, permissions}"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"permissions\":{\"admin\":false,\"maintain\":false,\"pull\":true,\"push\":true,\"triage\":true},\"visibility\":\"public\"}\n",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "requestedHeadSHA": "a91716d29e96bd9c58f03bd66fc3d1cf475edc1d",
+  "qualifiedBaselineSHA": "8ae2762710d6279cd92222f5bb5ca95f042f694e",
+  "observedRemoteBaseSHA": "bbb0b1a9a602807643fc254fb4e0d54a162d5ae8",
+  "existingPRMergeSHA": "b350cb01a2b9e842086c579db81dd814861aadf9",
+  "workflowRunsForRequestedHead": [],
+  "newBaseCommits": {
+    "exitCode": 0,
+    "stdout": "bbb0b1a Record bounded decoding memory gains and provisional djpeg comparisons\n0a8acd7 Preserve scalar parallelism and portable input ownership checks\n831e778 Retain macOS test crash diagnostics on CI failure\n82d4b25 Account for bounded decoding and release compressed owners promptly\ndc58a2e Stream small greyscale frames under the default worker ceiling\n5611e46 Share immutable compressed input across validated JPEG scans\n10a9de7 Stream sequential greyscale coefficients in bounded DCT batches\nee9a2e7 Reduce CLI input scratch and stdout descriptor work\nc1c9710 Write serial greyscale DCT batches directly to caller storage\n9f4cfb3 Bound DCT reconstruction scratch to per-worker batches\n",
+    "stderr": ""
+  },
+  "changedImplementationPaths": {
+    "exitCode": 0,
+    "stdout": "M\t.github/workflows/contract.yml\nM\tScripts/test-cli.py\nA\tSources/SwiftJLI/JPEGBytes.swift\nM\tSources/SwiftJLI/JPEGCodec.swift\nM\tSources/SwiftJLI/JPEGEntropyBoundary.swift\nM\tSources/SwiftJLI/JPEGEnvelope.swift\nM\tSources/SwiftJLI/Native/Contract/SharedDCTStorage.swift\nM\tSources/SwiftJLI/Native/Decoder/JLIDecoder.swift\nA\tSources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift\nM\tSources/SwiftJLI/Native/Entropy/JLIBitStream.swift\nM\tSources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift\nM\tSources/SwiftJLI/Native/Markers/JLIMarkerReader.swift\nM\tSources/SwiftJLICLI/main.swift\nA\tTests/SwiftJLITests/CompressedInputOwnershipTests.swift\nA\tTests/SwiftJLITests/Native/BoundedDCTWorkspaceTests.swift\nM\tTests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift\nA\tTests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift\nM\tTests/SwiftJLITests/ValidatedEnvelopeTests.swift\n",
+    "stderr": ""
+  },
+  "mergeTree": {
+    "exitCode": 1,
+    "stdout": "df3117196c29a5b15a66319437c0b4a2c1d1066a\nCHANGELOG.md\n\nAuto-merging .github/workflows/contract.yml\nAuto-merging CHANGELOG.md\nCONFLICT (content): Merge conflict in CHANGELOG.md\nAuto-merging Documentation/Migration/ACCEPTANCE.md\nAuto-merging MIGRATION.md\nAuto-merging README.md\n",
+    "stderr": ""
+  },
+  "workingTreeEdited": false,
+  "baseMerged": false,
+  "scope": "Diagnosis only: changed base conflicts in CHANGELOG.md and changes shipping bytes; frozen qualification is not evidence for the combined source.",
+  "recordedUTC": "2026-11-03T08:41:20.524868+00:00"
+}
