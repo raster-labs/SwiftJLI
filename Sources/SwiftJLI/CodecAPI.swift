@@ -130,15 +130,23 @@ public enum DecoderSampleFormat: Sendable, Equatable {
     case nativeInteger, float32RawSamples, float32NormalisedSRGB
 }
 
+/// Optional source interpretation for three-component DCT without Adobe/XYB signalling.
+/// This controls reconstruction; decoded components remain RGB.
+public enum JPEGSourceColourModel: Sendable, Equatable { case rgb, yCbCr }
+
 public struct DecoderConfiguration: Sendable, Equatable {
     public let codecOptions: CodecOptions
     /// DCT output dimensions are ceil(encoded dimension / scale).
     /// Predictive JPEG requires scale 1. Inspect always describes the codestream.
     public let scale: Int
     public let sampleFormat: DecoderSampleFormat
+    /// For unmarked three-component DCT input only; cannot override Adobe or XYB metadata.
+    public let sourceColourModel: JPEGSourceColourModel?
     public init(codecOptions: CodecOptions = .init(), scale: Int = 1,
-                sampleFormat: DecoderSampleFormat = .nativeInteger) {
+                sampleFormat: DecoderSampleFormat = .nativeInteger,
+                sourceColourModel: JPEGSourceColourModel? = nil) {
         self.codecOptions = codecOptions; self.scale = scale; self.sampleFormat = sampleFormat
+        self.sourceColourModel = sourceColourModel
     }
 }
 
@@ -244,7 +252,7 @@ public struct Decoder: Sendable {
     }
 
     public func inspect(_ data: Data, options: DecodeOptions = .init()) throws -> ImageInfo {
-        try JPEGCodec.inspect(data, options: options)
+        try JPEGCodec.inspect(data, sourceColourModel: configuration.sourceColourModel, options: options)
     }
     @concurrent public func decode(_ data: Data, options: DecodeOptions = .init()) async throws -> DecodedImage {
         try await NativeOperation.withCancellation {

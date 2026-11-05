@@ -63,6 +63,15 @@ struct ParsedJPEG: Sendable {
     let iccProfile: [UInt8]?
     /// Exif payload (APP1 body after the `Exif\0\0` identifier), or nil.
     let exif: [UInt8]?
+    var adobeTransform: UInt8? = nil
+    /// Explicit interpretation supplied by a caller for an unmarked DCT stream.
+    var sourceColorModel: JLIColorModel? = nil
+
+    var isRawRGB: Bool {
+        frameInfo.components.count == 3 && iccProfile != XYBICCProfile.data &&
+            (sourceColorModel == .rgb || (sourceColorModel == nil &&
+                (adobeTransform == 0 || frameInfo.components.map(\.id) == [82, 71, 66])))
+    }
 }
 
 // MARK: - Marker Reader
@@ -137,6 +146,7 @@ struct MarkerReader {
         var huffAC = [Int: HuffmanTable]()
         var scans: [JPEGScanData] = []
         var restartInterval: Int = 0
+        var adobeTransform: UInt8?
         var exifData: [UInt8]? = nil
         var iccChunks: [Int: [UInt8]] = [:]   // sequence number → chunk payload
 
@@ -183,6 +193,12 @@ struct MarkerReader {
 
             case JPEGMarker.eoi:
                 break
+
+            case 0xEE:
+                let segment = try readSegmentBytes()
+                if segment.count >= 12 && segment.prefix(5).elementsEqual([65, 100, 111, 98, 101]) {
+                    adobeTransform = segment[11]
+                }
 
             case JPEGMarker.app1:
                 // Exif: "Exif\0\0" identifier then the TIFF payload we preserve.
@@ -238,7 +254,7 @@ struct MarkerReader {
             scans: scans,
             restartInterval: restartInterval,
             iccProfile: iccProfile,
-            exif: exifData
+            exif: exifData, adobeTransform: adobeTransform
         )
     }
 

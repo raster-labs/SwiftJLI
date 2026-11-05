@@ -1,16 +1,13 @@
-.TH SWIFTJLI-CLI 1 "September 23, 2026" "1.1.0-dev.2" "Swift Image Compression Suite"
+.TH SWIFTJLI-CLI 1 "October 15, 2026" "1.1.0-dev.2" "Swift Image Compression Suite"
 .SH NAME
-swiftjli\-cli \- help, version and capability reporting for SwiftJLI
+swiftjli\-cli \- JPEG and lossless JPEG CLI for SwiftJLI
 .SH SYNOPSIS
 .B swiftjli\-cli
 .RI [ options ] " command " [ options ]
 .SH DESCRIPTION
-This development tool provides help, version and truthful library capability
-reporting.
-Codec algorithms are not implemented. Reserved encode, decode, inspect and
-validate
-commands return 4 without opening input, consuming standard input or
-creating output.
+This command-line tool provides JPEG (SOF0/SOF1/SOF2/SOF3) encoding, decoding,
+header inspection, full stream validation, version reporting and library
+capability queries using the native SwiftJLI codec module.
 Build with Swift 6.2 or later in Swift 6 language mode; Swift 6.4 is the
 qualified primary toolchain. Apple OS minimum is 26.0.
 CLI hosts are macOS and Linux; consult qualification records for executed
@@ -20,7 +17,27 @@ coverage.
 .B capabilities [\-\-json]
 Report actual library encode/decode/inspect support. JSON is one document on
 stdout.
-False support values and empty formats mean unavailable algorithms.
+.TP
+.B encode \-i \fIpath\fR \-o \fIpath\fR [\fIoptions\fR]
+Encode an uncompressed NRRD or binary Netpbm (PGM/PPM/PNM) image into a JPEG
+stream. Use \- for standard input or standard output together with an explicit
+\-\-input-format or \-\-output-format.
+.TP
+.B decode \-i \fIpath\fR \-o \fIpath\fR [\fIoptions\fR]
+Decode a JPEG stream into a fidelity-preserving uncompressed container
+(NRRD for full-precision 16-bit 2D greyscale, or binary Netpbm PGM/PPM/PNM
+for 2..16-bit greyscale and RGB). Fails with exit status 4 before creating
+output if the target format cannot preserve sample precision, component
+layout or embedded ICC/Exif metadata.
+.TP
+.B inspect \-i \fIpath\fR [\-\-json] [\fIoptions\fR]
+Inspect JPEG container and frame headers without decoding entropy-coded scan
+segments. Writes plain text or a single JSON object to stdout.
+.TP
+.B validate \-i \fIpath\fR [\-\-json] [\fIoptions\fR]
+Validate the complete JPEG stream, including entropy scan decoding and EOI
+verification, without writing decoded image output. Writes plain text or a
+single JSON object to stdout.
 .TP
 .B help [command]
 Show global or command-specific help. No arguments also show global help.
@@ -47,36 +64,95 @@ Equivalent explicit verbosity spelling; bare \-verbose increments once.
 .B \-q, \-\-quiet
 Suppress optional diagnostics; errors remain visible. Conflicts with
 verbosity.
+.TP
+.B \-i, \-\-input PATH
+Input file path, or \- for standard input.
+.TP
+.B \-o, \-\-output PATH
+Output file path, or \- for standard output (encode and decode only).
+.TP
+.B \-\-input-format FORMAT
+Explicit input format: jpeg (or jpg), nrrd, pgm, ppm, pnm. Required when
+reading from \- or when the input path has no recognised extension.
+.TP
+.B \-\-output-format FORMAT
+Explicit output format: jpeg (or jpg), nrrd, pgm, ppm, pnm. Required when
+writing to \- or when the output path has no recognised extension.
+.TP
+.B \-\-mode MODE
+Compression mode for encode: lossless (default), near-lossless or lossy.
+.TP
+.B \-\-max-error N
+Positive integer error bound for near-lossless point-transform encoding.
+.TP
+.B \-\-predictor N
+Predictive JPEG predictor selection 1 through 7 (default 1).
+.TP
+.B \-\-restart-interval N
+Restart interval in MCUs from 0 through 65535 (default 0).
+.TP
+.B \-\-quality N
+Lossy DCT quality from 0 through 100 (default 90; requires \-\-mode lossy).
+.TP
+.B \-\-subsampling MODE
+Lossy chroma subsampling: 444, 422, 420 or greyscale (requires \-\-mode lossy).
+.TP
+.B \-\-progressive MODE
+Lossy scan progression: sequential, spectral-selection or
+successive-approximation (requires \-\-mode lossy).
+.TP
+.B \-\-backend NAME
+Execution policy: automatic (default), scalar, accelerated, preferred-scalar
+or preferred-accelerated.
+.TP
+.B \-\-copy-policy POLICY
+Memory sharing policy: require-sharing (default) or allow-copy.
+.TP
+.B \-\-threads N
+Maximum worker count (positive integer).
+.TP
+.B \-\-max-memory BYTES
+Maximum operation memory ceiling in bytes.
+.TP
+.B \-\-timeout SECONDS
+Positive finite operation deadline in seconds.
+.TP
+.B \-\-overwrite
+Permit atomic replacement of an existing regular output file.
+.TP
+.B \-\-json
+Emit structured JSON report. Written to stdout for capabilities, inspect and
+validate; written to stderr for encode and decode so binary stdout is never
+contaminated.
 .SH DIAGNOSTIC LEVELS
 Default 0 reports errors only. Levels are cumulative:
-1 summary; 2 stages; 3 capability/configuration details; 4 elapsed timing;
+1 summary; 2 stages; 3 capability/descriptor details; 4 elapsed timing;
 5 bounded trace. Invalid levels or totals above 5 return 2.
 Explicit levels set and repeated flags increment in argument order.
-Diagnostics use stderr. Requested help/version/capability data uses stdout.
+Diagnostics use stderr. Requested help/version/capability/inspect/validate
+data and \-o \- payload streams use stdout.
 No payload bytes, metadata, raw addresses or input/output paths are logged.
-.SH RESERVED CODEC SYNTAX
-Codec command help lists reserved \-i/\-\-input, \-o/\-\-output,
-\-\-input-format, \-\-output-format, \-\-mode, \-\-max-error,
-\-\-backend, \-\-copy-policy, \-\-threads, \-\-max-memory,
-\-\-timeout, \-\-overwrite and \-\-json.
-These are not implemented payload operations. A single hyphen will denote
-standard
-input/output in a future codec command. Default future mode is lossless and
-copy
-policy is require-sharing. No private intermediate image format is
-implemented.
+.SH UNCOMPRESSED FORMATS
+No private intermediate format or headerless raw sample file is used.
+Attached raw NRRD (NRRD0001..NRRD0005 on input, NRRD0004 on output) supports
+the 2D single-component full-precision UInt16 greyscale profile. Detached
+headers, skip directives, URLs and external compression are rejected.
+Binary Netpbm PGM (P5) and PPM (P6) preserve 2..16-bit greyscale and RGB
+precision via exact maxval ((1 << meaningfulBits) \- 1).
 .SH EXIT STATUS
-0 success/help/version; 2 invalid usage; 4 unsupported operation;
-6 output I/O failure including a closed pipe.
-Future codec statuses reserve 3 malformed input, 5 resource/deadline,
-7 internal failure and 130 user cancellation.
+0 success/help/version; 2 invalid usage or argument; 3 malformed or truncated
+input; 4 unsupported format, feature, image layout or required backend;
+5 resource limit or deadline exceeded; 6 input/output failure, existing
+destination without \-\-overwrite or closed pipe; 7 internal failure;
+130 user cancellation.
 .SH EXAMPLES
 .nf
 swiftjli\-cli \-h
-swiftjli\-cli help capabilities
 swiftjli\-cli capabilities \-\-json \-vv
-swiftjli\-cli capabilities \-verbose: 3
-swiftjli\-cli capabilities \-\-verbose=+++++
+swiftjli\-cli inspect \-i image.jpg \-\-json
+swiftjli\-cli validate \-i image.jpg
+swiftjli\-cli decode \-i image.jpg \-o image.nrrd
+swiftjli\-cli encode \-i image.nrrd \-o image.jpg \-\-mode lossless
 .fi
 .SH INSTALLATION
 Scripts/install-cli.sh installs or updates the executable and this page

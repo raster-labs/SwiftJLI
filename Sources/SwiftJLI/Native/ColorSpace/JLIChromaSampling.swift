@@ -20,6 +20,13 @@ enum ChromaSampling {
         let fx: UnsafePointer<Float>
     }
 
+    /// Input remains read-only and alive throughout perform; workers write disjoint
+    /// output rows and are joined before either synchronous buffer borrow ends.
+    private struct JPEGUpsamplePtrs: @unchecked Sendable {
+        let src: UnsafePointer<Float>
+        let dst: UnsafeMutablePointer<Float>
+    }
+
     /// Downsamples a component plane by a factor of 2 in each specified dimension.
     ///
     /// Uses simple box filtering (averaging) for downsampling.
@@ -196,6 +203,86 @@ enum ChromaSampling {
             }
         }
         return result
+    }
+
+    /// Reconstructs full-resolution integer JPEG components at their sample centers.
+    ///
+    /// Sampling ratios come from SOF, not rounded plane dimensions: an odd-width
+    /// 2:1 component still has a factor of two. The usual 2:1 cases use the
+    /// centered triangle filter and alternating rounding biases of libjpeg's
+    /// h2v1/h1v2/h2v2 fancy upsamplers (jdsample.c). Very narrow horizontal
+    /// components use replication, as libjpeg does. Round IDCT samples before
+    /// filtering, then round the combined filter once before color conversion.
+    /// This is separate from the floating-point/preview resizer above.
+    static func upsampleJPEG(_ plane: [Float], width: Int, height: Int,
+                             targetWidth: Int, targetHeight: Int,
+                             horizontalSampling: Int, verticalSampling: Int,
+                             maximumHorizontalSampling: Int,
+                             maximumVerticalSampling: Int) throws -> [Float] {
+        let h1 = horizontalSampling == maximumHorizontalSampling
+        let v1 = verticalSampling == maximumVerticalSampling
+        let h2 = horizontalSampling * 2 == maximumHorizontalSampling
+        let v2 = verticalSampling * 2 == maximumVerticalSampling
+        // Other sampling geometries retain the existing resampling behavior.
+        guard (h1 || h2) && (v1 || v2) else {
+            return try upsample(plane, width: width, height: height,
+                            targetWidth: targetWidth, targetHeight: targetHeight)
+        }
+        var samples = plane
+        try samples.withUnsafeMutableBufferPointer { buffer in
+            guard let base = buffer.baseAddress else { return }
+            for i in 0..<buffer.count {
+                if i % 4096 == 0 { try NativeOperation.check() }
+                base[i] = base[i].rounded()
+            }
+        }
+        if h1 && v1 { return samples }
+        let fancy = !h2 || width > 2
+        return try samples.withUnsafeBufferPointer { input in
+            try [Float](unsafeUninitializedCapacity: targetWidth * targetHeight) { output, count in
+                guard let src = input.baseAddress, let dst = output.baseAddress else { return }
+                let pointers = JPEGUpsamplePtrs(src: src, dst: dst)
+                let rows: @Sendable (Int, Int) throws -> Void = { start, end in
+                    let input = pointers.src, output = pointers.dst
+                    for y in start..<end {
+                        try NativeOperation.check()
+                        let cy = min(v2 ? y / 2 : y, height - 1)
+                        let ny = min(max(cy + (y.isMultiple(of: 2) ? -1 : 1), 0), height - 1)
+                        for x in 0..<targetWidth {
+                            let cx = min(h2 ? x / 2 : x, width - 1)
+                            let nx = min(max(cx + (x.isMultiple(of: 2) ? -1 : 1), 0), width - 1)
+                            let current = Int(input[cy * width + cx])
+                            let value: Int
+                            if !fancy {
+                                value = current
+                            } else if h2 && v2 {
+                                let near = 3 * current + Int(input[ny * width + cx])
+                                let far = 3 * Int(input[cy * width + nx]) + Int(input[ny * width + nx])
+                                value = (3 * near + far + (x.isMultiple(of: 2) ? 8 : 7)) >> 4
+                            } else if h2 {
+                                value = (3 * current + Int(input[cy * width + nx])
+                                         + (x.isMultiple(of: 2) ? 1 : 2)) >> 2
+                            } else {
+                                value = (3 * current + Int(input[ny * width + cx])
+                                         + (y.isMultiple(of: 2) ? 1 : 2)) >> 2
+                            }
+                            output[y * targetWidth + x] = Float(value)
+                        }
+                    }
+                }
+                let workers = NativeOperation.workerLimit
+                if targetWidth * targetHeight >= 65_536 && targetHeight >= 2 * workers {
+                    let chunkRows = (targetHeight + workers - 1) / workers
+                    try NativeOperation.perform(iterations: (targetHeight + chunkRows - 1) / chunkRows) { chunk in
+                        let start = chunk * chunkRows
+                        try rows(start, min(start + chunkRows, targetHeight))
+                    }
+                } else {
+                    try rows(0, targetHeight)
+                }
+                count = targetWidth * targetHeight
+            }
+        }
     }
 
     /// Returns the horizontal and vertical sampling factors for a subsampling mode.

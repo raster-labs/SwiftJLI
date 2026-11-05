@@ -1,5 +1,67 @@
 # Change log
 
+## JLISwift 0.6.0 (`fb1e188`) parity assessment and sequential `DHT` `SOS`-snapshot fix — 15 October 2026
+
+- Audit `JLISwift` `fix/bounded-decode-allocation` at `fb1e188b4b1bad73febccf3b7c7595a78ae7a4c2` (merged to predecessor `main` as `b6df774a3c3ecdf4b98971f31543fdd18074ace2` / `v0.6.0` on 14 October 2026) against `SwiftJLI` `main` at `89d5e6a31c51384a48a01d2ac84983ee534c6d24` (after PR #23 merged with all 13 CI checks passing).
+- Fix sequential DCT per-scan Huffman table selection in `Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift` (`a9fc2a0878e13ffbef79450b6bd56197aa85f669e734a49bd40563561f33b20d`; audited code snapshot `a98bd2a3601b199155a916109c074307a4cdb22cac4424cfdbbc5715de140cb0`) so `JLIDecoder.decodeParsed` prepares `dcTables` and `acTables` from the `SOS` snapshot (`scan.dcTables` and `scan.acTables`) validated by `JPEGCodec.validateDCT` rather than the end-of-file merged dictionaries (`parsed.huffmanDCTables` and `parsed.huffmanACTables`), matching `ProgressiveDecoder.decodeScan` and `JLIDecoder.decodeLossless`. Note provenance distinction: `JLISwift 0.6.0` added per-scan `DHT` selection in its new caller-storage core (`JLIBaselineCallerStorage.swift`), whereas its legacy owned `JLIDecoder.swift` still selects final dictionaries.
+- Add `JPEGDecodeParityTests.sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT()` (`Tests/SwiftJLITests/JPEGDecodeParityTests.swift`, `d7f302d740dfed5569f0b842a74ff0dd0becd8994d3f86103d65fb1f3b0e742f`) covering 8-bit optimised RGB (`4:2:0`), 8-bit explicit Annex-K RGB (`4:4:4`), 12-bit extended sequential greyscale and 12-bit lossless SOF3 with trailing post-`SOS` `DHT` redefinitions across `.scalarCPU`/`.automatic` and allocating/padded caller-destination decode, plus explicit `.unsupportedFeature` rejection for post-scan `DRI`, post-scan `DQT` and multi-scan sequential `SOS`.
+- Qualify under the owner's native macOS and iOS Simulator scope: at the pre-comment snapshot (`JLIDecoder.swift` `a98bd2a3...`), both implementer and independent Codex audits pass the full `355`-test / `50`-suite library suite on native macOS ARM64 release and on the iOS 26.0 Simulator (`iPhone 17 Pro`), `203` CLI process checks, `38` independent `libjpeg-turbo` normal-image oracle commands across `6` 8/12-bit sequential/progressive fixtures (maximum observed sample difference `2`), and `728`-byte XYB ICC profile byte identity. Post-comment source verification (`final-source-verification.json`, `final-source-manifest.json`, `post-test-comment.diff`) confirms `131` of `132` checked files are byte-identical to that tested snapshot and `JLIDecoder.swift` (`a9fc2a08...`) differs only by two explanatory line comments (`executable_code_and_tests_unchanged: true`), with post-comment focused test confirmation in `focused-test-post-comment.log`. Retain source-pinned comparison, oracle and failed-attempt evidence in [Documentation/Migration/Qualification/JLISwiftOct14Parity](Documentation/Migration/Qualification/JLISwiftOct14Parity/README.md). Public API, common contracts, resource defaults and explicit capability boundaries are unchanged.
+
+## Milestone 4 CLI payload implementation and macOS / iOS Simulator qualification — 15 October 2026
+
+- Reconcile the historical `I3` deferral and implement `encode`, `decode`, `inspect` and `validate` in `Sources/SwiftJLICLI/main.swift` (`swiftjli-cli`, SHA-256 `0a89847246fea61330cba603dd530939781fca591aef739c64727645b7a40ce8`) to the `CLI_CONTRACT.md` (v0.10.0) specification. Update `ManPages/swiftjli-cli.1` and `CLI.md`.
+- Implement fidelity-preserving uncompressed container I/O: attached raw 2D single-component unsigned 16-bit greyscale NRRD (`CLI-04`) and binary Netpbm `P5`/`P6` (`pgm`, `ppm`, `pnm`) for `2...16` meaningful bits (`maxval = (1 << bits) - 1`). Reject headerless raw files (`exit 4`), non-power-of-two-minus-one Netpbm `maxval` (`exit 4`), out-of-range samples (`exit 3`), `key:=value` or unknown NRRD header fields (`exit 4`, using static diagnostics so untrusted metadata is never echoed to `stderr`), and named non-regular inputs (`exit 6`).
+- Enforce overflow-checked dimension admission in `readNetpbm`/`readNRRD`, combined retained-buffer memory accounting (`--max-memory`) with eager input release and serialisation preflight, nonblocking stream I/O (`O_NONBLOCK` with `poll` retry and inherited descriptor flag restoration), atomic regular-file staging with deadline/cancellation recheck before publication, truthful `isLossless`/`fidelity`/`maximumAbsoluteError` reporting (`pointTransform == 0` required for `isLossless`), nullable telemetry fields (`null`/`"unknown"` instead of `0`), and translation of command-deadline task cancellation in `runAsync` to `resourceLimitExceeded` (`exit 5`) while preserving explicit `SIGINT`/`SIGTERM` as `exit 130`.
+- Qualify under the owner's 15 October 2026 macOS + iOS Simulator scope: on native macOS ARM64, `swiftjli-cli` passes 203 process checks in `Scripts/test-cli.py` (including the 6-command codec deadline duration sweep and platform-aware backend assertions for Linux CI), 122 independent `libjpeg-turbo` 3.2.0 NRRD/Netpbm/profile interoperability commands (69 assertions), 5 stream-lifecycle commands (9 assertions) and 6 codec deadline-category commands (`[5, 5, 5, 5, 5, 0]`); the unchanged `SwiftJLITests` library suite passes 354 tests on native macOS ARM64 release and 354 tests on the iOS 26.0 Simulator (`iPhone 17 Pro`). Retain source-pinned audit evidence, logs and failed attempts under [Documentation/Migration/Qualification/Milestone4/CLIAudit](Documentation/Migration/Qualification/Milestone4/CLIAudit/audit.json). Shipping library sources, public API and common contracts are unchanged.
+
+## Milestone 4 device qualification preparation — 13 October 2026
+
+- Reconcile the current documentation with merged PR #21 (`e1ae85d`) and its passing 13-job post-merge CI run.
+- Add a development-only Watch resource qualification package and macOS CI smoke test. Cover Watch defaults, decoded-size boundaries, repeated padded caller-storage operations, concurrent readers, DCT profiles, workspace denial, cancellation, deadlines and recovery.
+- Label host/simulator measurements separately from physical Watch evidence. Physical device execution is still pending because no Watch is connected; no device memory ceiling or full Milestone 4 completion is claimed.
+- Leave Milestone 5 for a later task. Shipping codec sources, resource defaults, public API, common contracts and version are unchanged. See the [qualification record](Documentation/Migration/Qualification/Milestone4/README.md).
+
+## AC performance qualification — 13 October 2026
+
+After the owner checked the charger, macOS recognised AC power. The same release
+binary, harness and shipping source passed two expanded and two ordinary runs:
+140 exact output comparisons, nominal thermals and 66 stable AC power snapshots.
+Forty-three operation cases repeatedly exceed 5%, with explicit per-case costs,
+unchanged safety/correctness reasons and updated successor baselines. The three
+additional crossings versus battery use previously investigated tiny-image and
+UInt12 input paths. Battery results and diagnostic attribution remain separate.
+Source/binary/harness identity was checked before and after execution. No codec
+code, resource default or fidelity tolerance changed. Physical Watch remains
+excluded; private-reporting activation remains owner-deferred before release.
+See [the evidence](Documentation/Migration/Qualification/NonWatchCompletion/README.md).
+
+## Owner follow-up — 13 October 2026
+
+The owner deferred private vulnerability reporting activation to a later task.
+The last recorded API check remains disabled, and repository-admin action or an
+established private contact is required before stable release. Physical Watch
+testing remains excluded and unexecuted. This documentation-only disposition
+does not waive either release prerequisite or alter the qualified codec source.
+CI [38253517616](https://github.com/raster-labs/SwiftJLI/actions/runs/38253517616)
+passed all 13 jobs for the preceding qualification commit `2c45328`.
+
+## Non-Watch qualification follow-up — 12 October 2026
+
+The remaining executable non-Watch qualification is complete for the recorded shipping source: all 13 CI jobs, four full one-hour fuzz campaigns, refreshed independent oracles, allocator/stress controls, isolated memory and explicit performance dispositions. All six available codec pairs are tested in both directions. Physical Watch testing is excluded by the owner and remains unexecuted. Private-reporting activation still needs a repository administrator; the supported-version policy is documented. No stable release or application cutover is claimed.
+
+See [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md). Shipping library code and dependencies are unchanged
+in this qualification follow-up; the new four-codec and raw-RGB oracle harnesses
+are development-only. Historical records and common contracts remain intact.
+
+
+## Unreleased — JPEG decode parity, 2026-10-12
+
+- Correct full-resolution subsampled YCbCr reconstruction using SOF sample centres and component rounding, through both allocating and caller-storage decode. Retain established 4:4:4, preview, greyscale and XYB behaviour.
+- Decode 8/12-bit raw RGB DCT signalled by Adobe transform 0 or RGB component identifiers. Add explicit `DecoderConfiguration(sourceColourModel:)` for unmarked three-component DCT; refuse conflicting/unsupported colour metadata.
+- Accept one zero byte after an odd-length JPEG, while retaining all other trailing-data and bounded-input rejection.
+- Reconcile migration status with the merged baseline and this draft correction; keep performance, physical Watch and final-source qualification gates explicit. Repair Swift 6.2 test compilation and use both pinned predecessors for same-platform identity checks.
+- Carry the 15 independent JLISwift chroma fixtures and focused parity tests. Seven corrected macOS decoded hashes match JLISwift v0.5.2; encoder hashes and the historical identity fixture are unchanged. See [verification](Documentation/Migration/JPEGDecodeParity.md).
+
 ## Unreleased — codec implementation merged, 2026-10-09
 
 - Merge PR #19 into main as `a967d27`; retain development version 1.1.0-dev.2 and suite policy 0.10.0. No stable release is created.

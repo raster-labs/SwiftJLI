@@ -240,6 +240,51 @@ struct DICOMReaderTests {
         #expect(img.width == 2 && img.height == 2)   // not 999 — sequence was skipped
     }
 
+    @Test("Nested undefined-length sequences inside undefined-length items are skipped recursively")
+    func nestedUndefinedLengthSequenceIsSkipped() throws {
+        // Place the real group-0028 pixel-module attributes FIRST, then an outer
+        // undefined-length sequence (0028,3010 VOI LUT Sequence) containing an
+        // inner undefined-length sequence (0040,0555) and a post-inner sibling item
+        // payload BEFORE PixelData (7FE0,0010). Because the parser processes
+        // elements sequentially until PixelData, any leak from either the inner
+        // sequence or the outer item's sibling tags after the inner E0DD delimiter
+        // would overwrite the earlier real 2×2 geometry and rescale parameters.
+        var leaf = DICOMBuilder()
+        leaf.us(0x0028, 0x0010, 1)                 // decoy Rows = 1 inside inner SQ
+        leaf.us(0x0028, 0x0011, 2)                 // decoy Columns = 2 inside inner SQ
+        leaf.str(0x0028, 0x1052, "DS", "-500")     // decoy RescaleIntercept inside inner SQ
+        leaf.str(0x0028, 0x1053, "DS", "10")       // decoy RescaleSlope inside inner SQ
+
+        var outerItem = DICOMBuilder()
+        outerItem.undefinedLengthSQ(0x0040, 0x0555, inner: leaf.elements)
+        outerItem.us(0x0028, 0x0010, 2)            // sibling decoy Rows = 2 after inner E0DD
+        outerItem.us(0x0028, 0x0011, 1)            // sibling decoy Columns = 1 after inner E0DD
+        outerItem.str(0x0028, 0x1052, "DS", "-999")
+        outerItem.str(0x0028, 0x1053, "DS", "5")
+
+        var b = DICOMBuilder()
+        b.us(0x0028, 0x0002, 1)
+        b.str(0x0028, 0x0004, "CS", "MONOCHROME2")
+        b.us(0x0028, 0x0010, 2)                    // real Rows = 2
+        b.us(0x0028, 0x0011, 2)                    // real Columns = 2
+        b.us(0x0028, 0x0100, 16)
+        b.us(0x0028, 0x0101, 16)
+        b.us(0x0028, 0x0102, 15)
+        b.us(0x0028, 0x0103, 0)
+        b.str(0x0028, 0x1052, "DS", "-10")         // real RescaleIntercept = -10
+        b.str(0x0028, 0x1053, "DS", "2")           // real RescaleSlope = 2
+        b.undefinedLengthSQ(0x0028, 0x3010, inner: outerItem.elements)
+        b.ow(0x7FE0, 0x0010, [10, 20, 30, 40])
+
+        let img = try DICOMReader.read(b.bytes())
+        #expect(img.width == 2 && img.height == 2)
+        #expect(img.rescaleSlope == 2.0 && img.rescaleIntercept == -10.0)
+        #expect(img.pixelData == [10, 0, 20, 0, 30, 0, 40, 0])
+        #expect(img.decodeIntensitiesForRenderer() == [10.0, 30.0, 50.0, 70.0])
+        let (lo, hi) = img.intensityRange()
+        #expect(lo == 10 && hi == 70)
+    }
+
     @Test("Signed 12-bit-in-16 data is sign-extended from the stored sign bit")
     func signed12BitInerSignExtension() throws {
         // CT-like: 16-bit container, only 12 bits stored, signed. A stored value
@@ -281,6 +326,71 @@ struct DICOMReaderTests {
         let (lo, hi) = img.intensityRange()
         #expect(lo == 1, "0xF001 should mask to 1, got \(lo)")
         #expect(hi == 4095)
+    }
+
+    @Test("Shifted HighBit (highBit > bitsStored - 1) aligns unsigned and signed samples to canonical intensities")
+    func highBitShiftedUnsignedAndSigned12BitIn16() throws {
+        // 1) Unsigned 12-bit stored in bits 4...15 (HighBit = 15, shift = 4) with
+        // non-significant low padding bits 0...3 set, compared against canonical
+        // HighBit = 11 (bits 0...11).
+        let canonicalUnsignedWords: [UInt16] = [1, 1024, 2048, 4095]
+        let shiftedUnsignedWords: [UInt16] = [
+            (1 << 4) | 0x000F,
+            (1024 << 4) | 0x000A,
+            (2048 << 4) | 0x0005,
+            (4095 << 4) | 0x0003
+        ]
+        func makeUnsigned(highBit: UInt16, words: [UInt16]) throws -> DICOMImage {
+            var b = DICOMBuilder()
+            b.us(0x0028, 0x0002, 1)
+            b.str(0x0028, 0x0004, "CS", "MONOCHROME2")
+            b.us(0x0028, 0x0010, 2)
+            b.us(0x0028, 0x0011, 2)
+            b.us(0x0028, 0x0100, 16)
+            b.us(0x0028, 0x0101, 12)
+            b.us(0x0028, 0x0102, highBit)
+            b.us(0x0028, 0x0103, 0)
+            b.ow(0x7FE0, 0x0010, words)
+            return try DICOMReader.read(b.bytes())
+        }
+        let canonicalU = try makeUnsigned(highBit: 11, words: canonicalUnsignedWords)
+        let shiftedU = try makeUnsigned(highBit: 15, words: shiftedUnsignedWords)
+        #expect(shiftedU.highBit == 15)
+        #expect(shiftedU.intensityRange() == (1, 4095))
+        #expect(shiftedU.toRGB8() == canonicalU.toRGB8())
+        #expect(shiftedU.render8bit(windowCenter: 2048, windowWidth: 4095)
+                == canonicalU.render8bit(windowCenter: 2048, windowWidth: 4095))
+        #expect(shiftedU.render12bit(windowCenter: 2048, windowWidth: 4095)
+                == canonicalU.render12bit(windowCenter: 2048, windowWidth: 4095))
+        #if canImport(Accelerate)
+        #expect(DICOMWindowRenderer(shiftedU).render8bit(windowCenter: 2048, windowWidth: 4095)
+                == DICOMWindowRenderer(canonicalU).render8bit(windowCenter: 2048, windowWidth: 4095))
+        #endif
+
+        // 2) Signed 12-bit stored in bits 2...13 (HighBit = 13, shift = 2) with
+        // both low padding bits (0...1) and high overlay bits (14...15) dirty.
+        // Stored 12-bit two's-complement values: -1024 (0x0C00), -1 (0x0FFF), 0, +2047 (0x07FF).
+        let canonicalSignedWords: [UInt16] = [0x0C00, 0x0FFF, 0x0000, 0x07FF]
+        let shiftedSignedWords: [UInt16] = canonicalSignedWords.map { ($0 << 2) | 0xC003 }
+        func makeSigned(highBit: UInt16, words: [UInt16]) throws -> DICOMImage {
+            var b = DICOMBuilder()
+            b.us(0x0028, 0x0002, 1)
+            b.str(0x0028, 0x0004, "CS", "MONOCHROME2")
+            b.us(0x0028, 0x0010, 2)
+            b.us(0x0028, 0x0011, 2)
+            b.us(0x0028, 0x0100, 16)
+            b.us(0x0028, 0x0101, 12)
+            b.us(0x0028, 0x0102, highBit)
+            b.us(0x0028, 0x0103, 1)
+            b.ow(0x7FE0, 0x0010, words)
+            return try DICOMReader.read(b.bytes())
+        }
+        let canonicalS = try makeSigned(highBit: 11, words: canonicalSignedWords)
+        let shiftedS = try makeSigned(highBit: 13, words: shiftedSignedWords)
+        #expect(shiftedS.intensityRange() == (-1024, 2047))
+        #expect(shiftedS.toRGB8() == canonicalS.toRGB8())
+        #expect(shiftedS.render12bit(windowCenter: 500, windowWidth: 3000)
+                == canonicalS.render12bit(windowCenter: 500, windowWidth: 3000))
     }
 
     @Test("Plane-interleaved RGB (PlanarConfiguration 1) is reassembled correctly")

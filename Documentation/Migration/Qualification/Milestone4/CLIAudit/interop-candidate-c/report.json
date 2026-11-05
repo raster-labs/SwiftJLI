@@ -1,0 +1,547 @@
+{
+  "binary": "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+  "binary_sha256": "9860a825d583b3f239194d557c6e8cce273df730bddcc2277856af2443ebb834",
+  "runner_sha256": "6e9469369a7f9f73fa7c580787dfb891acf59efc0fe84c2f10d5f569c055d062",
+  "scope": "Normal full-precision UInt16 greyscale interoperability and file/stream publication",
+  "commands": [
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-17x13-big.nrrd",
+        "--input-format",
+        "nrrd",
+        "--output-format",
+        "jpeg",
+        "--mode",
+        "lossless",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-big.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-big.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-big.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-big.jpg",
+        "--input-format",
+        "jpeg",
+        "--output-format",
+        "nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-big decoded \u03bb.nrrd"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-17x13-little.nrrd",
+        "--input-format",
+        "nrrd",
+        "--output-format",
+        "jpeg",
+        "--mode",
+        "lossless",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-little.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-little.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-little.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-little.jpg",
+        "--input-format",
+        "jpeg",
+        "--output-format",
+        "nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-17x13-little decoded \u03bb.nrrd"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-1x1-big.nrrd",
+        "--input-format",
+        "nrrd",
+        "--output-format",
+        "jpeg",
+        "--mode",
+        "lossless",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-big.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-big.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-big.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-big.jpg",
+        "--input-format",
+        "jpeg",
+        "--output-format",
+        "nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-big decoded \u03bb.nrrd"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-1x1-little.nrrd",
+        "--input-format",
+        "nrrd",
+        "--output-format",
+        "jpeg",
+        "--mode",
+        "lossless",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-little.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-little.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-little.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-little.jpg",
+        "--input-format",
+        "jpeg",
+        "--output-format",
+        "nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-1x1-little decoded \u03bb.nrrd"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-65x33-big.nrrd",
+        "--input-format",
+        "nrrd",
+        "--output-format",
+        "jpeg",
+        "--mode",
+        "lossless",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-big.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-big.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-big.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-big.jpg",
+        "--input-format",
+        "jpeg",
+        "--output-format",
+        "nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-big decoded \u03bb.nrrd"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-65x33-little.nrrd",
+        "--input-format",
+        "nrrd",
+        "--output-format",
+        "jpeg",
+        "--mode",
+        "lossless",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-little.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-little.pgm",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-little.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-little.jpg",
+        "--input-format",
+        "jpeg",
+        "--output-format",
+        "nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/grey16-65x33-little decoded \u03bb.nrrd"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "--output-format",
+        "nrrd",
+        "-o",
+        "-",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 520,
+      "stdout_sha256": "14c710dab43a68ca324f9e5b784cc6da590a25f1f798a219797413db900a3e60",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":13,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"outputBytes\":520,\"outputFormat\":\"nrrd\",\"peakPixelBytes\":442,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-17x13-oracle.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 472,
+      "stdout_sha256": "5ceda161b63d2019621e26689623e61c13be2be2a64a11e68f899bf75dc0633c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-17x13-oracle.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 414,
+      "stdout_sha256": "fc9725ffaf4b635953ec87c52b9735e5a274efd8347dc511deaf1998896464dc",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "--output-format",
+        "nrrd",
+        "-o",
+        "-",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 78,
+      "stdout_sha256": "4a4aa76df4e62dc9fc49acade66a5fa09ba9917d03b0594450769ee6714ea8ee",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":1,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"outputBytes\":78,\"outputFormat\":\"nrrd\",\"peakPixelBytes\":2,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":1}\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-1x1-oracle.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 470,
+      "stdout_sha256": "7dd7752a3a2937f1751416c80af162011b510235dab939495e2841420a6d8a1d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-1x1-oracle.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 410,
+      "stdout_sha256": "55c6c32e06a380df6911ba53157788ef9d3bc50f503c41d4efd8d9608393ff67",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "--output-format",
+        "nrrd",
+        "-o",
+        "-",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 4368,
+      "stdout_sha256": "c6213a6c014d248b5fb4b8eed59cd97824d17f1d34a602a7b0173b892cc5d196",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":33,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"outputBytes\":4368,\"outputFormat\":\"nrrd\",\"peakPixelBytes\":4290,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":65}\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-65x33-oracle.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 472,
+      "stdout_sha256": "b397a5af5e033c08e704f22e593a091cb4c0d5ef9278ca372f7a8d776d0abb08",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "validate",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-65x33-oracle.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 415,
+      "stdout_sha256": "1271744498fff25893a50aa3c6d060558b39eb766e2cba0d203584c6317f2c13",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-17x13-little.nrrd",
+        "--input-format",
+        "nrrd",
+        "--output-format",
+        "jpeg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/existing output \u03bb.jpg"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "swiftjli-cli: output I/O failure: destination already exists (pass --overwrite to replace).\n"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-fixtures/grey16-17x13-little.nrrd",
+        "--input-format",
+        "nrrd",
+        "--output-format",
+        "jpeg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/interop-candidate-c/existing output \u03bb.jpg",
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    }
+  ],
+  "assertions": [
+    "grey16-17x13-big.nrrd: CLI encode independently decoded exactly",
+    "grey16-17x13-big.nrrd: file decode preserves dimensions and all UInt16 samples",
+    "grey16-17x13-little.nrrd: CLI encode independently decoded exactly",
+    "grey16-17x13-little.nrrd: file decode preserves dimensions and all UInt16 samples",
+    "grey16-1x1-big.nrrd: CLI encode independently decoded exactly",
+    "grey16-1x1-big.nrrd: file decode preserves dimensions and all UInt16 samples",
+    "grey16-1x1-little.nrrd: CLI encode independently decoded exactly",
+    "grey16-1x1-little.nrrd: file decode preserves dimensions and all UInt16 samples",
+    "grey16-65x33-big.nrrd: CLI encode independently decoded exactly",
+    "grey16-65x33-big.nrrd: file decode preserves dimensions and all UInt16 samples",
+    "grey16-65x33-little.nrrd: CLI encode independently decoded exactly",
+    "grey16-65x33-little.nrrd: file decode preserves dimensions and all UInt16 samples",
+    "grey16-17x13-oracle.jpg: independent JPEG decoded exactly through pipes; JSON confined to stderr",
+    "grey16-17x13-oracle.jpg: inspect returns structured output",
+    "grey16-17x13-oracle.jpg: independent conformant JPEG validates",
+    "grey16-1x1-oracle.jpg: independent JPEG decoded exactly through pipes; JSON confined to stderr",
+    "grey16-1x1-oracle.jpg: inspect returns structured output",
+    "grey16-1x1-oracle.jpg: independent conformant JPEG validates",
+    "grey16-65x33-oracle.jpg: independent JPEG decoded exactly through pipes; JSON confined to stderr",
+    "grey16-65x33-oracle.jpg: inspect returns structured output",
+    "grey16-65x33-oracle.jpg: independent conformant JPEG validates",
+    "Existing output is preserved without explicit overwrite",
+    "Explicit overwrite publishes a JPEG"
+  ],
+  "status": "passed"
+}

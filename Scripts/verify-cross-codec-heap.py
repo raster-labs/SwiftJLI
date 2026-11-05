@@ -6,13 +6,13 @@ import json
 from pathlib import Path
 
 
-def records(path):
+def records(path, suite=False):
     values = [json.loads(line) for line in path.read_text().splitlines() if line.startswith('{')]
     calibration = [v for v in values if v['event'] == 'calibration']
     assert len(calibration) == 1, 'Missing/duplicate calibration'
     rows = [v for v in values if v['event'] == 'heap']
     expected = {(f'{w}x{h}-u{b}', d) for w, h in [(19, 13), (65, 31), (257, 17)]
-                for b in [12, 16] for d in ['J2K-to-JPEG', 'JPEG-to-J2K']}
+                for b in [12, 16] for d in ([a + '-to-' + b for a in ['jli', 'j2k', 'jls', 'jxl'] for b in ['jli', 'j2k', 'jls', 'jxl'] if a != b] if suite else ['J2K-to-JPEG', 'JPEG-to-J2K'])}
     assert len(rows) == len(expected) and {(r['case'], r['direction']) for r in rows} == expected
     return calibration[0]['arrayHeaderBytes'], {(r['case'], r['direction']): r for r in rows}
 
@@ -21,9 +21,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--baseline', type=Path, required=True)
     parser.add_argument('--control', type=Path, required=True)
+    parser.add_argument('--suite', action='store_true', help='Check all twelve four-codec directions')
     args = parser.parse_args()
-    header, baseline = records(args.baseline)
-    control_header, control = records(args.control)
+    header, baseline = records(args.baseline, args.suite)
+    control_header, control = records(args.control, args.suite)
     assert header == control_header and 0 <= header <= 256, 'Calibration changed'
     for key, normal in baseline.items():
         copied = control[key]

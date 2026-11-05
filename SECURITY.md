@@ -1,12 +1,25 @@
 # Security policy and implementation requirements
 
-Status: documentation foundation. No successor binary release exists and no vulnerability response time is promised here.
+Status: development codec implementation; [stable-release acceptance](Documentation/Migration/ACCEPTANCE.md) remains open. No successor binary release exists and no vulnerability response time is promised here.
 
 ## Reporting
 
-Use the repository's private vulnerability reporting option in its Security tab if it is enabled. Otherwise use an established private channel to a Raster-Lab organisation owner to arrange disclosure. Do not post exploitable payloads, credentials or patient information in a public issue. This document does not assert that GitHub private reporting or a dedicated security mailbox has already been configured.
+The prepared reporting channel is [GitHub private vulnerability reporting](https://github.com/raster-labs/SwiftJLI/security/advisories/new), but repository-admin activation is still required before a stable release. On 13 October 2026 the owner deferred activation to a later task; no further activation attempt is part of this migration follow-up. The 12 October API check reports it disabled; the current automation account has push access without admin access. Until activation, use an already established private channel to a repository maintainer. Do not assume the advisory link is accepting private reports. Do not post exploitable payloads, credentials or patient information in a public issue. No separate security mailbox or response-time guarantee is advertised.
 
-Include affected version/commit, platform, a minimal safe reproducer, expected/actual behaviour and impact. Use synthetic data where possible. A maintainer must establish the reporting channel and supported-version policy before the first stable release.
+Include affected version/commit, platform, a minimal safe reproducer, expected/actual behaviour and impact. Use synthetic data where possible. Keep the report private while maintainers reproduce the issue and prepare a correction. Coordinate disclosure through the private advisory thread.
+
+## Supported versions
+
+| Version or branch | Security-fix policy |
+| --- | --- |
+| Current development main and active 1.1.0 release candidate | Reports are investigated; corrections target main and the active candidate. Development snapshots are not stable releases. |
+| Latest 1.1.x patch, once 1.1.0 is released | Supported for security fixes; users of earlier 1.1.x patches should upgrade to the latest patch. |
+| Older development snapshots and unmaintained feature branches | No separate backports; reproduce on the current candidate and upgrade. |
+| JLISwift predecessor | Governed by the predecessor repository's own security and maintenance policy. |
+
+No stable SwiftJLI release has been published. This policy prepares the reporting
+and maintenance process; it does not waive remaining release qualification or
+change the predecessor's support commitments.
 
 ## Threat model
 

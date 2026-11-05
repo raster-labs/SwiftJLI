@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-15",
+  "status": "Completed and independently audited for the owner-scoped Milestone 4 software and native macOS + iOS Simulator validation.",
+  "implementation_agent": "Antigravity / Gemini 4 Argon High",
+  "auditor": "Codex",
+  "owner_scope": "All Milestone 4 software work, with validation limited to native macOS and the iOS simulator.",
+  "branch": "codex/milestone-4-complete",
+  "baseline_commit": "0aa2e5287056a6508e0474b927f3bd4d7bbf7cfe",
+  "candidate_cli_sha256": "0a89847246fea61330cba603dd530939781fca591aef739c64727645b7a40ce8",
+  "candidate_binary_sha256": "9860a825d583b3f239194d557c6e8cce273df730bddcc2277856af2443ebb834",
+  "source_package_test_files_verified_against_final_snapshot": 131,
+  "common_contract": "0.10.0; all seven document checksums match; shared documents unchanged",
+  "environment": {
+    "macOS": "27.0.1 (26A434)",
+    "architecture": "arm64",
+    "Xcode": "27.0 (27A266a)",
+    "Swift": "Apple Swift 6.4 (swiftlang-6.4.0.34.1)",
+    "iOS_simulator": "iOS 26.0 / iPhone 17 Pro",
+    "independent_codec": "libjpeg-turbo 3.2.0 (build 20260630)"
+  },
+  "validation": [
+    {
+      "check": "Native macOS release library suite",
+      "platform": "Native macOS ARM64",
+      "result": "passed",
+      "tests": 354,
+      "suites": 50,
+      "log": "audit-library-release-a.log",
+      "log_sha256": "a5c9577ae07336f9a95f396c7f1141446e330b3d5d1daa58a89a4b34e49ea853"
+    },
+    {
+      "check": "iOS 26 simulator library suite",
+      "platform": "iOS 26.0 Simulator (iPhone 17 Pro)",
+      "result": "passed",
+      "tests": 354,
+      "suites": 50,
+      "log_compressed": "audit-ios26.log.gz",
+      "log_compressed_sha256": "3771836bc501b26204ccedc286bc9e5a2d346a545e2898cbe3c5a2e74bbdeaac",
+      "log_uncompressed_sha256": "60817de3b5f0730990efd1a1f65305e63b2256f050cdaeef2301cc7feb94a6b4"
+    },
+    {
+      "check": "CLI process, help, manual and staged installation suite (candidate C audit)",
+      "platform": "Native macOS ARM64",
+      "result": "passed",
+      "commands": 197
+    },
+    {
+      "check": "CLI process suite with durable 6-command codec deadline-category sweep (Scripts/test-cli.py)",
+      "platform": "Native macOS ARM64",
+      "result": "passed",
+      "commands": 203,
+      "test_runner_sha256": "95bb0e7b99688af21f4ed6b528ece11799362ee09c7ac231b8b4be773597d815",
+      "report": "process-final-203/report.json",
+      "report_sha256": "78b4011cfac75b0e7c8500ef5e184a2e96faa0dc012ddb109a4089fa6fa11fa9",
+      "control_evidence": "retained-deadline-control/report.json"
+    },
+    {
+      "check": "Independent UInt16 NRRD/JPEG interchange",
+      "platform": "Native macOS ARM64",
+      "result": "passed",
+      "commands": 29,
+      "assertions": 23,
+      "fixtures": "audit-fixtures/manifest.json",
+      "oracle_preflight": "audit-fixtures/oracle-preflight.json"
+    },
+    {
+      "check": "Independent Netpbm/lossless/DCT/near-lossless profiles",
+      "platform": "Native macOS ARM64",
+      "result": "passed",
+      "commands": 93,
+      "assertions": 46
+    },
+    {
+      "check": "Stream deadline, cancellation, backpressure and lifecycle",
+      "platform": "Native macOS ARM64",
+      "result": "passed",
+      "commands": 5,
+      "assertions": 9
+    },
+    {
+      "check": "Codec deadline exit-category verification",
+      "platform": "Native macOS ARM64",
+      "result": "passed",
+      "commands": 6,
+      "fixture": "codec-deadline-candidate-b/normal-rgb.ppm",
+      "fixture_sha256": "071d758b48c353a1ae0e49f67222fb186b6cb3b06a4bcc9ec52bab1fd48bd9a0",
+      "exit_codes": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        0
+      ]
+    },
+    {
+      "check": "Common-contract digests and git diff whitespace",
+      "result": "passed"
+    }
+  ],
+  "resolved_findings": [
+    "Checked dimension products before use in Netpbm admission.",
+    "Rejected unsupported semantic NRRD metadata instead of silently dropping it.",
+    "Extended deadlines/cancellation to command I/O and bounded parsing/serialization checks.",
+    "Used nonblocking stream I/O with retry and restored inherited blocking mode; rejected named non-regular input.",
+    "Accounted for retained input/image/serialized buffers and released input before subsequent processing stages.",
+    "Reported nonzero point transforms as bounded-error, rather than exact lossless.",
+    "Kept unavailable measurement fields null instead of reporting zero.",
+    "Checked cancellation and deadline immediately before atomic file publication.",
+    "Removed arbitrary NRRD field-name logging; preserved platform-appropriate backend assertions.",
+    "Corrected deadline-induced task cancellation from exit 130 to exit 5 after joining work."
+  ],
+  "audit_limits": [
+    "Finite source and functional audit, not a comprehensive security certification or process-RSS guarantee.",
+    "The library/package/tests are byte-identical between the platform-test snapshot and final CLI snapshot.",
+    "Earlier broad fuzz, memory and performance records remain historical at their own source pins; they were not relabelled as fresh runs.",
+    "No fresh physical-device, Linux, Watch, tvOS or visionOS qualification was required or claimed.",
+    "No merge, stable release, consumer cutover, predecessor retirement or permission change was performed."
+  ],
+  "retained_failed_attempts": [
+    "Initial isolated build could not write the compiler cache inside the sandbox; normal-cache build then passed.",
+    "First I/O audit asserted equality of the entire descriptor flag word. A plain Python pipe-write control showed the same OS flag change; the corrected test checks the O_NONBLOCK bit and passes.",
+    "Candidate B returned 130 for a normal progressive encode deadline. Candidate C fixes it; original and corrected evidence are retained."
+  ],
+  "specification_references": [
+    "https://teem.sourceforge.net/nrrd/format.html",
+    "https://netpbm.sourceforge.net/doc/pgm.html",
+    "https://netpbm.sourceforge.net/doc/ppm.html"
+  ]
+}

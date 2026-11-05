@@ -1,0 +1,25 @@
+{
+  "scope": "native macOS release and iOS 26 simulator; unchanged library/package/tests shared by candidates A and B",
+  "source_manifest": "audit-candidate-a/source-manifest.json",
+  "unchanged_library_package_test_files": 130,
+  "records": [
+    {
+      "log": "work/audit-library-release-a.log",
+      "log_sha256": "a5c9577ae07336f9a95f396c7f1141446e330b3d5d1daa58a89a4b34e49ea853",
+      "command": "swift test --package-path work/audit-candidate-a --scratch-path work/audit-build --build-system native -c release -j 2",
+      "exit_code": 0,
+      "test_count": 354,
+      "suite_count": 50,
+      "cwd": "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20"
+    },
+    {
+      "log": "work/audit-ios26.log",
+      "log_sha256": "60817de3b5f0730990efd1a1f65305e63b2256f050cdaeef2301cc7feb94a6b4",
+      "command": "xcodebuild test -scheme SwiftJLI-Package -destination 'platform=iOS Simulator,id=9021546C-CD90-4663-A01B-B4E92851C3DF' -destination-timeout 120 -parallel-testing-enabled NO -derivedDataPath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-ios26-derived -resultBundlePath /Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-ios26.xcresult CODE_SIGNING_ALLOWED=NO",
+      "exit_code": 0,
+      "test_count": 354,
+      "suite_count": 50,
+      "cwd": "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-candidate-a"
+    }
+  ]
+}

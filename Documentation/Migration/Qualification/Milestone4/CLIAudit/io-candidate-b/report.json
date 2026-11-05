@@ -1,0 +1,83 @@
+{
+  "status": "failed",
+  "commands": [
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-b/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/io-candidate-b/normal-512.nrrd",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/io-candidate-b/normal-512.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "elapsed_seconds": 0.34382808299999995,
+      "condition": "ordinary valid input"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-b/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/io-candidate-b/timed-out.nrrd",
+        "--timeout",
+        "0.15"
+      ],
+      "exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "elapsed_seconds": 0.15643975000000004,
+      "condition": "stdin remains open without data"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-b/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/io-candidate-b/cancelled.nrrd",
+        "--timeout",
+        "5"
+      ],
+      "exit_code": 130,
+      "stderr": "swiftjli-cli: operation cancelled.\n",
+      "elapsed_seconds": 0.10582862500000001,
+      "condition": "SIGINT while awaiting stdin"
+    },
+    {
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-b/arm64-apple-macosx/release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/io-candidate-b/normal-512.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "nrrd",
+        "--timeout",
+        "0.5"
+      ],
+      "exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "elapsed_seconds": 0.5071626249999999,
+      "condition": "normal output receiver paused"
+    }
+  ],
+  "assertions": [
+    "Normal image encoded successfully",
+    "Stdin deadline",
+    "Inherited stdin flags restored",
+    "Stdin cancellation",
+    "Inherited stdin flags restored"
+  ],
+  "binary_sha256": "222499f18273d106eaa4257cd7e5d1ffa15fc3fa857a11752131da50b69cfcac",
+  "runner_sha256": "1d46e7c265d4e8e1a6f985af0808cb631a3125712da7750636e1f3f024ed1eb1",
+  "failure": "AssertionError()"
+}

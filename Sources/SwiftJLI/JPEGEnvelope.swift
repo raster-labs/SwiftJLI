@@ -23,7 +23,9 @@ enum JPEGEnvelope {
             guard p < b.count else { throw malformed() }
             let marker = b[p]; p += 1
             if marker == 217 {
-                guard sawFrame, sawScan, p == b.count,
+                // Permit only the single zero that pads an odd-length JPEG to even.
+                let complete = p == b.count || (p % 2 == 1 && b.count - p == 1 && b[p] == 0)
+                guard sawFrame, sawScan, complete,
                       iccCount == nil || iccSequences.count == iccCount else { throw malformed() }
                 if let adobeTransform, (frameMarker == 0xC3 ? adobeTransform != 0 : adobeTransform > 1) {
                     throw CodecError(.unsupportedFeature, "JPEG colour transform is unsupported for this frame.")

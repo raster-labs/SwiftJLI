@@ -1,0 +1,48 @@
+CHROMA scalar baseline_422_64x18 max=2 over3=0 geometry=true
+CHROMA scalar baseline_422_63x19 max=2 over3=0 geometry=true
+CHROMA scalar baseline_422_7x5 max=2 over3=0 geometry=true
+CHROMA scalar baseline_422_3x5 max=0 over3=0 geometry=true
+CHROMA scalar baseline_422_4x3 max=0 over3=0 geometry=true
+CHROMA scalar baseline_422_1x1 max=0 over3=0 geometry=true
+CHROMA scalar baseline_420_64x18 max=2 over3=0 geometry=true
+CHROMA scalar baseline_420_63x19 max=2 over3=0 geometry=true
+CHROMA scalar baseline_420_7x5 max=0 over3=0 geometry=true
+CHROMA scalar baseline_420_3x5 max=1 over3=0 geometry=true
+CHROMA scalar baseline_420_4x3 max=0 over3=0 geometry=true
+CHROMA scalar baseline_420_1x1 max=0 over3=0 geometry=true
+CHROMA scalar progressive_422_63x19 max=2 over3=0 geometry=true
+CHROMA scalar progressive_420_63x19 max=2 over3=0 geometry=true
+CHROMA scalar baseline_444_63x19 max=2 over3=0 geometry=true
+CHROMA_SUMMARY scalar failures=0/15
+CHROMA automatic baseline_422_64x18 max=2 over3=0 geometry=true
+CHROMA automatic baseline_422_63x19 max=2 over3=0 geometry=true
+CHROMA automatic baseline_422_7x5 max=2 over3=0 geometry=true
+CHROMA automatic baseline_422_3x5 max=0 over3=0 geometry=true
+CHROMA automatic baseline_422_4x3 max=0 over3=0 geometry=true
+CHROMA automatic baseline_422_1x1 max=0 over3=0 geometry=true
+CHROMA automatic baseline_420_64x18 max=2 over3=0 geometry=true
+CHROMA automatic baseline_420_63x19 max=2 over3=0 geometry=true
+CHROMA automatic baseline_420_7x5 max=0 over3=0 geometry=true
+CHROMA automatic baseline_420_3x5 max=1 over3=0 geometry=true
+CHROMA automatic baseline_420_4x3 max=0 over3=0 geometry=true
+CHROMA automatic baseline_420_1x1 max=0 over3=0 geometry=true
+CHROMA automatic progressive_422_63x19 max=2 over3=0 geometry=true
+CHROMA automatic progressive_420_63x19 max=2 over3=0 geometry=true
+CHROMA automatic baseline_444_63x19 max=2 over3=0 geometry=true
+CHROMA_SUMMARY automatic failures=0/15
+CASE valid-grey ACCEPT colour=greyscale first=[73, 73, 73]
+CASE missing-EOI REJECT CodecError(category: SwiftJLI.CodecError.Category.malformedInput, message: "Invalid JPEG marker envelope.")
+CASE concatenated REJECT CodecError(category: SwiftJLI.CodecError.Category.malformedInput, message: "Invalid JPEG marker envelope.")
+CASE trailing-garbage REJECT CodecError(category: SwiftJLI.CodecError.Category.malformedInput, message: "Invalid JPEG marker envelope.")
+DICOM_BASE_LENGTH 161
+CASE odd-unpadded ACCEPT colour=greyscale first=[73, 73, 73]
+CASE legal-DICOM-zero-pad ACCEPT colour=greyscale first=[73, 73, 73]
+CASE compressed-limit REJECT CodecError(category: SwiftJLI.CodecError.Category.resourceLimitExceeded, message: "JPEG operation exceeds its memory budget.")
+CASE pixel-limit REJECT CodecError(category: SwiftJLI.CodecError.Category.resourceLimitExceeded, message: "JPEG dimensions exceed operation limits.")
+CASE decoded-byte-limit REJECT CodecError(category: SwiftJLI.CodecError.Category.resourceLimitExceeded, message: "Decoded storage limit exceeded.")
+CASE duplicate-SOF REJECT CodecError(category: SwiftJLI.CodecError.Category.malformedInput, message: "Invalid JPEG marker envelope.")
+CASE raw-RGB-Adobe0 ACCEPT colour=rgb first=[210, 70, 25]
+CASE raw-RGB-component-IDs ACCEPT colour=rgb first=[210, 70, 25]
+CASE valid-interleaved-lossless ACCEPT colour=rgb first=[210, 70, 25]
+CASE lossless-incomplete-component-scan REJECT CodecError(category: SwiftJLI.CodecError.Category.unsupportedFeature, message: "Unsupported lossless scan layout.")
+CASE grey-as-RGB-destination REJECT CodecError(category: SwiftJLI.CodecError.Category.incompatibleImageLayout, message: "Destination does not match JPEG sample interpretation.")

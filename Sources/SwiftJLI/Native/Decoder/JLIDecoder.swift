@@ -102,11 +102,7 @@ struct JLIDecoder: Sendable {
             throw JLIError.unsupportedJPEGFeature("decode scale \(scale) (only 1, 2, 4, 8 supported)")
         }
 
-        // Step 3: Prepare Huffman tables (use standard tables as fallback)
-        let dcTables = prepareDCTables(parsed.huffmanDCTables)
-        let acTables = prepareACTables(parsed.huffmanACTables)
-
-        // Step 4: Determine MCU structure
+        // Step 3: Determine MCU structure
         let components = frame.components
         let numComponents = components.count
         let hMaxSampling = components.map(\.horizontalSampling).max() ?? 1
@@ -116,7 +112,7 @@ struct JLIDecoder: Sendable {
         let mcuCountH = (frame.width + mcuW - 1) / mcuW
         let mcuCountV = (frame.height + mcuH - 1) / mcuH
 
-        // Step 5: Allocate one flat zigzag-coefficient buffer per component.
+        // Step 4: Allocate one flat zigzag-coefficient buffer per component.
         // Block `b` of component `c` lives at `componentZigzag[c][b*64 ..< (b+1)*64]`.
         var componentZigzag = [[Int32]]()
         var componentBlocksPerRow = [Int]()
@@ -129,7 +125,7 @@ struct JLIDecoder: Sendable {
             componentZigzag.append([Int32](repeating: 0, count: blocksH * blocksV * 64))
         }
 
-        // Step 6: Decode entropy data into the flat per-component buffers.
+        // Step 5: Decode entropy data into the flat per-component buffers.
         // Progressive (SOF2) uses multiple scans with spectral selection and
         // successive approximation; baseline/extended-sequential uses one scan.
         if frame.isProgressive {
@@ -157,6 +153,10 @@ struct JLIDecoder: Sendable {
             componentZigzag = prog.coeffs
         } else {
             let scan = parsed.scans[0]
+            // Use the Huffman table snapshot active at SOS rather than the final merged
+            // parser dictionaries, matching JPEGCodec.validateDCT when later DHT segments follow.
+            let dcTables = prepareDCTables(scan.dcTables)
+            let acTables = prepareACTables(scan.acTables)
             var bitReader = BitReader(data: scan.entropyData)
             var prevDC = [Int32](repeating: 0, count: numComponents)
             var acBuf = [Int32](repeating: 0, count: 64)
@@ -434,6 +434,24 @@ struct JLIDecoder: Sendable {
         // image dimensions reduced by `scale` (= full dims when scale == 1).
         let outW = (frame.width + scale - 1) / scale
         let outH = (frame.height + scale - 1) / scale
+        // Full-resolution integer YCbCr uses SOF sample centres and component
+        // rounding. Prepare the planes once for both final-storage writers;
+        // 4:4:4, previews, raw Float32, greyscale and XYB keep their existing
+        // semantics. The established 4:4:4 oracle has a tighter error bound.
+        if scale == 1, numComponents == 3, configuration.outputPixelFormat != .float32,
+           parsed.iccProfile != XYBICCProfile.data, !parsed.isRawRGB,
+           components.contains(where: { $0.horizontalSampling != hMaxSampling || $0.verticalSampling != vMaxSampling }) {
+            for index in componentPlanes.indices {
+                let plane = componentPlanes[index]
+                componentPlanes[index] = (try ChromaSampling.upsampleJPEG(
+                    plane.data, width: plane.width, height: plane.height,
+                    targetWidth: outW, targetHeight: outH,
+                    horizontalSampling: components[index].horizontalSampling,
+                    verticalSampling: components[index].verticalSampling,
+                    maximumHorizontalSampling: hMaxSampling,
+                    maximumVerticalSampling: vMaxSampling), outW, outH)
+            }
+        }
         if let borrowedDestination {
             let floating = configuration.outputPixelFormat == .float32
             let xyb = parsed.iccProfile == XYBICCProfile.data
@@ -445,7 +463,8 @@ struct JLIDecoder: Sendable {
                 throw JLIError.unsupportedJPEGFeature("Unsupported borrowed DCT output")
             }
             try SharedDCTStorage.write(componentPlanes, width: outW, height: outH,
-                precision: frame.precision, floatOutput: floating, xyb: parsed.iccProfile == XYBICCProfile.data, into: borrowedDestination)
+                precision: frame.precision, floatOutput: floating, xyb: parsed.iccProfile == XYBICCProfile.data,
+                rawRGB: parsed.isRawRGB, into: borrowedDestination)
             return try JLIImage(geometryOnlyWidth: outW, height: outH,
                 pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
                 colorModel: numComponents == 1 ? .grayscale : .rgb,
@@ -483,6 +502,16 @@ struct JLIDecoder: Sendable {
                 outputData = plane.data.map { UInt8(clamping: Int($0.rounded())) }
             }
             outputColorModel = configuration.outputColorModel ?? .grayscale
+        } else if parsed.isRawRGB {
+            let bps = wantsFloat32 ? 4 : isExtendedPrecision ? 2 : 1
+            var bytes = [UInt8](repeating: 0, count: outW * outH * 3 * bps)
+            try bytes.withUnsafeMutableBytes { raw in
+                try SharedDCTStorage.write(componentPlanes, width: outW, height: outH,
+                    precision: frame.precision, floatOutput: wantsFloat32, rawRGB: true,
+                    into: .init(bytes: raw, rowBytes: outW * 3 * bps, bytesPerSample: bps))
+            }
+            outputData = bytes
+            outputColorModel = .rgb
         } else if numComponents == 3 && !isExtendedPrecision
                     && parsed.iccProfile == XYBICCProfile.data {
             // XYB color: the three full-resolution planes are scaled-XYB samples

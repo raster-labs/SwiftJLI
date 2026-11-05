@@ -1,0 +1,11 @@
+--- tested/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ final/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -153,6 +153,8 @@
+             componentZigzag = prog.coeffs
+         } else {
+             let scan = parsed.scans[0]
++            // Use the Huffman table snapshot active at SOS rather than the final merged
++            // parser dictionaries, matching JPEGCodec.validateDCT when later DHT segments follow.
+             let dcTables = prepareDCTables(scan.dcTables)
+             let acTables = prepareACTables(scan.acTables)
+             var bitReader = BitReader(data: scan.entropyData)

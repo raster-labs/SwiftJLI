@@ -1,0 +1,138 @@
+{
+  "runner_sha256": "f315029e0bc8c9afd97b5a6aa903e2302cd8ed9ff2e00a15c55f837c0f5d68e2",
+  "purpose": "Verify retained normal-image deadline regression distinguishes prior and corrected binaries",
+  "commands": [
+    {
+      "candidate": "b",
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-b/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/b-0.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.005"
+      ],
+      "exit_code": 130,
+      "stderr": "swiftjli-cli: operation cancelled.\n",
+      "output_exists": false
+    },
+    {
+      "candidate": "b",
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-b/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/b-1.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.005"
+      ],
+      "exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: JPEG operation deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "candidate": "b",
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-b/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/b-2.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.005"
+      ],
+      "exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: JPEG operation deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "candidate": "c",
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/c-0.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.005"
+      ],
+      "exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "candidate": "c",
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/c-1.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.005"
+      ],
+      "exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "output_exists": false
+    },
+    {
+      "candidate": "c",
+      "argv": [
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/audit-build-c/arm64-apple-macosx/release/swiftjli-cli",
+        "encode",
+        "-i",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/normal-rgb-512.ppm",
+        "-o",
+        "/Users/pushparaj/Documents/Codex/2026-10-15/i-x20/work/retained-deadline-control/c-2.jpg",
+        "--mode",
+        "lossy",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar",
+        "--timeout",
+        "0.005"
+      ],
+      "exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "output_exists": false
+    }
+  ]
+}

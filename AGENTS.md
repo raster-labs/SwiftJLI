@@ -10,6 +10,8 @@ For the compiler upgrade, read the [Swift 6.4 manifesto](Documentation/Engineeri
 
 Read `README.md`, `HISTORY.md`, this file and `IMPLEMENTATION.md`, then all seven common contract documents in `Documentation/`. Read the repository-specific `TRANSCODING.md` when present before work affecting transcoding. `CLAUDE.md` points here and is not a separate policy. Follow the precedence in `Documentation/SUITE_POLICY.md`.
 
+For current implementation and qualification status, start with [the acceptance ledger](Documentation/Migration/ACCEPTANCE.md). The original codec migration merged in PR #19; subsequent maintenance corrections retain separate source pins and evidence. Historical milestone instructions below do not mean the current repository contains only a foundation.
+
 For application upgrades from JLISwift, also read [MIGRATION.md](MIGRATION.md). Keep its API mappings, capability limitations and acceptance checklist accurate when public behaviour changes; an API rename alone is not a completed codec migration.
 
 This repository began with documentation only. Reading its instructions does not by itself authorise codec migration. When the owner assigns an implementation task, execute only that milestone. The original foundation contained no package or source. Milestone 1 now has a feasibility implementation; see Documentation/MILESTONE1.md for executed evidence. Do not report planned codec instructions as implemented functionality.
@@ -38,7 +40,7 @@ This repository began with documentation only. Reading its instructions does not
 
 State what behaviour changed and why, exact source/baseline/contract revisions, commands and exit results, skipped/unavailable gates, sample/copy/lifetime evidence, performance/memory impact and remaining limitations. Separate measured facts from expectations. Include links to tests and fixture provenance. No invented test counts, benchmark numbers, platform verification or medical/regulatory claims.
 
-## Ready-to-use first task prompt
+## Historical Milestone 1 task prompt
 
 "Read AGENTS.md, IMPLEMENTATION.md, HISTORY.md and the common contract. Carry out Milestone 1 only: validate the local public API and owning-memory contract in Swift 6.4, with meaningful descriptor, lifetime, concurrency and independent-consumer tests. Use synthetic buffers for the adapter experiment and preserve repository independence. Do not migrate codec algorithms or implement the real transcoder in this milestone. Return a reviewable PR, exact test evidence and any concrete contract issue requiring a coordinated revision."
 

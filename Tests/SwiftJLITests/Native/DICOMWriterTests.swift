@@ -317,4 +317,193 @@ struct DICOMWriterTests {
             _ = try dicom.decodeFramesConcurrently { _ -> [UInt8] in throw DICOMError.invalidPixelData }
         }
     }
+
+    @Test("Multi-frame encapsulated DICOM with multiple fragments per frame groups via the Basic Offset Table")
+    func encapsulatedMultiFrameMultiFragmentBOTGrouping() throws {
+        // 3 frames, each split into 2 even-length fragments (6 fragments total).
+        // Because fragmentRanges.count (6) != numberOfFrames (3), the reader must
+        // execute the Basic Offset Table grouping loop (enc.basicOffsetTable.count == n).
+        let w = 8, h = 8, frameCount = 3
+        var sources = [[UInt8]]()
+        var jpegs = [[UInt8]]()
+        var fragments = [[UInt8]]()
+        var botOffsets = [UInt32]()
+        var runningOffset: UInt32 = 0
+
+        for f in 0..<frameCount {
+            let src = framePixels(w, h, frame: f)
+            sources.append(src)
+            let img = try JLIImage(width: w, height: h, pixelFormat: .uint16,
+                                   colorModel: .grayscale, data: src)
+            var cfg = JLIEncoderConfiguration(lossless: true); cfg.losslessPrecision = 12
+            var jpeg = try JLIEncoder().encode(img, configuration: cfg)
+            if jpeg.count % 2 != 0 { jpeg.append(0) }
+            jpegs.append(jpeg)
+
+            let split = (jpeg.count / 2) & ~1
+            let frag0 = Array(jpeg[0..<split])
+            let frag1 = Array(jpeg[split...])
+            #expect(frag0.count % 2 == 0 && frag1.count % 2 == 0)
+
+            botOffsets.append(runningOffset)
+            fragments.append(frag0)
+            runningOffset += UInt32(8 + frag0.count)
+            fragments.append(frag1)
+            runningOffset += UInt32(8 + frag1.count)
+        }
+        #expect(fragments.count == frameCount * 2)
+
+        func mtag(_ b: inout [UInt8], _ g: UInt16, _ e: UInt16) {
+            b += [UInt8(g & 0xFF), UInt8(g >> 8), UInt8(e & 0xFF), UInt8(e >> 8)]
+        }
+        func u32(_ b: inout [UInt8], _ v: UInt32) {
+            b += [UInt8(v & 0xFF), UInt8((v >> 8) & 0xFF), UInt8((v >> 16) & 0xFF), UInt8((v >> 24) & 0xFF)]
+        }
+        func us(_ b: inout [UInt8], _ g: UInt16, _ e: UInt16, _ v: UInt16) {
+            mtag(&b, g, e); b += Array("US".utf8); b += [2, 0, UInt8(v & 0xFF), UInt8(v >> 8)]
+        }
+        func cs(_ b: inout [UInt8], _ g: UInt16, _ e: UInt16, _ s: String, vr: String = "CS") {
+            var v = Array(s.utf8); if v.count % 2 != 0 { v.append(0x20) }
+            mtag(&b, g, e); b += Array(vr.utf8); b += [UInt8(v.count & 0xFF), UInt8(v.count >> 8)]; b += v
+        }
+
+        var meta = [UInt8]()
+        var ts = Array(DICOMWriter.jpegLosslessSV1.utf8); if ts.count % 2 != 0 { ts.append(0) }
+        mtag(&meta, 0x0002, 0x0010); meta += Array("UI".utf8)
+        meta += [UInt8(ts.count & 0xFF), UInt8(ts.count >> 8)] + ts
+
+        var ds = [UInt8]()
+        us(&ds, 0x0028, 0x0002, 1)
+        cs(&ds, 0x0028, 0x0004, "MONOCHROME2")
+        cs(&ds, 0x0028, 0x0008, "\(frameCount)", vr: "IS")
+        us(&ds, 0x0028, 0x0010, UInt16(h))
+        us(&ds, 0x0028, 0x0011, UInt16(w))
+        us(&ds, 0x0028, 0x0100, 16)
+        us(&ds, 0x0028, 0x0101, 12)
+        us(&ds, 0x0028, 0x0102, 11)
+        us(&ds, 0x0028, 0x0103, 0)
+
+        mtag(&ds, 0x7FE0, 0x0010); ds += Array("OB".utf8); ds += [0, 0]; u32(&ds, 0xFFFF_FFFF)
+        mtag(&ds, 0xFFFE, 0xE000); u32(&ds, UInt32(botOffsets.count * 4))
+        for off in botOffsets { u32(&ds, off) }
+        for frag in fragments {
+            mtag(&ds, 0xFFFE, 0xE000); u32(&ds, UInt32(frag.count))
+            ds += frag
+        }
+        mtag(&ds, 0xFFFE, 0xE0DD); u32(&ds, 0)
+
+        var file = [UInt8](repeating: 0, count: 128) + Array("DICM".utf8)
+        mtag(&file, 0x0002, 0x0000); file += Array("UL".utf8); file += [4, 0]; u32(&file, UInt32(meta.count))
+        file += meta + ds
+
+        let dicom = try DICOMReader.read(file)
+        #expect(dicom.isEncapsulated)
+        #expect(dicom.numberOfFrames == frameCount)
+        #expect(dicom.encapsulatedFrameStreams.count == frameCount)
+        for f in 0..<frameCount {
+            let stream = try #require(dicom.frame(f))
+            #expect(stream == jpegs[f])
+            let decoded = try JLIDecoder().decode(from: stream)
+            #expect(decoded.data == sources[f])
+        }
+    }
+
+    @Test("Public SwiftJLI Encoder and Decoder round-trip encapsulated DICOM lossless and colour streams with bounded limits")
+    func publicSwiftJLICodecEncapsulatedDICOMIntegration() async throws {
+        // 1) 12-bit greyscale lossless (SOF3) encoded and decoded through the
+        // shipping public SwiftJLI API, wrapped in an encapsulated DICOM container.
+        let w = 8, h = 8
+        let grey12Desc = try ImageDescriptor.greyscale16(width: w, height: h, meaningfulBits: 12)
+        let grey12Image = try ImageDestination.allocate(descriptor: grey12Desc).writeUInt16 { x, y in
+            UInt16((x * 197 + y * 311) & 0x0FFF)
+        }
+        let expectedGreyBytes = try grey12Image.storage.withUnsafeBytes { Array($0) }
+        let encodedLossless = try await Encoder(configuration: .init(mode: .lossless,
+            codecOptions: .init(predictor: 1))).encode(grey12Image)
+
+        let losslessModule = DICOMWriter.PixelModule(
+            rows: h, columns: w, bitsAllocated: 16, bitsStored: 12, highBit: 11,
+            photometricInterpretation: "MONOCHROME2", modality: "CT")
+        let losslessDICOM = try DICOMWriter.writeEncapsulatedJPEG(
+            jpegStream: Array(encodedLossless.data), module: losslessModule,
+            transferSyntax: DICOMWriter.jpegLosslessSV1)
+        let readLossless = try DICOMReader.read(losslessDICOM)
+        let publicDecoder = try Decoder()
+        let decodedLossless = try await publicDecoder.decode(Data(readLossless.pixelData))
+        #expect(decodedLossless.image.descriptor.meaningfulBits == 12)
+        #expect(decodedLossless.image.descriptor.colour == .greyscale)
+        #expect(try decodedLossless.image.storage.withUnsafeBytes { Array($0) } == expectedGreyBytes)
+
+        // Verify public ResourceLimits reject oversized encapsulated frames before sample allocation.
+        do {
+            _ = try await publicDecoder.decode(Data(readLossless.pixelData),
+                options: .init(resourceLimits: try ResourceLimits(maximumPixels: w * h - 1)))
+            Issue.record("Expected resourceLimitExceeded for encapsulated frame exceeding maximumPixels")
+        } catch let error as CodecError {
+            #expect(error.category == .resourceLimitExceeded)
+        }
+
+        // 2) 8-bit colour DCT (SOF0) encapsulated in DICOM (both standard YCbCr
+        // and unmarked direct-RGB interpreted via sourceColourModel: .rgb).
+        let rgbPlane = try PlaneDescriptor(width: w, height: h, components: [0, 1, 2],
+            sampleStride: 1, pixelStride: 3, rowBytes: w * 3, byteCount: w * h * 3)
+        let rgbDesc = try ImageDescriptor(width: w, height: h, storageBits: 8, meaningfulBits: 8,
+            components: [.red, .green, .blue], colour: .rgb, planes: [rgbPlane])
+        let rgbImage = try ImageDestination.allocate(descriptor: rgbDesc).write { raw in
+            for i in 0..<(w * h) {
+                raw[i * 3] = 200
+                raw[i * 3 + 1] = 80
+                raw[i * 3 + 2] = 40
+            }
+        }
+        let encodedLossy = try await Encoder(configuration: .init(mode: .lossy,
+            codecOptions: .init(dct: .init(quality: 100, chromaSubsampling: .yuv444)))).encode(rgbImage)
+        let rgbModule = DICOMWriter.PixelModule(
+            rows: h, columns: w, bitsAllocated: 8, bitsStored: 8, highBit: 7,
+            samplesPerPixel: 3, photometricInterpretation: "YBR_FULL_422", modality: "US")
+        let lossyDICOM = try DICOMWriter.writeEncapsulatedJPEG(
+            jpegStream: Array(encodedLossy.data), module: rgbModule,
+            transferSyntax: DICOMWriter.jpegBaseline)
+        let readLossy = try DICOMReader.read(lossyDICOM)
+        let decodedLossy = try await publicDecoder.decode(Data(readLossy.pixelData))
+        #expect(decodedLossy.image.descriptor.colour == .rgb)
+        #expect(decodedLossy.image.descriptor.components == [.red, .green, .blue])
+        let decodedRGBBytes = try decodedLossy.image.storage.withUnsafeBytes { Array($0) }
+        for i in 0..<(w * h) {
+            #expect(abs(Int(decodedRGBBytes[i * 3]) - 200) <= 2)
+            #expect(abs(Int(decodedRGBBytes[i * 3 + 1]) - 80) <= 2)
+            #expect(abs(Int(decodedRGBBytes[i * 3 + 2]) - 40) <= 2)
+        }
+
+        // Unmarked direct-RGB encapsulated stream (DICOM PhotometricInterpretation = "RGB"
+        // with pretransformed RGB DCT planes) decoded via explicit sourceColourModel: .rgb.
+        let preconvertedDesc = try ImageDescriptor(width: w, height: h, storageBits: 8, meaningfulBits: 8,
+            components: [.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")],
+            colour: .unknown, planes: [rgbPlane])
+        let preconvertedImg = try ImageDestination.allocate(descriptor: preconvertedDesc).write { raw in
+            for i in 0..<(w * h) {
+                raw[i * 3] = 210
+                raw[i * 3 + 1] = 70
+                raw[i * 3 + 2] = 25
+            }
+        }
+        let unmarkedRGBStream = try await Encoder(configuration: .init(mode: .lossy,
+            codecOptions: .init(dct: .init(quality: 100, chromaSubsampling: .yuv444, sourceColourSpace: .yCbCr)))).encode(preconvertedImg)
+        let directRGBModule = DICOMWriter.PixelModule(
+            rows: h, columns: w, bitsAllocated: 8, bitsStored: 8, highBit: 7,
+            samplesPerPixel: 3, photometricInterpretation: "RGB", modality: "XC")
+        let directRGBDICOM = try DICOMWriter.writeEncapsulatedJPEG(
+            jpegStream: Array(unmarkedRGBStream.data), module: directRGBModule,
+            transferSyntax: DICOMWriter.jpegBaseline)
+        let readDirectRGB = try DICOMReader.read(directRGBDICOM)
+        let rgbOverrideDecoder = try Decoder(configuration: .init(sourceColourModel: .rgb))
+        let decodedDirectRGB = try await rgbOverrideDecoder.decode(Data(readDirectRGB.pixelData))
+        #expect(decodedDirectRGB.image.descriptor.colour == .rgb)
+        let directBytes = try decodedDirectRGB.image.storage.withUnsafeBytes { Array($0) }
+        for i in 0..<(w * h) {
+            #expect(abs(Int(directBytes[i * 3]) - 210) <= 1)
+            #expect(abs(Int(directBytes[i * 3 + 1]) - 70) <= 1)
+            #expect(abs(Int(directBytes[i * 3 + 2]) - 25) <= 1)
+        }
+    }
 }

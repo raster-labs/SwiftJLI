@@ -1,0 +1,98 @@
+{
+  "oracle": "libjpeg-turbo 3.2.0 build 20260630",
+  "results": [
+    {
+      "command": [
+        "/opt/homebrew/bin/cjpeg",
+        "-precision",
+        "16",
+        "-lossless",
+        "1,0",
+        "-outfile",
+        "work/audit-fixtures/grey16-17x13-oracle.jpg",
+        "work/audit-fixtures/grey16-17x13.pgm"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "work/audit-fixtures/grey16-17x13-oracle-decoded.pgm",
+        "work/audit-fixtures/grey16-17x13-oracle.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "fixture": "work/audit-fixtures/grey16-17x13-oracle.jpg",
+      "sha256": "872901bd5cf3aa446ea1d6a1fe12db0dfd999d96d5d8039f506a597f374d498f",
+      "oracle_round_trip": "exact"
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/cjpeg",
+        "-precision",
+        "16",
+        "-lossless",
+        "1,0",
+        "-outfile",
+        "work/audit-fixtures/grey16-1x1-oracle.jpg",
+        "work/audit-fixtures/grey16-1x1.pgm"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "work/audit-fixtures/grey16-1x1-oracle-decoded.pgm",
+        "work/audit-fixtures/grey16-1x1-oracle.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "fixture": "work/audit-fixtures/grey16-1x1-oracle.jpg",
+      "sha256": "373f154595535023d3721281d4388f0ec20b458725e161bd37d3abbae5ee2328",
+      "oracle_round_trip": "exact"
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/cjpeg",
+        "-precision",
+        "16",
+        "-lossless",
+        "1,0",
+        "-outfile",
+        "work/audit-fixtures/grey16-65x33-oracle.jpg",
+        "work/audit-fixtures/grey16-65x33.pgm"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "work/audit-fixtures/grey16-65x33-oracle-decoded.pgm",
+        "work/audit-fixtures/grey16-65x33-oracle.jpg"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "fixture": "work/audit-fixtures/grey16-65x33-oracle.jpg",
+      "sha256": "3c123142877bc289e0b550e8e50c00fd1af27af19d3494bfcb0fd02015eac747",
+      "oracle_round_trip": "exact"
+    }
+  ]
+}
