@@ -57,7 +57,7 @@ def main():
         'campaign_type': 'deterministic mutation, scalar, release without sanitizers', 'entries': []}
     children = []
     try:
-        for entry in ('inspect', 'inspectJPEG', 'allocate', 'destination'):
+        for entry in ('inspect', 'inspectJPEG', 'allocate', 'destination', 'qualifiedInspect', 'qualifiedDecode'):
             name = f'swiftjli-fuzz-{entry}-{uuid.uuid4().hex[:12]}'
             log_path = output / f'{entry}.jsonl'
             log = log_path.open('w')

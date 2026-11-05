@@ -44,6 +44,35 @@ struct Generator {
     }
 }
 
+/// The ordinary fuzz harness owns setup allocations. Each qualified operation
+/// enters this synchronous helper only after all storage is alive; no raw borrow
+/// escapes and no asynchronous work is launched under the borrowed workspace.
+struct QualifiedFuzzRejection: Error { let failure: QualifiedFailure }
+func exerciseQualified(_ data: Data, monochrome: Bool, decode: Bool) throws {
+    let raw = UnsafeMutableRawPointer.allocate(byteCount: 1 << 20, alignment: 16)
+    let pixels = UnsafeMutableRawPointer.allocate(byteCount: 4096 * 12, alignment: 16)
+    defer { raw.deallocate(); pixels.deallocate() }
+    let workspace = UnsafeMutableRawBufferPointer(start: raw, count: 1 << 20)
+    let output = UnsafeMutableRawBufferPointer(start: pixels, count: 4096 * 12)
+    let decoder = QualifiedJPEGDecoder(profile: .jliswift060, limits: .init(
+        maximumEncodedBytes: 1 << 20, maximumPixels: 4096, maximumDecodedBytes: 1 << 20,
+        maximumDimension: 128, maximumWorkspaceBytes: 1 << 20, maximumMemoryBytes: 4 << 20,
+        deadlineSeconds: 0.2))
+    try data.withUnsafeBytes { input in
+        let failure: QualifiedFailure?
+        if monochrome {
+            let result = decode ? decoder.decodeLosslessMonochrome(input, into: output, workspace: workspace)
+                : decoder.inspectLosslessMonochrome(input, workspace: workspace)
+            switch result { case .success: failure = nil; case .failure(let value): failure = value }
+        } else {
+            let result = decode ? decoder.decodeBaselineRGB(input, arena: output, workspace: workspace)
+                : decoder.inspectBaselineRGB(input, headerWorkspace: workspace)
+            switch result { case .success: failure = nil; case .failure(let value): failure = value }
+        }
+        if let failure { throw QualifiedFuzzRejection(failure: failure) }
+    }
+}
+
 @main struct Fuzz {
     static func emit(_ payload: [String: Any]) throws {
         var data = try JSONSerialization.data(withJSONObject: payload, options: [.sortedKeys])
@@ -99,9 +128,9 @@ struct Generator {
     }
     static func main() async throws {
         let args = CommandLine.arguments
-        guard (args.count == 4 || args.count == 5), ["inspect", "inspectJPEG", "allocate", "destination"].contains(args[1]),
+        guard (args.count == 4 || args.count == 5), ["inspect", "inspectJPEG", "allocate", "destination", "qualifiedInspect", "qualifiedDecode"].contains(args[1]),
               let seconds = Double(args[2]), seconds.isFinite, seconds > 0, seconds <= 86400 else {
-            throw CodecError(.invalidArgument, "Usage: DecoderFuzz inspect|inspectJPEG|allocate|destination seconds failure-file [replay-attempt]")
+            throw CodecError(.invalidArgument, "Usage: DecoderFuzz inspect|inspectJPEG|allocate|destination|qualifiedInspect|qualifiedDecode seconds failure-file [replay-attempt]")
         }
         let replay = args.count == 5 ? Int(args[4]) : nil
         guard args.count == 4 || (replay.map { $0 > 0 } ?? false) else {
@@ -124,7 +153,11 @@ struct Generator {
             if attempts == replay { try data.write(to: URL(fileURLWithPath: args[3])) }
             do {
                 let decoder = try Decoder(configuration: seed.configuration)
-                if entry == "inspect" { _ = try decoder.inspect(data, options: options) }
+                if entry == "qualifiedInspect" || entry == "qualifiedDecode" {
+                    try exerciseQualified(data, monochrome: seed.descriptor.components.count == 1,
+                                          decode: entry == "qualifiedDecode")
+                }
+                else if entry == "inspect" { _ = try decoder.inspect(data, options: options) }
                 else if entry == "inspectJPEG" { _ = try decoder.inspectJPEG(data, options: options) }
                 else if entry == "allocate" { _ = try await decoder.decode(data, options: options) }
                 else {
@@ -132,6 +165,9 @@ struct Generator {
                     _ = try await decoder.decode(data, into: destination, options: options)
                 }
                 accepted += 1
+            } catch let error as QualifiedFuzzRejection {
+                rejected += 1
+                categories["qualified-\(error.failure.kind)-\(error.failure.code)", default: 0] += 1
             } catch let error as CodecError where error.category != .internalFailure {
                 rejected += 1; categories[String(describing: error.category), default: 0] += 1
             } catch {

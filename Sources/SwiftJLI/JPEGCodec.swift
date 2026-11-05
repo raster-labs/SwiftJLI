@@ -115,14 +115,21 @@ enum JPEGCodec {
             }
             let discardAlpha = isDCT && configuration.codecOptions.dct.alphaPolicy == .discardStraightAlpha
             let preconverted = isDCT && configuration.codecOptions.dct.sourceColourSpace == .yCbCr
+            let predictiveYCbCr = !isDCT && configuration.codecOptions.predictiveSourceColourModel == .yCbCr
+            if let interpretation = configuration.codecOptions.predictiveSourceColourModel {
+                guard d.components.count == 3, d.iccProfile == nil,
+                      interpretation != .rgb || (d.components == [.red, .green, .blue] && d.colour == .rgb) else {
+                    throw CodecError(.incompatibleImageLayout, "Predictive interpretation requires matching three-component storage without an unqualified ICC profile.")
+                }
+            }
             if discardAlpha && d.components != [.red, .green, .blue, .alpha] {
                 throw CodecError(.invalidArgument, "Alpha-discard policy requires RGBA source components.")
             }
-            if preconverted && (d.components != [.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")] || d.colour != .unknown) {
+            if (preconverted || predictiveYCbCr) && (d.components != [.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")] || d.colour != .unknown) {
                 throw CodecError(.invalidArgument, "Preconverted YCbCr requires explicit Y/Cb/Cr component roles and unknown generic colour.")
             }
             let plane = try layout(d, allowFloat: allowsFloat, allowRGBA: discardAlpha,
-                                   allowYCbCr: preconverted, limits: limits)
+                                   allowYCbCr: preconverted || predictiveYCbCr, limits: limits)
             let precision = floating ? 8 : d.meaningfulBits
             let xyb = configuration.codecOptions.dct.colourSpace == .xybFromSRGB
             let rgbToGrey = isDCT && configuration.codecOptions.dct.chromaSubsampling == .greyscale && d.components.count > 1
@@ -286,13 +293,22 @@ enum JPEGCodec {
         return parsed
     }
 
-    static func info(_ parsed: ParsedJPEG, scale: Int = 1, sampleFormat: DecoderSampleFormat = .nativeInteger, decodedOutput: Bool = false, options: DecodeOptions) throws -> ImageInfo {
+    static func info(_ parsed: ParsedJPEG, scale: Int = 1, sampleFormat: DecoderSampleFormat = .nativeInteger, decodedOutput: Bool = false,
+                     predictiveSourceColourModel: JPEGSourceColourModel? = nil, options: DecodeOptions) throws -> ImageInfo {
         let f = parsed.frameInfo, nc = f.components.count
         guard (2...16).contains(f.precision), nc == 1 || nc == 3 else {
             throw CodecError(.unsupportedFeature, "Unsupported JPEG precision or component count.")
         }
-        // SOF3 has no colour conversion. Accept only explicit RGB identifiers for colour.
-        guard !f.isLossless || nc == 1 || f.components.map(\.id) == [0x52, 0x47, 0x42] else {
+        if predictiveSourceColourModel != nil {
+            guard f.isLossless, nc == 3, parsed.iccProfile == nil else {
+                throw CodecError(.unsupportedFeature, "External predictive interpretation requires three-component lossless JPEG without ICC metadata.")
+            }
+        }
+        let predictiveYCbCr = predictiveSourceColourModel == .yCbCr
+        // SOF3 has no colour conversion. Ambiguous identifiers require an
+        // explicit external interpretation; the default remains unchanged.
+        guard !f.isLossless || nc == 1 || predictiveSourceColourModel != nil
+                || f.components.map(\.id) == [0x52, 0x47, 0x42] else {
             throw CodecError(.unsupportedFeature, "Lossless colour interpretation is ambiguous.")
         }
         guard !f.isLossless || scale == 1 else {
@@ -315,8 +331,9 @@ enum JPEGCodec {
         let descriptor = try ImageDescriptor(width: width, height: height,
             sampleType: floating ? .floatingPoint : .unsignedInteger, storageBits: bps * 8,
             meaningfulBits: floating ? 32 : f.precision,
-            components: xyb && !decodedOutput ? [.uninterpreted("X"), .uninterpreted("Y"), .uninterpreted("B")] : nc == 1 ? [.grey] : [.red, .green, .blue],
-            colour: xyb && !decodedOutput ? .unknown : nc == 1 ? .greyscale : .rgb, planes: [plane],
+            components: predictiveYCbCr ? [.uninterpreted("Y"), .uninterpreted("Cb"), .uninterpreted("Cr")]
+                : xyb && !decodedOutput ? [.uninterpreted("X"), .uninterpreted("Y"), .uninterpreted("B")] : nc == 1 ? [.grey] : [.red, .green, .blue],
+            colour: predictiveYCbCr || (xyb && !decodedOutput) ? .unknown : nc == 1 ? .greyscale : .rgb, planes: [plane],
             iccProfile: xyb && decodedOutput ? Data(SRGBICCProfile.data) : parsed.iccProfile.map { Data($0) }, limits: options.resourceLimits)
         let metadata = ImageMetadata(entries: options.metadataPolicy == .preserve
             ? parsed.exif.map { ["Exif": Data($0)] } ?? [:] : [:])
@@ -324,11 +341,12 @@ enum JPEGCodec {
         return ImageInfo(format: "JPEG", descriptor: descriptor, frameCount: 1, metadata: metadata)
     }
 
-    static func inspect(_ data: Data, sourceColourModel: JPEGSourceColourModel? = nil, options: DecodeOptions) throws -> ImageInfo {
+    static func inspect(_ data: Data, sourceColourModel: JPEGSourceColourModel? = nil,
+                        predictiveSourceColourModel: JPEGSourceColourModel? = nil, options: DecodeOptions) throws -> ImageInfo {
         try run(limits: options.resourceLimits, policy: .scalarCPU) {
             let parsed = try parse(data, options: options, sourceColourModel: sourceColourModel)
             _ = try selectBackend(options.executionPolicy, dct: !parsed.frameInfo.isLossless)
-            let result = try info(parsed, options: options)
+            let result = try info(parsed, predictiveSourceColourModel: predictiveSourceColourModel, options: options)
             try NativeOperation.check()
             return result
         }
@@ -343,10 +361,12 @@ enum JPEGCodec {
                 started: NativeOperation.current?.started ?? .now, maximumWorkers: options.resourceLimits.maximumWorkers)
             return try NativeOperation.$current.withValue(context) {
                 let information = try info(parsed, scale: configuration.scale,
-                    sampleFormat: configuration.sampleFormat, decodedOutput: true, options: options)
+                    sampleFormat: configuration.sampleFormat, decodedOutput: true,
+                    predictiveSourceColourModel: configuration.predictiveSourceColourModel, options: options)
                 let source = information.descriptor
                 let descriptor = supplied?.descriptor ?? source
-                let plane = try layout(descriptor, allowFloat: configuration.sampleFormat != .nativeInteger, limits: options.resourceLimits)
+                let plane = try layout(descriptor, allowFloat: configuration.sampleFormat != .nativeInteger,
+                    allowYCbCr: configuration.predictiveSourceColourModel == .yCbCr, limits: options.resourceLimits)
                 guard descriptor.sampleType == source.sampleType, descriptor.width == source.width, descriptor.height == source.height,
                       descriptor.components == source.components, descriptor.meaningfulBits == source.meaningfulBits,
                       descriptor.storageBits >= source.storageBits,

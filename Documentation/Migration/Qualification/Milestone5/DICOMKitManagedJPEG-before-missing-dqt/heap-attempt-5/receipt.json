@@ -1,0 +1,159 @@
+{
+  "scope": "cold public operation; caller/setup/bootstrap excluded; not a performance test",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "commands": [
+    {
+      "argv": [
+        "xcrun",
+        "swift",
+        "--version"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0,
+      "elapsedSeconds": 0.10776686668395996,
+      "logPrefix": "swift-version"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swift",
+        "build",
+        "--package-path",
+        "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed/Examples/QualifiedJPEGProbe",
+        "--scratch-path",
+        "/private/tmp/swiftjli-qualified-heap-attempt5-build/build",
+        "--jobs",
+        "2",
+        "-c",
+        "release"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0,
+      "elapsedSeconds": 18.766247987747192,
+      "logPrefix": "build"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "clang",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O2",
+        "-dynamiclib",
+        "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed/Examples/QualifiedJPEGProbe/heap.c",
+        "-o",
+        "/private/tmp/swiftjli-qualified-heap-attempt5-build/libheap.dylib"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 0,
+      "elapsedSeconds": 0.0671529769897461,
+      "logPrefix": "interposer-build"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-qualified-heap-attempt5-build/build/out/Products/Release/QualifiedJPEGProbe",
+        "control",
+        "/private/tmp/swiftjli-qualified-heap-attempt5/lossless.jpg",
+        "234",
+        "6160"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-dicomkit-managed",
+      "exitCode": 1,
+      "elapsedSeconds": 0.6760749816894531,
+      "logPrefix": "control"
+    }
+  ],
+  "cases": [],
+  "passed": false,
+  "sources": {
+    "Sources/SwiftJLI/CLISynchronousExecution.swift": "af92520630934f03632d37b87129cb2b9fcd2662503c62988a9611e9ccf87cde",
+    "Sources/SwiftJLI/CodecAPI.swift": "e89ec80550bd70eabea94da8008de44cb9d2d04a7aae1922b4e70ccb52f64035",
+    "Sources/SwiftJLI/Errors.swift": "f71dd532405f2bca468ef39b29117513c686a89c64dd908ef598d1bca4f4fe6b",
+    "Sources/SwiftJLI/Image.swift": "fd4aa6679c4ab50738eb4266fe62c0db21cb46bf157d26db1daaa7b5e36dede5",
+    "Sources/SwiftJLI/ImageDescriptor.swift": "44cf8b2f796c0c39a17a4ff11ea8e97dc08f1f496cddc0197696a822922a1656",
+    "Sources/SwiftJLI/ImageStorage.swift": "a7ae2697bcf45996c4d556aa7fc8303fc0616cef9b86c13e9dd56e7a58cc36fb",
+    "Sources/SwiftJLI/JPEGCodec.swift": "97017c69293aed0fa295b2cdb8a6e7607e273a120ab9c61db709e2f81bfa32fe",
+    "Sources/SwiftJLI/JPEGDCTValidation.swift": "ce87c6e59437ed587ac5110655f544b8d794c8722158b4a37fe14827b8d65e99",
+    "Sources/SwiftJLI/JPEGEntropyBoundary.swift": "31540a448da9a40600bf623e98af022ad80b709735c2d88e8baacde3d8d7d248",
+    "Sources/SwiftJLI/JPEGEnvelope.swift": "5c49e236858e3ad26f76edbe77916f906416b41314f4f6d5791aa770ca850c43",
+    "Sources/SwiftJLI/JPEGInspection.swift": "5d671f2ce2e5dfdcb20ce01084861b6d6837d2bb3d67f2fbafa89c9689d94e34",
+    "Sources/SwiftJLI/Native/ColorSpace/ICCProfileMD5.swift": "3f891177070f29418586736e502432b893fd4936eacb81e9cfb914012f185942",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIChromaSampling.swift": "e1cc179fa5222797d585505cc9725e5097f87ae00ac9707ea03aedad5ed0121b",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIColorConversion.swift": "1554c7b953937b6faed37c2594af645168d1641a979ae6833a7279a7a394ff99",
+    "Sources/SwiftJLI/Native/ColorSpace/JLIXYBICCProfile.swift": "68942179aa518b418022f33d7be9c2657d32aa3df13eca740f6e716eaaff9c9b",
+    "Sources/SwiftJLI/Native/ColorSpace/SRGBICCProfile.swift": "e1bf95403549f922e24d219cad2e5d526aa813f8948ce5ef601ee8d1dde1687a",
+    "Sources/SwiftJLI/Native/Contract/BorrowedPlane.swift": "09cc85db6b1268760f0e27f8db4697544af2049ca2266b9520deb007f4b398f4",
+    "Sources/SwiftJLI/Native/Contract/SharedDCTStorage.swift": "194d57b1ccbe89875f474ad101cace3a8464e23cf339a962935e4fc681c2972a",
+    "Sources/SwiftJLI/Native/Contract/SharedRGBInput.swift": "7902000f7f7f9a05b50b5bce717818e3c46e7bb4bb101013a0b206c2ee23a317",
+    "Sources/SwiftJLI/Native/Core/JLIConfiguration.swift": "59fae13f77a57efaae10229e3d09958f69cf4ad4a9209ee33802abe4be7de262",
+    "Sources/SwiftJLI/Native/Core/JLIError.swift": "c084ca38d2c22faaef784f9272bb6f4ee5a7e344f832234c14949e848dcc9d0d",
+    "Sources/SwiftJLI/Native/Core/JLIImage.swift": "37f94c32307e5a6396cf300be242d57a5f4f1190cc756609b8f36174d02344d0",
+    "Sources/SwiftJLI/Native/Core/JLIJPEGInfo.swift": "4cee6d0e2ad859215eef3814f9ee87d12c77db5a47ebe1a7849b7445e5fa60a1",
+    "Sources/SwiftJLI/Native/DSP/JLIAdaptiveQuant.swift": "02dcfd5a5a9d327ce6db7cebcc59e46a1c6dafa97406c247f6752a281037c938",
+    "Sources/SwiftJLI/Native/DSP/JLIDCT.swift": "c9cbb8386b8a03b49e0039212cbf9a035f52d0a929ed6a5400bd7ae5bbf18d49",
+    "Sources/SwiftJLI/Native/DSP/JLIPerceptualQuant.swift": "b3a2d4eb518dee9859110060dec0d4f048460b6f06ba3e2a349982488cf202a2",
+    "Sources/SwiftJLI/Native/DSP/JLIQuantization.swift": "1b4658d05ab71c9d05e16137037ffc55e0d9a77ddc81b286afd3c7b7e109d4b2",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "cd7f6c4ef4b6d114834e830c7b32e5410241473f88312f0bf71ce28c319de332",
+    "Sources/SwiftJLI/Native/Decoder/JLIProgressiveDecoder.swift": "7eabfcf26b729a78bb6a7000cc9afa6fff8367d22e3905802311f82177dd4910",
+    "Sources/SwiftJLI/Native/Encoder/JLIEncoder.swift": "9c1eee6ca5f3d9c774cc2902ed30fe1cae6c0f53a387d4d080e514ced2f54998",
+    "Sources/SwiftJLI/Native/Encoder/JLIProgressiveEncoder.swift": "46236de2f77317225ea2f5daa2b6a981c9b5df65c1e42de3af6cb95d23cd0758",
+    "Sources/SwiftJLI/Native/Entropy/ACLookahead.swift": "55256a6631fd59c12eedef3ba9d3e059d473f979931333ba4f70d878322e6ce6",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": "a33f90f3643de89a0d57744f44ec09cce9bcacdc3d3668245cb82127b05e769d",
+    "Sources/SwiftJLI/Native/Entropy/JLIHuffman.swift": "ac64d194ac01ae04eaad8b3f339f252727c557daf4172359e3d2c8d2d6cf5dba",
+    "Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift": "f06c26bb00f4140a99b14c8c600af1f29f8fc86aad394c317015e4720bafbd33",
+    "Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift": "b40b47062c1b393fc3d1fa02aa97ca73b9b446729d9d214ea011579659414ff1",
+    "Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift": "b53d7d3c11defbe73794f6f4fbdfdc864e69f76724f0a993a86a19a71cb0f9ae",
+    "Sources/SwiftJLI/Native/Entropy/ZeroRunLosslessDecoder.swift": "23610c0a0c8e81f9bd793c4124e20ff4957eec741f76d170a55c27b693d8f106",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerReader.swift": "e7b8d000586e9ffba39acc3298e2b221e0e89592398297ee9c006545fb3299c9",
+    "Sources/SwiftJLI/Native/Markers/JLIMarkerWriter.swift": "b16d4fcde67541c67cda5078b6c1fa382ec1bd4433b76dbe70047d85fc00ab8d",
+    "Sources/SwiftJLI/Native/Platform/AccelerateBackend.swift": "8f74be440f1d985d99c3ef995984ea1a64d3a4d8e86d928a97bc32ce1a4dd5c0",
+    "Sources/SwiftJLI/Native/Platform/PlatformDetection.swift": "f3b15878ee0ef7c661de5a8f37d33e15691dbd0f2932ec55ffa3ff04f1609e39",
+    "Sources/SwiftJLI/Native/Platform/ScalarDSP.swift": "865685933c007c336d91cc1810fb2623c4b26c42c87c8e0f483d801c642ad72a",
+    "Sources/SwiftJLI/NativeExecution.swift": "695d091246e8ed32a196d55e1722f08dcdf0785e579693963ce37df999b85d2e",
+    "Sources/SwiftJLI/Options.swift": "dd43c63592bf4d74c53626374fb4494b0815315f0f64bc1a2831f9c066b5d787",
+    "Sources/SwiftJLI/Qualified/QualifiedBaselineCallerStorage.swift": "03a09df0ac69c5c185a100cbd4762d10442367b362435cae1a1fd4f1b87587f1",
+    "Sources/SwiftJLI/Qualified/QualifiedBaselineParseStorage.swift": "e616fd77f479ce9f323a24c51b80d4c231a22640e9104e65ed4868dffc60963c",
+    "Sources/SwiftJLI/Qualified/QualifiedBitReader.swift": "f413cefab4b5fcb5070714f63468bd875477ee57388d370f72241e90124096bb",
+    "Sources/SwiftJLI/Qualified/QualifiedChroma.swift": "fd230b43e70d2cf91458866d1f480e24a0a3d18ce93b9086974818f32e71ed4d",
+    "Sources/SwiftJLI/Qualified/QualifiedHeaders.swift": "1398e2d702ad5d665865f5f1cded4140eede82a8a908d53d4ed5f5bd9bad8c06",
+    "Sources/SwiftJLI/Qualified/QualifiedHuffman.swift": "a86d07938c0d93039d61f79767b95d5a2dde256f8261246584dac934059bf752",
+    "Sources/SwiftJLI/Qualified/QualifiedJPEGDecoder.swift": "f34ff7fb6ca79537a71b2601461976bb198912bc08b685b0113322551ed1d9f3",
+    "Sources/SwiftJLI/Qualified/QualifiedKernels.swift": "be8a5e3a38681b7cf5ade59f4243badb642db42e4a880a6d0fc6821540900568",
+    "Sources/SwiftJLI/Qualified/QualifiedLosslessCallerStorage.swift": "f5a6493ebd9c739b49a9a4c2cf1ee65498115954464a4a80b935a1cbf7681a45",
+    "Sources/SwiftJLI/Qualified/QualifiedLosslessParseStorage.swift": "5c2f4c17b20babb4d710360a894cb17bcd9b3b4f5ccd1caf93cb86245433b804",
+    "Sources/SwiftJLI/Qualified/QualifiedMarkers.swift": "8d883a1057be5264954b281610b7a00a0ae9d373395ea7f3fa1d312729557c13",
+    "Sources/SwiftJLI/Qualified/QualifiedOutcome.swift": "6e60916bbeea4f9ca6ccd570ef634af074202bf139880db82fe7e0dfc4b643ec",
+    "Sources/SwiftJLI/Qualified/QualifiedParser.swift": "9216a1b6a44ac03754bbdfc4862df36f05990241c1c46c5ca5841094ba63a511",
+    "Sources/SwiftJLI/Qualified/QualifiedQuantization.swift": "c909234bf347fb4c73f83c4a0d47f9ed37c0aed3d4b3a4920edae918dac99107",
+    "Sources/SwiftJLI/Qualified/QualifiedReconstruction.swift": "6283abc6f885fd0338d893e214c440c01472c643067934e0787f595ef306a278",
+    "Sources/SwiftJLI/Qualified/QualifiedStorage.swift": "968a577e0f68a85cb3ae9b74d7d66fb1b635b1f40bff1c6081b0b07753e17995",
+    "Sources/SwiftJLI/Qualified/QualifiedXYBProfile.swift": "90e54b8834ea9fd6d7e0d7ca868abfaac5ea851751a7ae09451899bcf267dae2",
+    "Sources/SwiftJLICLI/main.swift": "d233714b13970668841e38cf027f679e405cbfc373b0476477977a44d58887f3"
+  },
+  "fixtures": {
+    "rgb.jpg": {
+      "sha256": "13e30b2436819306510979b2aa0209ce10d9772ea7ef8ad9c2bf6d3a98e0d3f7",
+      "bytes": 1335
+    },
+    "lossless.jpg": {
+      "sha256": "db57adc41c2ba1f7fea936afe0043c97a122399d3a6cf6885ba6381dc7e417b8",
+      "bytes": 239
+    }
+  },
+  "fixtureSources": {
+    "Tests/SwiftJLITests/Native/LosslessRestartTests.swift": "5c8184dbcacc47a598518a538137f85eeb015bd4814743d41017792ea0ec36cb",
+    "Tests/SwiftJLITests/ChromaReferenceFixtures.swift": "81aae9c2dd16829049661d501e9fcc4758f69c851b5c898840653a853fff01d3"
+  },
+  "harness": {
+    "Examples/QualifiedJPEGProbe/run.py": "f535132141d9a1559fae76613a06f239b29c0b0f8d717e7064b82c242ce33930",
+    "Examples/QualifiedJPEGProbe/heap.c": "783b0e19288b2a478e2a414c4fea5cc197870f5dfe2db93a528682b6ab0dc4bb",
+    "Examples/QualifiedJPEGProbe/README.md": "51e185f2ae33e21278d82fd9353fb81f65642a58cce1e71350c89391dc43b90a",
+    "Examples/QualifiedJPEGProbe/LICENSE.DICOMKit": "4c0768004e1c88e30b7c28f3f4ea03998c351c89b81db0d05e333998acf8b9f4",
+    "Examples/QualifiedJPEGProbe/Package.swift": "d48242bf8a43853249f5af8ea0bd256768728b4d6b5d96835e9e73c2d06df809",
+    "Examples/QualifiedJPEGProbe/Sources/QualifiedJPEGProbe/main.swift": "f50dd001c777a2ecce1cf2e599753e007712164b0c51f63049d942dcc87f6626"
+  },
+  "binarySHA256": "c6cfdc52b8c3409c7c7f90c0fe7d0c0f6f3eb7ffb76e8f25f039d2db17b56c54",
+  "interposerSHA256": "dbcdc688cd7bbe0a6e74dafa46ca07bb355c6c3175ead9e612f2264dc3b59bc0",
+  "error": "control: exit 1"
+}
