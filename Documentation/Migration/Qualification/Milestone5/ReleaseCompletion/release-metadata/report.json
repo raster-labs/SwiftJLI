@@ -1,0 +1,78 @@
+{
+  "scope": "Local release metadata and CLI/manual checks only; no stable publication",
+  "sourceParent": "87bc4e9f99ddaf8c592ec9dfe09120c043a768ff",
+  "cwd": "/Users/pushparaj/projects/SwiftJLI-release-completion",
+  "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+  "sourceSHA256": {
+    "VERSION": "1575e1af4a95f12f70b4ee6a6adce8160953d93ea17dc2611b90883ccc3ad3b8",
+    "Sources/SwiftJLICLI/main.swift": "d233714b13970668841e38cf027f679e405cbfc373b0476477977a44d58887f3",
+    "ManPages/swiftjli-cli.1": "a3ef4e37ce762b8959979c56db989e2cd17291ce26f1d75b920c53b1a7e62fe4",
+    "Scripts/test-cli.py": "66641d7c5a26854550c787c6d58e3c78a08c3a4b2b43d8b7ad77acb30517e0bd"
+  },
+  "commands": [
+    {
+      "name": "toolchain",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift",
+        "--version"
+      ],
+      "startedUTC": "2026-11-04T05:42:27.707576+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-04T05:42:27.820601+00:00",
+      "log": "toolchain.log"
+    },
+    {
+      "name": "build",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift",
+        "build",
+        "--build-system",
+        "swiftbuild",
+        "--disable-sandbox",
+        "--jobs",
+        "2",
+        "--configuration",
+        "release",
+        "--product",
+        "swiftjli-cli"
+      ],
+      "startedUTC": "2026-11-04T05:42:27.820853+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-04T05:42:47.903822+00:00",
+      "log": "build.log"
+    },
+    {
+      "name": "binary-path",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift",
+        "build",
+        "--build-system",
+        "swiftbuild",
+        "--configuration",
+        "release",
+        "--show-bin-path"
+      ],
+      "startedUTC": "2026-11-04T05:42:47.904074+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-04T05:42:48.434527+00:00",
+      "log": "binary-path.log"
+    },
+    {
+      "name": "cli",
+      "argv": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/.build/out/Products/Release/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-m5-release-metadata-20261104/cli"
+      ],
+      "startedUTC": "2026-11-04T05:42:48.434853+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-04T05:42:51.502500+00:00",
+      "log": "cli.log"
+    }
+  ],
+  "binarySHA256": "06a2209792eb6a0695e8925bec1d89ab510691267e4bf9abb14bd945a615a02f",
+  "status": "passed"
+}

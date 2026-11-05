@@ -1,0 +1,55 @@
+{
+  "scope": "JSON Schema validation of unmodified build-associated outputs; not complete SBOM semantic or SDK/runtime inventory validation",
+  "records": [
+    {
+      "file": "spdx/spdx3-3.0.1-swiftjli-cli-7739dba554cabebcc25e3593af3feb6ba27f8489-all-2026-11-04T06_00_28Z.json",
+      "schema": "spdx-json-schema.json",
+      "fileSHA256": "ae01fa418035241ccba2ee787d606758bff4926b97d76ce497fa4cee5dee683b",
+      "schemaSHA256": "582c64e809d5b3ef9bd0c4de13a32391b47b0284a3e8d199569fb96f649234b1",
+      "validator": "jsonschema 4.25.1",
+      "referencing": "0.37.0",
+      "status": "failed",
+      "errors": [
+        {
+          "path": [
+            "@graph",
+            8
+          ],
+          "schemaPath": [
+            "then",
+            "properties",
+            "@graph",
+            "items",
+            "unevaluatedProperties"
+          ],
+          "message": "Unevaluated properties are not allowed ('externalUrl', 'software_internalVersion' were unexpected)"
+        },
+        {
+          "path": [
+            "@graph",
+            9
+          ],
+          "schemaPath": [
+            "then",
+            "properties",
+            "@graph",
+            "items",
+            "unevaluatedProperties"
+          ],
+          "message": "Unevaluated properties are not allowed ('externalUrl', 'software_internalVersion' were unexpected)"
+        }
+      ]
+    },
+    {
+      "file": "cyclonedx/cyclonedx1-1.7-swiftjli-cli-7739dba554cabebcc25e3593af3feb6ba27f8489-all-2026-11-04T06_00_29Z.json",
+      "schema": "bom-1.7.schema.json",
+      "fileSHA256": "c5acf32b04e694b9669b407115998b5107bf0c3cbad8a6172971b26027cc59ed",
+      "schemaSHA256": "73308edec3ab2d38bfffd993e96a042b594314143b6971a6e9ed98bbb6bd76ce",
+      "validator": "jsonschema 4.25.1",
+      "referencing": "0.37.0",
+      "status": "passed",
+      "errors": []
+    }
+  ],
+  "status": "failed"
+}

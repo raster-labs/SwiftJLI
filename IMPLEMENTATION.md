@@ -2,7 +2,13 @@
 
 Read AGENTS.md and every common contract document first. Milestone 1 implements API shapes and owning storage; see [executed evidence](Documentation/MILESTONE1.md). Later milestones require an owner-assigned implementation task. Follow the common contract when predecessor conventions differ. Maintain performance, reliability and security together.
 
-## Completed assignment — 3 November 2026
+## Current library-only completion — 4 November 2026
+
+The owner resumed Milestone 5 with the instruction to complete all remaining library tasks while keeping DICOMKit integration and physical-device testing pending. The frozen prepared revision `7739dba554cabebcc25e3593af3feb6ba27f8489` is complete for that library release-preparation scope. The [completion record](Documentation/Migration/Qualification/Milestone5/LibraryCompletion/README.md) verifies source identity, existing qualification, current hosted/security state and deterministic SBOM replay. No library implementation, public API, resource policy, fidelity or shared contract changes accompany this closure.
+
+Actual four-codec DICOMKit work remains separate in [draft PR #28](https://github.com/raster-labs/SwiftJLI/pull/28) and its consumer worktrees. It is not part of the frozen candidate or this acceptance. Physical Watch and representative iPhone/iPad execution, stable publication and predecessor retirement remain pending. The [earlier expanded assignment](Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/README.md) retains its preparation evidence and history.
+
+## Completed release-preparation scope — 3 November 2026
 
 **Milestone 5 release preparation is complete** under suite policy **0.10.0** for the owner-approved frozen candidate and simulator scope. The current shipping candidate is `f548e5048e5c71204c2a2ec4036bf66c4f040285`; only task-local host callback ownership changes from the starting `8ae2762` source. Local Swift 6.4.2 debug/release/full ASan/full TSan each pass 389 tests, with fresh consumer, independent oracle, suite and allocation evidence in the [Milestone 5 record](Documentation/Migration/Qualification/Milestone5/README.md). The test-only correction at `a44e671` isolates cancellation from a competing short deadline; all 13 hosted CI jobs pass. Derived library/CLI SBOM conformance also passes. Four full-hour fuzz campaigns and the scoped matched performance check pass. The dedicated Watch simulator harness passes six Release tests; fresh hosted qualification at `8c1b965` passes 389 library tests, six Release cases and the strict verifier on the watchOS 26.5 simulator hosted on Intel. The normal thirteen-job PR/push matrix remains unchanged. Physical-device qualification remains separate stable-release work. Administrator activation of private reporting is now independently verified. No stable tag or application cutover is established.
 

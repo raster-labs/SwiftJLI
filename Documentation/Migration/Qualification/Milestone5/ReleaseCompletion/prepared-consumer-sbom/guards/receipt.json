@@ -1,0 +1,95 @@
+{
+  "capturedUTC": "2026-11-04T06:01:46.088941+00:00",
+  "commands": [
+    {
+      "label": "products-existing",
+      "argv": [
+        "python3",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom/helpers/qualify-products.py",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom",
+        "--repository",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion",
+        "--historical",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/final-consumer-sbom",
+        "--revision",
+        "7739dba554cabebcc25e3593af3feb6ba27f8489",
+        "--validator-python",
+        "/private/tmp/swiftjli-m5-derived-sbom-ti1ildpy/venv/bin/python"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-release-completion",
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "6556190c2bf950d8909666b04585624a29a18066b78563852830aa803e241c71"
+    },
+    {
+      "label": "consumer-existing",
+      "argv": [
+        "python3",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/consumer-qualify.py",
+        "--revision",
+        "7739dba554cabebcc25e3593af3feb6ba27f8489",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-release-completion",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "9684bd0aba0946e6a3aecab0ba3177afd688d85080bdde4d4ea42aeea508ccdb"
+    },
+    {
+      "label": "library-existing",
+      "argv": [
+        "/private/tmp/swiftjli-m5-derived-sbom-ti1ildpy/venv/bin/python",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom/helpers/derive-prepared.py",
+        "--revision",
+        "7739dba554cabebcc25e3593af3feb6ba27f8489",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom",
+        "--inputs",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom/derived/inputs",
+        "--product",
+        "SwiftJLI",
+        "--output",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom/derived/library"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-release-completion",
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "bee2e720cdd195250d48034e9c1c757c3122c1375390c10771bd6b38c5aef7e4"
+    },
+    {
+      "label": "cli-existing",
+      "argv": [
+        "/private/tmp/swiftjli-m5-derived-sbom-ti1ildpy/venv/bin/python",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom/helpers/derive-prepared.py",
+        "--revision",
+        "7739dba554cabebcc25e3593af3feb6ba27f8489",
+        "--evidence",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom",
+        "--inputs",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom/derived/inputs",
+        "--product",
+        "swiftjli-cli",
+        "--output",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom/derived/cli",
+        "--raw-sbom",
+        "/Users/pushparaj/projects/SwiftJLI-release-completion/Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/prepared-consumer-sbom/cli-raw"
+      ],
+      "cwd": "/Users/pushparaj/projects/SwiftJLI-release-completion",
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "bee2e720cdd195250d48034e9c1c757c3122c1375390c10771bd6b38c5aef7e4"
+    }
+  ],
+  "qualificationFilesProtected": 159,
+  "qualificationFilesUnchanged": true,
+  "historicalFilesProtected": 206,
+  "historicalFilesUnchanged": true,
+  "initialManifestSHA256": "63866279284c3f9747c9c1a2a951ae110f57e26a3d9468bcdfb96deff29ae163",
+  "scope": "Fresh-output guards only; no consumer rebuild, codec execution or schema/SHACL replay occurred."
+}

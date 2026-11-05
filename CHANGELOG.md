@@ -1,5 +1,17 @@
 # Change log
 
+## Milestone 5 library release preparation — complete, 4 November 2026
+
+- Complete the resumed library-only scope on the frozen prepared `1.1.0` candidate; keep actual DICOMKit integration and physical-device testing pending at the owner's request. Stable publication remains gated.
+- Reconcile the current acceptance/PR records with live CI and private-reporting checks, verify source-bound prior qualification, and archive the deterministic library/CLI SBOM replay (12 identical outputs).
+- Preserve all shipping sources, tests, executable helpers, shared contracts and historical evidence. No runtime or performance change accompanies this documentation/evidence closure. See the [completion record](Documentation/Migration/Qualification/Milestone5/LibraryCompletion/README.md).
+
+## Earlier expanded Milestone 5 assignment — 4 November 2026
+
+- Extend the assigned scope to actual DICOMKit integration, physical-device qualification and stable publication. Retain the completed frozen-candidate simulator evidence and [record the new requirements](Documentation/Migration/Qualification/Milestone5/ReleaseCompletion/README.md).
+- Prepare version `1.1.0` in the CLI, VERSION, manual and current guides; publication remains pending.
+- Current device inventory has no physical iPhone, iPad or Watch. No physical test pass, consumer cutover or stable publication is claimed.
+
 ## Milestone 5 release preparation — complete for the assigned scope, 3 November 2026
 
 - Retain synchronous host cancellation callbacks in an immutable task-local
