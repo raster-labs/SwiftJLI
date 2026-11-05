@@ -1,0 +1,5829 @@
+{
+  "status": "passed",
+  "startedUTC": "2026-11-03T12:57:21.394639+00:00",
+  "binarySHA256": "132a7ab9d7251c941ac12d8d60ea2475d66721d4849167f9bdf207e194eb31f3",
+  "method": "Diagnostic allocated-output API comparison, not a replacement for CLI results. Both decoder paths use the same Swift executable and linked runtime images. Compressed Data is retained. Timings include decoder state/workspace and calloc/owned output allocation through finish/return; complete output retained until checks outside timing, then released outside timing. Five warmups,20 individual samples per engine,2 paired order-balanced rounds. Full per-sample quality gate before timing. RSS uses separate fresh processes with compressed input plus one full output retained;3 paired trials. Explicit Swift workspace8GiB/total10GiB,libjpeg fixture output limit512MiB/dimension8192, no disk output or decoded output copy.",
+  "fixtureSHA256": {
+    "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg": "92804f8c1d4c4bf07d6bc588d8fb2b3d41894258576ff8dd25b5934d9e563aaf",
+    "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg": "19ae64fcda43b0616d558a86bb99fce0064b39fe87c0d24938a50da18e74e39a",
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg": "fa5b17f13ce554a56836520ae66857fa2dda30c94d2aff69e17775d318640bfd",
+    "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg": "e1616e4053e8b2705d5ff07f501efa6243615403356dd35157ebf1d587bebcf0",
+    "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+    "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg": "515dd20c5f52c15e8561c1921df9cfbd56744563fe1ad40bfecbdc9d584d0324",
+    "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg": "10f3b89c533043427fd560ec3380aa4602c866f3b923557fc309cdfa7cece977",
+    "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg": "af0e11e54f41533c7bbf4f6da06de587d0a44bd213d8b9d1af8b40fbde80349a",
+    "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg": "fff9fe5e9aff91c4d8c1474ff6ac374d45eb660b940bdd1e9d841dc12fee5113",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg": "6f029e5c5b0aa466794eadd5ceb4f7e28bc63edef5e1224e92ec2a88ebb3a2e2",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+    "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg": "6a0d1ae30ec0b919486bad94520ee9b7c29672a2391ce77fc98f66c35f6edb40"
+  },
+  "records": [
+    {
+      "components": 1,
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1.2958e-05,
+        "medianSeconds": 9.854000000000001e-06,
+        "minimumSeconds": 8.416e-06,
+        "p95Seconds": 1.1833e-05,
+        "samplesSeconds": [
+          1.1416e-05,
+          1.1833e-05,
+          1.1042e-05,
+          1.1042e-05,
+          1.1375e-05,
+          1.1541e-05,
+          1.2958e-05,
+          8.875e-06,
+          1.0375e-05,
+          8.708e-06,
+          8.667e-06,
+          9.625e-06,
+          1.0375e-05,
+          8.416e-06,
+          8.75e-06,
+          8.5e-06,
+          1.0083e-05,
+          8.417e-06,
+          8.584e-06,
+          8.458e-06
+        ]
+      },
+      "swiftEdgeCheck": 9550,
+      "swiftFNV1a64": "18f4dd86a15f7fd3",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.2833e-05,
+        "medianSeconds": 1.0354e-05,
+        "minimumSeconds": 9.875e-06,
+        "p95Seconds": 1.2458e-05,
+        "samplesSeconds": [
+          1.2042e-05,
+          1.1666e-05,
+          1.0167e-05,
+          1.2833e-05,
+          1.2458e-05,
+          1.1042e-05,
+          1.0333e-05,
+          1.1e-05,
+          1.0209e-05,
+          1.0792e-05,
+          1.0167e-05,
+          1.0375e-05,
+          1e-05,
+          1.05e-05,
+          9.875e-06,
+          1.0208e-05,
+          9.917e-06,
+          1.0417e-05,
+          1.0042e-05,
+          1.025e-05
+        ]
+      },
+      "turboEdgeCheck": 9550,
+      "turboFNV1a64": "18f4dd86a15f7fd3",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 345,
+          "cpuPercent": 142.8,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd"
+        },
+        {
+          "pid": 370,
+          "cpuPercent": 24.6,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 47.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 4851,
+          "cpuPercent": 24.5,
+          "process": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 58.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 29.0,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 117.1,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 15.1,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 39.4,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 11.4,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31495,
+          "cpuPercent": 377.5,
+          "process": "npm install"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1.3292e-05,
+        "medianSeconds": 1.0042e-05,
+        "minimumSeconds": 8.792e-06,
+        "p95Seconds": 1.1833e-05,
+        "samplesSeconds": [
+          1.075e-05,
+          1.125e-05,
+          1.1208e-05,
+          1.1833e-05,
+          9.875e-06,
+          9.333e-06,
+          1.3292e-05,
+          9.458e-06,
+          1.0791e-05,
+          9.584e-06,
+          9.666e-06,
+          1.0209e-05,
+          1.0708e-05,
+          1.0417e-05,
+          9.583e-06,
+          9.042e-06,
+          1.0416e-05,
+          9.125e-06,
+          9.208e-06,
+          8.792e-06
+        ]
+      },
+      "swiftEdgeCheck": 6375,
+      "swiftFNV1a64": "e15a7c618877daf2",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.2625e-05,
+        "medianSeconds": 1.15835e-05,
+        "minimumSeconds": 1.1041e-05,
+        "p95Seconds": 1.2541e-05,
+        "samplesSeconds": [
+          1.2541e-05,
+          1.2167e-05,
+          1.125e-05,
+          1.2042e-05,
+          1.1167e-05,
+          1.1833e-05,
+          1.1291e-05,
+          1.1625e-05,
+          1.2291e-05,
+          1.2625e-05,
+          1.1166e-05,
+          1.1625e-05,
+          1.1041e-05,
+          1.1709e-05,
+          1.1042e-05,
+          1.1542e-05,
+          1.1083e-05,
+          1.1625e-05,
+          1.1042e-05,
+          1.1458e-05
+        ]
+      },
+      "turboEdgeCheck": 6375,
+      "turboFNV1a64": "e15a7c618877daf2",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 345,
+          "cpuPercent": 102.2,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd"
+        },
+        {
+          "pid": 370,
+          "cpuPercent": 18.2,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 46.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 4851,
+          "cpuPercent": 24.5,
+          "process": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 58.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 29.0,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 117.1,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 15.1,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 39.4,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 11.4,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31495,
+          "cpuPercent": 377.5,
+          "process": "(node)"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1.325e-05,
+        "medianSeconds": 9.8335e-06,
+        "minimumSeconds": 8.791e-06,
+        "p95Seconds": 1.2958e-05,
+        "samplesSeconds": [
+          1.1833e-05,
+          1.075e-05,
+          1.1167e-05,
+          1.2958e-05,
+          1.1708e-05,
+          1.0833e-05,
+          1.325e-05,
+          9.375e-06,
+          9.334e-06,
+          9e-06,
+          9.333e-06,
+          1.0292e-05,
+          1.1e-05,
+          1.0292e-05,
+          9.375e-06,
+          8.792e-06,
+          9.125e-06,
+          8.792e-06,
+          9.125e-06,
+          8.791e-06
+        ]
+      },
+      "swiftEdgeCheck": 6150,
+      "swiftFNV1a64": "7ac3ae949bcf11c2",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.3583e-05,
+        "medianSeconds": 1.1396e-05,
+        "minimumSeconds": 1.0958e-05,
+        "p95Seconds": 1.2167e-05,
+        "samplesSeconds": [
+          1.1125e-05,
+          1.1916e-05,
+          1.1334e-05,
+          1.1833e-05,
+          1.2167e-05,
+          1.3583e-05,
+          1.1417e-05,
+          1.1792e-05,
+          1.1209e-05,
+          1.1625e-05,
+          1.1334e-05,
+          1.15e-05,
+          1.1125e-05,
+          1.1625e-05,
+          1.1208e-05,
+          1.1541e-05,
+          1.1083e-05,
+          1.1375e-05,
+          1.0958e-05,
+          1.1375e-05
+        ]
+      },
+      "turboEdgeCheck": 6150,
+      "turboFNV1a64": "7ac3ae949bcf11c2",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 345,
+          "cpuPercent": 102.2,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd"
+        },
+        {
+          "pid": 370,
+          "cpuPercent": 18.2,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 46.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 4851,
+          "cpuPercent": 16.3,
+          "process": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 73.6,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 26.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 105.2,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 54.8,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 12.2,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 3.5917e-05,
+        "medianSeconds": 9.5415e-06,
+        "minimumSeconds": 8.625e-06,
+        "p95Seconds": 2.9667e-05,
+        "samplesSeconds": [
+          1.3125e-05,
+          3.5917e-05,
+          2.9667e-05,
+          1.3333e-05,
+          1.3542e-05,
+          9.625e-06,
+          1.3792e-05,
+          9.458e-06,
+          9.708e-06,
+          9.083e-06,
+          9.375e-06,
+          1.1125e-05,
+          1.0625e-05,
+          8.917e-06,
+          9.084e-06,
+          8.666e-06,
+          8.959e-06,
+          8.709e-06,
+          9.375e-06,
+          8.625e-06
+        ]
+      },
+      "swiftEdgeCheck": 75,
+      "swiftFNV1a64": "2828f4ebfc86ff36",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 6.85e-05,
+        "medianSeconds": 1.10205e-05,
+        "minimumSeconds": 1.05e-05,
+        "p95Seconds": 1.4875e-05,
+        "samplesSeconds": [
+          1.0917e-05,
+          6.85e-05,
+          1.3042e-05,
+          1.4459e-05,
+          1.4875e-05,
+          1.3208e-05,
+          1.1e-05,
+          1.1667e-05,
+          1.0875e-05,
+          1.1208e-05,
+          1.075e-05,
+          1.1208e-05,
+          1.0875e-05,
+          1.1041e-05,
+          1.0541e-05,
+          1.1042e-05,
+          1.05e-05,
+          1.0875e-05,
+          1.05e-05,
+          1.0583e-05
+        ]
+      },
+      "turboEdgeCheck": 75,
+      "turboFNV1a64": "2828f4ebfc86ff36",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 345,
+          "cpuPercent": 102.2,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd"
+        },
+        {
+          "pid": 370,
+          "cpuPercent": 18.2,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 46.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 4851,
+          "cpuPercent": 16.3,
+          "process": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 73.6,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 26.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 105.2,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 54.8,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 12.2,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 8388608,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.013202334,
+        "medianSeconds": 0.012506854000000001,
+        "minimumSeconds": 0.012084958,
+        "p95Seconds": 0.012943708,
+        "samplesSeconds": [
+          0.01290875,
+          0.012459375,
+          0.012613583,
+          0.012500125,
+          0.012229042,
+          0.012254292,
+          0.012769375,
+          0.013202334,
+          0.012478209,
+          0.0128865,
+          0.012727792,
+          0.012407,
+          0.012504291,
+          0.012084958,
+          0.012509417,
+          0.012466833,
+          0.012943708,
+          0.012567458,
+          0.012455,
+          0.01267175
+        ]
+      },
+      "swiftEdgeCheck": 3200,
+      "swiftFNV1a64": "cdfcedd59a62fa82",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 0.019424208,
+        "medianSeconds": 0.0189967915,
+        "minimumSeconds": 0.018454584,
+        "p95Seconds": 0.019351625,
+        "samplesSeconds": [
+          0.018970667,
+          0.0190955,
+          0.018932584,
+          0.018483542,
+          0.019102458,
+          0.018656417,
+          0.019112292,
+          0.019351625,
+          0.018454584,
+          0.019339167,
+          0.019141,
+          0.018715334,
+          0.018499833,
+          0.018528084,
+          0.019424208,
+          0.018593041,
+          0.019294416,
+          0.019022916,
+          0.019146833,
+          0.018799084
+        ]
+      },
+      "turboEdgeCheck": 3200,
+      "turboFNV1a64": "cdfcedd59a62fa82",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 40.6,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3679,
+          "cpuPercent": 10.0,
+          "process": "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.2,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 84.1,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 16.8,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 179.0,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.001983125,
+        "medianSeconds": 0.001741541,
+        "minimumSeconds": 0.001616083,
+        "p95Seconds": 0.001908,
+        "samplesSeconds": [
+          0.001881208,
+          0.001693,
+          0.001712167,
+          0.001842417,
+          0.001983125,
+          0.001908,
+          0.001872542,
+          0.001736916,
+          0.001739791,
+          0.001734209,
+          0.001630042,
+          0.001616083,
+          0.001636042,
+          0.001760417,
+          0.001827541,
+          0.001761709,
+          0.001882583,
+          0.001743291,
+          0.001672625,
+          0.001643625
+        ]
+      },
+      "swiftEdgeCheck": 375,
+      "swiftFNV1a64": "dc9df26e34022755",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.001353083,
+        "medianSeconds": 0.0011975415,
+        "minimumSeconds": 0.001094458,
+        "p95Seconds": 0.001347916,
+        "samplesSeconds": [
+          0.001290625,
+          0.001203125,
+          0.001195083,
+          0.001347916,
+          0.001353083,
+          0.001312375,
+          0.00131075,
+          0.00121475,
+          0.0012,
+          0.001172375,
+          0.001162167,
+          0.001160125,
+          0.001094458,
+          0.00132325,
+          0.001204375,
+          0.001181709,
+          0.001152208,
+          0.001155041,
+          0.0011075,
+          0.001123459
+        ]
+      },
+      "turboEdgeCheck": 375,
+      "turboFNV1a64": "6be90299fd505fbd",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 40.9,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 870,
+          "cpuPercent": 10.2,
+          "process": "/usr/libexec/spotlightknowledged.updater"
+        },
+        {
+          "pid": 3679,
+          "cpuPercent": 10.0,
+          "process": "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 20.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 82.3,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.4,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 17.2,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 208.9,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 8388608,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.07971075,
+        "medianSeconds": 0.0467936455,
+        "minimumSeconds": 0.025669875,
+        "p95Seconds": 0.062222208,
+        "samplesSeconds": [
+          0.025669875,
+          0.026132917,
+          0.0260145,
+          0.026007667,
+          0.026177167,
+          0.044293834,
+          0.047180708,
+          0.04993,
+          0.05324725,
+          0.046406583,
+          0.049428708,
+          0.047915542,
+          0.043539792,
+          0.062222208,
+          0.057781917,
+          0.056253667,
+          0.044670334,
+          0.036029834,
+          0.07971075,
+          0.052279083
+        ]
+      },
+      "swiftEdgeCheck": 0,
+      "swiftFNV1a64": "8560bf7e03f3a612",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.064734333,
+        "medianSeconds": 0.033001125,
+        "minimumSeconds": 0.018685875,
+        "p95Seconds": 0.042043708,
+        "samplesSeconds": [
+          0.019365625,
+          0.018786375,
+          0.019449708,
+          0.018685875,
+          0.018814167,
+          0.036646875,
+          0.0359805,
+          0.035406209,
+          0.035674417,
+          0.0329895,
+          0.031339167,
+          0.03301275,
+          0.036456458,
+          0.042043708,
+          0.041846875,
+          0.032329583,
+          0.027332208,
+          0.035616792,
+          0.064734333,
+          0.023484083
+        ]
+      },
+      "turboEdgeCheck": 0,
+      "turboFNV1a64": "aad133d2222ca6db",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 42.9,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 16.5,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 15.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 58.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 31304,
+          "cpuPercent": 24.0,
+          "process": "/Applications/.Svcvtt.app/Contents/MonoBundle/vpxenc"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 346.5,
+          "process": "ng build (consumer)"
+        },
+        {
+          "pid": 31517,
+          "cpuPercent": 738.6,
+          "process": "/private/var/folders/cg/kgw5y70x6b57ghbvqqjrsc3w0000gp/T/raster-angular-matrix-xzYoib/angular-21.2.26/node_modules/@esbuild/darwin-arm64/bin/esbuild"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 8388608,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.030160666,
+        "medianSeconds": 0.028072521,
+        "minimumSeconds": 0.027124208,
+        "p95Seconds": 0.029658208,
+        "samplesSeconds": [
+          0.030160666,
+          0.027387583,
+          0.028072417,
+          0.027734375,
+          0.027124208,
+          0.027639625,
+          0.029465125,
+          0.028036042,
+          0.029658208,
+          0.0290535,
+          0.028995875,
+          0.028116916,
+          0.029227083,
+          0.027521916,
+          0.029600917,
+          0.027930458,
+          0.027822458,
+          0.028072625,
+          0.028187208,
+          0.027511584
+        ]
+      },
+      "swiftEdgeCheck": 0,
+      "swiftFNV1a64": "8560bf7e03f3a612",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.020283208,
+        "medianSeconds": 0.0191733955,
+        "minimumSeconds": 0.018325875,
+        "p95Seconds": 0.02021375,
+        "samplesSeconds": [
+          0.019207875,
+          0.019251583,
+          0.019640667,
+          0.018535959,
+          0.018766042,
+          0.020283208,
+          0.018837,
+          0.02021375,
+          0.018872167,
+          0.019168833,
+          0.019560792,
+          0.018325875,
+          0.019177958,
+          0.01991675,
+          0.019886416,
+          0.0187785,
+          0.019398042,
+          0.019097875,
+          0.018493209,
+          0.019011416
+        ]
+      },
+      "turboEdgeCheck": 0,
+      "turboFNV1a64": "aad133d2222ca6db",
+      "workerCeiling": 1,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 41.3,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 71.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 14.8,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 180.3,
+          "process": "ng build (consumer)"
+        },
+        {
+          "pid": 31517,
+          "cpuPercent": 48.4,
+          "process": "/private/var/folders/cg/kgw5y70x6b57ghbvqqjrsc3w0000gp/T/raster-angular-matrix-xzYoib/angular-21.2.26/node_modules/@esbuild/darwin-arm64/bin/esbuild"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 8,
+      "outputBytes": 262144,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 8,
+      "swift": {
+        "maximumSeconds": 0.000580875,
+        "medianSeconds": 0.000492625,
+        "minimumSeconds": 0.000486208,
+        "p95Seconds": 0.000553375,
+        "samplesSeconds": [
+          0.000487042,
+          0.000486208,
+          0.000513875,
+          0.000516792,
+          0.000501875,
+          0.000553375,
+          0.000580875,
+          0.000488958,
+          0.000497375,
+          0.000541083,
+          0.000490334,
+          0.000487875,
+          0.0004895,
+          0.00049425,
+          0.000489292,
+          0.000488292,
+          0.000491,
+          0.000497958,
+          0.000496167,
+          0.000490875
+        ]
+      },
+      "swiftEdgeCheck": 6450,
+      "swiftFNV1a64": "a7853dc248f62325",
+      "thermalState": 0,
+      "tolerance": 2,
+      "turbo": {
+        "maximumSeconds": 0.0001095,
+        "medianSeconds": 7.708300000000001e-05,
+        "minimumSeconds": 7.4458e-05,
+        "p95Seconds": 8.8041e-05,
+        "samplesSeconds": [
+          7.6833e-05,
+          7.625e-05,
+          7.9667e-05,
+          8.8041e-05,
+          8.0459e-05,
+          0.0001095,
+          8.0209e-05,
+          7.8042e-05,
+          7.7e-05,
+          7.7166e-05,
+          8.0083e-05,
+          7.6292e-05,
+          7.6208e-05,
+          7.9e-05,
+          7.65e-05,
+          7.5791e-05,
+          7.6875e-05,
+          7.4458e-05,
+          7.6e-05,
+          8.3166e-05
+        ]
+      },
+      "turboEdgeCheck": 6450,
+      "turboFNV1a64": "a7853dc248f62325",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 44.9,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 20.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 70.3,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.0,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 29.6,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 195.8,
+          "process": "ng build (consumer)"
+        },
+        {
+          "pid": 31517,
+          "cpuPercent": 28.8,
+          "process": "/private/var/folders/cg/kgw5y70x6b57ghbvqqjrsc3w0000gp/T/raster-angular-matrix-xzYoib/angular-21.2.26/node_modules/@esbuild/darwin-arm64/bin/esbuild"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.000603833,
+        "medianSeconds": 0.000513,
+        "minimumSeconds": 0.000482958,
+        "p95Seconds": 0.000571959,
+        "samplesSeconds": [
+          0.000518416,
+          0.000503958,
+          0.00051925,
+          0.000538125,
+          0.000540167,
+          0.000529041,
+          0.000517625,
+          0.000517209,
+          0.000517125,
+          0.000496458,
+          0.000571959,
+          0.000603833,
+          0.000491291,
+          0.000488709,
+          0.000489125,
+          0.000485083,
+          0.000491125,
+          0.000508875,
+          0.000482958,
+          0.000483958
+        ]
+      },
+      "swiftEdgeCheck": 225,
+      "swiftFNV1a64": "b17a2ce3c722325",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.000188792,
+        "medianSeconds": 0.0001629375,
+        "minimumSeconds": 0.000148708,
+        "p95Seconds": 0.000183916,
+        "samplesSeconds": [
+          0.000177708,
+          0.000164167,
+          0.000178875,
+          0.000183916,
+          0.000175792,
+          0.000188792,
+          0.000168417,
+          0.000162125,
+          0.000165542,
+          0.00016375,
+          0.0001685,
+          0.000162,
+          0.000148708,
+          0.000154416,
+          0.000153167,
+          0.000153416,
+          0.000151417,
+          0.000154916,
+          0.000153083,
+          0.000155042
+        ]
+      },
+      "turboEdgeCheck": 225,
+      "turboFNV1a64": "b17a2ce3c722325",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 44.9,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 20.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 70.3,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.0,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 29.6,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 195.8,
+          "process": "ng build (consumer)"
+        },
+        {
+          "pid": 31517,
+          "cpuPercent": 28.8,
+          "process": "/private/var/folders/cg/kgw5y70x6b57ghbvqqjrsc3w0000gp/T/raster-angular-matrix-xzYoib/angular-21.2.26/node_modules/@esbuild/darwin-arm64/bin/esbuild"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 8,
+      "outputBytes": 262144,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 8,
+      "swift": {
+        "maximumSeconds": 0.00184275,
+        "medianSeconds": 0.0017177289999999999,
+        "minimumSeconds": 0.001527667,
+        "p95Seconds": 0.001790166,
+        "samplesSeconds": [
+          0.001600625,
+          0.001561125,
+          0.001790166,
+          0.001765333,
+          0.001773416,
+          0.001773709,
+          0.00158675,
+          0.001548208,
+          0.001527667,
+          0.001744958,
+          0.001774791,
+          0.00175975,
+          0.001767292,
+          0.001595667,
+          0.001658125,
+          0.001537917,
+          0.001783666,
+          0.00184275,
+          0.0016905,
+          0.001554209
+        ]
+      },
+      "swiftEdgeCheck": 5425,
+      "swiftFNV1a64": "64bf8b35d4cc8934",
+      "thermalState": 0,
+      "tolerance": 2,
+      "turbo": {
+        "maximumSeconds": 0.001117125,
+        "medianSeconds": 0.001033271,
+        "minimumSeconds": 0.000958958,
+        "p95Seconds": 0.001108458,
+        "samplesSeconds": [
+          0.000986542,
+          0.001074292,
+          0.001062125,
+          0.001094084,
+          0.00108725,
+          0.00096725,
+          0.000958958,
+          0.001004417,
+          0.000979625,
+          0.001099667,
+          0.001068625,
+          0.001117125,
+          0.001108,
+          0.000992375,
+          0.000985,
+          0.000977708,
+          0.000980875,
+          0.001108458,
+          0.001085958,
+          0.000965542
+        ]
+      },
+      "turboEdgeCheck": 5425,
+      "turboFNV1a64": "d63fe4b32cfa9cd9",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 384,
+          "cpuPercent": 10.6,
+          "process": "/System/Library/CoreServices/launchservicesd"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 47.8,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 21.6,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 73.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.5,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 21.8,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 190.5,
+          "process": "ng build (consumer)"
+        },
+        {
+          "pid": 31517,
+          "cpuPercent": 17.4,
+          "process": "/private/var/folders/cg/kgw5y70x6b57ghbvqqjrsc3w0000gp/T/raster-angular-matrix-xzYoib/angular-21.2.26/node_modules/@esbuild/darwin-arm64/bin/esbuild"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 1,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.002329833,
+        "medianSeconds": 0.0021797294999999998,
+        "minimumSeconds": 0.001954459,
+        "p95Seconds": 0.002320709,
+        "samplesSeconds": [
+          0.002092083,
+          0.001985916,
+          0.002230792,
+          0.002288417,
+          0.002043958,
+          0.002155833,
+          0.002300167,
+          0.002197625,
+          0.002187417,
+          0.001995,
+          0.001968708,
+          0.001954459,
+          0.002329833,
+          0.002320709,
+          0.002255,
+          0.002186958,
+          0.002174542,
+          0.002184917,
+          0.00211475,
+          0.002130583
+        ]
+      },
+      "swiftEdgeCheck": 4025,
+      "swiftFNV1a64": "78caba2ca8b19c96",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.001447541,
+        "medianSeconds": 0.0013886459999999999,
+        "minimumSeconds": 0.001217958,
+        "p95Seconds": 0.0014385,
+        "samplesSeconds": [
+          0.00127575,
+          0.001231875,
+          0.001217958,
+          0.001447541,
+          0.001389834,
+          0.00142675,
+          0.001412542,
+          0.001402167,
+          0.001387458,
+          0.001257916,
+          0.001227833,
+          0.001259333,
+          0.001402041,
+          0.001407792,
+          0.001401875,
+          0.0014385,
+          0.001351958,
+          0.001404375,
+          0.001387291,
+          0.001223666
+        ]
+      },
+      "turboEdgeCheck": 4025,
+      "turboFNV1a64": "9ebc46099807ca68",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 44.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 17.1,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.1,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 77.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 16.5,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 157.5,
+          "process": "ng build (consumer)"
+        },
+        {
+          "pid": 31517,
+          "cpuPercent": 10.7,
+          "process": "/private/var/folders/cg/kgw5y70x6b57ghbvqqjrsc3w0000gp/T/raster-angular-matrix-xzYoib/angular-21.2.26/node_modules/@esbuild/darwin-arm64/bin/esbuild"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1.1667e-05,
+        "medianSeconds": 9.604e-06,
+        "minimumSeconds": 7.917e-06,
+        "p95Seconds": 1.0959e-05,
+        "samplesSeconds": [
+          1.0042e-05,
+          1.0959e-05,
+          8.625e-06,
+          1.1667e-05,
+          9.833e-06,
+          1.0291e-05,
+          1.0417e-05,
+          8.708e-06,
+          9.5e-06,
+          9.958e-06,
+          8.167e-06,
+          9.875e-06,
+          9.708e-06,
+          9.708e-06,
+          8.208e-06,
+          8.459e-06,
+          8e-06,
+          8.416e-06,
+          7.917e-06,
+          8.334e-06
+        ]
+      },
+      "swiftEdgeCheck": 9550,
+      "swiftFNV1a64": "18f4dd86a15f7fd3",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.2417e-05,
+        "medianSeconds": 1.0562e-05,
+        "minimumSeconds": 1.0083e-05,
+        "p95Seconds": 1.225e-05,
+        "samplesSeconds": [
+          1.2417e-05,
+          1.0541e-05,
+          1.1167e-05,
+          1.0417e-05,
+          1.225e-05,
+          1.05e-05,
+          1.0917e-05,
+          1.0209e-05,
+          1.1667e-05,
+          1.1417e-05,
+          1.0791e-05,
+          1.0375e-05,
+          1.0583e-05,
+          1.0291e-05,
+          1.0708e-05,
+          1.0208e-05,
+          1.0417e-05,
+          1.0333e-05,
+          1.0583e-05,
+          1.0083e-05
+        ]
+      },
+      "turboEdgeCheck": 9550,
+      "turboFNV1a64": "18f4dd86a15f7fd3",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 40.6,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 85.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 20.2,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 107.0,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 1.2542e-05,
+        "medianSeconds": 1.0125e-05,
+        "minimumSeconds": 8.75e-06,
+        "p95Seconds": 1.1667e-05,
+        "samplesSeconds": [
+          1.0709e-05,
+          1.2542e-05,
+          1.0542e-05,
+          1.15e-05,
+          1.0791e-05,
+          1.0125e-05,
+          1.15e-05,
+          9.75e-06,
+          1.0125e-05,
+          9.708e-06,
+          8.917e-06,
+          1.1667e-05,
+          1.0209e-05,
+          1.1e-05,
+          9.416e-06,
+          9.125e-06,
+          8.917e-06,
+          9.166e-06,
+          8.75e-06,
+          8.917e-06
+        ]
+      },
+      "swiftEdgeCheck": 6375,
+      "swiftFNV1a64": "e15a7c618877daf2",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.2916e-05,
+        "medianSeconds": 1.1333e-05,
+        "minimumSeconds": 1.1083e-05,
+        "p95Seconds": 1.2708e-05,
+        "samplesSeconds": [
+          1.2084e-05,
+          1.125e-05,
+          1.2916e-05,
+          1.1208e-05,
+          1.2708e-05,
+          1.1333e-05,
+          1.1583e-05,
+          1.1167e-05,
+          1.1416e-05,
+          1.1208e-05,
+          1.1541e-05,
+          1.1083e-05,
+          1.1791e-05,
+          1.125e-05,
+          1.1542e-05,
+          1.1084e-05,
+          1.1333e-05,
+          1.1166e-05,
+          1.1459e-05,
+          1.1084e-05
+        ]
+      },
+      "turboEdgeCheck": 6375,
+      "turboFNV1a64": "e15a7c618877daf2",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 40.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 86.1,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 17.9,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 105.9,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 3.4e-05,
+        "medianSeconds": 1.10835e-05,
+        "minimumSeconds": 8.917e-06,
+        "p95Seconds": 1.875e-05,
+        "samplesSeconds": [
+          1.2333e-05,
+          1.2291e-05,
+          9.792e-06,
+          1.2708e-05,
+          1.125e-05,
+          1.025e-05,
+          1.3834e-05,
+          1.0084e-05,
+          9.334e-06,
+          3.4e-05,
+          1.2667e-05,
+          1.875e-05,
+          1.2709e-05,
+          1.2292e-05,
+          9.458e-06,
+          1.0166e-05,
+          1.0917e-05,
+          9.917e-06,
+          8.917e-06,
+          9.417e-06
+        ]
+      },
+      "swiftEdgeCheck": 6150,
+      "swiftFNV1a64": "7ac3ae949bcf11c2",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 5.6417e-05,
+        "medianSeconds": 1.1645499999999999e-05,
+        "minimumSeconds": 1.075e-05,
+        "p95Seconds": 2.8875e-05,
+        "samplesSeconds": [
+          1.2333e-05,
+          1.125e-05,
+          1.1792e-05,
+          1.1167e-05,
+          1.3e-05,
+          1.2416e-05,
+          1.1959e-05,
+          1.1333e-05,
+          1.1541e-05,
+          2.8875e-05,
+          5.6417e-05,
+          1.225e-05,
+          1.25e-05,
+          1.1167e-05,
+          1.175e-05,
+          1.0917e-05,
+          1.1458e-05,
+          1.0833e-05,
+          1.1041e-05,
+          1.075e-05
+        ]
+      },
+      "turboEdgeCheck": 6150,
+      "turboFNV1a64": "7ac3ae949bcf11c2",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 40.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 86.1,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 17.9,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 105.9,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 722,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 2.6917e-05,
+        "medianSeconds": 1.0521e-05,
+        "minimumSeconds": 8.5e-06,
+        "p95Seconds": 2.0458e-05,
+        "samplesSeconds": [
+          1.0334e-05,
+          1.1625e-05,
+          1.05e-05,
+          1.2333e-05,
+          1.0375e-05,
+          2.0458e-05,
+          2.6917e-05,
+          1.3167e-05,
+          9.792e-06,
+          1.1e-05,
+          9.125e-06,
+          1.1083e-05,
+          1.0791e-05,
+          1.1125e-05,
+          8.917e-06,
+          9.375e-06,
+          8.708e-06,
+          9.084e-06,
+          8.5e-06,
+          1.0542e-05
+        ]
+      },
+      "swiftEdgeCheck": 75,
+      "swiftFNV1a64": "2828f4ebfc86ff36",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 1.6083e-05,
+        "medianSeconds": 1.1333499999999999e-05,
+        "minimumSeconds": 1.0584e-05,
+        "p95Seconds": 1.4375e-05,
+        "samplesSeconds": [
+          1.2833e-05,
+          1.1e-05,
+          1.1417e-05,
+          1.0834e-05,
+          1.2667e-05,
+          1.2084e-05,
+          1.6083e-05,
+          1.2125e-05,
+          1.4375e-05,
+          1.1292e-05,
+          1.1416e-05,
+          1.0791e-05,
+          1.1375e-05,
+          1.0584e-05,
+          1.1416e-05,
+          1.0917e-05,
+          1.1041e-05,
+          1.075e-05,
+          1.0875e-05,
+          1.0792e-05
+        ]
+      },
+      "turboEdgeCheck": 75,
+      "turboFNV1a64": "2828f4ebfc86ff36",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 40.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.3,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 82.1,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.1,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 17.9,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 105.9,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 16,
+      "outputBytes": 8388608,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.013599042,
+        "medianSeconds": 0.012810041500000001,
+        "minimumSeconds": 0.012016125,
+        "p95Seconds": 0.013514,
+        "samplesSeconds": [
+          0.012016125,
+          0.012431083,
+          0.012386167,
+          0.012983792,
+          0.01311075,
+          0.012225125,
+          0.012997917,
+          0.013411,
+          0.012810958,
+          0.013599042,
+          0.013504291,
+          0.012809125,
+          0.013514,
+          0.013249,
+          0.01253725,
+          0.013380041,
+          0.012772625,
+          0.012661083,
+          0.012443209,
+          0.012364458
+        ]
+      },
+      "swiftEdgeCheck": 3200,
+      "swiftFNV1a64": "cdfcedd59a62fa82",
+      "thermalState": 0,
+      "tolerance": 0,
+      "turbo": {
+        "maximumSeconds": 0.019763542,
+        "medianSeconds": 0.018998333,
+        "minimumSeconds": 0.01818125,
+        "p95Seconds": 0.019414,
+        "samplesSeconds": [
+          0.019253792,
+          0.018966083,
+          0.018536333,
+          0.0193005,
+          0.01906675,
+          0.019005208,
+          0.018352417,
+          0.019414,
+          0.019763542,
+          0.019302458,
+          0.019214042,
+          0.018423042,
+          0.018991458,
+          0.018856083,
+          0.019376625,
+          0.019239041,
+          0.018613916,
+          0.018457542,
+          0.01818125,
+          0.018215584
+        ]
+      },
+      "turboEdgeCheck": 3200,
+      "turboFNV1a64": "cdfcedd59a62fa82",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 37.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.1,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 87.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.4,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 27.4,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 99.1,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.002078292,
+        "medianSeconds": 0.0017561669999999999,
+        "minimumSeconds": 0.001648542,
+        "p95Seconds": 0.0019985,
+        "samplesSeconds": [
+          0.001939,
+          0.001765833,
+          0.001661042,
+          0.001763041,
+          0.001669417,
+          0.001659542,
+          0.001648542,
+          0.002078292,
+          0.001933541,
+          0.001732459,
+          0.001761792,
+          0.001723167,
+          0.00171275,
+          0.001765208,
+          0.0019985,
+          0.001750542,
+          0.001660666,
+          0.001977958,
+          0.001797916,
+          0.001683083
+        ]
+      },
+      "swiftEdgeCheck": 375,
+      "swiftFNV1a64": "dc9df26e34022755",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.001317084,
+        "medianSeconds": 0.001159583,
+        "minimumSeconds": 0.00110425,
+        "p95Seconds": 0.001301292,
+        "samplesSeconds": [
+          0.001317084,
+          0.001187375,
+          0.001170584,
+          0.001155625,
+          0.001111584,
+          0.00110425,
+          0.001141333,
+          0.00119875,
+          0.001301292,
+          0.00125675,
+          0.00126475,
+          0.001163083,
+          0.001138334,
+          0.001118125,
+          0.001249667,
+          0.001156083,
+          0.0011265,
+          0.001227166,
+          0.001149917,
+          0.001142625
+        ]
+      },
+      "turboEdgeCheck": 375,
+      "turboFNV1a64": "6be90299fd505fbd",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 37.0,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 90.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 19.0,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 99.9,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 8388608,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.026592792,
+        "medianSeconds": 0.025420146,
+        "minimumSeconds": 0.024746333,
+        "p95Seconds": 0.026526792,
+        "samplesSeconds": [
+          0.025628375,
+          0.026526792,
+          0.026592792,
+          0.025370584,
+          0.025171541,
+          0.025855333,
+          0.025935042,
+          0.024924125,
+          0.024787542,
+          0.02521,
+          0.026043625,
+          0.025087167,
+          0.024928916,
+          0.02503175,
+          0.024988458,
+          0.02592425,
+          0.025740542,
+          0.025544875,
+          0.025469708,
+          0.024746333
+        ]
+      },
+      "swiftEdgeCheck": 0,
+      "swiftFNV1a64": "8560bf7e03f3a612",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.019270917,
+        "medianSeconds": 0.018803271,
+        "minimumSeconds": 0.018410875,
+        "p95Seconds": 0.019217042,
+        "samplesSeconds": [
+          0.019270917,
+          0.0184595,
+          0.019119833,
+          0.018980834,
+          0.018852792,
+          0.019138042,
+          0.019171292,
+          0.018512542,
+          0.018453542,
+          0.018623459,
+          0.018410875,
+          0.018490208,
+          0.01862125,
+          0.018436917,
+          0.019043167,
+          0.018570125,
+          0.019217042,
+          0.019007209,
+          0.019088958,
+          0.01875375
+        ]
+      },
+      "turboEdgeCheck": 0,
+      "turboFNV1a64": "aad133d2222ca6db",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 345,
+          "cpuPercent": 32.1,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd"
+        },
+        {
+          "pid": 384,
+          "cpuPercent": 14.2,
+          "process": "/System/Library/CoreServices/launchservicesd"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 50.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 414,
+          "cpuPercent": 10.1,
+          "process": "/System/Library/PrivateFrameworks/TCC.framework/Support/tccd"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 24.5,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 39.6,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 169.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 38.7,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 17.5,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 61.0,
+          "process": "npm install"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 8388608,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.029685959,
+        "medianSeconds": 0.028067313,
+        "minimumSeconds": 0.027211292,
+        "p95Seconds": 0.029497708,
+        "samplesSeconds": [
+          0.028261084,
+          0.0272315,
+          0.027211292,
+          0.027402709,
+          0.027971041,
+          0.029685959,
+          0.029497708,
+          0.02748225,
+          0.027744709,
+          0.028516167,
+          0.028767083,
+          0.027506959,
+          0.028057417,
+          0.028077209,
+          0.028273209,
+          0.027948167,
+          0.028959917,
+          0.028235792,
+          0.027986,
+          0.029090292
+        ]
+      },
+      "swiftEdgeCheck": 0,
+      "swiftFNV1a64": "8560bf7e03f3a612",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.02072925,
+        "medianSeconds": 0.0188942505,
+        "minimumSeconds": 0.01818175,
+        "p95Seconds": 0.019612792,
+        "samplesSeconds": [
+          0.019054875,
+          0.018339208,
+          0.018469708,
+          0.018253959,
+          0.019607167,
+          0.019049875,
+          0.02072925,
+          0.018503875,
+          0.018226084,
+          0.019305083,
+          0.01818175,
+          0.019074333,
+          0.018716125,
+          0.018797417,
+          0.019260541,
+          0.018991084,
+          0.019403125,
+          0.018694375,
+          0.019612792,
+          0.018250875
+        ]
+      },
+      "turboEdgeCheck": 0,
+      "turboFNV1a64": "aad133d2222ca6db",
+      "workerCeiling": 1,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 46.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 15.6,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 10.1,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 14.1,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 82.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 23.3,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 16.7,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 119.9,
+          "process": "npm install"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 8,
+      "outputBytes": 262144,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 8,
+      "swift": {
+        "maximumSeconds": 0.000617,
+        "medianSeconds": 0.0005072505000000001,
+        "minimumSeconds": 0.000494167,
+        "p95Seconds": 0.00056175,
+        "samplesSeconds": [
+          0.000511792,
+          0.000505709,
+          0.000502542,
+          0.000515709,
+          0.00049975,
+          0.000502583,
+          0.000494167,
+          0.000500375,
+          0.00050425,
+          0.000617,
+          0.000525792,
+          0.000555625,
+          0.000543625,
+          0.00056175,
+          0.000522584,
+          0.000511542,
+          0.000501791,
+          0.000508792,
+          0.000495792,
+          0.000495833
+        ]
+      },
+      "swiftEdgeCheck": 6450,
+      "swiftFNV1a64": "a7853dc248f62325",
+      "thermalState": 0,
+      "tolerance": 2,
+      "turbo": {
+        "maximumSeconds": 9.7041e-05,
+        "medianSeconds": 8.0229e-05,
+        "minimumSeconds": 7.6208e-05,
+        "p95Seconds": 9.0125e-05,
+        "samplesSeconds": [
+          8.2833e-05,
+          7.8375e-05,
+          8.025e-05,
+          8.025e-05,
+          7.825e-05,
+          7.6708e-05,
+          7.6208e-05,
+          8.0208e-05,
+          9.7041e-05,
+          9.0125e-05,
+          8.1e-05,
+          7.7792e-05,
+          8.65e-05,
+          7.9333e-05,
+          8.9834e-05,
+          8.275e-05,
+          7.9875e-05,
+          7.8333e-05,
+          8.1875e-05,
+          7.7542e-05
+        ]
+      },
+      "turboEdgeCheck": 6450,
+      "turboFNV1a64": "a7853dc248f62325",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 45.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3679,
+          "cpuPercent": 10.3,
+          "process": "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 10.9,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 27.4,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.1,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 95.7,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.4,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 23.3,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 16.7,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 119.9,
+          "process": "npm install"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "maximumSampleDifference": 0,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.000579416,
+        "medianSeconds": 0.0005045625,
+        "minimumSeconds": 0.000491542,
+        "p95Seconds": 0.000557083,
+        "samplesSeconds": [
+          0.000505875,
+          0.000507292,
+          0.000500208,
+          0.000504459,
+          0.000499167,
+          0.000508792,
+          0.000515209,
+          0.000507084,
+          0.000503667,
+          0.000502459,
+          0.00050075,
+          0.000579416,
+          0.000557083,
+          0.000526667,
+          0.000499,
+          0.000540417,
+          0.000504666,
+          0.000496792,
+          0.000491542,
+          0.000494916
+        ]
+      },
+      "swiftEdgeCheck": 225,
+      "swiftFNV1a64": "b17a2ce3c722325",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.000177083,
+        "medianSeconds": 0.000157479,
+        "minimumSeconds": 0.000149167,
+        "p95Seconds": 0.000176417,
+        "samplesSeconds": [
+          0.000159875,
+          0.000157167,
+          0.000160791,
+          0.000155875,
+          0.000155041,
+          0.00015625,
+          0.000157292,
+          0.000156041,
+          0.000160791,
+          0.000158333,
+          0.000159625,
+          0.000154084,
+          0.000166417,
+          0.000177083,
+          0.000176417,
+          0.000170541,
+          0.000157666,
+          0.000149167,
+          0.00014925,
+          0.000154
+        ]
+      },
+      "turboEdgeCheck": 225,
+      "turboFNV1a64": "b17a2ce3c722325",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 45.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3679,
+          "cpuPercent": 10.3,
+          "process": "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 10.9,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 27.4,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.1,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 95.7,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.4,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 38.8,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 16.4,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 144.3,
+          "process": "npm install"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 8,
+      "outputBytes": 262144,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 8,
+      "swift": {
+        "maximumSeconds": 0.0017535,
+        "medianSeconds": 0.0015704585,
+        "minimumSeconds": 0.001538625,
+        "p95Seconds": 0.001673625,
+        "samplesSeconds": [
+          0.001587417,
+          0.0017535,
+          0.001673625,
+          0.001578167,
+          0.001559667,
+          0.0016205,
+          0.001596709,
+          0.001556125,
+          0.001572167,
+          0.001576917,
+          0.001549958,
+          0.001564167,
+          0.001547708,
+          0.00156875,
+          0.001538625,
+          0.001566458,
+          0.001550417,
+          0.001594375,
+          0.001546458,
+          0.001624084
+        ]
+      },
+      "swiftEdgeCheck": 5425,
+      "swiftFNV1a64": "64bf8b35d4cc8934",
+      "thermalState": 0,
+      "tolerance": 2,
+      "turbo": {
+        "maximumSeconds": 0.001101917,
+        "medianSeconds": 0.0010015205,
+        "minimumSeconds": 0.000972375,
+        "p95Seconds": 0.001038917,
+        "samplesSeconds": [
+          0.001014292,
+          0.001101917,
+          0.001014042,
+          0.000985416,
+          0.001038917,
+          0.000991917,
+          0.00099525,
+          0.00098025,
+          0.001025375,
+          0.00101075,
+          0.000977542,
+          0.000972375,
+          0.0009875,
+          0.000975708,
+          0.001003083,
+          0.000980458,
+          0.001032541,
+          0.001021333,
+          0.001025583,
+          0.000999958
+        ]
+      },
+      "turboEdgeCheck": 5425,
+      "turboFNV1a64": "d63fe4b32cfa9cd9",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 53.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 635,
+          "cpuPercent": 10.3,
+          "process": "/System/Library/CoreServices/WindowManager.app/Contents/MacOS/WindowManager"
+        },
+        {
+          "pid": 728,
+          "cpuPercent": 41.2,
+          "process": "/System/Applications/Siri AI.app/Contents/MacOS/Siri AI"
+        },
+        {
+          "pid": 4851,
+          "cpuPercent": 11.1,
+          "process": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 53.7,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 108.0,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 25.5,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 17.2,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 126.2,
+          "process": "npm install"
+        }
+      ]
+    },
+    {
+      "components": 1,
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "maximumSampleDifference": 1,
+      "meaningfulBits": 12,
+      "outputBytes": 524288,
+      "round": 2,
+      "status": "passed",
+      "storageBits": 16,
+      "swift": {
+        "maximumSeconds": 0.00211825,
+        "medianSeconds": 0.0019762290000000004,
+        "minimumSeconds": 0.001920417,
+        "p95Seconds": 0.002105375,
+        "samplesSeconds": [
+          0.0020765,
+          0.002035125,
+          0.002015667,
+          0.001964541,
+          0.001932042,
+          0.002105375,
+          0.001961042,
+          0.001929292,
+          0.001976208,
+          0.002070792,
+          0.00211825,
+          0.001991292,
+          0.001961083,
+          0.001920417,
+          0.001937541,
+          0.002027667,
+          0.001966042,
+          0.002099125,
+          0.00197625,
+          0.001973666
+        ]
+      },
+      "swiftEdgeCheck": 4025,
+      "swiftFNV1a64": "78caba2ca8b19c96",
+      "thermalState": 0,
+      "tolerance": 4,
+      "turbo": {
+        "maximumSeconds": 0.001310625,
+        "medianSeconds": 0.001247584,
+        "minimumSeconds": 0.001209334,
+        "p95Seconds": 0.001308875,
+        "samplesSeconds": [
+          0.001288959,
+          0.001244834,
+          0.001257916,
+          0.001238667,
+          0.001229625,
+          0.00121125,
+          0.001271167,
+          0.001245959,
+          0.001308875,
+          0.001253,
+          0.001255083,
+          0.001227958,
+          0.001249209,
+          0.00122575,
+          0.001295458,
+          0.001310625,
+          0.001263125,
+          0.001235458,
+          0.001229417,
+          0.001209334
+        ]
+      },
+      "turboEdgeCheck": 4025,
+      "turboFNV1a64": "9ebc46099807ca68",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 58.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 635,
+          "cpuPercent": 15.0,
+          "process": "/System/Library/CoreServices/WindowManager.app/Contents/MacOS/WindowManager"
+        },
+        {
+          "pid": 728,
+          "cpuPercent": 34.2,
+          "process": "/System/Applications/Siri AI.app/Contents/MacOS/Siri AI"
+        },
+        {
+          "pid": 4851,
+          "cpuPercent": 11.6,
+          "process": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 50.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 100.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.9,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 17.1,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 20.4,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 129.2,
+          "process": "npm install"
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "components": 3,
+      "fixture": "rgb8-512.jpg",
+      "inputBytes": 219499,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 786432,
+      "round": 1,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "6e02969d3c7a5276",
+      "tolerance": 2,
+      "turboFNV1a64": "414b4e957a519207",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 44.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 10.9,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.3,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 77.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.3,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 23.3,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 134.7,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "rgb8-2048.jpg",
+      "inputBytes": 3505089,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 12582912,
+      "round": 1,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "1f961eceef273bd9",
+      "tolerance": 2,
+      "turboFNV1a64": "e234e4ee08da39bf",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 41.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.3,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 82.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 26.5,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 122.8,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "progressiveRGB8-512.jpg",
+      "inputBytes": 219582,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 786432,
+      "round": 1,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "6e02969d3c7a5276",
+      "tolerance": 2,
+      "turboFNV1a64": "414b4e957a519207",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 39.6,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 85.3,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.9,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 26.5,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 122.8,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "inputBytes": 3504942,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 12582912,
+      "round": 1,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "1f961eceef273bd9",
+      "tolerance": 2,
+      "turboFNV1a64": "e234e4ee08da39bf",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 40.6,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 85.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 20.2,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31507,
+          "cpuPercent": 107.0,
+          "process": "ng build (consumer)"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "rgb8-512.jpg",
+      "inputBytes": 219499,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 786432,
+      "round": 2,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "6e02969d3c7a5276",
+      "tolerance": 2,
+      "turboFNV1a64": "414b4e957a519207",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 62.8,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 635,
+          "cpuPercent": 18.2,
+          "process": "/System/Library/CoreServices/WindowManager.app/Contents/MacOS/WindowManager"
+        },
+        {
+          "pid": 690,
+          "cpuPercent": 15.2,
+          "process": "/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder"
+        },
+        {
+          "pid": 728,
+          "cpuPercent": 21.0,
+          "process": "/System/Applications/Siri AI.app/Contents/MacOS/Siri AI"
+        },
+        {
+          "pid": 3972,
+          "cpuPercent": 12.0,
+          "process": "/Users/pushparaj/.codex/computer-use/Codex Computer Use.app/Contents/MacOS/SkyComputerUseService"
+        },
+        {
+          "pid": 4851,
+          "cpuPercent": 11.5,
+          "process": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 33.1,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.3,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 95.7,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.9,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30137,
+          "cpuPercent": 11.3,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 18.3,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 91.7,
+          "process": "npm install"
+        },
+        {
+          "pid": 31587,
+          "cpuPercent": 14.8,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "rgb8-2048.jpg",
+      "inputBytes": 3505089,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 12582912,
+      "round": 2,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "1f961eceef273bd9",
+      "tolerance": 2,
+      "turboFNV1a64": "e234e4ee08da39bf",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 60.6,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 635,
+          "cpuPercent": 18.0,
+          "process": "/System/Library/CoreServices/WindowManager.app/Contents/MacOS/WindowManager"
+        },
+        {
+          "pid": 690,
+          "cpuPercent": 16.6,
+          "process": "/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder"
+        },
+        {
+          "pid": 728,
+          "cpuPercent": 13.1,
+          "process": "/System/Applications/Siri AI.app/Contents/MacOS/Siri AI"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 21.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.9,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 90.0,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.4,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 17.5,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 57.0,
+          "process": "npm install"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "progressiveRGB8-512.jpg",
+      "inputBytes": 219582,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 786432,
+      "round": 2,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "6e02969d3c7a5276",
+      "tolerance": 2,
+      "turboFNV1a64": "414b4e957a519207",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 60.6,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 635,
+          "cpuPercent": 18.0,
+          "process": "/System/Library/CoreServices/WindowManager.app/Contents/MacOS/WindowManager"
+        },
+        {
+          "pid": 690,
+          "cpuPercent": 16.6,
+          "process": "/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder"
+        },
+        {
+          "pid": 728,
+          "cpuPercent": 13.1,
+          "process": "/System/Applications/Siri AI.app/Contents/MacOS/Siri AI"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 21.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.9,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 90.0,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.4,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 17.5,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 57.0,
+          "process": "npm install"
+        }
+      ]
+    },
+    {
+      "components": 3,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "inputBytes": 3504942,
+      "maximumSampleDifference": 3,
+      "meaningfulBits": 8,
+      "outputBytes": 12582912,
+      "round": 2,
+      "status": "quality-excluded",
+      "storageBits": 8,
+      "swiftFNV1a64": "1f961eceef273bd9",
+      "tolerance": 2,
+      "turboFNV1a64": "e234e4ee08da39bf",
+      "workerCeiling": 8,
+      "hostLoadAfter": [
+        {
+          "pid": 413,
+          "cpuPercent": 56.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 635,
+          "cpuPercent": 12.7,
+          "process": "/System/Library/CoreServices/WindowManager.app/Contents/MacOS/WindowManager"
+        },
+        {
+          "pid": 690,
+          "cpuPercent": 19.6,
+          "process": "/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder"
+        },
+        {
+          "pid": 870,
+          "cpuPercent": 13.9,
+          "process": "/usr/libexec/spotlightknowledged.updater"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 20.7,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 88.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 30505,
+          "cpuPercent": 14.8,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 31574,
+          "cpuPercent": 49.2,
+          "process": "npm install"
+        },
+        {
+          "pid": 31595,
+          "cpuPercent": 18.9,
+          "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared"
+        }
+      ]
+    }
+  ],
+  "memory": [
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9240576
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9682944
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9175040
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9797632
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9224192
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9682944
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9125888
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9748480
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 22364160
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 1,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 22855680
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "dc9df26e34022755",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 10960896
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "6be90299fd505fbd",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9895936
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 59129856
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 20791296
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 1,
+      "maximumRSSBytes": 21889024
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 1,
+      "maximumRSSBytes": 20742144
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 1,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 10502144
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 1,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9289728
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 10698752
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9650176
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "64bf8b35d4cc8934",
+      "round": 1,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 10715136
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "d63fe4b32cfa9cd9",
+      "round": 1,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 9502720
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "78caba2ca8b19c96",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 11157504
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "9ebc46099807ca68",
+      "round": 1,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 1,
+      "maximumRSSBytes": 10027008
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9781248
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9240576
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9715712
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9240576
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9715712
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9224192
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9748480
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9191424
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 22822912
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 2,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 22331392
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "6be90299fd505fbd",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9830400
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "dc9df26e34022755",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 10944512
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 20791296
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 59097088
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 2,
+      "maximumRSSBytes": 20807680
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 2,
+      "maximumRSSBytes": 21889024
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 2,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9256960
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 2,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 10469376
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9682944
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 10731520
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "d63fe4b32cfa9cd9",
+      "round": 2,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9502720
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "64bf8b35d4cc8934",
+      "round": 2,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 10715136
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "9ebc46099807ca68",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 9977856
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "78caba2ca8b19c96",
+      "round": 2,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 2,
+      "maximumRSSBytes": 11141120
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9175040
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-19.jpg",
+      "inputBytes": 114,
+      "outputBytes": 722,
+      "outputFNV1a64": "18f4dd86a15f7fd3",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9748480
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9175040
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "ramp-19.jpg",
+      "inputBytes": 609,
+      "outputBytes": 722,
+      "outputFNV1a64": "e15a7c618877daf2",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9715712
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9191424
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-19.jpg",
+      "inputBytes": 797,
+      "outputBytes": 722,
+      "outputFNV1a64": "7ac3ae949bcf11c2",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9715712
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9191424
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-19.jpg",
+      "inputBytes": 360,
+      "outputBytes": 722,
+      "outputFNV1a64": "2828f4ebfc86ff36",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9715712
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 22396928
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "mixed-2048.jpg",
+      "inputBytes": 4647675,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "cdfcedd59a62fa82",
+      "round": 3,
+      "tolerance": 0,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 22888448
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "dc9df26e34022755",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 10993664
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-512.jpg",
+      "inputBytes": 200993,
+      "outputBytes": 524288,
+      "outputFNV1a64": "6be90299fd505fbd",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9863168
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 59162624
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 20791296
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "8560bf7e03f3a612",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 3,
+      "maximumRSSBytes": 21889024
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "dct12-2048.jpg",
+      "inputBytes": 3204388,
+      "outputBytes": 8388608,
+      "outputFNV1a64": "aad133d2222ca6db",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 1,
+      "trial": 3,
+      "maximumRSSBytes": 20824064
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 3,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 10502144
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-8-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 262144,
+      "outputFNV1a64": "a7853dc248f62325",
+      "round": 3,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9289728
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 10731520
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "flat-12-512.jpg",
+      "inputBytes": 1180,
+      "outputBytes": 524288,
+      "outputFNV1a64": "b17a2ce3c722325",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9650176
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "64bf8b35d4cc8934",
+      "round": 3,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 10764288
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-8-512.jpg",
+      "inputBytes": 188859,
+      "outputBytes": 262144,
+      "outputFNV1a64": "d63fe4b32cfa9cd9",
+      "round": 3,
+      "tolerance": 2,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 9502720
+    },
+    {
+      "engine": "SwiftJLI",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "78caba2ca8b19c96",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 11141120
+    },
+    {
+      "engine": "libjpeg-turbo",
+      "fixture": "noise-12-512.jpg",
+      "inputBytes": 317486,
+      "outputBytes": 524288,
+      "outputFNV1a64": "9ebc46099807ca68",
+      "round": 3,
+      "tolerance": 4,
+      "workerCeiling": 8,
+      "trial": 3,
+      "maximumRSSBytes": 10010624
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "errors",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:21.463606+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:21.802252+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:21.802325+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:21.811443+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:21.854702+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:21.864647+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:21.910632+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:21.919466+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:21.961212+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:21.971074+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:22.012566+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:22.860608+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:22.900998+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:22.989831+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:23.031701+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:24.882512+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:24.926513+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:26.199046+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:26.240236+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:26.265016+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:26.306039+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:26.334639+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:26.376107+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:26.457426+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:26.499295+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:26.602058+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:26.642513+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:26.658462+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:26.700530+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:26.814187+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:26.856409+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:26.874985+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:26.916418+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:27.048888+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:27.089648+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:27.099045+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:27.139020+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:27.147999+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:27.189143+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:27.198538+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:27.237474+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:27.247009+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:27.289384+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:28.147512+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:28.190239+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:28.280551+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:28.322105+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:29.511898+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:29.552201+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:30.809247+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:30.851114+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:30.877331+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:30.918755+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:30.947558+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:30.988887+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.066693+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.108052+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.203795+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.245873+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.261704+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.304125+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.414954+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.455376+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.473555+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "timing",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.513928+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.644323+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.684501+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.696832+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.697572+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.708095+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.708846+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.719111+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.719933+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.731079+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.731914+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.743227+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.744135+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.754714+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.755561+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.766469+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.767291+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.777899+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.778757+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.812090+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.812884+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.851512+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.852311+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.864914+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.865690+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.878250+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.879037+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.926612+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.927435+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:31.966055+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:31.966803+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.015472+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.016250+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.055359+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.056285+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.068837+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.069879+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.081064+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.081834+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.093577+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.094475+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.105491+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.106379+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.119579+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.120390+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.132746+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.133564+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.148168+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "1"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.149063+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.162509+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.163427+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.173733+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.174576+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.185071+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.185836+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.196819+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.197649+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.209266+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.210125+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.220759+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.221658+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.232961+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.233866+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.244637+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.245500+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.256285+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.257262+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.298100+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.298963+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.332556+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.333543+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.346151+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.347008+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.360752+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.361593+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.401648+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.402676+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.451836+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.452686+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.492668+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.493638+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.543132+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.544126+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.554151+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.555034+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.566538+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.567347+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.578637+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.579531+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.591708+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.592647+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.604776+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.605738+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.619540+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.620508+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.634343+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "2"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.635193+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.649319+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.650149+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.661141+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.661930+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.671952+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.672817+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.682370+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.683255+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.693795+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.694735+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.705307+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.706241+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.716233+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.717054+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.726957+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.727808+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.737795+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.738688+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.772910+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8",
+        "0",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.773876+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.814390+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.815325+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.830120+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.830983+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.843786+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.844693+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.893910+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.894798+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.934749+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.935678+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:32.984068+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:32.984940+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:33.024323+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:33.025231+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:33.037915+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-8-512.jpg",
+        "8",
+        "2",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:33.038959+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:33.050905+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:33.051894+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:33.066110+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/flat-12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:33.066991+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:33.078925+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:33.079823+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:33.093149+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-8-512.jpg",
+        "8",
+        "2",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:33.094039+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:33.106734+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-swift",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:33.107575+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:33.123298+00:00"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round5-owned-output-comparator/compare",
+        "memory-turbo",
+        "/private/tmp/swiftjli-round2-dct-coverage/noise-12-512.jpg",
+        "8",
+        "4",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T12:57:33.124154+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T12:57:33.137260+00:00"
+    }
+  ],
+  "hostLoadBefore": [
+    {
+      "pid": 345,
+      "cpuPercent": 162.7,
+      "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd"
+    },
+    {
+      "pid": 370,
+      "cpuPercent": 25.1,
+      "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds"
+    },
+    {
+      "pid": 413,
+      "cpuPercent": 48.8,
+      "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+    },
+    {
+      "pid": 7835,
+      "cpuPercent": 20.9,
+      "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+    },
+    {
+      "pid": 20318,
+      "cpuPercent": 25.0,
+      "process": "/Users/pushparaj/.local/bin/limactl"
+    },
+    {
+      "pid": 20329,
+      "cpuPercent": 110.2,
+      "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+    },
+    {
+      "pid": 20350,
+      "cpuPercent": 14.2,
+      "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+    },
+    {
+      "pid": 30505,
+      "cpuPercent": 12.1,
+      "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+    },
+    {
+      "pid": 31495,
+      "cpuPercent": 426.7,
+      "process": "npm install"
+    }
+  ],
+  "powerBefore": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t100%; charged; 0:00 remaining present: true\n",
+  "containedErrorCheck": {
+    "containedCErrors": 4,
+    "fixture": "flat-19.jpg",
+    "inputBytes": 114,
+    "round": 1,
+    "tolerance": 0,
+    "workerCeiling": 8
+  },
+  "finishedUTC": "2026-11-03T12:57:33.138796+00:00",
+  "hostLoadAfter": [
+    {
+      "pid": 345,
+      "cpuPercent": 108.7,
+      "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd"
+    },
+    {
+      "pid": 370,
+      "cpuPercent": 17.0,
+      "process": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds"
+    },
+    {
+      "pid": 413,
+      "cpuPercent": 42.6,
+      "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+    },
+    {
+      "pid": 20318,
+      "cpuPercent": 23.9,
+      "process": "/Users/pushparaj/.local/bin/limactl"
+    },
+    {
+      "pid": 20329,
+      "cpuPercent": 150.0,
+      "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+    },
+    {
+      "pid": 20350,
+      "cpuPercent": 13.9,
+      "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+    },
+    {
+      "pid": 30505,
+      "cpuPercent": 11.4,
+      "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+    },
+    {
+      "pid": 31499,
+      "cpuPercent": 12.4,
+      "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+    },
+    {
+      "pid": 31574,
+      "cpuPercent": 339.6,
+      "process": "npm install"
+    }
+  ],
+  "powerAfter": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t100%; charged; 0:00 remaining present: true\n"
+}

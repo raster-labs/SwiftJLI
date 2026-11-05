@@ -1,0 +1,43 @@
+{
+  "status": "DCT gate failed; isolated inline recovery prepared",
+  "sourceRevision": "1db53e8cf6ab4fbf99ad6efbd321d3fa45eba384",
+  "parentTrialRevision": "3a5ef320c04fff03561a69b705355c0e9da2fc31",
+  "baselineBuildRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "baselineProductionEquivalentRevision": "14f35018d241666358480da2a8527d29ab047627",
+  "sourceWorktree": "/private/tmp/swiftjli-round5-c-dct-block",
+  "createdUTC": "2026-11-03T16:06:23.551498+00:00",
+  "sourceHashes": {
+    "Package.swift": "7b4a5251c6a2e61cfac447a32601a83b2f0484e4917e58de291a0486d65c3613",
+    "Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift": "c10be08e322d84058079caf07a76a392957651abf28326dc5bdda814a1c0082b",
+    "Sources/SwiftJLI/Native/Entropy/CACDecoder.swift": "ca8fb1542701fd7ba1af4d6e1e28bd72c56f74ccd498bc695a67dac70f044004",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": "e5e0080d647ba1cafac7076b0f160476cf01aa87a5a8f1057038f603ee01735e",
+    "Sources/SwiftJLIEntropyC/ACBlock.c": "64420dd4cab1cb70c213e68aafc00384a22892bef3b64ef66c480e221468beb7",
+    "Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h": "3e15a1a5df42c431e4533dfff529d7a5d957edc4b16d10d9ec6e90ad69a9e98a",
+    "Tests/SwiftJLITests/Native/CACDecoderTests.swift": "711ea1951f5e76a341ddf1ca551a055490d015118a4dbb9e3974f9cbf953a9ff",
+    "Tests/SwiftJLITests/Native/CACPublicPipelineTests.swift": "0cc1ac1e6c4c41d5f618346fe979c291395236d97e5994a5dc265d870959e786",
+    "Tests/SwiftJLITests/Native/CDCTDecoderTests.swift": "8bf3ba46e8655d1cb3fe5641a3c86ea08a980edfaaace4777803ff9bd01797c5"
+  },
+  "change": "One combined DC+AC C call per eligible accelerated greyscale pipeline block. Existing AC entrypoint retained; shared AC helper; one extra fixed DC metadata value per scan. No failed Swift fused-loop or masked-shift recovery included.",
+  "sourceReview": "Independent DCT agent found no mutation-order, category16/invalid-width, bounded-shift, overflow or borrow/lifetime defect. No compile, test or timing run under source-only CPU restriction.",
+  "memory": "Two fixed1048-byte wire Huffman metadata values on current64-bit ABI; existing32KiB AC lookup; unchanged24-byte reader state. Payload remains inside existing1MiB scratch reserve, not a measured RSS claim.",
+  "priorSourceRevision": "226b7c65643bb85754496dbd8a1736dd734a2c78",
+  "rawStorageCorrection": {
+    "reason": "NSData owner exposes raw storage; pass const void* and use C character-byte access without a Swift typed-binding assumption. No copy or rebinding.",
+    "reviewedBy": "Parent and independent audit agent",
+    "changedUTC": "2026-11-03T16:09:51.266151+00:00"
+  },
+  "warningsCheck": {
+    "command": "xcrun clang -Wall -Wextra -Werror -std=c11 -c Sources/SwiftJLIEntropyC/ACBlock.c -I Sources/SwiftJLIEntropyC/include -o /private/tmp/swiftjli-round5-evidence/c-dct-block/warnings-check.o",
+    "exitCode": 0,
+    "log": "warnings-check.log"
+  },
+  "testCommand": "swift test -c release --jobs 4 --scratch-path /private/tmp/swiftjli-round5-c-dct-block-build --filter CDCTDecoderTests|CACDecoderTests|CACPublicPipelineTests|ACLookaheadTests|ScopedACDecoderTests|SequentialGreyscale|PipelinedGreyscale|ParallelSequential|NativeExecutionTests|JPEGDecodeParityTests|BoundedDCTWorkspaceTests|EntropyBoundaryTests",
+  "buildStartedUTC": "2026-11-03T16:18:25.580305+00:00",
+  "focusedTests": {
+    "exitCode": 0,
+    "tests": 47,
+    "suites": 11,
+    "log": "tests.log",
+    "finishedUTC": "2026-11-03T16:19:13.634907+00:00"
+  }
+}

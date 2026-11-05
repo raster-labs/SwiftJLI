@@ -1,0 +1,42 @@
+{
+  "recordedAt": "2026-11-02T11:22:29.947554+00:00",
+  "baseCommit": "d25d4567c7932a0b3fd181901d16ce35a9eded29",
+  "suitePolicy": "0.10.0",
+  "hostCommands": {
+    "sw_vers": {
+      "exitCode": 0,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t27.0.1\nBuildVersion:\t\t26A434\n",
+      "stderr": ""
+    },
+    "xcrun swift --version": {
+      "exitCode": 0,
+      "stdout": "Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)\nTarget: arm64-apple-macosx27.0.0\n",
+      "stderr": "swift-driver version: 1.168.6 "
+    },
+    "xcodebuild -version": {
+      "exitCode": 0,
+      "stdout": "Xcode 27.2\nBuild version 27B52\n",
+      "stderr": ""
+    },
+    "sysctl -n hw.model hw.memsize hw.ncpu": {
+      "exitCode": 0,
+      "stdout": "Mac16,5\n68719476736\n16\n",
+      "stderr": ""
+    },
+    "pmset -g batt": {
+      "exitCode": 0,
+      "stdout": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t99%; finishing charge; 0:08 remaining present: true\n",
+      "stderr": ""
+    },
+    "pmset -g therm": {
+      "exitCode": 0,
+      "stdout": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n",
+      "stderr": ""
+    },
+    "uptime": {
+      "exitCode": 0,
+      "stdout": "16:52  up  6:03, 3 users, load averages: 6.66 8.56 8.26\n",
+      "stderr": ""
+    }
+  }
+}

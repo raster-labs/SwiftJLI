@@ -1,0 +1,26 @@
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index 0293697..92b8635 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -285,7 +285,9 @@ struct BitReader {
+     mutating func fastDecodeLosslessDifference(_ table: HuffmanTable) -> Int32? {
+         if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+         guard bitsAvailable >= 8 else { return nil }
+-        let peek = Int((bitBuffer >> (bitsAvailable - 8)) & 0xFF)
++        // Reader invariants bound available bits to 0...64. This guard makes
++        // the prefix shift 0...56; the masked shift has identical semantics.
++        let peek = Int((bitBuffer &>> (bitsAvailable - 8)) & 0xFF)
+         let length = Int(table.lookaheadLength[peek])
+         guard length != 0 else { return nil }
+         let category = Int(table.lookaheadSymbol[peek])
+@@ -295,7 +297,9 @@ struct BitReader {
+         }
+         guard category < 16, bitsAvailable >= length + category else { return nil }
+         bitsAvailable -= length + category
+-        let magnitude = Int32((bitBuffer >> bitsAvailable) & ((1 << category) - 1))
++        // The remaining category is 1...15 and length is positive, so the
++        // subtraction leaves 0...62 buffered bits and cannot mask a bad width.
++        let magnitude = Int32((bitBuffer &>> bitsAvailable) & ((1 << category) - 1))
+         return magnitude < (1 << (category - 1)) ? magnitude - ((1 << category) - 1) : magnitude
+     }
+ 

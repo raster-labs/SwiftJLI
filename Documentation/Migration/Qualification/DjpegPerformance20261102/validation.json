@@ -1,0 +1,120 @@
+{
+  "sourceCommit": "d1cd30ace21e9317402b54918b3fef55d880c4d5",
+  "compilerHashRecheckedAfterValidation": true,
+  "recordedAt": "2026-11-02T11:55:39.375334+00:00",
+  "commands": [
+    {
+      "name": "baseline-release-build",
+      "command": [
+        "swift",
+        "build",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-djpeg642-baseline-build",
+        "--product",
+        "swiftjli-cli"
+      ],
+      "cwd": "/private/tmp/swiftjli-benchmark-20261102",
+      "exitCode": 0
+    },
+    {
+      "name": "candidate-release-suite",
+      "command": [
+        "swift",
+        "test",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-djpeg642-candidate-build"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-performance",
+      "exitCode": 0,
+      "tests": 364,
+      "suites": 52
+    },
+    {
+      "name": "release-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-djpeg642-candidate-build/out/Products/Release/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-djpeg642-final-cli-checks"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-performance",
+      "exitCode": 0,
+      "processChecks": 237
+    },
+    {
+      "name": "asan-library",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-djpeg642-asan",
+        "--sanitize",
+        "address"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-performance",
+      "exitCode": 0,
+      "tests": 364,
+      "suites": 52
+    },
+    {
+      "name": "asan-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-djpeg642-asan/out/Products/Debug/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-djpeg642-asan-cli-checks"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-performance",
+      "exitCode": 0,
+      "processChecks": 237
+    },
+    {
+      "name": "tsan-focused",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-djpeg642-tsan",
+        "--sanitize",
+        "thread",
+        "--filter",
+        "LosslessRowStorageTests|LosslessDifferenceTests|NativeExecutionTests|OwnershipTests|CancellationPublicationTests"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-performance",
+      "exitCode": 0,
+      "tests": 22,
+      "suites": 3
+    },
+    {
+      "name": "lossless-interop",
+      "command": [
+        "python3",
+        "Scripts/verify-lossless-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-djpeg642-final-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-djpeg642-final-oracle-build"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-performance",
+      "exitCode": 0,
+      "swiftEncodeDjpegDecodeCases": 210,
+      "cjpegEncodeSwiftDecodeCases": 210
+    }
+  ]
+}

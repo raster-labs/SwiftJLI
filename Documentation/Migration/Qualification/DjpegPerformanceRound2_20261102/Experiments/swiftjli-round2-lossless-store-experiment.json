@@ -1,0 +1,169 @@
+{
+  "status": "rejected",
+  "baselineRevision": "b31999bd4246507fc9c7f18cd770b411faea501d",
+  "branch": "codex/djpeg-lossless-store-experiment",
+  "worktree": "/private/tmp/swiftjli-round2-lossless-store",
+  "hypothesis": "ChooseUInt8/UInt16 output once in the @inline(never) lookup wrapper, specialise inner row loop via private static store types; remove per-pixel bytesPerSample branch while preserving point transform and clamping.",
+  "acceptanceGate": "More than5% mixed speedup, no repeated scalar regression, exact pixels/errors.",
+  "decision": "Reject production specialisation: mixed2048+1.9%, mixed3072+1.5%, mixed512\u22120.9%; no useful native gain. Live accepted source untouched. No further tuning under parent instruction.",
+  "sourceBefore": "/private/tmp/swiftjli-round2-lossless-store-source-before.json",
+  "sourceAfter": "/private/tmp/swiftjli-round2-lossless-store-source-after.json",
+  "scalarRegionSHA256": "76ff034d1b6599ba93d078b2aa2c49d413461cd2b4ce9adb166e5fa6959ff1a6",
+  "scalarRegionProof": "Byte-identical to b319; compared exact source region before building.",
+  "testLog": "/private/tmp/swiftjli-round2-lossless-store-tests.log",
+  "testCommand": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift test --configuration release --scratch-path /private/tmp/swiftjli-round2-lossless-store-build --filter 'LosslessLookaheadTests|LosslessDifferenceTests|LosslessRowStorageTests|LosslessTests|LosslessRestartTests|NearLosslessAPITests'",
+  "tests": "exit0;30tests/6suites. Existing327680prefix/offset/table comparisons and112large scan combinations passed. Six new invalid storage cases throw before any destination byte changes.",
+  "nativeResult": "/private/tmp/swiftjli-round2-lossless-store-matrix-results.json",
+  "nativeResultSHA256": "0e807e33dab3f4bce441e319c0ef39617ad2a6bdbd73d592e6475567910bc2f4",
+  "nativeSummary": {
+    "flat-19": {
+      "baselineMS": 0.00846825,
+      "candidateMS": 0.00836475,
+      "percentChange": -1.2222123815428199,
+      "roundPercentChange": [
+        -3.5945072697899927,
+        1.2635269935312277
+      ]
+    },
+    "flat-512": {
+      "baselineMS": 0.5282605,
+      "candidateMS": 0.5296667500000001,
+      "percentChange": 0.26620388993687794,
+      "roundPercentChange": [
+        0.23906856403621557,
+        0.2936675785851328
+      ]
+    },
+    "flat-2048": {
+      "baselineMS": 7.87910425,
+      "candidateMS": 7.8972394999999995,
+      "percentChange": 0.23016893068776856,
+      "roundPercentChange": [
+        0.1640502952943379,
+        0.29619357519683476
+      ]
+    },
+    "flat-3072": {
+      "baselineMS": 17.594677,
+      "candidateMS": 17.577594,
+      "percentChange": -0.09709186477250276,
+      "roundPercentChange": [
+        -0.35276788011994187,
+        0.15922038660574067
+      ]
+    },
+    "ramp-19": {
+      "baselineMS": 0.008427500000000001,
+      "candidateMS": 0.008177,
+      "percentChange": -2.9724117472560208,
+      "roundPercentChange": [
+        -4.150081948021567,
+        -1.7623000120293386
+      ]
+    },
+    "ramp-512": {
+      "baselineMS": 0.7019375,
+      "candidateMS": 0.70854125,
+      "percentChange": 0.9407888878995685,
+      "roundPercentChange": [
+        -0.02950327218108617,
+        1.9291021008542186
+      ]
+    },
+    "ramp-2048": {
+      "baselineMS": 10.96818725,
+      "candidateMS": 10.8546355,
+      "percentChange": -1.0352827446486135,
+      "roundPercentChange": [
+        -1.6258899973165541,
+        -0.4421707889983195
+      ]
+    },
+    "ramp-3072": {
+      "baselineMS": 23.12345825,
+      "candidateMS": 22.92804175,
+      "percentChange": -0.8451006674142225,
+      "roundPercentChange": [
+        -0.8998349504580894,
+        -0.7904814591059295
+      ]
+    },
+    "noise-19": {
+      "baselineMS": 0.008646000000000001,
+      "candidateMS": 0.00839575,
+      "percentChange": -2.8944020356234113,
+      "roundPercentChange": [
+        -4.7599999999999865,
+        -0.9833762584875005
+      ]
+    },
+    "noise-512": {
+      "baselineMS": 2.4124895,
+      "candidateMS": 2.3738854999999996,
+      "percentChange": -1.6001727675913346,
+      "roundPercentChange": [
+        -0.5598705058024511,
+        -2.6361988501972022
+      ]
+    },
+    "noise-2048": {
+      "baselineMS": 38.02232275,
+      "candidateMS": 37.326697499999995,
+      "percentChange": -1.8295180296422187,
+      "roundPercentChange": [
+        -2.7383478049105014,
+        -0.8974377141995005
+      ]
+    },
+    "noise-3072": {
+      "baselineMS": 85.36948975,
+      "candidateMS": 83.913646,
+      "percentChange": -1.7053443264840373,
+      "roundPercentChange": [
+        -3.2147202180522694,
+        -0.14203359921783898
+      ]
+    },
+    "mixed-19": {
+      "baselineMS": 0.00782275,
+      "candidateMS": 0.007885,
+      "percentChange": 0.7957559681697646,
+      "roundPercentChange": [
+        -5.454772146374887,
+        7.370491803278689
+      ]
+    },
+    "mixed-512": {
+      "baselineMS": 1.0943330000000002,
+      "candidateMS": 1.0844269999999998,
+      "percentChange": -0.9052089263506091,
+      "roundPercentChange": [
+        -1.1881074645112122,
+        -0.6196807863611542
+      ]
+    },
+    "mixed-2048": {
+      "baselineMS": 16.585333499999997,
+      "candidateMS": 16.89276075,
+      "percentChange": 1.8536090938418681,
+      "roundPercentChange": [
+        -0.32579157368467504,
+        4.05053503357804
+      ]
+    },
+    "mixed-3072": {
+      "baselineMS": 36.84835375,
+      "candidateMS": 37.40331275,
+      "percentChange": 1.506061854934293,
+      "roundPercentChange": [
+        0.8041726380880965,
+        2.205631838429589
+      ]
+    }
+  },
+  "nativeRunner": "/private/tmp/swiftjli-run-round2-lossless-store-matrix.py",
+  "correctness": "All16fixtureoutputs pixel-exact inboth rounds.",
+  "cliGate": "Not run: parent requested three-wayCLI only after native gain; candidate failed that gate.",
+  "testOnlyPatch": "/private/tmp/swiftjli-round2-lossless-store-guards-only.patch",
+  "sourceDiff": "diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift\nindex e0bf380..fcc6a35 100644\n--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift\n+++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift\n@@ -6,6 +6,29 @@ import Accelerate\n #endif\n import Foundation\n \n+private protocol LosslessLookupStore {\n+    static var bytesPerSample: Int { get }\n+    static func write(_ value: Int32, _ output: UnsafeMutablePointer<UInt8>, _ x: Int, _ pt: Int)\n+}\n+\n+private enum LosslessLookupStore8: LosslessLookupStore {\n+    static let bytesPerSample = 1\n+    @inline(__always)\n+    static func write(_ value: Int32, _ output: UnsafeMutablePointer<UInt8>, _ x: Int, _ pt: Int) {\n+        output[x] = UInt8(clamping: Int(value) << pt)\n+    }\n+}\n+\n+private enum LosslessLookupStore16: LosslessLookupStore {\n+    static let bytesPerSample = 2\n+    @inline(__always)\n+    static func write(_ value: Int32, _ output: UnsafeMutablePointer<UInt8>, _ x: Int, _ pt: Int) {\n+        let shifted = UInt16(clamping: Int(value) << pt)\n+        output[x * 2] = UInt8(truncatingIfNeeded: shifted)\n+        output[x * 2 + 1] = UInt8(shifted >> 8)\n+    }\n+}\n+\n /// The jpegli-compatible JPEG decoder.\n ///\n /// `JLIDecoder` decompresses JPEG data, automatically detecting advanced features\n@@ -1072,7 +1095,29 @@ struct JLIDecoder: Sendable {\n         predictor: Int, half: Int32, table: HuffmanTable, reader: inout BitReader,\n         pointTransform pt: Int, segmentRows: Int, lookup: LosslessLookahead\n     ) throws {\n-        let bps = destination.bytesPerSample\n+        switch destination.bytesPerSample {\n+        case 1:\n+            try losslessGrayLookupRows(destination, width: w, height: h,\n+                predictor: predictor, half: half, table: table, reader: &reader,\n+                pointTransform: pt, segmentRows: segmentRows, lookup: lookup,\n+                store: LosslessLookupStore8.self)\n+        case 2:\n+            try losslessGrayLookupRows(destination, width: w, height: h,\n+                predictor: predictor, half: half, table: table, reader: &reader,\n+                pointTransform: pt, segmentRows: segmentRows, lookup: lookup,\n+                store: LosslessLookupStore16.self)\n+        default:\n+            throw JLIError.decodingFailed(\"invalid lossless destination layout\")\n+        }\n+    }\n+\n+    private static func losslessGrayLookupRows<Store: LosslessLookupStore>(\n+        _ destination: BorrowedSampleDestination, width w: Int, height h: Int,\n+        predictor: Int, half: Int32, table: HuffmanTable, reader: inout BitReader,\n+        pointTransform pt: Int, segmentRows: Int, lookup: LosslessLookahead,\n+        store: Store.Type\n+    ) throws {\n+        let bps = Store.bytesPerSample\n         guard bps == 1 || bps == 2, destination.rowBytes >= w * bps else {\n             throw JLIError.decodingFailed(\"invalid lossless destination layout\")\n         }\n@@ -1101,7 +1146,7 @@ struct JLIDecoder: Sendable {\n                 for x in 0..<w {\n                     value = (value + (try losslessLookupDifference(table, &reader, lookup))) & 0xFFFF\n                     if x == 0 { row[0] = value }\n-                    writeLosslessSample(value, outputRow, x, bps, pt)\n+                    Store.write(value, outputRow, x, pt)\n                 }\n             } else {\n                 var left = half, aboveLeft: Int32 = 0\n@@ -1124,7 +1169,7 @@ struct JLIDecoder: Sendable {\n                     row[x] = value\n                     left = value\n                     aboveLeft = above\n-                    writeLosslessSample(value, outputRow, x, bps, pt)\n+                    Store.write(value, outputRow, x, pt)\n                 }\n             }\n         }\ndiff --git a/Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift b/Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift\nindex 03f2d27..d88108b 100644\n--- a/Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift\n+++ b/Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift\n@@ -104,4 +104,32 @@ import Testing\n         } } }\n         #expect(lookupScans > 0)\n     }\n+\n+    @Test func lookupRejectsInvalidStorageBeforeWriting() throws {\n+        let width = 129, height = 129\n+        let source = (0..<(width * height)).map { index in\n+            UInt8(truncatingIfNeeded: index * 17 + (index / width) * 31)\n+        }\n+        let image = try JLIImage(width: width, height: height,\n+            pixelFormat: .uint8, colorModel: .grayscale, data: source)\n+        let jpeg = try JLIEncoder().encode(image, configuration: .init(lossless: true))\n+        var parser = MarkerReader(data: jpeg)\n+        let parsed = try parser.parse()\n+        let table = try #require(parsed.scans.first?.dcTables[0])\n+        #expect(LosslessLookahead(table: table, sampleCount: width * height) != nil)\n+        for (bps, stride, count) in [\n+            (0, width, width * height), (3, width * 3, width * height * 3),\n+            (1, width - 1, width * height), (2, width * 2 - 1, width * height * 2),\n+            (1, width, width * height - 1), (2, width * 2, width * height * 2 - 1)\n+        ] {\n+            var storage = [UInt8](repeating: 0xA5, count: count)\n+            #expect(throws: JLIError.self) {\n+                try storage.withUnsafeMutableBytes { raw in\n+                    try JLIDecoder().decodeSharedLossless(parsed, into: .init(\n+                        bytes: raw, rowBytes: stride, bytesPerSample: bps))\n+                }\n+            }\n+            #expect(storage.allSatisfy { $0 == 0xA5 })\n+        }\n+    }\n }\n"
+}

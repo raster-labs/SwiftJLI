@@ -1,0 +1,28 @@
+{
+  "sourceRevision": "10d6f2dc7b1f854436df6ddfbd703d834a66e5f2",
+  "parentTrialRevision": "3a5ef320c04fff03561a69b705355c0e9da2fc31",
+  "baselineBuildRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "baselineProductionEquivalentRevision": "14f35018d241666358480da2a8527d29ab047627",
+  "sourceWorktree": "/private/tmp/swiftjli-round5-c-ac-fused-left",
+  "createdUTC": "2026-11-03T15:49:42.679654+00:00",
+  "sourceHashes": {
+    "Package.swift": "7b4a5251c6a2e61cfac447a32601a83b2f0484e4917e58de291a0486d65c3613",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "c7485344043586e10fac664c74e20950ce4bde3ab08d54a9e1cea64af1038039",
+    "Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift": "0cba965af46c12d70fd6d65a741d5bcd3e94bb80f4c38b5dc3846302021c888c",
+    "Sources/SwiftJLI/Native/Entropy/CACDecoder.swift": "e99e135fa56a049ef0ea9556923c1ff27caa223e62316bf36996c0f85a3bf169",
+    "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift": "381387842cdb6d25d4a95282694ff15dc3d902f21f70aa550d5fb1d9296eabbf",
+    "Sources/SwiftJLIEntropyC/ACBlock.c": "8cf99770d669a535501972f677f77826536ff091d3ae1f63d3ba4b1bb7a7e59a",
+    "Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h": "adb81244f3cf465fd4d828e0af92935e42a35dee9a22bedf11deda5b2ff16fe1",
+    "Tests/SwiftJLITests/Native/CACDecoderTests.swift": "711ea1951f5e76a341ddf1ca551a055490d015118a4dbb9e3974f9cbf953a9ff",
+    "Tests/SwiftJLITests/Native/CACPublicPipelineTests.swift": "947bd8f6b3cd01fd8bcfcf0fe799d23c87757ced4728bbe4a5b298c61da4f22a"
+  },
+  "change": "One change from C trial: fused fast difference in specialised UInt16 inner loop; separate checked fallback. No masked-shift or C-lossless change.",
+  "focusedTests": {
+    "exitCode": 0,
+    "tests": 71,
+    "suites": 20,
+    "log": "tests.log",
+    "command": "swift test -c release --jobs 4 --scratch-path /private/tmp/swiftjli-round5-c-ac-fused-left-build --filter Lossless|CACDecoderTests|CACPublicPipelineTests|ACLookaheadTests|ScopedACDecoderTests|PipelinedGreyscaleTests|NativeExecutionTests|EntropyBoundaryTests",
+    "finishedUTC": "2026-11-03T15:51:02.070802+00:00"
+  }
+}

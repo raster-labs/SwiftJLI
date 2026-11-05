@@ -1,0 +1,430 @@
+﻿2026-11-03T08:25:29.3908620Z Current runner version: '2.338.2'
+2026-11-03T08:25:29.3925690Z ##[group]Runner Image Provisioner
+2026-11-03T08:25:29.3926240Z Hosted Compute Agent
+2026-11-03T08:25:29.3926610Z Version: 20261021.618
+2026-11-03T08:25:29.3927010Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-11-03T08:25:29.3927580Z Build Date: 2026-10-21T00:45:21Z
+2026-11-03T08:25:29.3928060Z Worker ID: {3d607ee8-1055-48ef-8f8b-8773830ebe00}
+2026-11-03T08:25:29.3928550Z Region: westus
+2026-11-03T08:25:29.3928920Z Cloud: MacCloud
+2026-11-03T08:25:29.3929270Z ##[endgroup]
+2026-11-03T08:25:29.3930410Z ##[group]Operating System
+2026-11-03T08:25:29.3930960Z macOS
+2026-11-03T08:25:29.3931330Z 26.6.2
+2026-11-03T08:25:29.3931810Z 25G83
+2026-11-03T08:25:29.3932300Z ##[endgroup]
+2026-11-03T08:25:29.3932750Z ##[group]Runner Image
+2026-11-03T08:25:29.3933310Z Image: macos-26-arm64
+2026-11-03T08:25:29.3933950Z Version: 20261026.0455.2
+2026-11-03T08:25:29.3934940Z Included Software: https://github.com/actions/runner-images/blob/macos-26-arm64/20261026.0455/images/macos/macos-26-arm64-Readme.md
+2026-11-03T08:25:29.3936110Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-26-arm64%2F20261026.0455
+2026-11-03T08:25:29.3936980Z ##[endgroup]
+2026-11-03T08:25:29.3937770Z ##[group]GITHUB_TOKEN Permissions
+2026-11-03T08:25:29.3939060Z Contents: read
+2026-11-03T08:25:29.3939440Z Metadata: read
+2026-11-03T08:25:29.3939850Z ##[endgroup]
+2026-11-03T08:25:29.3941330Z Secret source: Actions
+2026-11-03T08:25:29.3942010Z Cache mode: write
+2026-11-03T08:25:29.3942570Z Prepare workflow directory
+2026-11-03T08:25:29.4251580Z Prepare all required actions
+2026-11-03T08:25:29.4292340Z Getting action download info
+2026-11-03T08:25:29.7218460Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-03T08:25:29.9568460Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-03T08:25:30.1976170Z Complete job name: iOS 26+ simulator runtime
+2026-11-03T08:25:30.2939160Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+2026-11-03T08:25:30.2940250Z with:
+2026-11-03T08:25:30.2940720Z   persist-credentials: false
+2026-11-03T08:25:30.2941150Z   repository: raster-labs/SwiftJLI
+2026-11-03T08:25:30.2944400Z   token: ***
+2026-11-03T08:25:30.2944750Z   ssh-strict: true
+2026-11-03T08:25:30.2945150Z   ssh-user: git
+2026-11-03T08:25:30.2945520Z   clean: true
+2026-11-03T08:25:30.2945930Z   sparse-checkout-cone-mode: true
+2026-11-03T08:25:30.2946440Z   fetch-depth: 1
+2026-11-03T08:25:30.2946850Z   fetch-tags: false
+2026-11-03T08:25:30.2947270Z   show-progress: true
+2026-11-03T08:25:30.2947780Z   lfs: false
+2026-11-03T08:25:30.2948230Z   submodules: false
+2026-11-03T08:25:30.2948690Z   set-safe-directory: true
+2026-11-03T08:25:30.2949210Z   allow-unsafe-pr-checkout: false
+2026-11-03T08:25:30.2950010Z ##[endgroup]
+2026-11-03T08:25:30.7991780Z Syncing repository: raster-labs/SwiftJLI
+2026-11-03T08:25:30.7993470Z ##[group]Getting Git version info
+2026-11-03T08:25:30.7994110Z Working directory is '/Users/runner/work/SwiftJLI/SwiftJLI'
+2026-11-03T08:25:30.7995000Z [command]/opt/homebrew/bin/git version
+2026-11-03T08:25:30.8451060Z git version 2.56.0
+2026-11-03T08:25:30.8467670Z ##[endgroup]
+2026-11-03T08:25:30.8475690Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/cf768a66-b1a7-4e67-a130-d9a0d94dbe63/.gitconfig'
+2026-11-03T08:25:30.8484550Z Temporarily overriding HOME='/Users/runner/work/_temp/cf768a66-b1a7-4e67-a130-d9a0d94dbe63' before making global git config changes
+2026-11-03T08:25:30.8485760Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-03T08:25:30.8489900Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/SwiftJLI/SwiftJLI
+2026-11-03T08:25:30.8633810Z Deleting the contents of '/Users/runner/work/SwiftJLI/SwiftJLI'
+2026-11-03T08:25:30.8641480Z ##[group]Initializing the repository
+2026-11-03T08:25:30.8648900Z [command]/opt/homebrew/bin/git init /Users/runner/work/SwiftJLI/SwiftJLI
+2026-11-03T08:25:30.8916100Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-03T08:25:30.8917640Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-03T08:25:30.8918500Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-03T08:25:30.8919200Z hint: call:
+2026-11-03T08:25:30.8919670Z hint:
+2026-11-03T08:25:30.8920200Z hint: 	git config --global init.defaultBranch <name>
+2026-11-03T08:25:30.8920700Z hint:
+2026-11-03T08:25:30.8921190Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-03T08:25:30.8921930Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-03T08:25:30.8922550Z hint:
+2026-11-03T08:25:30.8922930Z hint: 	git branch -m <name>
+2026-11-03T08:25:30.8923370Z hint:
+2026-11-03T08:25:30.8923940Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-03T08:25:30.8932000Z Initialized empty Git repository in /Users/runner/work/SwiftJLI/SwiftJLI/.git/
+2026-11-03T08:25:30.8942920Z [command]/opt/homebrew/bin/git remote add origin https://github.com/raster-labs/SwiftJLI
+2026-11-03T08:25:30.9058130Z ##[endgroup]
+2026-11-03T08:25:30.9060540Z ##[group]Disabling automatic garbage collection
+2026-11-03T08:25:30.9063600Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-03T08:25:30.9151250Z ##[endgroup]
+2026-11-03T08:25:30.9153480Z ##[group]Setting up auth
+2026-11-03T08:25:30.9155830Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-03T08:25:30.9275320Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-03T08:25:31.0441450Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-03T08:25:31.0526980Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-03T08:25:31.1801350Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-03T08:25:31.1808740Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-03T08:25:31.2884940Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-03T08:25:31.3059310Z ##[endgroup]
+2026-11-03T08:25:31.3062400Z ##[group]Fetching the repository
+2026-11-03T08:25:31.3066080Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +57288ab5817bc6e97ce30a3a8bbb038947860516:refs/remotes/pull/25/merge
+2026-11-03T08:25:32.5280920Z From https://github.com/raster-labs/SwiftJLI
+2026-11-03T08:25:32.5301460Z  * [new ref]         57288ab5817bc6e97ce30a3a8bbb038947860516 -> pull/25/merge
+2026-11-03T08:25:32.5306740Z ##[endgroup]
+2026-11-03T08:25:32.5312910Z ##[group]Determining the checkout info
+2026-11-03T08:25:32.5316060Z ##[endgroup]
+2026-11-03T08:25:32.5318020Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-03T08:25:32.5398930Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-03T08:25:32.5503790Z ##[group]Checking out the ref
+2026-11-03T08:25:32.5511070Z [command]/opt/homebrew/bin/git checkout --progress --force refs/remotes/pull/25/merge
+2026-11-03T08:25:32.9268570Z HEAD is now at 57288ab Merge bbb0b1a9a602807643fc254fb4e0d54a162d5ae8 into d25d4567c7932a0b3fd181901d16ce35a9eded29
+2026-11-03T08:25:32.9288010Z ##[endgroup]
+2026-11-03T08:25:32.9391110Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-03T08:25:32.9466590Z 57288ab5817bc6e97ce30a3a8bbb038947860516
+2026-11-03T08:25:32.9475200Z ##[group]Removing auth
+2026-11-03T08:25:32.9477600Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-03T08:25:32.9548950Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-03T08:25:33.0743110Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-03T08:25:33.0813430Z http.https://github.com/.extraheader
+2026-11-03T08:25:33.0817370Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-03T08:25:33.0823020Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-03T08:25:33.1695060Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-03T08:25:33.1770300Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-03T08:25:33.2919360Z ##[endgroup]
+2026-11-03T08:25:33.3113180Z ##[group]Run python3 Scripts/test-apple-simulator.py --output "$RUNNER_TEMP/ios-runtime"
+2026-11-03T08:25:33.3116070Z [36;1mpython3 Scripts/test-apple-simulator.py --output "$RUNNER_TEMP/ios-runtime"[0m
+2026-11-03T08:25:33.3171390Z shell: /bin/bash -e {0}
+2026-11-03T08:25:33.3172850Z ##[endgroup]
+2026-11-03T08:25:33.5755120Z Running: git rev-parse HEAD
+2026-11-03T08:25:33.5833010Z Running: xcodebuild -version
+2026-11-03T08:25:33.8807530Z Running: swift --version
+2026-11-03T08:25:36.9624050Z Running: xcrun --sdk iphonesimulator --show-sdk-version
+2026-11-03T08:25:39.0541800Z Running: xcrun simctl list devices available --json
+2026-11-03T08:25:43.4669900Z Running: xcodebuild -list -json
+2026-11-03T08:25:56.2158460Z Running: xcodebuild test -scheme SwiftJLI-Package -destination platform=iOS Simulator,id=1F0A9C4B-2DFC-444E-B162-696E5078A72B -destination-timeout 120 -parallel-testing-enabled NO -derivedDataPath /Users/runner/work/_temp/ios-runtime/DerivedData -resultBundlePath /Users/runner/work/_temp/ios-runtime/Tests.xcresult CODE_SIGNING_ALLOWED=NO
+2026-11-03T08:34:09.0967790Z renceAcrossRestartsAndLookup(precision:) with 2 test cases passed after 6.444 seconds.
+2026-11-03T08:34:09.1040240Z ◇ Test batchConsumerFailureStopsBeforeReusingItsBorrow() started.
+2026-11-03T08:34:09.1044860Z ✔ Test batchConsumerFailureStopsBeforeReusingItsBorrow() passed after 0.030 seconds.
+2026-11-03T08:34:09.1045660Z ◇ Test invalidExtentsRejectBeforeWriting() started.
+2026-11-03T08:34:09.1046780Z ✔ Test invalidExtentsRejectBeforeWriting() passed after 0.001 seconds.
+2026-11-03T08:34:09.1047390Z ◇ Test malformedEntropyAndExpiredOperationsStillReject() started.
+2026-11-03T08:34:09.1048570Z ✔ Test malformedEntropyAndExpiredOperationsStillReject() passed after 0.001 seconds.
+2026-11-03T08:34:09.1055850Z ✔ Suite SequentialGreyscaleDecoderTests passed after 6.478 seconds.
+2026-11-03T08:34:09.1056550Z ◇ Suite SharedDCTStorageTests started.
+2026-11-03T08:34:09.1058620Z ◇ Test borrowedPixelsMatchPackedKernels(precision:components:) started.
+2026-11-03T08:34:09.1080330Z ◇ Test case passing 2 arguments precision → 8, components → 1 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+2026-11-03T08:34:09.1081800Z ​◇ Test case passing 2 arguments precision → 8, components → 3 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+2026-11-03T08:34:09.1089260Z ​◇ Test case passing 2 arguments precision → 12, components → 1 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+2026-11-03T08:34:09.1090620Z ​◇ Test case passing 2 arguments precision → 12, components → 3 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+2026-11-03T08:34:09.1092730Z ​✔ Test borrowedPixelsMatchPackedKernels(precision:components:) with 4 test cases passed after 5.722 seconds.
+2026-11-03T08:34:09.1106210Z ✔ Suite SharedDCTStorageTests passed after 5.724 seconds.
+2026-11-03T08:34:09.1106780Z ◇ Suite StreamingWorkspaceAdmissionTests started.
+2026-11-03T08:34:09.1111280Z ◇ Test exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+2026-11-03T08:34:09.1112550Z ◇ Test case passing 2 arguments precision → 8, floating → false to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+2026-11-03T08:34:09.1114500Z ​◇ Test case passing 2 arguments precision → 8, floating → true to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+2026-11-03T08:34:09.1122320Z ​◇ Test case passing 2 arguments precision → 12, floating → false to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+2026-11-03T08:34:09.1127770Z ​◇ Test case passing 2 arguments precision → 12, floating → true to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+2026-11-03T08:34:09.1132870Z ​✔ Test exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) with 4 test cases passed after 0.813 seconds.
+2026-11-03T08:34:09.1139640Z ◇ Test nonStreamingOperationsRetainTheirFullReservations() started.
+2026-11-03T08:34:09.1145870Z ✔ Test nonStreamingOperationsRetainTheirFullReservations() passed after 1.124 seconds.
+2026-11-03T08:34:09.1146780Z ◇ Test automaticThresholdAndCheckedGeometryCannotUnderstateWorkspace() started.
+2026-11-03T08:34:09.1147900Z ✔ Test automaticThresholdAndCheckedGeometryCannotUnderstateWorkspace() passed after 0.038 seconds.
+2026-11-03T08:34:09.1148770Z ✔ Suite StreamingWorkspaceAdmissionTests passed after 1.978 seconds.
+2026-11-03T08:34:09.1149340Z ◇ Suite UInt12InputTests started.
+2026-11-03T08:34:09.1149840Z ◇ Test fusedReaderPreservesSamplesAndIgnoresPadding() started.
+2026-11-03T08:34:09.1150990Z ✔ Test fusedReaderPreservesSamplesAndIgnoresPadding() passed after 0.001 seconds.
+2026-11-03T08:34:09.1151750Z ◇ Test outOfRangeSamplesRejectAtEveryPosition(_:) started.
+2026-11-03T08:34:09.1152360Z ◇ Test case passing 1 argument index → 0 to outOfRangeSamplesRejectAtEveryPosition(_:) started.
+2026-11-03T08:34:09.1157140Z ​◇ Test case passing 1 argument index → 2 to outOfRangeSamplesRejectAtEveryPosition(_:) started.
+2026-11-03T08:34:09.1158770Z ​◇ Test case passing 1 argument index → 5 to outOfRangeSamplesRejectAtEveryPosition(_:) started.
+2026-11-03T08:34:09.1159620Z ​✔ Test outOfRangeSamplesRejectAtEveryPosition(_:) with 3 test cases passed after 0.001 seconds.
+2026-11-03T08:34:09.1169120Z ◇ Test discardedUInt12AlphaStillRequiresValidPrecision() started.
+2026-11-03T08:34:09.1169930Z ✔ Test discardedUInt12AlphaStillRequiresValidPrecision() passed after 0.001 seconds.
+2026-11-03T08:34:09.1170640Z ✔ Suite UInt12InputTests passed after 0.003 seconds.
+2026-11-03T08:34:09.1171030Z ◇ Suite UpstreamJPEGTests started.
+2026-11-03T08:34:09.1171540Z ◇ Test independentNaturalTextureOracle(_:) started.
+2026-11-03T08:34:09.1172280Z ◇ Test case passing 1 argument name → "monkey12-444" to independentNaturalTextureOracle(_:) started.
+2026-11-03T08:34:09.1181230Z ​◇ Test case passing 1 argument name → "monkey12-444-progressive" to independentNaturalTextureOracle(_:) started.
+2026-11-03T08:34:09.1182260Z ​◇ Test case passing 1 argument name → "testorig-444" to independentNaturalTextureOracle(_:) started.
+2026-11-03T08:34:09.1183240Z ​◇ Test case passing 1 argument name → "testorig-444-progressive" to independentNaturalTextureOracle(_:) started.
+2026-11-03T08:34:09.1184210Z ​◇ Test case passing 1 argument name → "testimgint-444" to independentNaturalTextureOracle(_:) started.
+2026-11-03T08:34:09.1185080Z ​◇ Test case passing 1 argument name → "testimgint-444-progressive" to independentNaturalTextureOracle(_:) started.
+2026-11-03T08:34:09.1186090Z ​✔ Test independentNaturalTextureOracle(_:) with 6 test cases passed after 3.234 seconds.
+2026-11-03T08:34:09.1186900Z ◇ Test validArithmeticCodingIsExplicitlyUnsupported() started.
+2026-11-03T08:34:09.1188050Z ✔ Test validArithmeticCodingIsExplicitlyUnsupported() passed after 0.001 seconds.
+2026-11-03T08:34:09.1188800Z ◇ Test upstreamTwelveBitICCIsPreservedEvenWhenAncillaryMetadataIsDiscarded() started.
+2026-11-03T08:34:09.1189520Z ✔ Test upstreamTwelveBitICCIsPreservedEvenWhenAncillaryMetadataIsDiscarded() passed after 0.068 seconds.
+2026-11-03T08:34:09.1190270Z ✔ Suite UpstreamJPEGTests passed after 3.308 seconds.
+2026-11-03T08:34:09.1190600Z ◇ Suite ValidatedEnvelopeTests started.
+2026-11-03T08:34:09.1191100Z ◇ Test reusedExtentsMatchIndependentMarkerTraversal() started.
+2026-11-03T08:34:09.1191730Z ✔ Test reusedExtentsMatchIndependentMarkerTraversal() passed after 0.006 seconds.
+2026-11-03T08:34:09.1192290Z ◇ Test validatedInputOwnsAnImmutableSnapshot() started.
+2026-11-03T08:34:09.1192840Z ✔ Test validatedInputOwnsAnImmutableSnapshot() passed after 0.001 seconds.
+2026-11-03T08:34:09.1193460Z ◇ Test incompleteOrTrailingStreamsNeverProduceValidatedExtents() started.
+2026-11-03T08:34:09.1195030Z ✔ Test incompleteOrTrailingStreamsNeverProduceValidatedExtents() passed after 0.001 seconds.
+2026-11-03T08:34:09.1195680Z ◇ Test reusingExtentsStillHonoursCancellationAndLimits() started.
+2026-11-03T08:34:09.1196610Z ✔ Test reusingExtentsStillHonoursCancellationAndLimits() passed after 0.001 seconds.
+2026-11-03T08:34:09.1197150Z ✔ Suite ValidatedEnvelopeTests passed after 0.008 seconds.
+2026-11-03T08:34:09.1197930Z ◇ Suite XYBAPITests started.
+2026-11-03T08:34:09.1198360Z ◇ Test sharedXYBMatchesNativeAndDescribesSRGB(storageBits:width:) started.
+2026-11-03T08:34:09.1199340Z ◇ Test case passing 2 arguments storageBits → 8, width → 1 to sharedXYBMatchesNativeAndDescribesSRGB(storageBits:width:) started.
+2026-11-03T08:34:09.1200380Z ​◇ Test case passing 2 arguments storageBits → 8, width → 19 to sharedXYBMatchesNativeAndDescribesSRGB(storageBits:width:) started.
+2026-11-03T08:34:09.1849160Z ​◇ Test case passing 2 arguments storageBits → 32, width → 1 to sharedXYBMatchesNativeAndDescribesSRGB(storageBits:width:) started.
+2026-11-03T08:34:09.1853590Z ​◇ Test case passing 2 arguments storageBits → 32, width → 19 to sharedXYBMatchesNativeAndDescribesSRGB(storageBits:width:) started.
+2026-11-03T08:34:09.1856270Z ​✔ Test sharedXYBMatchesNativeAndDescribesSRGB(storageBits:width:) with 4 test cases passed after 0.430 seconds.
+2026-11-03T08:34:09.1858280Z ◇ Test unknownProfilesAndIgnoredXYBOptionsAreRejected() started.
+2026-11-03T08:34:09.1859890Z ✔ Test unknownProfilesAndIgnoredXYBOptionsAreRejected() passed after 0.012 seconds.
+2026-11-03T08:34:09.1861340Z ◇ Test embeddedSRGBProfileMatchesOriginal() started.
+2026-11-03T08:34:09.1862590Z ✔ Test embeddedSRGBProfileMatchesOriginal() passed after 0.001 seconds.
+2026-11-03T08:34:09.1863700Z ◇ Test outputProfileAgreesWithSystemSRGB() started.
+2026-11-03T08:34:09.1864740Z ✔ Test outputProfileAgreesWithSystemSRGB() passed after 0.079 seconds.
+2026-11-03T08:34:09.1865880Z ✔ Suite XYBAPITests passed after 0.524 seconds.
+2026-11-03T08:34:09.1895600Z ◇ Suite XYBFloatDecodeTests started.
+2026-11-03T08:34:09.1896150Z ◇ Test fractionalSRGBMatchesNativeBeforeIntegerRounding() started.
+2026-11-03T08:34:09.1896780Z ✔ Test fractionalSRGBMatchesNativeBeforeIntegerRounding() passed after 0.074 seconds.
+2026-11-03T08:34:09.1897490Z ◇ Test normalisationDoesNotInferOtherColourProfiles() started.
+2026-11-03T08:34:09.1898040Z ✔ Test normalisationDoesNotInferOtherColourProfiles() passed after 0.016 seconds.
+2026-11-03T08:34:09.1898530Z ✔ Suite XYBFloatDecodeTests passed after 0.090 seconds.
+2026-11-03T08:34:09.1898870Z ◇ Suite "XYB color" started.
+2026-11-03T08:34:09.1899260Z ◇ Test "XYB ICC profile is a valid ICC and matches our inverse transform" started.
+2026-11-03T08:34:09.1899800Z ✔ Test "XYB ICC profile is a valid ICC and matches our inverse transform" passed after 0.005 seconds.
+2026-11-03T08:34:09.1900340Z ◇ Test "XYB encode → our decode round-trips, and embeds the XYB ICC + APP14" started.
+2026-11-03T08:34:09.1900870Z ✔ Test "XYB encode → our decode round-trips, and embeds the XYB ICC + APP14" passed after 0.030 seconds.
+2026-11-03T08:34:09.1902290Z ✔ Suite "XYB color" passed after 0.037 seconds.
+2026-11-03T08:34:09.1902570Z ◇ Suite ZeroRunLosslessTests started.
+2026-11-03T08:34:09.1902940Z ◇ Test constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+2026-11-03T08:34:09.1903570Z ◇ Test case passing 1 argument bits → 2 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+2026-11-03T08:34:09.1904250Z ​◇ Test case passing 1 argument bits → 8 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+2026-11-03T08:34:09.1904950Z ​◇ Test case passing 1 argument bits → 12 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+2026-11-03T08:34:09.1905650Z ​◇ Test case passing 1 argument bits → 16 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+2026-11-03T08:34:09.1906350Z ​✔ Test constantAndChangingPlateausPreserveSamplesAndPadding(bits:) with 4 test cases passed after 1.420 seconds.
+2026-11-03T08:34:09.1906940Z ◇ Test zeroRunsRetainReadBitsAndRestartBoundaries() started.
+2026-11-03T08:34:09.1907450Z ✔ Test zeroRunsRetainReadBitsAndRestartBoundaries() passed after 0.115 seconds.
+2026-11-03T08:34:09.1907880Z ◇ Test malformedExtentsEntropyAndDeadlineReject() started.
+2026-11-03T08:34:09.1908570Z ✔ Test malformedExtentsEntropyAndDeadlineReject() passed after 0.001 seconds.
+2026-11-03T08:34:09.1909000Z ✔ Suite ZeroRunLosslessTests passed after 1.537 seconds.
+2026-11-03T08:34:09.1909390Z ✘ Test run with 403 tests in 63 suites failed after 343.170 seconds with 224 issues.
+2026-11-03T08:34:09.1909650Z 
+2026-11-03T08:34:09.1909770Z Test session results, code coverage, and logs:
+2026-11-03T08:34:09.1910090Z 	/Users/runner/work/_temp/ios-runtime/Tests.xcresult
+2026-11-03T08:34:09.1910290Z 
+2026-11-03T08:34:09.1910340Z Testing started
+2026-11-03T08:34:09.1910800Z 2026-11-03 08:25:57.763 xcodebuild[2144:10394] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+2026-11-03T08:34:09.1911390Z --- xcodebuild: WARNING: Using the first of multiple matching destinations:
+2026-11-03T08:34:09.1912270Z { platform:iOS Simulator, arch:arm64, id:1F0A9C4B-2DFC-444E-B162-696E5078A72B, OS:26.5, name:iPhone Air }
+2026-11-03T08:34:09.1912830Z { platform:iOS Simulator, arch:x86_64, id:1F0A9C4B-2DFC-444E-B162-696E5078A72B, OS:26.5, name:iPhone Air }
+2026-11-03T08:34:09.1913460Z 2026-11-03 08:33:53.980 xcodebuild[2144:10394] [MT] IDETestOperationsObserverDebug: 423.223 elapsed -- Testing started completed.
+2026-11-03T08:34:09.1914110Z 2026-11-03 08:33:53.980 xcodebuild[2144:10394] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-03T08:34:09.1914690Z 2026-11-03 08:33:53.980 xcodebuild[2144:10394] [MT] IDETestOperationsObserverDebug: 423.223 sec, +423.223 sec -- end
+2026-11-03T08:34:09.1915110Z Failing tests:
+2026-11-03T08:34:09.1915500Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1916170Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1916800Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1917500Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1918130Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1918720Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1919410Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1920180Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1920890Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1921560Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1922710Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1923420Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1924070Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1924780Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1925420Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1929420Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1931140Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1941520Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1942180Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1942750Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1943770Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1944360Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1944940Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1945690Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1946350Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1951400Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1953310Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1955700Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1958240Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1958920Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1959610Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1960320Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1960940Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1961550Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1962370Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1963030Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1963740Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1964360Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1964960Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1965580Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1967750Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1969350Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1970920Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1974020Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1975630Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1977250Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1978810Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1980410Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1982080Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1983660Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1985380Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1987800Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.1989470Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2003760Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2005430Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2019900Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2021500Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2023030Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2024560Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2026250Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2027910Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2029500Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2031130Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2032680Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2034220Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2035770Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2037510Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2039090Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2041090Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2042030Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2042700Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2043320Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2043920Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2044550Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2045230Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2045930Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2049240Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2050850Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2052490Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2054290Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2055910Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2057570Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2059200Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2060850Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2062410Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2064080Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2066960Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2067840Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2068440Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2069160Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2069780Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2070370Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2071210Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2071900Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2072620Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2073260Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2073860Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2074550Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2075150Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2075810Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2076440Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2077180Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2078730Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2080680Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2082550Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2084240Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2085790Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2087620Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2089420Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2090870Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2092510Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2093140Z 	-[BoundedDCTWorkspaceTests reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:)]
+2026-11-03T08:34:09.2093560Z 
+2026-11-03T08:34:09.2093620Z ** TEST FAILED **
+2026-11-03T08:34:09.2093730Z 
+2026-11-03T08:34:09.2093740Z 
+2026-11-03T08:34:09.2093920Z Traceback (most recent call last):
+2026-11-03T08:34:09.2094360Z   File "/Users/runner/work/SwiftJLI/SwiftJLI/Scripts/test-apple-simulator.py", line 99, in <module>
+2026-11-03T08:34:09.2094820Z     main()
+2026-11-03T08:34:09.2094980Z     ~~~~^^
+2026-11-03T08:34:09.2095300Z   File "/Users/runner/work/SwiftJLI/SwiftJLI/Scripts/test-apple-simulator.py", line 79, in main
+2026-11-03T08:34:09.2095780Z     log = run('test', ['xcodebuild', 'test', '-scheme', scheme,
+2026-11-03T08:34:09.2096220Z         '-destination', 'platform=' + destination_platform + ',id=' + device['udid'],
+2026-11-03T08:34:09.2096680Z         '-destination-timeout', '120', '-parallel-testing-enabled', 'NO',
+2026-11-03T08:34:09.2097030Z         '-derivedDataPath', str(out / 'DerivedData'),
+2026-11-03T08:34:09.2097740Z         '-resultBundlePath', str(out / 'Tests.xcresult'), 'CODE_SIGNING_ALLOWED=NO'], timeout=1500)
+2026-11-03T08:34:09.2098300Z   File "/Users/runner/work/SwiftJLI/SwiftJLI/Scripts/test-apple-simulator.py", line 50, in run
+2026-11-03T08:34:09.2098840Z     raise RuntimeError(f'{name} failed with exit {result.returncode}')
+2026-11-03T08:34:09.2099600Z RuntimeError: test failed with exit 65
+2026-11-03T08:34:09.2270410Z ##[error]Process completed with exit code 1.
+2026-11-03T08:34:09.2728050Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-11-03T08:34:09.2728560Z with:
+2026-11-03T08:34:09.2728710Z   name: ios-runtime-evidence
+2026-11-03T08:34:09.2730160Z   path: /Users/runner/work/_temp/ios-runtime/*.json
+/Users/runner/work/_temp/ios-runtime/*.log
+/Users/runner/work/_temp/ios-runtime/Tests.xcresult
+/Users/runner/work/_temp/ios-predecessor/*.json
+/Users/runner/work/_temp/ios-predecessor/*.log
+/Users/runner/work/_temp/ios-predecessor/Tests.xcresult
+/Users/runner/work/_temp/ios-chroma-predecessor/*.json
+/Users/runner/work/_temp/ios-chroma-predecessor/*.log
+/Users/runner/work/_temp/ios-chroma-predecessor/Tests.xcresult
+
+2026-11-03T08:34:09.2733260Z   retention-days: 14
+2026-11-03T08:34:09.2733430Z   if-no-files-found: warn
+2026-11-03T08:34:09.2733590Z   compression-level: 6
+2026-11-03T08:34:09.2733750Z   overwrite: false
+2026-11-03T08:34:09.2733910Z   include-hidden-files: false
+2026-11-03T08:34:09.2734090Z ##[endgroup]
+2026-11-03T08:34:10.5961930Z (node:15435) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-03T08:34:10.5976360Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-03T08:34:10.9588810Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-11-03T08:34:10.9589820Z The least common ancestor is /Users/runner/work/_temp. This will be the root directory of the artifact
+2026-11-03T08:34:10.9590340Z With the provided path, there will be 2741 files uploaded
+2026-11-03T08:34:10.9590710Z Artifact name is valid!
+2026-11-03T08:34:10.9590910Z Root directory input is valid!
+2026-11-03T08:34:11.3631790Z Beginning upload of artifact content to blob storage
+2026-11-03T08:34:11.8962370Z (node:15435) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-03T08:34:12.4418440Z Uploaded bytes 8388608
+2026-11-03T08:34:12.8898910Z Uploaded bytes 16777216
+2026-11-03T08:34:13.0808580Z Uploaded bytes 25165824
+2026-11-03T08:34:13.9944970Z Uploaded bytes 33554432
+2026-11-03T08:34:14.5877570Z Uploaded bytes 41943040
+2026-11-03T08:34:15.0699370Z Uploaded bytes 50331648
+2026-11-03T08:34:15.8257760Z Uploaded bytes 58720256
+2026-11-03T08:34:17.1336490Z Uploaded bytes 67108864
+2026-11-03T08:34:17.7137590Z Uploaded bytes 68371973
+2026-11-03T08:34:17.7615960Z Finished uploading artifact content to blob storage!
+2026-11-03T08:34:17.7727500Z SHA256 digest of uploaded artifact zip is 409e8c9fee108ebc307f27780f46ed6b9ffa29ecfc6a3181605d9377feb0830c
+2026-11-03T08:34:17.7739420Z Finalizing artifact upload
+2026-11-03T08:34:18.3506620Z Artifact ios-runtime-evidence.zip successfully finalized. Artifact ID 13215683246
+2026-11-03T08:34:18.3508770Z Artifact ios-runtime-evidence has been successfully uploaded! Final size is 68371973 bytes. Artifact ID is 13215683246
+2026-11-03T08:34:18.3511610Z Artifact download URL: https://github.com/raster-labs/SwiftJLI/actions/runs/41602314446/artifacts/13215683246
+2026-11-03T08:34:18.3906060Z Post job cleanup.
+2026-11-03T08:34:18.6354820Z [command]/opt/homebrew/bin/git version
+2026-11-03T08:34:18.6944660Z git version 2.56.0
+2026-11-03T08:34:18.6993730Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/0d88b6b4-98e5-403c-ac01-47360a435877/.gitconfig'
+2026-11-03T08:34:18.7062560Z Temporarily overriding HOME='/Users/runner/work/_temp/0d88b6b4-98e5-403c-ac01-47360a435877' before making global git config changes
+2026-11-03T08:34:18.7078440Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-03T08:34:18.7085350Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/SwiftJLI/SwiftJLI
+2026-11-03T08:34:18.7963960Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-03T08:34:18.8093140Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-03T08:34:18.9899440Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-03T08:34:18.9966850Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-03T08:34:19.1172300Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-03T08:34:19.1475590Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-03T08:34:19.3179140Z Cleaning up orphan processes
+2026-11-03T08:34:24.0724070Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

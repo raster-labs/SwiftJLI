@@ -1,0 +1,357 @@
+
+/private/tmp/swiftjli-round5-lossless-build/out/Products/Release/SwiftJLI.o:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+0000000000068eac <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n>:
+   68eac:      	sub	sp, sp, #0xa0
+   68eb0:      	stp	x28, x3, [sp, #0x40]
+   68eb4:      	stp	x27, x26, [sp, #0x50]
+   68eb8:      	stp	x25, x24, [sp, #0x60]
+   68ebc:      	stp	x23, x22, [sp, #0x70]
+   68ec0:      	stp	x20, x19, [sp, #0x80]
+   68ec4:      	stp	x29, x30, [sp, #0x90]
+   68ec8:      	add	x29, sp, #0x90
+   68ecc:      	mov	x9, #0x24               ; =36
+   68ed0:      	movk	x9, #0xd000, lsl #48
+   68ed4:      	mov	x20, #0x24              ; =36
+   68ed8:      	movk	x20, #0xd000, lsl #48
+   68edc:      	adrp	x8, 0x68000 <_$s8SwiftJLI14HuffmanDecoderO8decodeAC4from5table6lookup4intoyAA9BitReaderVz_AA0C5TableVAA11ACLookaheadVSrys5Int32VGtKFZTf4nnnnd_n+0x2f4>
+		0000000000068edc:  ARM64_RELOC_PAGE21	LC276
+   68ee0:      	add	x8, x8, #0x0
+		0000000000068ee0:  ARM64_RELOC_PAGEOFF12	LC276
+   68ee4:      	sub	x8, x8, #0x20
+   68ee8:      	cmp	x4, #0x1
+   68eec:      	b.lt	0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68ef0:      	subs	x10, x5, #0x1
+   68ef4:      	b.lt	0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68ef8:      	ldr	x11, [sp, #0x48]
+   68efc:      	sub	x11, x11, #0x1
+   68f00:      	cmp	x11, #0x1
+   68f04:      	b.hi	0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f08:      	mov	x25, x4
+   68f0c:      	ldr	x8, [sp, #0x48]
+   68f10:      	mul	x11, x4, x8
+   68f14:      	smulh	x8, x4, x8
+   68f18:      	cmp	x8, x11, asr #63
+   68f1c:      	cset	w14, ne
+   68f20:      	mul	x8, x10, x2
+   68f24:      	smulh	x10, x10, x2
+   68f28:      	cmp	x10, x8, asr #63
+   68f2c:      	cset	w12, ne
+   68f30:      	adds	x10, x8, x11
+   68f34:      	cset	w13, vs
+   68f38:      	adrp	x8, 0x68000 <_$s8SwiftJLI14HuffmanDecoderO8decodeAC4from5table6lookup4intoyAA9BitReaderVz_AA0C5TableVAA11ACLookaheadVSrys5Int32VGtKFZTf4nnnnd_n+0x2f4>
+		0000000000068f38:  ARM64_RELOC_PAGE21	LC277
+   68f3c:      	add	x8, x8, #0x0
+		0000000000068f3c:  ARM64_RELOC_PAGEOFF12	LC277
+   68f40:      	sub	x8, x8, #0x20
+   68f44:      	add	x20, x9, #0x1
+   68f48:      	tbnz	w14, #0x0, 0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f4c:      	tbnz	w12, #0x0, 0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f50:      	tbnz	w13, #0x0, 0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f54:      	cmp	x2, x11
+   68f58:      	b.lt	0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f5c:      	cbz	x0, 0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f60:      	add	x20, x9, #0x1
+   68f64:      	sub	x9, x1, x0
+   68f68:      	cmp	x9, x10
+   68f6c:      	b.lt	0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f70:      	ldr	x9, [x29, #0x18]
+   68f74:      	str	x9, [sp, #0x38]
+   68f78:      	cmp	x9, #0xf
+   68f7c:      	b.hi	0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f80:      	ldr	x9, [x29, #0x20]
+   68f84:      	str	x9, [sp, #0x20]
+   68f88:      	cmp	x9, #0x1
+   68f8c:      	b.lt	0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f90:      	lsr	w9, w6, #16
+   68f94:      	cbnz	w9, 0x68fbc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x110>
+   68f98:      	mov	x19, x21
+   68f9c:      	mov	x22, x7
+   68fa0:      	str	x2, [sp, #0x28]
+   68fa4:      	mov	x28, #0x0               ; =0
+   68fa8:      	ldr	x20, [x29, #0x10]
+   68fac:      	str	w6, [sp, #0xc]
+   68fb0:      	mov	x27, x6
+   68fb4:      	stp	x0, x5, [sp, #0x10]
+   68fb8:      	b	0x6902c <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x180>
+   68fbc:      	orr	x22, x8, #0x8000000000000000
+   68fc0:      	bl	0x68fc0 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x114>
+		0000000000068fc0:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI8JLIErrorOACs5ErrorAAWl
+   68fc4:      	mov	x1, x0
+   68fc8:      	adrp	x0, 0x68000 <_$s8SwiftJLI14HuffmanDecoderO8decodeAC4from5table6lookup4intoyAA9BitReaderVz_AA0C5TableVAA11ACLookaheadVSrys5Int32VGtKFZTf4nnnnd_n+0x2f4>
+		0000000000068fc8:  ARM64_RELOC_GOT_LOAD_PAGE21	_$s8SwiftJLI8JLIErrorON
+   68fcc:      	ldr	x0, [x0]
+		0000000000068fcc:  ARM64_RELOC_GOT_LOAD_PAGEOFF12	_$s8SwiftJLI8JLIErrorON
+   68fd0:      	mov	x2, #0x0                ; =0
+   68fd4:      	mov	w3, #0x0                ; =0
+   68fd8:      	bl	0x68fd8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x12c>
+		0000000000068fd8:  ARM64_RELOC_BRANCH26	_swift_allocError
+   68fdc:      	mov	x19, x0
+   68fe0:      	stp	x20, x22, [x1]
+   68fe4:      	stp	xzr, xzr, [x1, #0x10]
+   68fe8:      	mov	w8, #0x6                ; =6
+   68fec:      	strb	w8, [x1, #0x20]
+   68ff0:      	mov	x21, x0
+   68ff4:      	bl	0x68ff4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x148>
+		0000000000068ff4:  ARM64_RELOC_BRANCH26	_swift_willThrow
+   68ff8:      	mov	x21, x19
+   68ffc:      	ldp	x29, x30, [sp, #0x90]
+   69000:      	ldp	x20, x19, [sp, #0x80]
+   69004:      	ldp	x23, x22, [sp, #0x70]
+   69008:      	ldp	x25, x24, [sp, #0x60]
+   6900c:      	ldp	x27, x26, [sp, #0x50]
+   69010:      	ldr	x28, [sp, #0x40]
+   69014:      	add	sp, sp, #0xa0
+   69018:      	ret
+   6901c:      	ldp	x0, x5, [sp, #0x10]
+   69020:      	ldr	x28, [sp, #0x30]
+   69024:      	cmp	x28, x5
+   69028:      	b.eq	0x68ff8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x14c>
+   6902c:      	mov	x24, x0
+   69030:      	mov	x21, x19
+   69034:      	bl	0x69034 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x188>
+		0000000000069034:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI15NativeOperationV5checkyyKFZTf4d_n
+   69038:      	mov	x19, x21
+   6903c:      	cbnz	x21, 0x68ff8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x14c>
+   69040:      	cbz	x28, 0x69080 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x1d4>
+   69044:      	ldr	x9, [sp, #0x20]
+   69048:      	udiv	x8, x28, x9
+   6904c:      	msub	x9, x8, x9, x28
+   69050:      	mov	x26, x27
+   69054:      	mov	x11, x24
+   69058:      	cbnz	x9, 0x69088 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x1dc>
+   6905c:      	sub	w8, w8, #0x1
+   69060:      	and	x0, x8, #0x7
+   69064:      	mov	x21, x19
+   69068:      	bl	0x69068 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x1bc>
+		0000000000069068:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI9BitReaderV17skipRestartMarker13expectedIndexySi_tKF
+   6906c:      	mov	x11, x24
+   69070:      	mov	x19, x21
+   69074:      	ldr	w26, [sp, #0xc]
+   69078:      	cbz	x21, 0x69088 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x1dc>
+   6907c:      	b	0x68ff8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x14c>
+   69080:      	ldr	w26, [sp, #0xc]
+   69084:      	mov	x11, x24
+   69088:      	ldr	x9, [sp, #0x28]
+   6908c:      	mul	x8, x28, x9
+   69090:      	smulh	x9, x28, x9
+   69094:      	cmp	x9, x8, asr #63
+   69098:      	b.ne	0x693d4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x528>
+   6909c:      	mov	x24, #0x0               ; =0
+   690a0:      	add	x28, x28, #0x1
+   690a4:      	str	x28, [sp, #0x30]
+   690a8:      	add	x28, x11, x8
+   690ac:      	subs	x23, x25, x24
+   690b0:      	b.vs	0x693a0 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x4f4>
+   690b4:      	cmp	x23, #0x1
+   690b8:      	b.lt	0x690e8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x23c>
+   690bc:      	ldr	x8, [x22, #0x30]
+   690c0:      	ldr	x9, [x8, #0x10]
+   690c4:      	cbz	x9, 0x693b0 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x504>
+   690c8:      	ldrb	w8, [x8, #0x20]
+   690cc:      	cmp	w8, #0x1
+   690d0:      	b.ne	0x690e8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x23c>
+   690d4:      	ldr	x8, [x22, #0x38]
+   690d8:      	ldr	x9, [x8, #0x10]
+   690dc:      	cbz	x9, 0x693c4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x518>
+   690e0:      	ldrb	w8, [x8, #0x20]
+   690e4:      	cbz	w8, 0x69254 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x3a8>
+   690e8:      	mov	x0, x22
+   690ec:      	bl	0x690ec <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x240>
+		00000000000690ec:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF
+   690f0:      	and	x8, x0, #0xff00000000
+   690f4:      	mov	x9, #0x100000000        ; =4294967296
+   690f8:      	cmp	x8, x9
+   690fc:      	b.ne	0x691e4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x338>
+   69100:      	ldr	x8, [x20, #0x38]
+   69104:      	cmp	x8, #0x7
+   69108:      	b.gt	0x69120 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x274>
+   6910c:      	mov	w0, #0x8                ; =8
+   69110:      	bl	0x69110 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x264>
+		0000000000069110:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF
+   69114:      	ldr	x8, [x20, #0x38]
+   69118:      	cmp	x8, #0x8
+   6911c:      	b.lt	0x69180 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x2d4>
+   69120:      	ldr	x9, [x20, #0x30]
+   69124:      	sub	x10, x8, #0x8
+   69128:      	lsr	x9, x9, x10
+   6912c:      	and	x9, x9, #0xff
+   69130:      	cmp	x8, #0x47
+   69134:      	csel	x9, xzr, x9, hi
+   69138:      	ldr	x10, [x22, #0x30]
+   6913c:      	ldr	x11, [x10, #0x10]
+   69140:      	cmp	x9, x11
+   69144:      	b.hs	0x693c0 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x514>
+   69148:      	add	x10, x10, x9
+   6914c:      	ldrb	w10, [x10, #0x20]
+   69150:      	cbz	x10, 0x69180 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x2d4>
+   69154:      	sub	x8, x8, x10
+   69158:      	str	x8, [x20, #0x38]
+   6915c:      	ldr	x8, [x22, #0x38]
+   69160:      	ldr	x10, [x8, #0x10]
+   69164:      	cmp	x9, x10
+   69168:      	b.hs	0x693c8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x51c>
+   6916c:      	add	x8, x8, x9
+   69170:      	ldrb	w8, [x8, #0x20]
+   69174:      	ands	w0, w8, #0xff
+   69178:      	b.ne	0x691a4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x2f8>
+   6917c:      	b	0x691e4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x338>
+   69180:      	mov	x0, x20
+   69184:      	mov	x1, x22
+   69188:      	mov	x21, x19
+   6918c:      	bl	0x6918c <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x2e0>
+		000000000006918c:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI14HuffmanDecoderO017decodeSymbolBitByG04from5tables5UInt8VAA0G6ReaderVz_AA0C5TableVtKFZTf4nnd_n
+   69190:      	mov	x19, x21
+   69194:      	cbnz	x21, 0x68ff8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x14c>
+   69198:      	mov	x8, x0
+   6919c:      	ands	w0, w8, #0xff
+   691a0:      	b.eq	0x691e4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x338>
+   691a4:      	cmp	w0, #0x10
+   691a8:      	b.ne	0x691b4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x308>
+   691ac:      	mov	w0, #-0x8000            ; =-32768
+   691b0:      	b	0x691e4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x338>
+   691b4:      	and	x23, x8, #0xff
+   691b8:      	mov	x0, x23
+   691bc:      	mov	x21, x19
+   691c0:      	bl	0x691c0 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x314>
+		00000000000691c0:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI9BitReaderV8readBitsys6UInt32VSiKF
+   691c4:      	mov	x19, x21
+   691c8:      	cbnz	x21, 0x68ff8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x14c>
+   691cc:      	cmp	w23, #0x21
+   691d0:      	b.hs	0x691e0 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x334>
+   691d4:      	sub	w8, w23, #0x1
+   691d8:      	lsr	w8, w0, w8
+   691dc:      	cbz	w8, 0x69340 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x494>
+   691e0:      	tbnz	w0, #0x1f, 0x693cc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x520>
+   691e4:      	adds	w8, w26, w0
+   691e8:      	b.vs	0x693a4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x4f8>
+   691ec:      	and	w26, w8, #0xffff
+   691f0:      	cmp	x24, #0x0
+   691f4:      	csel	w27, w26, w27, eq
+   691f8:      	ldr	x8, [sp, #0x48]
+   691fc:      	cmp	x8, #0x1
+   69200:      	b.ne	0x69220 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x374>
+   69204:      	ldr	x8, [sp, #0x38]
+   69208:      	lsl	x8, x26, x8
+   6920c:      	cmp	x8, #0xff
+   69210:      	mov	w9, #0xff               ; =255
+   69214:      	csel	x8, x8, x9, lo
+   69218:      	strb	w8, [x28, x24]
+   6921c:      	b	0x69244 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x398>
+   69220:      	mov	x8, #0x4000000000000000 ; =4611686018427387904
+   69224:      	cmn	x24, x8
+   69228:      	b.mi	0x693b4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x508>
+   6922c:      	ldr	x8, [sp, #0x38]
+   69230:      	lsl	x8, x26, x8
+   69234:      	mov	w9, #0xffff             ; =65535
+   69238:      	cmp	x8, x9
+   6923c:      	csel	x8, x8, x9, lo
+   69240:      	strh	w8, [x28, x24, lsl #1]
+   69244:      	add	x24, x24, #0x1
+   69248:      	cmp	x24, x25
+   6924c:      	b.lt	0x690ac <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x200>
+   69250:      	b	0x6901c <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x170>
+   69254:      	ldr	x8, [x20, #0x38]
+   69258:      	cmp	x8, #0x7
+   6925c:      	b.gt	0x69274 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x3c8>
+   69260:      	mov	w0, #0x8                ; =8
+   69264:      	bl	0x69264 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x3b8>
+		0000000000069264:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF
+   69268:      	ldr	x8, [x20, #0x38]
+   6926c:      	cmp	x8, #0x1
+   69270:      	b.lt	0x690e8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x23c>
+   69274:      	neg	w9, w8
+   69278:      	ldr	x10, [x20, #0x30]
+   6927c:      	lsl	x9, x10, x9
+   69280:      	clz	x9, x9
+   69284:      	cmp	x8, x23
+   69288:      	csel	x10, x8, x23, lo
+   6928c:      	cmp	x9, x10
+   69290:      	csel	x23, x9, x10, lo
+   69294:      	sub	x8, x8, x23
+   69298:      	str	x8, [x20, #0x38]
+   6929c:      	cbz	x9, 0x690e8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x23c>
+   692a0:      	cmp	x24, #0x0
+   692a4:      	csel	w27, w26, w27, eq
+   692a8:      	sxtw	x8, w26
+   692ac:      	ldr	x9, [sp, #0x38]
+   692b0:      	lsl	x8, x8, x9
+   692b4:      	ldr	x9, [sp, #0x48]
+   692b8:      	cmp	x9, #0x1
+   692bc:      	b.ne	0x692e4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x438>
+   692c0:      	cmp	x8, #0xff
+   692c4:      	mov	w9, #0xff               ; =255
+   692c8:      	csel	x8, x8, x9, lo
+   692cc:      	cmp	w26, #0x0
+   692d0:      	csel	w1, wzr, w8, lt
+   692d4:      	add	x0, x28, x24
+   692d8:      	mov	x2, x23
+   692dc:      	bl	0x692dc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x430>
+		00000000000692dc:  ARM64_RELOC_BRANCH26	_memset
+   692e0:      	b	0x6936c <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x4c0>
+   692e4:      	mov	w9, #0xffff             ; =65535
+   692e8:      	cmp	x8, x9
+   692ec:      	csel	x8, x8, x9, lo
+   692f0:      	cmp	w26, #0x0
+   692f4:      	csel	w8, wzr, w8, lt
+   692f8:      	cmp	x23, #0x4
+   692fc:      	b.lo	0x69364 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x4b8>
+   69300:      	mov	x11, #0x0               ; =0
+   69304:      	mov	x9, #0x1000100010001    ; =281479271743489
+   69308:      	mul	x10, x8, x9
+   6930c:      	adds	x9, x24, x11
+   69310:      	b.vs	0x693b8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x50c>
+   69314:      	mov	x12, #0x4000000000000000 ; =4611686018427387904
+   69318:      	cmn	x9, x12
+   6931c:      	b.mi	0x693bc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x510>
+   69320:      	lsl	x9, x9, #1
+   69324:      	str	x10, [x28, x9]
+   69328:      	add	x9, x11, #0x4
+   6932c:      	add	x12, x11, #0x8
+   69330:      	mov	x11, x9
+   69334:      	cmp	x23, x12
+   69338:      	b.hs	0x6930c <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x460>
+   6933c:      	b	0x69378 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x4cc>
+   69340:      	mov	w8, #0x1                ; =1
+   69344:      	lsl	x8, x8, x23
+   69348:      	subs	x8, x8, #0x1
+   6934c:      	b.vs	0x693d8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x52c>
+   69350:      	lsr	x9, x8, #31
+   69354:      	cbnz	x9, 0x693dc <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x530>
+   69358:      	subs	w0, w0, w8
+   6935c:      	b.vc	0x691e4 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x338>
+   69360:      	b	0x693e0 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x534>
+   69364:      	mov	x9, #0x0                ; =0
+   69368:      	b	0x69380 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x4d4>
+   6936c:      	adds	x24, x24, x23
+   69370:      	b.vc	0x69248 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x39c>
+   69374:      	b	0x693d0 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x524>
+   69378:      	cmp	x9, x23
+   6937c:      	b.hs	0x6936c <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x4c0>
+   69380:      	adds	x10, x24, x9
+   69384:      	b.vs	0x693a8 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x4fc>
+   69388:      	mov	x11, #0x4000000000000000 ; =4611686018427387904
+   6938c:      	cmn	x10, x11
+   69390:      	b.mi	0x693ac <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x500>
+   69394:      	strh	w8, [x28, x10, lsl #1]
+   69398:      	add	x9, x9, #0x1
+   6939c:      	b	0x69378 <_$s8SwiftJLI22ZeroRunLosslessDecoderO6decode4into5width6height4half5table6reader14pointTransform11segmentRowsyAA25BorrowedSampleDestinationV_S2is5Int32VAA12HuffmanTableVAA9BitReaderVzS2itKFZTf4nnnnnnnnd_n+0x4cc>
+   693a0:      	brk	#0x1
+   693a4:      	brk	#0x1
+   693a8:      	brk	#0x1
+   693ac:      	brk	#0x1
+   693b0:      	brk	#0x1
+   693b4:      	brk	#0x1
+   693b8:      	brk	#0x1
+   693bc:      	brk	#0x1
+   693c0:      	brk	#0x1
+   693c4:      	brk	#0x1
+   693c8:      	brk	#0x1
+   693cc:      	brk	#0x1
+   693d0:      	brk	#0x1
+   693d4:      	brk	#0x1
+   693d8:      	brk	#0x1
+   693dc:      	brk	#0x1
+   693e0:      	brk	#0x1

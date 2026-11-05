@@ -11,7 +11,7 @@ extension JPEGCodec {
               ids.count == 1 || ids == [1, 2, 3] || ids == [82, 71, 66] else {
             throw CodecError(.unsupportedFeature, "DCT requires 8/12-bit greyscale, YCbCr or explicit RGB JPEG.")
         }
-        if parsed.iccProfile == XYBICCProfile.data {
+        if parsed.isXYB {
             guard f.precision == 8, ids == [1, 2, 3],
                   f.components.allSatisfy({ $0.horizontalSampling == 1 && $0.verticalSampling == 1 }) else {
                 throw CodecError(.unsupportedFeature, "XYB requires full-resolution 8-bit components.")

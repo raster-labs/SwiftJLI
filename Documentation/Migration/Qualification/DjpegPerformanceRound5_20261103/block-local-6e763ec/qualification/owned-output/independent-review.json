@@ -1,0 +1,752 @@
+{
+  "status": "passed",
+  "reviewer": "/root/round4_audit",
+  "createdUTC": "2026-11-03T19:50:24.957372+00:00",
+  "scope": "Independent read/hash/arithmetic review only; no compiler, test, benchmark or profiling command executed; original runner/results unchanged.",
+  "sourceRevisions": {
+    "baseline": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+    "candidate": "6e763ec2099e162bae52a40109ff74269ea9899f"
+  },
+  "preparedSHA256": "99ff942a5d04aa19c4f409fabd91abeca34609d7ee53f195c47bac497d7b0586",
+  "receiptSHA256": {
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/owned-output/prepared.json": "99ff942a5d04aa19c4f409fabd91abeca34609d7ee53f195c47bac497d7b0586",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/owned-output/runs/initial/build.json": "23a5dfb513884d2c222ef611846a1097c4b279a3c3ac6140c6bfbb46d21881c2",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/owned-output/runs/initial/results.json": "0e0df6d10cb0da320c214558ed5b42299dbf11c0369d0a8c421c9d57df076520",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/owned-output/runs/initial/baseline-build.json": "d4504b668ca1aa336116c249de485c6c1e2d8f4c6ec8d974cbe471d66daa9782",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/owned-output/runs/initial/baseline-rss.json": "b122d94d2506647fb76decfd0571f21ef52cf6c6103de315e22572c6dce5300e",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/owned-output/runs/initial/summary-rows.json": "eb1990d674b7092cae44daf846f0a5a9bb73a9b0eda340b4c0857b9bd02e66fb"
+  },
+  "inputPinCount": 186,
+  "checksPassed": 746,
+  "checksTotal": 746,
+  "failedChecks": [],
+  "actionCounts": {
+    "build": 4,
+    "results": 105,
+    "baseline-build": 2,
+    "baseline-rss": 72
+  },
+  "counts": {
+    "timingRecords": 24,
+    "admittedCases": 12,
+    "qualityExcludedRecords": 8,
+    "qualityExcludedCases": 4,
+    "swiftTurboFreshRSSProcesses": 72,
+    "ca0CandidateFreshRSSProcesses": 72,
+    "fasterBothRoundsCases": 11,
+    "lowerRSSMedianThanTurboCases": 5,
+    "higherRSSMedianThanTurboCases": 7
+  },
+  "qualityExclusions": [
+    {
+      "fixture": "rgb8-512.jpg",
+      "workers": 8,
+      "maximumDifference": 3,
+      "tolerance": 2
+    },
+    {
+      "fixture": "rgb8-2048.jpg",
+      "workers": 8,
+      "maximumDifference": 3,
+      "tolerance": 2
+    },
+    {
+      "fixture": "progressiveRGB8-512.jpg",
+      "workers": 8,
+      "maximumDifference": 3,
+      "tolerance": 2
+    },
+    {
+      "fixture": "progressiveRGB8-2048.jpg",
+      "workers": 8,
+      "maximumDifference": 3,
+      "tolerance": 2
+    }
+  ],
+  "rows": [
+    {
+      "fixture": "flat-19.jpg",
+      "workers": 8,
+      "tolerance": 0,
+      "maximumSampleDifference": 0,
+      "outputBytes": 722,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 0.0069375,
+          "turboMedianMilliseconds": 0.010750000000000001,
+          "swiftLatencyChangePercent": -35.46511627906976
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 0.0073335,
+          "turboMedianMilliseconds": 0.010562499999999999,
+          "swiftLatencyChangePercent": -30.570414201183425
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          9273344,
+          9322496,
+          9355264
+        ],
+        "libjpeg-turbo": [
+          9863168,
+          9912320,
+          9961472
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 9322496,
+        "libjpeg-turbo": 9912320
+      },
+      "swiftMinusTurboRSSBytes": -589824,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          9420800,
+          9371648,
+          9437184
+        ],
+        "candidate": [
+          9306112,
+          9355264,
+          9371648
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 9420800,
+        "candidate": 9355264
+      },
+      "candidateMinusCa0RSSBytes": -65536
+    },
+    {
+      "fixture": "ramp-19.jpg",
+      "workers": 8,
+      "tolerance": 0,
+      "maximumSampleDifference": 0,
+      "outputBytes": 722,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 0.00725,
+          "turboMedianMilliseconds": 0.011291,
+          "swiftLatencyChangePercent": -35.78956691169959
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 0.008021,
+          "turboMedianMilliseconds": 0.011666500000000002,
+          "swiftLatencyChangePercent": -31.24758925127502
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          9322496,
+          9322496,
+          9388032
+        ],
+        "libjpeg-turbo": [
+          9863168,
+          9863168,
+          9928704
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 9322496,
+        "libjpeg-turbo": 9863168
+      },
+      "swiftMinusTurboRSSBytes": -540672,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          9404416,
+          9355264,
+          9404416
+        ],
+        "candidate": [
+          9355264,
+          9388032,
+          9404416
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 9404416,
+        "candidate": 9388032
+      },
+      "candidateMinusCa0RSSBytes": -16384
+    },
+    {
+      "fixture": "noise-19.jpg",
+      "workers": 8,
+      "tolerance": 0,
+      "maximumSampleDifference": 0,
+      "outputBytes": 722,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 0.007479,
+          "turboMedianMilliseconds": 0.0114375,
+          "swiftLatencyChangePercent": -34.60983606557376
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 0.007896,
+          "turboMedianMilliseconds": 0.0117085,
+          "swiftLatencyChangePercent": -32.561814066703676
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          9289728,
+          9338880,
+          9322496
+        ],
+        "libjpeg-turbo": [
+          9863168,
+          9863168,
+          9895936
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 9322496,
+        "libjpeg-turbo": 9863168
+      },
+      "swiftMinusTurboRSSBytes": -540672,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          9420800,
+          9420800,
+          9371648
+        ],
+        "candidate": [
+          9388032,
+          9355264,
+          9404416
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 9420800,
+        "candidate": 9388032
+      },
+      "candidateMinusCa0RSSBytes": -32768
+    },
+    {
+      "fixture": "mixed-19.jpg",
+      "workers": 8,
+      "tolerance": 0,
+      "maximumSampleDifference": 0,
+      "outputBytes": 722,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 0.0071875,
+          "turboMedianMilliseconds": 0.010937500000000001,
+          "swiftLatencyChangePercent": -34.2857142857143
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 0.0071460000000000004,
+          "turboMedianMilliseconds": 0.010958,
+          "swiftLatencyChangePercent": -34.78736995802153
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          9322496,
+          9355264,
+          9388032
+        ],
+        "libjpeg-turbo": [
+          9863168,
+          9863168,
+          9895936
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 9355264,
+        "libjpeg-turbo": 9863168
+      },
+      "swiftMinusTurboRSSBytes": -507904,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          9388032,
+          9388032,
+          9404416
+        ],
+        "candidate": [
+          9355264,
+          9388032,
+          9371648
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 9388032,
+        "candidate": 9371648
+      },
+      "candidateMinusCa0RSSBytes": -16384
+    },
+    {
+      "fixture": "mixed-2048.jpg",
+      "workers": 8,
+      "tolerance": 0,
+      "maximumSampleDifference": 0,
+      "outputBytes": 8388608,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 12.676541499999999,
+          "turboMedianMilliseconds": 18.988563,
+          "swiftLatencyChangePercent": -33.24117522742506
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 12.7153125,
+          "turboMedianMilliseconds": 19.072354,
+          "swiftLatencyChangePercent": -33.33118449877765
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          22511616,
+          22528000,
+          22528000
+        ],
+        "libjpeg-turbo": [
+          23019520,
+          23003136,
+          23068672
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 22528000,
+        "libjpeg-turbo": 23019520
+      },
+      "swiftMinusTurboRSSBytes": -491520,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          22544384,
+          22577152,
+          22593536
+        ],
+        "candidate": [
+          22593536,
+          22495232,
+          22577152
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 22577152,
+        "candidate": 22577152
+      },
+      "candidateMinusCa0RSSBytes": 0
+    },
+    {
+      "fixture": "dct12-512.jpg",
+      "workers": 8,
+      "tolerance": 4,
+      "maximumSampleDifference": 1,
+      "outputBytes": 524288,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 1.1186255,
+          "turboMedianMilliseconds": 1.2976245,
+          "swiftLatencyChangePercent": -13.794360386999472
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 1.1612295,
+          "turboMedianMilliseconds": 1.326771,
+          "swiftLatencyChangePercent": -12.477021279482303
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          10567680,
+          10551296,
+          10551296
+        ],
+        "libjpeg-turbo": [
+          9994240,
+          10027008,
+          9994240
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 10551296,
+        "libjpeg-turbo": 9994240
+      },
+      "swiftMinusTurboRSSBytes": 557056,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          11337728,
+          11386880,
+          11354112
+        ],
+        "candidate": [
+          10551296,
+          10551296,
+          10600448
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 11354112,
+        "candidate": 10551296
+      },
+      "candidateMinusCa0RSSBytes": -802816
+    },
+    {
+      "fixture": "dct12-2048.jpg",
+      "workers": 8,
+      "tolerance": 4,
+      "maximumSampleDifference": 1,
+      "outputBytes": 8388608,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 15.898020499999998,
+          "turboMedianMilliseconds": 19.3885835,
+          "swiftLatencyChangePercent": -18.003187288024424
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 15.640709,
+          "turboMedianMilliseconds": 19.2165835,
+          "swiftLatencyChangePercent": -18.608273942139608
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          21364736,
+          21463040,
+          21528576
+        ],
+        "libjpeg-turbo": [
+          20889600,
+          20922368,
+          20938752
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 21463040,
+        "libjpeg-turbo": 20922368
+      },
+      "swiftMinusTurboRSSBytes": 540672,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          22233088,
+          22265856,
+          22249472
+        ],
+        "candidate": [
+          21479424,
+          21544960,
+          21463040
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 22249472,
+        "candidate": 21479424
+      },
+      "candidateMinusCa0RSSBytes": -770048
+    },
+    {
+      "fixture": "dct12-2048.jpg",
+      "workers": 1,
+      "tolerance": 4,
+      "maximumSampleDifference": 1,
+      "outputBytes": 8388608,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 22.6019375,
+          "turboMedianMilliseconds": 19.934521,
+          "swiftLatencyChangePercent": 13.380890867656149
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 22.131749499999998,
+          "turboMedianMilliseconds": 19.536167,
+          "swiftLatencyChangePercent": 13.286037634711034
+        }
+      ],
+      "swiftFasterBothRounds": false,
+      "rssBytes": {
+        "SwiftJLI": [
+          21266432,
+          21299200,
+          21315584
+        ],
+        "libjpeg-turbo": [
+          20873216,
+          20922368,
+          20971520
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 21299200,
+        "libjpeg-turbo": 20922368
+      },
+      "swiftMinusTurboRSSBytes": 376832,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          21839872,
+          21823488,
+          21889024
+        ],
+        "candidate": [
+          21282816,
+          21299200,
+          21266432
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 21839872,
+        "candidate": 21282816
+      },
+      "candidateMinusCa0RSSBytes": -557056
+    },
+    {
+      "fixture": "flat-8-512.jpg",
+      "workers": 8,
+      "tolerance": 2,
+      "maximumSampleDifference": 0,
+      "outputBytes": 262144,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 0.053792,
+          "turboMedianMilliseconds": 0.07689599999999999,
+          "swiftLatencyChangePercent": -30.045776113191835
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 0.052417000000000005,
+          "turboMedianMilliseconds": 0.07756249999999999,
+          "swiftLatencyChangePercent": -32.41966156325543
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          9682944,
+          9781248,
+          9748480
+        ],
+        "libjpeg-turbo": [
+          9420800,
+          9420800,
+          9437184
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 9748480,
+        "libjpeg-turbo": 9420800
+      },
+      "swiftMinusTurboRSSBytes": 327680,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          9732096,
+          9764864,
+          9748480
+        ],
+        "candidate": [
+          9715712,
+          9797632,
+          9797632
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 9748480,
+        "candidate": 9797632
+      },
+      "candidateMinusCa0RSSBytes": 49152
+    },
+    {
+      "fixture": "flat-12-512.jpg",
+      "workers": 8,
+      "tolerance": 4,
+      "maximumSampleDifference": 0,
+      "outputBytes": 524288,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 0.059313,
+          "turboMedianMilliseconds": 0.16074999999999998,
+          "swiftLatencyChangePercent": -63.10233281493001
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 0.060479000000000005,
+          "turboMedianMilliseconds": 0.1711665,
+          "swiftLatencyChangePercent": -64.66656734816685
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          9961472,
+          10010624,
+          10027008
+        ],
+        "libjpeg-turbo": [
+          9781248,
+          9748480,
+          9830400
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 10010624,
+        "libjpeg-turbo": 9781248
+      },
+      "swiftMinusTurboRSSBytes": 229376,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          10059776,
+          10010624,
+          10076160
+        ],
+        "candidate": [
+          10010624,
+          10092544,
+          10059776
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 10059776,
+        "candidate": 10059776
+      },
+      "candidateMinusCa0RSSBytes": 0
+    },
+    {
+      "fixture": "noise-8-512.jpg",
+      "workers": 8,
+      "tolerance": 2,
+      "maximumSampleDifference": 1,
+      "outputBytes": 262144,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 1.0895835,
+          "turboMedianMilliseconds": 1.0980835,
+          "swiftLatencyChangePercent": -0.7740759240986717
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 1.087625,
+          "turboMedianMilliseconds": 1.1261455,
+          "swiftLatencyChangePercent": -3.4205615526590405
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          10223616,
+          10289152,
+          10272768
+        ],
+        "libjpeg-turbo": [
+          9633792,
+          9633792,
+          9682944
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 10272768,
+        "libjpeg-turbo": 9633792
+      },
+      "swiftMinusTurboRSSBytes": 638976,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          11026432,
+          11141120,
+          11026432
+        ],
+        "candidate": [
+          10305536,
+          10354688,
+          10289152
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 11026432,
+        "candidate": 10305536
+      },
+      "candidateMinusCa0RSSBytes": -720896
+    },
+    {
+      "fixture": "noise-12-512.jpg",
+      "workers": 8,
+      "tolerance": 4,
+      "maximumSampleDifference": 1,
+      "outputBytes": 524288,
+      "timing": [
+        {
+          "round": 1,
+          "swiftMedianMilliseconds": 1.3014789999999998,
+          "turboMedianMilliseconds": 1.440104,
+          "swiftLatencyChangePercent": -9.626040897046328
+        },
+        {
+          "round": 2,
+          "swiftMedianMilliseconds": 1.2951045,
+          "turboMedianMilliseconds": 1.3586455000000002,
+          "swiftLatencyChangePercent": -4.676790229680961
+        }
+      ],
+      "swiftFasterBothRounds": true,
+      "rssBytes": {
+        "SwiftJLI": [
+          10665984,
+          10698752,
+          10698752
+        ],
+        "libjpeg-turbo": [
+          10076160,
+          10141696,
+          10076160
+        ]
+      },
+      "rssMedianBytes": {
+        "SwiftJLI": 10698752,
+        "libjpeg-turbo": 10076160
+      },
+      "swiftMinusTurboRSSBytes": 622592,
+      "ca0CandidateRSSBytes": {
+        "baseline": [
+          11452416,
+          11517952,
+          11436032
+        ],
+        "candidate": [
+          10665984,
+          10682368,
+          10682368
+        ]
+      },
+      "ca0CandidateMedianRSSBytes": {
+        "baseline": 11452416,
+        "candidate": 10682368
+      },
+      "candidateMinusCa0RSSBytes": -770048
+    }
+  ],
+  "hostVMCPUPercentObservedRange": [
+    94.7,
+    193.8
+  ],
+  "limitations": [
+    "This is a complete-output API comparator against statically linked libjpeg-turbo3.2.1. It does not replace ordinary CLI/djpeg streaming-output comparisons or establish the whole goal achieved.",
+    "Both paths retain compressed input and an equally sized/typed complete output. Admitted DCT outputs may differ by one sample value; same-output memory means equal layout/precision/full retention, not universal byte identity against libjpeg. All five lossless cases are exact.",
+    "Every timing process has one every-sample full-output preflight; measured iterations retain the qualified edge checks. Four RGB cases each have maximum difference3 versus tolerance2 and are excluded from timing/RSS.",
+    "Timings remain provisional under observed host VM and other process activity. Noise8 gains0.77/3.42percent are near parity; single-worker2048DCT remains13.38/13.29percent slower.",
+    "RSS values are medians of three fresh process high-water measurements, not logical allocation counts. Baseline/candidateRSS was a separate fresh paired run with no ca0 timing; its small ties/increases are retained and not pooled with current-vs-libjpeg samples.",
+    "The ca0-to6e comparison spans several production changes and cannot attribute RSS reduction to the two-line empty-array constructor repair alone. Runtime stack, allocator and code-page contributions require measurement; source payload counts do not establish a causal RSS breakdown."
+  ]
+}

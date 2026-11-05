@@ -1,0 +1,189 @@
+{
+  "status": "Rejected alignment diagnostic; ba277 composition remains held",
+  "alignedCSourceRevision": "5edcc5da6d0acb7dd1252ff7a623b00f825f904d",
+  "baselineSwiftRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "candidateSwiftRevision": "ba2771eb3393c703fba106082720d9987c0594e9",
+  "contract": "Suite policy 0.10.0; Apple 26.0 target; Swift 6.2 manifest minimum and Swift 6.4 primary toolchain.",
+  "sourceChange": "Only 128-byte row function entry alignment changed. Swift objects, C bodies, public ABI and input pointer semantics remain unchanged. C-only builds retain -Os, followed by manual relinking.",
+  "build": {
+    "receipt": "build1/build.json",
+    "allCommandsExitZero": true,
+    "warnings": "C sources compiled with -Wall -Wextra -Werror -std=c11; no global function-alignment flags."
+  },
+  "codegenGate": {
+    "passed": true,
+    "receipt": "build1/codegen-gate.json",
+    "initialConservativeFailure": "Retained under initial-nop-only names. The corrected audit admits only 80 bytes of unreachable zero-fill after a terminal RET. No source, object or binary changed; body bytes, calls and frames remain unchanged, and both aligned entrypoints have address modulo 128 equal to zero."
+  },
+  "targeted": {
+    "exactCaseProcesses": 96,
+    "thermalStates": [
+      0
+    ],
+    "raw": "targeted-run1/results.json",
+    "summary": "targeted-run1/summary.json",
+    "gates": {
+      "originalRampRegressionsReproduced": false,
+      "alignedBaselineNoRepeatedRegression": true,
+      "alignedCandidateImprovesEachRampInAtLeast3Rounds": false,
+      "alignedCandidateNoRepeatedRegressionVsOriginal": false,
+      "alignedCandidateNoRepeatedRegressionVsAlignedBaseline": false,
+      "alignedCandidateNoRepeatedRegressionVsOriginalBaseline": false
+    },
+    "rampComparisons": {
+      "ramp-512": {
+        "originalCandidateVsBaseline": {
+          "roundChangePercent": [
+            0.14772754558458612,
+            -4.164261587138707,
+            4.125677387758575,
+            0.6074547200571878
+          ],
+          "medianPairedChangePercent": 0.37759113282088697
+        },
+        "alignedBaselineVsOriginal": {
+          "roundChangePercent": [
+            -4.092350297227365,
+            -0.13361552933126575,
+            1.0480213357181745,
+            -1.0784160460530545
+          ],
+          "medianPairedChangePercent": -0.6060157876921601
+        },
+        "alignedCandidateVsOriginal": {
+          "roundChangePercent": [
+            13.534123019837319,
+            20.826071802021605,
+            14.879022311631761,
+            17.17632956532298
+          ],
+          "medianPairedChangePercent": 16.027675938477373
+        },
+        "alignedCandidateVsAlignedBaseline": {
+          "roundChangePercent": [
+            18.55346736735688,
+            15.949484624359101,
+            18.37793415172837,
+            19.17330677290836
+          ],
+          "medianPairedChangePercent": 18.465700759542624
+        },
+        "alignedCandidateVsOriginalBaseline": {
+          "roundChangePercent": [
+            13.701844193175505,
+            15.79455810672139,
+            19.618560158420895,
+            17.888122710057285
+          ],
+          "medianPairedChangePercent": 16.841340408389335
+        }
+      },
+      "ramp-2048": {
+        "originalCandidateVsBaseline": {
+          "roundChangePercent": [
+            -1.2032932235592209,
+            -0.892633529063358,
+            -4.9167449479978975,
+            -3.003859540903897
+          ],
+          "medianPairedChangePercent": -2.1035763822315587
+        },
+        "alignedBaselineVsOriginal": {
+          "roundChangePercent": [
+            -1.2495850138328657,
+            0.0381916633799495,
+            -6.809653725998855,
+            -3.693310665940941
+          ],
+          "medianPairedChangePercent": -2.4714478398869035
+        },
+        "alignedCandidateVsOriginal": {
+          "roundChangePercent": [
+            19.28400359874045,
+            19.6312637424912,
+            16.021725877071447,
+            19.213247486525997
+          ],
+          "medianPairedChangePercent": 19.248625542633224
+        },
+        "alignedCandidateVsAlignedBaseline": {
+          "roundChangePercent": [
+            19.339921035425345,
+            18.51813092547625,
+            18.378392121295928,
+            20.066684648235555
+          ],
+          "medianPairedChangePercent": 18.929025980450795
+        },
+        "alignedCandidateVsOriginalBaseline": {
+          "roundChangePercent": [
+            17.84866726664669,
+            18.563394971083504,
+            10.31723353143057,
+            15.632248977880604
+          ],
+          "medianPairedChangePercent": 16.740458122263647
+        }
+      },
+      "ramp-3072": {
+        "originalCandidateVsBaseline": {
+          "roundChangePercent": [
+            -0.889706996417039,
+            -0.12679823680086244,
+            -1.0160831165569872,
+            -0.5483601541056982
+          ],
+          "medianPairedChangePercent": -0.7190335752613686
+        },
+        "alignedBaselineVsOriginal": {
+          "roundChangePercent": [
+            -1.9810092833473125,
+            -0.9640524254473704,
+            -0.13591129471745012,
+            0.356181439524339
+          ],
+          "medianPairedChangePercent": -0.5499818600824102
+        },
+        "alignedCandidateVsOriginal": {
+          "roundChangePercent": [
+            19.315443799299036,
+            18.346402720974165,
+            19.021063479731982,
+            20.026938817800357
+          ],
+          "medianPairedChangePercent": 19.16825363951551
+        },
+        "alignedCandidateVsAlignedBaseline": {
+          "roundChangePercent": [
+            20.643851853006478,
+            19.34690833349222,
+            17.97204788625475,
+            18.9450985468828
+          ],
+          "medianPairedChangePercent": 19.14600344018751
+        },
+        "alignedCandidateVsOriginalBaseline": {
+          "roundChangePercent": [
+            18.253885948010627,
+            18.196341569006734,
+            17.81171054856785,
+            19.368758911130723
+          ],
+          "medianPairedChangePercent": 18.22511375850868
+        }
+      }
+    }
+  },
+  "interpretation": "128-byte alignment did not recover performance. CandidateAligned repeatedly regresses on every ramp size versus CandidateOriginal and BaselineAligned, while BaselineAligned is roughly unchanged. The fresh targeted Original pair no longer reproduces the earlier full-matrix ramp regression, so no causal recovery claim is possible. The original failed ba277 gate is retained; entry residues alone do not stabilise these observations. No new alignment value was chosen after seeing results.",
+  "qualityMethod": "Full decoded output was compared against retained source.raw in each of 96 fresh processes before 5 warmups and 20 timed decode samples. This is not a per-sample pixel check. Analysis uses four balanced rounds of process-level paired medians, without pooling decode samples.",
+  "unexecuted": [
+    "Conditional full DCT/lossless matrices (predeclared diagnostic screen failed)",
+    "Full safety/RSS/djpeg qualification of alignedC+FMA composition",
+    "Integration or selection"
+  ],
+  "allPinnedFilesUnchanged": true,
+  "cpuReleased": true,
+  "finishedUTC": "2026-11-03T18:43:27.398399+00:00",
+  "independentReview": "targeted-run1/independent-review.json",
+  "layoutLimit": "Adding optional fixture filtering and relinking shifted both original C entries by 4060 bytes relative to the retained full-matrix binaries. The targeted Original comparison therefore has a different executable layout and cannot overturn the earlier ba277 failed gate."
+}

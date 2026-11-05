@@ -1,0 +1,24 @@
+Toolchain: Apple Swift 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Command: xcrun swiftc -O -swift-version 6 -strict-concurrency=complete -target arm64-apple-macos26.0 /tmp/swiftjli-round4-cfdata-pointer-probe.swift -o /tmp/swiftjli-round4-cfdata-pointer-probe
+Compile exit: 0
+Command: /tmp/swiftjli-round4-cfdata-pointer-probe
+Run exit: 0
+
+CFDataGetBytePtr size 0 same input pointer false
+CFDataGetBytePtr size 1 same input pointer false
+CFDataGetBytePtr size 15 same input pointer true
+CFDataGetBytePtr size 16 same input pointer true
+CFDataGetBytePtr size 64 same input pointer true
+CFDataGetBytePtr size 4096 same input pointer true
+CFDataGetBytePtr scoped owners, slices, COW and immediate releases: 32 /32
+
+The ordinary NSData-to-CFData cast compiles without unsafe casts or feature flags.
+No autoreleasepool or unchecked Sendable annotation is present in this prototype.
+Checks cover non-zero-origin Data slices, nested owner ranges, caller Data COW,
+NSMutableData-referencing snapshot semantics, pointer identity on large custom
+allocations, reads from a cached pointer with explicit owner lifetime, and exactly
+one immediate release for each of 32 distinct custom allocations.
+
+This is a Swift 6.4.2/macOS host ownership probe, not a performance comparison,
+minimum-OS runtime qualification, Linux bridge proof or production adoption.
+The previously accepted scoped-autoreleasepool implementation remains unchanged.

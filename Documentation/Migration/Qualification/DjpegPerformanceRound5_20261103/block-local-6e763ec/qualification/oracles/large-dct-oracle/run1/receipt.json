@@ -1,0 +1,1189 @@
+{
+  "sourceRevision": "6e763ec2099e162bae52a40109ff74269ea9899f",
+  "status": "passed",
+  "startedUTC": "2026-11-03T19:55:31.769209+00:00",
+  "method": "513x257 greyscale DCT; 8/12-bit, restart3/1023 MCUs, scalar/automatic; both codec directions. Compare Swift/djpeg decoders on each identical JPEG stream, never lossy output against the original source. Fixed tolerances2/4; no timing.",
+  "sourceManifestSHA256": "d1926fe2eb0304ef5050eaafc556f9fa49c48df064158a486ff1a3377fc4dd18",
+  "buildReceiptSHA256": "bacea56cc3c8157b307dcd3b405a48d9acb20d36db06fbb3a0fed9425b70a71c",
+  "binarySHA256": "670cbe75a255a2ed9eea17915fdab97906bf4617afe3e41e1b49ab0247271975",
+  "cjpegSHA256": "99ec26a3a0d11e9ac925fa4cdfbda8b56660591d57a61e47ee7d7657f0611f69",
+  "djpegSHA256": "6d0302f8018b3322521cae94de7f58ab484db40f0cc8e0f0cb6e92d456fd5088",
+  "commands": [
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-version"
+      ],
+      "startedUTC": "2026-11-03T19:55:31.770511+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:31.778408+00:00",
+      "stdout": "command-000.stdout.log",
+      "stderr": "command-000.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-version"
+      ],
+      "startedUTC": "2026-11-03T19:55:31.778599+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:31.782255+00:00",
+      "stdout": "command-001.stdout.log",
+      "stderr": "command-001.stderr.log"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/build/large-dct-oracle",
+        "generate-dct",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T19:55:31.782389+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.235549+00:00",
+      "stdout": "command-002.stdout.log",
+      "stderr": "command-002.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "8",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-restart",
+        "3B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r3-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r3-source.pnm"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.237437+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.241623+00:00",
+      "stdout": "command-003.stdout.log",
+      "stderr": "command-003.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r3-djpeg-swift.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r3-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.241816+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.246345+00:00",
+      "stdout": "command-004.stdout.log",
+      "stderr": "command-004.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r3-djpeg-oracle.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r3-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.246523+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.250539+00:00",
+      "stdout": "command-005.stdout.log",
+      "stderr": "command-005.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "8",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-restart",
+        "3B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r3-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r3-source.pnm"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.252357+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.256466+00:00",
+      "stdout": "command-006.stdout.log",
+      "stderr": "command-006.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r3-djpeg-swift.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r3-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.256647+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.261007+00:00",
+      "stdout": "command-007.stdout.log",
+      "stderr": "command-007.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r3-djpeg-oracle.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r3-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.261188+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.265319+00:00",
+      "stdout": "command-008.stdout.log",
+      "stderr": "command-008.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "12",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-restart",
+        "3B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r3-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r3-source.pnm"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.267734+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.273506+00:00",
+      "stdout": "command-009.stdout.log",
+      "stderr": "command-009.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r3-djpeg-swift.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r3-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.273772+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.278638+00:00",
+      "stdout": "command-010.stdout.log",
+      "stderr": "command-010.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r3-djpeg-oracle.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r3-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.278937+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.283552+00:00",
+      "stdout": "command-011.stdout.log",
+      "stderr": "command-011.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "12",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-restart",
+        "3B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r3-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r3-source.pnm"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.285981+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.292466+00:00",
+      "stdout": "command-012.stdout.log",
+      "stderr": "command-012.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r3-djpeg-swift.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r3-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.292691+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.297932+00:00",
+      "stdout": "command-013.stdout.log",
+      "stderr": "command-013.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r3-djpeg-oracle.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r3-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.298155+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.302818+00:00",
+      "stdout": "command-014.stdout.log",
+      "stderr": "command-014.stderr.log"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/build/large-dct-oracle",
+        "verify-dct",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1",
+        "3"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.303050+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.323357+00:00",
+      "stdout": "command-015.stdout.log",
+      "stderr": "command-015.stderr.log"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/build/large-dct-oracle",
+        "generate-dct",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1",
+        "1023"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.411347+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.449864+00:00",
+      "stdout": "command-016.stdout.log",
+      "stderr": "command-016.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "8",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-restart",
+        "1023B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r1023-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r1023-source.pnm"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.451703+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.456190+00:00",
+      "stdout": "command-017.stdout.log",
+      "stderr": "command-017.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r1023-djpeg-swift.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r1023-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.456492+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.461267+00:00",
+      "stdout": "command-018.stdout.log",
+      "stderr": "command-018.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r1023-djpeg-oracle.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-scalar-aq0-r1023-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.461521+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.465579+00:00",
+      "stdout": "command-019.stdout.log",
+      "stderr": "command-019.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "8",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-restart",
+        "1023B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r1023-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r1023-source.pnm"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.467395+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.472063+00:00",
+      "stdout": "command-020.stdout.log",
+      "stderr": "command-020.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r1023-djpeg-swift.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r1023-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.472340+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.476519+00:00",
+      "stdout": "command-021.stdout.log",
+      "stderr": "command-021.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r1023-djpeg-oracle.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-8-1-0-auto-aq0-r1023-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.476733+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.480595+00:00",
+      "stdout": "command-022.stdout.log",
+      "stderr": "command-022.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "12",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-restart",
+        "1023B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r1023-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r1023-source.pnm"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.483043+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.488853+00:00",
+      "stdout": "command-023.stdout.log",
+      "stderr": "command-023.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r1023-djpeg-swift.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r1023-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.489155+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.494220+00:00",
+      "stdout": "command-024.stdout.log",
+      "stderr": "command-024.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r1023-djpeg-oracle.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-scalar-aq0-r1023-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.494522+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.499051+00:00",
+      "stdout": "command-025.stdout.log",
+      "stderr": "command-025.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "-precision",
+        "12",
+        "-quality",
+        "85",
+        "-sample",
+        "1x1",
+        "-restart",
+        "1023B",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r1023-oracle.jpg",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r1023-source.pnm"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.501395+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.507359+00:00",
+      "stdout": "command-026.stdout.log",
+      "stderr": "command-026.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r1023-djpeg-swift.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r1023-swift.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.507657+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.512553+00:00",
+      "stdout": "command-027.stdout.log",
+      "stderr": "command-027.stderr.log"
+    },
+    {
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-dct",
+        "int",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r1023-djpeg-oracle.pnm",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1/dct-12-1-0-auto-aq0-r1023-oracle.jpg"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.512855+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.517288+00:00",
+      "stdout": "command-028.stdout.log",
+      "stderr": "command-028.stderr.log"
+    },
+    {
+      "command": [
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/build/large-dct-oracle",
+        "verify-dct",
+        "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run1",
+        "1023"
+      ],
+      "startedUTC": "2026-11-03T19:55:32.517490+00:00",
+      "status": "completed",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T19:55:32.537241+00:00",
+      "stdout": "command-029.stdout.log",
+      "stderr": "command-029.stderr.log"
+    }
+  ],
+  "comparisons": [
+    {
+      "stem": "dct-8-1-0-scalar-aq0-r3",
+      "direction": "Swift encode -> djpeg",
+      "bits": 8,
+      "policy": "scalar",
+      "restartMCUs": 3,
+      "samples": 131841,
+      "tolerance": 2,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 2690,
+      "meanAbsoluteDifference": 0.020403364658945246,
+      "actualSHA256": "c54b62af8eb61afee6b1fad4221ea3e9c591744829027aa29964b2037cd5cb09",
+      "referenceSHA256": "035384a005a0a2083b5570d596324128dbc04ddfcc83d7e82c87eacbeb70a32b",
+      "passed": true
+    },
+    {
+      "stem": "dct-8-1-0-scalar-aq0-r3",
+      "direction": "cjpeg encode -> Swift",
+      "bits": 8,
+      "policy": "scalar",
+      "restartMCUs": 3,
+      "samples": 131841,
+      "tolerance": 2,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 2732,
+      "meanAbsoluteDifference": 0.0207219302038061,
+      "actualSHA256": "5bf1027a3573479efa77a0e3d7f0eca5e9bb3e150248932c6c233b951f6af3ac",
+      "referenceSHA256": "bc522b5060407025fe6e9cf22a5d49bd4b3357b4d3ab7c73c35751e1bf98c844",
+      "passed": true
+    },
+    {
+      "stem": "dct-8-1-0-auto-aq0-r3",
+      "direction": "Swift encode -> djpeg",
+      "bits": 8,
+      "policy": "auto",
+      "restartMCUs": 3,
+      "samples": 131841,
+      "tolerance": 2,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 2690,
+      "meanAbsoluteDifference": 0.020403364658945246,
+      "actualSHA256": "c54b62af8eb61afee6b1fad4221ea3e9c591744829027aa29964b2037cd5cb09",
+      "referenceSHA256": "035384a005a0a2083b5570d596324128dbc04ddfcc83d7e82c87eacbeb70a32b",
+      "passed": true
+    },
+    {
+      "stem": "dct-8-1-0-auto-aq0-r3",
+      "direction": "cjpeg encode -> Swift",
+      "bits": 8,
+      "policy": "auto",
+      "restartMCUs": 3,
+      "samples": 131841,
+      "tolerance": 2,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 2732,
+      "meanAbsoluteDifference": 0.0207219302038061,
+      "actualSHA256": "5bf1027a3573479efa77a0e3d7f0eca5e9bb3e150248932c6c233b951f6af3ac",
+      "referenceSHA256": "bc522b5060407025fe6e9cf22a5d49bd4b3357b4d3ab7c73c35751e1bf98c844",
+      "passed": true
+    },
+    {
+      "stem": "dct-12-1-0-scalar-aq0-r3",
+      "direction": "Swift encode -> djpeg",
+      "bits": 12,
+      "policy": "scalar",
+      "restartMCUs": 3,
+      "samples": 131841,
+      "tolerance": 4,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 11204,
+      "meanAbsoluteDifference": 0.08498115153859573,
+      "actualSHA256": "e77a31ba6d327b1e10af44b8ebbbef93843e43a31ee2bb6074e4aa03d5a6b24a",
+      "referenceSHA256": "3abc2f6c25db1825586c19ac290a7e20507348adbb0b9117eb38a4fdf2632d0e",
+      "passed": true
+    },
+    {
+      "stem": "dct-12-1-0-scalar-aq0-r3",
+      "direction": "cjpeg encode -> Swift",
+      "bits": 12,
+      "policy": "scalar",
+      "restartMCUs": 3,
+      "samples": 131841,
+      "tolerance": 4,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 11156,
+      "meanAbsoluteDifference": 0.08461707663018332,
+      "actualSHA256": "afbb314d278672d0292f6b2efc4f73ed6e8140f05a3600aee20c7c970536fc97",
+      "referenceSHA256": "baafcb1852de49aee41c5397aa4d5c354f1f7d10420138d96ee70895635be8f2",
+      "passed": true
+    },
+    {
+      "stem": "dct-12-1-0-auto-aq0-r3",
+      "direction": "Swift encode -> djpeg",
+      "bits": 12,
+      "policy": "auto",
+      "restartMCUs": 3,
+      "samples": 131841,
+      "tolerance": 4,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 11205,
+      "meanAbsoluteDifference": 0.08498873643252099,
+      "actualSHA256": "f803b39078a6644b75a99a383ef60d165817544a2a88d4ded0becfc8db43b97a",
+      "referenceSHA256": "96517a7240351bef200e86beec58b8fb0e89c1c11fef3e02c5eda01f905faad8",
+      "passed": true
+    },
+    {
+      "stem": "dct-12-1-0-auto-aq0-r3",
+      "direction": "cjpeg encode -> Swift",
+      "bits": 12,
+      "policy": "auto",
+      "restartMCUs": 3,
+      "samples": 131841,
+      "tolerance": 4,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 11157,
+      "meanAbsoluteDifference": 0.08462466152410858,
+      "actualSHA256": "37ea64e1779c35b0b7d765a06648e432e041279d0ed56061df35c290ec5a8441",
+      "referenceSHA256": "baafcb1852de49aee41c5397aa4d5c354f1f7d10420138d96ee70895635be8f2",
+      "passed": true
+    },
+    {
+      "stem": "dct-8-1-0-scalar-aq0-r1023",
+      "direction": "Swift encode -> djpeg",
+      "bits": 8,
+      "policy": "scalar",
+      "restartMCUs": 1023,
+      "samples": 131841,
+      "tolerance": 2,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 2690,
+      "meanAbsoluteDifference": 0.020403364658945246,
+      "actualSHA256": "c54b62af8eb61afee6b1fad4221ea3e9c591744829027aa29964b2037cd5cb09",
+      "referenceSHA256": "035384a005a0a2083b5570d596324128dbc04ddfcc83d7e82c87eacbeb70a32b",
+      "passed": true
+    },
+    {
+      "stem": "dct-8-1-0-scalar-aq0-r1023",
+      "direction": "cjpeg encode -> Swift",
+      "bits": 8,
+      "policy": "scalar",
+      "restartMCUs": 1023,
+      "samples": 131841,
+      "tolerance": 2,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 2732,
+      "meanAbsoluteDifference": 0.0207219302038061,
+      "actualSHA256": "5bf1027a3573479efa77a0e3d7f0eca5e9bb3e150248932c6c233b951f6af3ac",
+      "referenceSHA256": "bc522b5060407025fe6e9cf22a5d49bd4b3357b4d3ab7c73c35751e1bf98c844",
+      "passed": true
+    },
+    {
+      "stem": "dct-8-1-0-auto-aq0-r1023",
+      "direction": "Swift encode -> djpeg",
+      "bits": 8,
+      "policy": "auto",
+      "restartMCUs": 1023,
+      "samples": 131841,
+      "tolerance": 2,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 2690,
+      "meanAbsoluteDifference": 0.020403364658945246,
+      "actualSHA256": "c54b62af8eb61afee6b1fad4221ea3e9c591744829027aa29964b2037cd5cb09",
+      "referenceSHA256": "035384a005a0a2083b5570d596324128dbc04ddfcc83d7e82c87eacbeb70a32b",
+      "passed": true
+    },
+    {
+      "stem": "dct-8-1-0-auto-aq0-r1023",
+      "direction": "cjpeg encode -> Swift",
+      "bits": 8,
+      "policy": "auto",
+      "restartMCUs": 1023,
+      "samples": 131841,
+      "tolerance": 2,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 2732,
+      "meanAbsoluteDifference": 0.0207219302038061,
+      "actualSHA256": "5bf1027a3573479efa77a0e3d7f0eca5e9bb3e150248932c6c233b951f6af3ac",
+      "referenceSHA256": "bc522b5060407025fe6e9cf22a5d49bd4b3357b4d3ab7c73c35751e1bf98c844",
+      "passed": true
+    },
+    {
+      "stem": "dct-12-1-0-scalar-aq0-r1023",
+      "direction": "Swift encode -> djpeg",
+      "bits": 12,
+      "policy": "scalar",
+      "restartMCUs": 1023,
+      "samples": 131841,
+      "tolerance": 4,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 11204,
+      "meanAbsoluteDifference": 0.08498115153859573,
+      "actualSHA256": "e77a31ba6d327b1e10af44b8ebbbef93843e43a31ee2bb6074e4aa03d5a6b24a",
+      "referenceSHA256": "3abc2f6c25db1825586c19ac290a7e20507348adbb0b9117eb38a4fdf2632d0e",
+      "passed": true
+    },
+    {
+      "stem": "dct-12-1-0-scalar-aq0-r1023",
+      "direction": "cjpeg encode -> Swift",
+      "bits": 12,
+      "policy": "scalar",
+      "restartMCUs": 1023,
+      "samples": 131841,
+      "tolerance": 4,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 11156,
+      "meanAbsoluteDifference": 0.08461707663018332,
+      "actualSHA256": "afbb314d278672d0292f6b2efc4f73ed6e8140f05a3600aee20c7c970536fc97",
+      "referenceSHA256": "baafcb1852de49aee41c5397aa4d5c354f1f7d10420138d96ee70895635be8f2",
+      "passed": true
+    },
+    {
+      "stem": "dct-12-1-0-auto-aq0-r1023",
+      "direction": "Swift encode -> djpeg",
+      "bits": 12,
+      "policy": "auto",
+      "restartMCUs": 1023,
+      "samples": 131841,
+      "tolerance": 4,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 11205,
+      "meanAbsoluteDifference": 0.08498873643252099,
+      "actualSHA256": "f803b39078a6644b75a99a383ef60d165817544a2a88d4ded0becfc8db43b97a",
+      "referenceSHA256": "96517a7240351bef200e86beec58b8fb0e89c1c11fef3e02c5eda01f905faad8",
+      "passed": true
+    },
+    {
+      "stem": "dct-12-1-0-auto-aq0-r1023",
+      "direction": "cjpeg encode -> Swift",
+      "bits": 12,
+      "policy": "auto",
+      "restartMCUs": 1023,
+      "samples": 131841,
+      "tolerance": 4,
+      "maximumAbsoluteDifference": 1,
+      "differingSamples": 11157,
+      "meanAbsoluteDifference": 0.08462466152410858,
+      "actualSHA256": "37ea64e1779c35b0b7d765a06648e432e041279d0ed56061df35c290ec5a8441",
+      "referenceSHA256": "baafcb1852de49aee41c5397aa4d5c354f1f7d10420138d96ee70895635be8f2",
+      "passed": true
+    }
+  ],
+  "profiles": [
+    {
+      "stem": "dct-8-1-0-scalar-aq0-r3",
+      "bits": 8,
+      "policy": "scalar",
+      "restartMCUs": 3
+    },
+    {
+      "stem": "dct-8-1-0-auto-aq0-r3",
+      "bits": 8,
+      "policy": "auto",
+      "restartMCUs": 3
+    },
+    {
+      "stem": "dct-12-1-0-scalar-aq0-r3",
+      "bits": 12,
+      "policy": "scalar",
+      "restartMCUs": 3
+    },
+    {
+      "stem": "dct-12-1-0-auto-aq0-r3",
+      "bits": 12,
+      "policy": "auto",
+      "restartMCUs": 3
+    },
+    {
+      "stem": "dct-8-1-0-scalar-aq0-r1023",
+      "bits": 8,
+      "policy": "scalar",
+      "restartMCUs": 1023
+    },
+    {
+      "stem": "dct-8-1-0-auto-aq0-r1023",
+      "bits": 8,
+      "policy": "auto",
+      "restartMCUs": 1023
+    },
+    {
+      "stem": "dct-12-1-0-scalar-aq0-r1023",
+      "bits": 12,
+      "policy": "scalar",
+      "restartMCUs": 1023
+    },
+    {
+      "stem": "dct-12-1-0-auto-aq0-r1023",
+      "bits": 12,
+      "policy": "auto",
+      "restartMCUs": 1023
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "dct-12-1-0-auto-aq0-r1023-djpeg-oracle.pnm",
+      "bytes": 263698,
+      "sha256": "baafcb1852de49aee41c5397aa4d5c354f1f7d10420138d96ee70895635be8f2",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r1023-djpeg-swift.pnm",
+      "bytes": 263698,
+      "sha256": "96517a7240351bef200e86beec58b8fb0e89c1c11fef3e02c5eda01f905faad8",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r1023-oracle.jpg",
+      "bytes": 141710,
+      "sha256": "d147d97ec4c0635fe402570ccf734b4eb3586fd36b0ebb74c2d8dfa7c3035335",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r1023-source.pnm",
+      "bytes": 263698,
+      "sha256": "87fc416f9b65022960a51e73ddbdde51cf2c9c4415e63a4bf3a34ecb55e052b0",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r1023-swift-oracle.pnm",
+      "bytes": 263698,
+      "sha256": "37ea64e1779c35b0b7d765a06648e432e041279d0ed56061df35c290ec5a8441",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r1023-swift-self.pnm",
+      "bytes": 263698,
+      "sha256": "f803b39078a6644b75a99a383ef60d165817544a2a88d4ded0becfc8db43b97a",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r1023-swift.jpg",
+      "bytes": 141722,
+      "sha256": "026a7b4072261e12c48ee2787875a08eba658571daad978f63b2d66b568b7ca9",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r3-djpeg-oracle.pnm",
+      "bytes": 263698,
+      "sha256": "baafcb1852de49aee41c5397aa4d5c354f1f7d10420138d96ee70895635be8f2",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r3-djpeg-swift.pnm",
+      "bytes": 263698,
+      "sha256": "96517a7240351bef200e86beec58b8fb0e89c1c11fef3e02c5eda01f905faad8",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r3-oracle.jpg",
+      "bytes": 143604,
+      "sha256": "52952af5c54733efb4ebbdcf68463d81e1dfe9dddefa6d8fc0222fcf1afd7afe",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r3-source.pnm",
+      "bytes": 263698,
+      "sha256": "87fc416f9b65022960a51e73ddbdde51cf2c9c4415e63a4bf3a34ecb55e052b0",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r3-swift-oracle.pnm",
+      "bytes": 263698,
+      "sha256": "37ea64e1779c35b0b7d765a06648e432e041279d0ed56061df35c290ec5a8441",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r3-swift-self.pnm",
+      "bytes": 263698,
+      "sha256": "f803b39078a6644b75a99a383ef60d165817544a2a88d4ded0becfc8db43b97a",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-auto-aq0-r3-swift.jpg",
+      "bytes": 143593,
+      "sha256": "150a71844348c82a7706dac8f022f378e0bb8fa120c57cf39fe76aa776203f80",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r1023-djpeg-oracle.pnm",
+      "bytes": 263698,
+      "sha256": "baafcb1852de49aee41c5397aa4d5c354f1f7d10420138d96ee70895635be8f2",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r1023-djpeg-swift.pnm",
+      "bytes": 263698,
+      "sha256": "3abc2f6c25db1825586c19ac290a7e20507348adbb0b9117eb38a4fdf2632d0e",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r1023-oracle.jpg",
+      "bytes": 141710,
+      "sha256": "d147d97ec4c0635fe402570ccf734b4eb3586fd36b0ebb74c2d8dfa7c3035335",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r1023-source.pnm",
+      "bytes": 263698,
+      "sha256": "87fc416f9b65022960a51e73ddbdde51cf2c9c4415e63a4bf3a34ecb55e052b0",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r1023-swift-oracle.pnm",
+      "bytes": 263698,
+      "sha256": "afbb314d278672d0292f6b2efc4f73ed6e8140f05a3600aee20c7c970536fc97",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r1023-swift-self.pnm",
+      "bytes": 263698,
+      "sha256": "e77a31ba6d327b1e10af44b8ebbbef93843e43a31ee2bb6074e4aa03d5a6b24a",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r1023-swift.jpg",
+      "bytes": 141722,
+      "sha256": "f0860c30754cfad1ff179165f10c68774cc374a9029c521f0a2b3f4160558b41",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r3-djpeg-oracle.pnm",
+      "bytes": 263698,
+      "sha256": "baafcb1852de49aee41c5397aa4d5c354f1f7d10420138d96ee70895635be8f2",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r3-djpeg-swift.pnm",
+      "bytes": 263698,
+      "sha256": "3abc2f6c25db1825586c19ac290a7e20507348adbb0b9117eb38a4fdf2632d0e",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r3-oracle.jpg",
+      "bytes": 143604,
+      "sha256": "52952af5c54733efb4ebbdcf68463d81e1dfe9dddefa6d8fc0222fcf1afd7afe",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r3-source.pnm",
+      "bytes": 263698,
+      "sha256": "87fc416f9b65022960a51e73ddbdde51cf2c9c4415e63a4bf3a34ecb55e052b0",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r3-swift-oracle.pnm",
+      "bytes": 263698,
+      "sha256": "afbb314d278672d0292f6b2efc4f73ed6e8140f05a3600aee20c7c970536fc97",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r3-swift-self.pnm",
+      "bytes": 263698,
+      "sha256": "e77a31ba6d327b1e10af44b8ebbbef93843e43a31ee2bb6074e4aa03d5a6b24a",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-12-1-0-scalar-aq0-r3-swift.jpg",
+      "bytes": 143593,
+      "sha256": "5a6843cb1019b3d58ed09bc6d0c5bce45b8af3e6c15cbe9fa3647e7fe9040955",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r1023-djpeg-oracle.pnm",
+      "bytes": 131856,
+      "sha256": "bc522b5060407025fe6e9cf22a5d49bd4b3357b4d3ab7c73c35751e1bf98c844",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r1023-djpeg-swift.pnm",
+      "bytes": 131856,
+      "sha256": "035384a005a0a2083b5570d596324128dbc04ddfcc83d7e82c87eacbeb70a32b",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r1023-oracle.jpg",
+      "bytes": 86164,
+      "sha256": "376258c804ee4b94c9296c82f291c5e94759634fa59945e6cc8ab45ec472679d",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r1023-source.pnm",
+      "bytes": 131856,
+      "sha256": "4d7fca83b58f833bfb7855095d06b566a9fd22bcfa27f404ed09050d378743fc",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r1023-swift-oracle.pnm",
+      "bytes": 131856,
+      "sha256": "5bf1027a3573479efa77a0e3d7f0eca5e9bb3e150248932c6c233b951f6af3ac",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r1023-swift-self.pnm",
+      "bytes": 131856,
+      "sha256": "c54b62af8eb61afee6b1fad4221ea3e9c591744829027aa29964b2037cd5cb09",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r1023-swift.jpg",
+      "bytes": 81407,
+      "sha256": "058edfd7b363a1e6d14ec5d511b563416a482de06b8b3954a4a15bbf1ba448dd",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r3-djpeg-oracle.pnm",
+      "bytes": 131856,
+      "sha256": "bc522b5060407025fe6e9cf22a5d49bd4b3357b4d3ab7c73c35751e1bf98c844",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r3-djpeg-swift.pnm",
+      "bytes": 131856,
+      "sha256": "035384a005a0a2083b5570d596324128dbc04ddfcc83d7e82c87eacbeb70a32b",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r3-oracle.jpg",
+      "bytes": 87908,
+      "sha256": "6c25f9c3574cd9558e44f1bb91150797f3a9c4ec368c6288d0f60578396c732a",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r3-source.pnm",
+      "bytes": 131856,
+      "sha256": "4d7fca83b58f833bfb7855095d06b566a9fd22bcfa27f404ed09050d378743fc",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r3-swift-oracle.pnm",
+      "bytes": 131856,
+      "sha256": "5bf1027a3573479efa77a0e3d7f0eca5e9bb3e150248932c6c233b951f6af3ac",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r3-swift-self.pnm",
+      "bytes": 131856,
+      "sha256": "c54b62af8eb61afee6b1fad4221ea3e9c591744829027aa29964b2037cd5cb09",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-auto-aq0-r3-swift.jpg",
+      "bytes": 83184,
+      "sha256": "a91650d0298edbb1b75187e6913fe97caf2a75c548989e2d609855feb579d0ff",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r1023-djpeg-oracle.pnm",
+      "bytes": 131856,
+      "sha256": "bc522b5060407025fe6e9cf22a5d49bd4b3357b4d3ab7c73c35751e1bf98c844",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r1023-djpeg-swift.pnm",
+      "bytes": 131856,
+      "sha256": "035384a005a0a2083b5570d596324128dbc04ddfcc83d7e82c87eacbeb70a32b",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r1023-oracle.jpg",
+      "bytes": 86164,
+      "sha256": "376258c804ee4b94c9296c82f291c5e94759634fa59945e6cc8ab45ec472679d",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r1023-source.pnm",
+      "bytes": 131856,
+      "sha256": "4d7fca83b58f833bfb7855095d06b566a9fd22bcfa27f404ed09050d378743fc",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r1023-swift-oracle.pnm",
+      "bytes": 131856,
+      "sha256": "5bf1027a3573479efa77a0e3d7f0eca5e9bb3e150248932c6c233b951f6af3ac",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r1023-swift-self.pnm",
+      "bytes": 131856,
+      "sha256": "c54b62af8eb61afee6b1fad4221ea3e9c591744829027aa29964b2037cd5cb09",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r1023-swift.jpg",
+      "bytes": 81407,
+      "sha256": "058edfd7b363a1e6d14ec5d511b563416a482de06b8b3954a4a15bbf1ba448dd",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r3-djpeg-oracle.pnm",
+      "bytes": 131856,
+      "sha256": "bc522b5060407025fe6e9cf22a5d49bd4b3357b4d3ab7c73c35751e1bf98c844",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r3-djpeg-swift.pnm",
+      "bytes": 131856,
+      "sha256": "035384a005a0a2083b5570d596324128dbc04ddfcc83d7e82c87eacbeb70a32b",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r3-oracle.jpg",
+      "bytes": 87908,
+      "sha256": "6c25f9c3574cd9558e44f1bb91150797f3a9c4ec368c6288d0f60578396c732a",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r3-source.pnm",
+      "bytes": 131856,
+      "sha256": "4d7fca83b58f833bfb7855095d06b566a9fd22bcfa27f404ed09050d378743fc",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r3-swift-oracle.pnm",
+      "bytes": 131856,
+      "sha256": "5bf1027a3573479efa77a0e3d7f0eca5e9bb3e150248932c6c233b951f6af3ac",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r3-swift-self.pnm",
+      "bytes": 131856,
+      "sha256": "c54b62af8eb61afee6b1fad4221ea3e9c591744829027aa29964b2037cd5cb09",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    },
+    {
+      "path": "dct-8-1-0-scalar-aq0-r3-swift.jpg",
+      "bytes": 83184,
+      "sha256": "a91650d0298edbb1b75187e6913fe97caf2a75c548989e2d609855feb579d0ff",
+      "archive": "generated fixture/output; preserve hash, omit binary payload"
+    }
+  ],
+  "finishedUTC": "2026-11-03T19:55:32.793470+00:00",
+  "identitiesUnchanged": true
+}

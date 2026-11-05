@@ -1,0 +1,31 @@
+diff --git a/Sources/SwiftJLIEntropyC/ACBlock.c b/Sources/SwiftJLIEntropyC/ACBlock.c
+index e63f5c8..fc29e16 100644
+--- a/Sources/SwiftJLIEntropyC/ACBlock.c
++++ b/Sources/SwiftJLIEntropyC/ACBlock.c
+@@ -3,7 +3,7 @@
+ #include "SwiftJLIEntropyC.h"
+ #include <string.h>
+ 
+-static inline int bulk(const uint8_t *input, size_t count, SJLIACState *r) {
++static inline __attribute__((always_inline)) int bulk(const uint8_t *input, size_t count, SJLIACState *r) {
+     if (count - r->byte_offset < 8) return 0;
+     uint64_t word;
+     memcpy(&word, input + r->byte_offset, sizeof(word));
+@@ -22,7 +22,7 @@ static inline int bulk(const uint8_t *input, size_t count, SJLIACState *r) {
+     return 1;
+ }
+ 
+-static inline void fill(const uint8_t *input, size_t count, SJLIACState *r) {
++static inline __attribute__((always_inline)) void fill(const uint8_t *input, size_t count, SJLIACState *r) {
+     if (r->available < 8 && bulk(input, count, r)) return;
+     while (r->available < 8) {
+         if (r->byte_offset == count) return;
+@@ -36,7 +36,7 @@ static inline void fill(const uint8_t *input, size_t count, SJLIACState *r) {
+     }
+ }
+ 
+-// These three hot helpers preserve the original call-free AC leaf. Release
++// These hot helpers preserve the original call-free AC leaf. Release
+ // C size optimisation otherwise outlines the shared bodies after adding the
+ // DC+AC entrypoint, adding calls and state traffic inside the coefficient loop.
+ static inline __attribute__((always_inline)) SJLIACStatus read_bits(const uint8_t *input, size_t count,

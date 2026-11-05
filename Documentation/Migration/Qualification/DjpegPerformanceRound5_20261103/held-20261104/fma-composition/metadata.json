@@ -1,0 +1,100 @@
+{
+  "status": "Unaccepted: repeated lossless ramp regression gate failure; DCT gains retained separately",
+  "sourceRevision": "ba2771eb3393c703fba106082720d9987c0594e9",
+  "sourceWorktree": "/private/tmp/swiftjli-round5-composed-c-fma256-tiny",
+  "baseRevision": "5419b015a0f1b16c8f96f5fd90f658b231155eb7",
+  "baseProductionEquivalent": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "importedTrialRevision": "bb7e002d133f95b1fbba326456427525f625393a",
+  "contract": "suite policy0.10.0; Apple26.0; Swift6.2 manifest minimum/Swift6.4 qualified primary",
+  "change": "Compose final two-pass FMA256 and tiny compactDC trial with qualified5f9 C producer/AC/DC and lossless paths. No held a81 serial C dispatch. Existing C metadata borrow and per-block producer are unchanged except batch extent. FMA pipeline slots131072-byte payload; serial<=65536; GEMM and compactDC reservations retained. No measured candidate performance or RSS claim.",
+  "sourceHashes": {
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "3d1842a5500ca6f0487d9b7a143a738b87297584c21c13620d48e4333b083b6b",
+    "Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift": "11cdb9003bb99fbe4422b44a173d622f1bac10da3e11fe7102cd0d8ecb3b0b66",
+    "Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift": "2bff80c79289e3ce01f4a36f14ad3d207c3c2c3f57b98cd78db3ebd40180c9d5",
+    "Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift": "0522cc449799e2496df895010e988ddfb19bf2fd661e0dd2323f082cb62d0616",
+    "Sources/SwiftJLI/Native/Entropy/DCOnlyGreyscaleDecoder.swift": "082427e18e94751eb7646f25d69a5258a9672013230b9651e2046a0581012c01",
+    "Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift": "2952797ac33e915011bcaa7d6b10ea881da957d63b5517282a4c7e9feca401c5",
+    "Sources/SwiftJLI/Native/Platform/BlockLocalIDCT.swift": "8a882da4e793b2576b76dfaf66a77831ec9c30f0dde33badccb817f67d7ebdbe",
+    "Tests/SwiftJLITests/Native/BlockLocalIDCTTests.swift": "be933a3aa3ab5469ff492a3f267b49c090c99a51dc94ead768cfb7a44a3b42d8",
+    "Tests/SwiftJLITests/Native/CACPublicPipelineTests.swift": "4d3d0dde03449f6addcc99b1c87be520394d29161a1a226af1b07faaff271a2f",
+    "Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift": "e3e60aa45546d58bc6914470c1c23af377a8c8aefe808a1f6acef7a58297f9fc",
+    "Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift": "04317e77b06382a854b8455eb0df42c70fe19eb16396201d10ab0185a30aff1b",
+    "Tests/SwiftJLITests/Native/TinyDCCentreTests.swift": "92edcc97cc550928b13d3fe3135f0ca7737487e9aa4c5bfc06467525211c5bcf",
+    "Tests/SwiftJLITests/Native/TinyDCOutputTests.swift": "a6735cfd41671b763283e7b378d4cd9a121042c489a4953c6933e65cfac41540",
+    "Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift": "f910d769e08be3c233c73661951fa7b6444ff6c81e0a33b4d2318e8f403aee5f"
+  },
+  "sourceReview": "Independent DCT agent reviewed arithmetic, binding, worker join, C pointer lifetimes and resource plan; no actionable source defect. Root-approved fd6 non-NaN worker failure retained. New public C cases cover restart255/256/257/1023 across8/12 integer/Float and guarded caller output.",
+  "mechanicalCompositionReview": "composition-source-review.json",
+  "baselineProducts": "baseline-products.json",
+  "preparedCommands": {
+    "focusedRelease": [
+      "swift",
+      "test",
+      "-c",
+      "release",
+      "--jobs",
+      "4",
+      "--scratch-path",
+      "/private/tmp/swiftjli-round5-composed-c-fma256-tiny-build",
+      "--filter",
+      "TinyDCCentreTests|TinyDCOutputTests|DCOnlyGreyscaleDecoderTests|StreamingWorkspaceAdmissionTests|SequentialGreyscaleDecoderTests|BoundedDCTWorkspaceTests|BlockLocalIDCTTests|DCOnlyDCTTests|PipelinedGreyscaleTests|JPEGDecodeParityTests|NativeExecutionTests|CACDecoderTests|CDCTDecoderTests|CACPublicPipelineTests|CLosslessRowTests|CLosslessRowPublicTests|ParallelGreyscaleWindowTests|StreamingCoefficientReuseTests"
+    ],
+    "DCT18x2": [
+      "python3",
+      "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/run-dct.py",
+      "--baseline-products",
+      "/private/tmp/swiftjli-round5-5f9e1cf-fma-baseline/out/Products/Release",
+      "--baseline-revision",
+      "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+      "--candidate-products",
+      "/private/tmp/swiftjli-round5-composed-c-fma256-tiny-build/out/Products/Release",
+      "--output",
+      "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/dct.json"
+    ],
+    "lossless16x2": [
+      "python3",
+      "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/run-lossless.py",
+      "--baseline-products",
+      "/private/tmp/swiftjli-round5-5f9e1cf-fma-baseline/out/Products/Release",
+      "--candidate-products",
+      "/private/tmp/swiftjli-round5-composed-c-fma256-tiny-build/out/Products/Release",
+      "--output",
+      "/private/tmp/swiftjli-round5-evidence/composed-c-fma256-tiny/lossless.json"
+    ]
+  },
+  "runnerSHA256": {
+    "run-dct.py": "89f97578dd15586bb3205d91ccbda339244c748b8b8b8efdd65a130c2206cc8b",
+    "run-lossless.py": "397570f1914d217e860d12c6ff1cfd77c1137997f37fd08f5788196e4e9a2030",
+    "provenance.py": "2247377523ba1db3321ede235409124dc75d28fe688dc5cd7947413faaeb015a"
+  },
+  "unexecuted": [
+    "Full Release and exact-source ASan/UBSan/TSan qualification",
+    "Fresh owned-output RSS and matched libjpeg/djpeg comparison",
+    "Integration or selection"
+  ],
+  "createdUTC": "2026-11-03T18:13:19.309908+00:00",
+  "CPUState": "Released to parent after all requested runtime work",
+  "buildStartedUTC": "2026-11-03T18:13:55.513501+00:00",
+  "testExitCode": 0,
+  "buildFinishedUTC": "2026-11-03T18:14:52.372150+00:00",
+  "focusedTests": {
+    "exitCode": 0,
+    "tests": 76,
+    "suites": 18,
+    "log": "tests.log",
+    "logSHA256": "9ef94845ce02a4e9ed9ca93fad1bb16408defdac8e4533312853257f4a9b8646"
+  },
+  "compiledObjects": {
+    "SwiftJLI.o": {
+      "path": "/private/tmp/swiftjli-round5-composed-c-fma256-tiny-build/out/Products/Release/SwiftJLI.o",
+      "sha256": "08c878a1d703878e01a48c9b4e03d7a350707db44ffe3f6a662ef5e5fae9c1cc"
+    },
+    "SwiftJLIEntropyC.o": {
+      "path": "/private/tmp/swiftjli-round5-composed-c-fma256-tiny-build/out/Products/Release/SwiftJLIEntropyC.o",
+      "sha256": "74b8c3b51fe4bac6246d954bff59ac523b67b556c013ab32cb779409dd8eb5dc"
+    }
+  },
+  "runnerPreflightCorrection": "runner-preflight-correction.json",
+  "runnerProvenanceCorrection": "runner-provenance-correction.json",
+  "decision": "decision.json"
+}

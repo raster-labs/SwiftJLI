@@ -1,0 +1,357 @@
+{
+  "decision": "reject / do not integrate",
+  "sourceRevision": "bd890f20b479ab3b207d77923cb56cd5b70eca0f",
+  "baselineRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "reason": "No repeatable latency or peak-RSS improvement. Native paired flat timing changes reverse sign; equivalent-output paired 12-bit flat timing regresses8.3%/12.9%. Fresh RSS movement is only32KiB in either direction and does not close the retained-output gap to libjpeg-turbo. Do not claim the intended first-use DSP memory benefit.",
+  "focusedTests": {
+    "exitCode": 0,
+    "tests": 18,
+    "suites": 5
+  },
+  "nativeDCT": {
+    "exitCode": 0,
+    "exactPairs": 24,
+    "pairs": [
+      {
+        "round": 1,
+        "fixture": "dct12-512.jpg",
+        "baselineMedianMS": 1.3583749999999999,
+        "candidateMedianMS": 1.401125,
+        "changePercent": 3.1471427256832607,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "dct12-2048.jpg",
+        "baselineMedianMS": 19.483124500000002,
+        "candidateMedianMS": 18.9175625,
+        "changePercent": -2.9028300876484225,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "rgb8-512.jpg",
+        "baselineMedianMS": 3.0145005000000005,
+        "candidateMedianMS": 3.128604,
+        "changePercent": 3.785154455937212,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "rgb8-2048.jpg",
+        "baselineMedianMS": 34.502624999999995,
+        "candidateMedianMS": 34.327062500000004,
+        "changePercent": -0.5088380956521088,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "progressiveRGB8-512.jpg",
+        "baselineMedianMS": 4.705646,
+        "candidateMedianMS": 4.746,
+        "changePercent": 0.8575655712308228,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "progressiveRGB8-2048.jpg",
+        "baselineMedianMS": 59.918958499999995,
+        "candidateMedianMS": 59.461937000000006,
+        "changePercent": -0.7627327167243569,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "xyb8-512.jpg",
+        "baselineMedianMS": 9.466708500000001,
+        "candidateMedianMS": 10.003104500000001,
+        "changePercent": 5.666129890869676,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "xyb8-2048.jpg",
+        "baselineMedianMS": 141.3144375,
+        "candidateMedianMS": 142.7569795,
+        "changePercent": 1.0208029876635827,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "flat-8-512.jpg",
+        "baselineMedianMS": 0.061271000000000006,
+        "candidateMedianMS": 0.061770999999999986,
+        "changePercent": 0.8160467431574281,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "flat-12-512.jpg",
+        "baselineMedianMS": 0.06899999999999999,
+        "candidateMedianMS": 0.075875,
+        "changePercent": 9.96376811594204,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "noise-8-512.jpg",
+        "baselineMedianMS": 1.2152915,
+        "candidateMedianMS": 1.2311665,
+        "changePercent": 1.3062709646204151,
+        "exact": true
+      },
+      {
+        "round": 1,
+        "fixture": "noise-12-512.jpg",
+        "baselineMedianMS": 1.583917,
+        "candidateMedianMS": 1.6102295,
+        "changePercent": 1.66122972352718,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "dct12-512.jpg",
+        "baselineMedianMS": 1.3583749999999999,
+        "candidateMedianMS": 1.3628749999999998,
+        "changePercent": 0.33127818165086254,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "dct12-2048.jpg",
+        "baselineMedianMS": 18.5169375,
+        "candidateMedianMS": 18.336354,
+        "changePercent": -0.9752341606164672,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "rgb8-512.jpg",
+        "baselineMedianMS": 2.996542,
+        "candidateMedianMS": 3.0041875,
+        "changePercent": 0.2551440960947726,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "rgb8-2048.jpg",
+        "baselineMedianMS": 34.65781199999999,
+        "candidateMedianMS": 34.0550005,
+        "changePercent": -1.7393235903062632,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "progressiveRGB8-512.jpg",
+        "baselineMedianMS": 4.676791499999999,
+        "candidateMedianMS": 4.778687000000001,
+        "changePercent": 2.1787479728356596,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "progressiveRGB8-2048.jpg",
+        "baselineMedianMS": 59.698625,
+        "candidateMedianMS": 59.465708500000005,
+        "changePercent": -0.3901538770783919,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "xyb8-512.jpg",
+        "baselineMedianMS": 9.476353999999999,
+        "candidateMedianMS": 9.514229499999999,
+        "changePercent": 0.39968430896524243,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "xyb8-2048.jpg",
+        "baselineMedianMS": 141.55772900000002,
+        "candidateMedianMS": 143.23489550000002,
+        "changePercent": 1.1847933078948936,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "flat-8-512.jpg",
+        "baselineMedianMS": 0.0704375,
+        "candidateMedianMS": 0.06481250000000001,
+        "changePercent": -7.985803016858906,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "flat-12-512.jpg",
+        "baselineMedianMS": 0.0802085,
+        "candidateMedianMS": 0.07447899999999999,
+        "changePercent": -7.143257884139476,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "noise-8-512.jpg",
+        "baselineMedianMS": 1.2355829999999999,
+        "candidateMedianMS": 1.2422914999999999,
+        "changePercent": 0.5429420767362414,
+        "exact": true
+      },
+      {
+        "round": 2,
+        "fixture": "noise-12-512.jpg",
+        "baselineMedianMS": 1.5245624999999998,
+        "candidateMedianMS": 1.629667,
+        "changePercent": 6.89407616939286,
+        "exact": true
+      }
+    ]
+  },
+  "ownedOutputDiagnostic": {
+    "exitCode": 0,
+    "commands": 48,
+    "failures": 0,
+    "fixedTolerances": [
+      0,
+      2,
+      4
+    ],
+    "sameSwiftOutputs": true,
+    "rssMedianBytes": [
+      {
+        "fixture": "flat-8-512.jpg",
+        "label": "baseline",
+        "engine": "SwiftJLI",
+        "samples": [
+          9535488,
+          9502720,
+          9568256
+        ],
+        "median": 9535488
+      },
+      {
+        "fixture": "flat-8-512.jpg",
+        "label": "baseline",
+        "engine": "libjpeg-turbo",
+        "samples": [
+          9224192,
+          9256960,
+          9240576
+        ],
+        "median": 9240576
+      },
+      {
+        "fixture": "flat-8-512.jpg",
+        "label": "candidate",
+        "engine": "SwiftJLI",
+        "samples": [
+          9551872,
+          9568256,
+          9568256
+        ],
+        "median": 9568256
+      },
+      {
+        "fixture": "flat-8-512.jpg",
+        "label": "candidate",
+        "engine": "libjpeg-turbo",
+        "samples": [
+          9240576,
+          9306112,
+          9273344
+        ],
+        "median": 9273344
+      },
+      {
+        "fixture": "flat-12-512.jpg",
+        "label": "baseline",
+        "engine": "SwiftJLI",
+        "samples": [
+          9732096,
+          9797632,
+          9797632
+        ],
+        "median": 9797632
+      },
+      {
+        "fixture": "flat-12-512.jpg",
+        "label": "baseline",
+        "engine": "libjpeg-turbo",
+        "samples": [
+          9617408,
+          9601024,
+          9601024
+        ],
+        "median": 9601024
+      },
+      {
+        "fixture": "flat-12-512.jpg",
+        "label": "candidate",
+        "engine": "SwiftJLI",
+        "samples": [
+          9732096,
+          9764864,
+          9764864
+        ],
+        "median": 9764864
+      },
+      {
+        "fixture": "flat-12-512.jpg",
+        "label": "candidate",
+        "engine": "libjpeg-turbo",
+        "samples": [
+          9666560,
+          9666560,
+          9633792
+        ],
+        "median": 9666560
+      },
+      {
+        "fixture": "flat-19.jpg",
+        "label": "baseline",
+        "engine": "SwiftJLI",
+        "samples": [
+          9207808,
+          9142272,
+          9207808
+        ],
+        "median": 9207808
+      },
+      {
+        "fixture": "flat-19.jpg",
+        "label": "baseline",
+        "engine": "libjpeg-turbo",
+        "samples": [
+          9699328,
+          9699328,
+          9699328
+        ],
+        "median": 9699328
+      },
+      {
+        "fixture": "flat-19.jpg",
+        "label": "candidate",
+        "engine": "SwiftJLI",
+        "samples": [
+          9240576,
+          9175040,
+          9207808
+        ],
+        "median": 9207808
+      },
+      {
+        "fixture": "flat-19.jpg",
+        "label": "candidate",
+        "engine": "libjpeg-turbo",
+        "samples": [
+          9732096,
+          9732096,
+          9764864
+        ],
+        "median": 9732096
+      }
+    ]
+  },
+  "skipped": "Full lossless, full suite, sanitisers and CLI reruns: candidate rejected on targeted benefit gate.",
+  "productionChanged": false,
+  "provisional": true
+}

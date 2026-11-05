@@ -1,0 +1,1050 @@
+diff --git a/Sources/SwiftJLI/JPEGCodec.swift b/Sources/SwiftJLI/JPEGCodec.swift
+index a6ad562..ed85794 100644
+--- a/Sources/SwiftJLI/JPEGCodec.swift
++++ b/Sources/SwiftJLI/JPEGCodec.swift
+@@ -383,7 +383,14 @@ enum JPEGCodec {
+                         _ = try JLIDecoder().decodeParsed(parsed, configuration: native, borrowedDestination: borrowed,
+                             normaliseXYBOutput: normaliseXYBOutput)
+                     } else {
+-                        try JLIDecoder().decodeSharedLossless(parsed, into: borrowed)
++                        // Internal implementation choice only: portable C rows
++                        // still report scalarCPU. Explicit scalar retains Swift;
++                        // no flag is added to the TaskLocal or DCT capture state.
++                        let useScalarCEntropy: Bool
++                        if case .automatic = options.executionPolicy { useScalarCEntropy = true }
++                        else { useScalarCEntropy = false }
++                        try JLIDecoder().decodeSharedLossless(parsed, into: borrowed,
++                            useScalarCEntropy: useScalarCEntropy)
+                     }
+                     try NativeOperation.check()
+                 }
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index 34f7408..e876fee 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -68,7 +68,8 @@ struct JLIDecoder: Sendable {
+     }
+ 
+     func decodeParsed(_ parsed: ParsedJPEG, configuration: JLIDecoderConfiguration = .default,
+-                      borrowedDestination: BorrowedSampleDestination? = nil, normaliseXYBOutput: Bool = false) throws -> JLIImage {
++                      borrowedDestination: BorrowedSampleDestination? = nil, normaliseXYBOutput: Bool = false,
++                      useScalarCEntropy: Bool = false) throws -> JLIImage {
+         let frame = parsed.frameInfo
+ 
+         guard !parsed.scans.isEmpty else {
+@@ -79,7 +80,8 @@ struct JLIDecoder: Sendable {
+         if frame.isLossless {
+             return try decodeLossless(frame: frame, scans: parsed.scans, configuration: configuration,
+                                       restartInterval: parsed.restartInterval,
+-                                      iccProfile: parsed.iccProfile, exif: parsed.exif)
++                                      iccProfile: parsed.iccProfile, exif: parsed.exif,
++                                      useScalarCEntropy: useScalarCEntropy)
+         }
+ 
+         // Step 2: Prepare quantization tables (convert from zigzag to natural order)
+@@ -696,7 +698,7 @@ struct JLIDecoder: Sendable {
+     private func decodeLossless(
+         frame: JPEGFrameInfo, scans: [JPEGScanData], configuration: JLIDecoderConfiguration,
+         restartInterval: Int = 0, iccProfile: [UInt8]? = nil, exif: [UInt8]? = nil,
+-        borrowedDestination: BorrowedSampleDestination? = nil
++        borrowedDestination: BorrowedSampleDestination? = nil, useScalarCEntropy: Bool = false
+     ) throws -> JLIImage {
+         let precision = frame.precision
+         guard (2...16).contains(precision) else {
+@@ -781,10 +783,17 @@ struct JLIDecoder: Sendable {
+                     table: tables[0], reader: &reader, pointTransform: pt,
+                     segmentRows: restartInterval > 0 ? restartInterval / w : h)
+             } else if predictor == 1, pt == 0, borrowed.bytesPerSample == 2 {
+-                try Self.losslessLeftUInt16Into(
+-                    borrowed, width: w, height: h, half: half,
+-                    table: tables[0], reader: &reader,
+-                    segmentRows: restartInterval > 0 ? restartInterval / w : h)
++                if useScalarCEntropy {
++                    try Self.losslessCLeftUInt16Into(
++                        borrowed, width: w, height: h, half: half,
++                        table: tables[0], reader: &reader,
++                        segmentRows: restartInterval > 0 ? restartInterval / w : h)
++                } else {
++                    try Self.losslessLeftUInt16Into(
++                        borrowed, width: w, height: h, half: half,
++                        table: tables[0], reader: &reader,
++                        segmentRows: restartInterval > 0 ? restartInterval / w : h)
++                }
+             } else {
+                 try Self.losslessGrayInto(
+                     borrowed, width: w, height: h, predictor: predictor, half: half,
+@@ -1257,6 +1266,47 @@ struct JLIDecoder: Sendable {
+         }
+     }
+ 
++    /// Optional large-scan row leaf. Cancellation and restart handling stay on
++    /// the caller at exactly the same row boundaries as the Swift reference.
++    /// No row can exceed the validated JPEG width of 65,535 samples. Metadata
++    /// is prepared once per scan; the provider borrow is never used by workers.
++    @inline(never)
++    private static func losslessCLeftUInt16Into(
++        _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
++        half: Int32, table: HuffmanTable, reader: inout BitReader, segmentRows: Int
++    ) throws {
++        guard (1...65535).contains(w), (1...65535).contains(h), segmentRows > 0,
++              destination.bytesPerSample == 2, destination.rowBytes >= w * 2 else {
++            throw JLIError.decodingFailed("invalid lossless destination layout")
++        }
++        let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: destination.rowBytes)
++        let (needed, overflow2) = rowOffset.addingReportingOverflow(w * 2)
++        guard !overflow1, !overflow2, needed <= destination.bytes.count,
++              let output = destination.bytes.baseAddress else {
++            throw JLIError.decodingFailed("lossless destination is too small")
++        }
++        try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { kernel in
++            guard let kernel else {
++                try losslessLeftUInt16Into(destination, width: w, height: h, half: half,
++                    table: table, reader: &reader, segmentRows: segmentRows)
++                return
++            }
++            var previousRowFirst = half
++            for y in 0..<h {
++                try NativeOperation.check()
++                let segmentY = y % segmentRows
++                if y > 0, segmentY == 0 {
++                    try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
++                }
++                let row = UnsafeMutableRawBufferPointer(
++                    start: output + y * destination.rowBytes, count: w * 2)
++                let decoded = try reader.decodeLeftUInt16Row(using: kernel, sampleCount: w,
++                    seed: segmentY == 0 ? half : previousRowFirst, into: row)
++                previousRowFirst = decoded.first
++            }
++        }
++    }
++
+     /// Synchronous borrowed-output scan. Only one row of predictor history is
+     /// live; `aboveLeft` saves the previous-row sample before its slot is reused.
+     /// Every slot is written on the first row of a restart segment before any
+@@ -1783,10 +1833,12 @@ func jliWriteInterleavedPlanes(
+ 
+ // The public adapter preflights and parses once, then writes into its lease.
+ extension JLIDecoder {
+-    func decodeSharedLossless(_ parsed: ParsedJPEG, into plane: BorrowedSampleDestination) throws {
++    func decodeSharedLossless(_ parsed: ParsedJPEG, into plane: BorrowedSampleDestination,
++                              useScalarCEntropy: Bool = false) throws {
+         _ = try decodeLossless(frame: parsed.frameInfo, scans: parsed.scans,
+             configuration: .init(outputPixelFormat: plane.bytesPerSample == 1 ? .uint8 : .uint16),
+             restartInterval: parsed.restartInterval,
+-            iccProfile: parsed.iccProfile, exif: parsed.exif, borrowedDestination: plane)
++            iccProfile: parsed.iccProfile, exif: parsed.exif, borrowedDestination: plane,
++            useScalarCEntropy: useScalarCEntropy)
+     }
+ }
+diff --git a/Sources/SwiftJLI/Native/Entropy/CLosslessRowDecoder.swift b/Sources/SwiftJLI/Native/Entropy/CLosslessRowDecoder.swift
+new file mode 100644
+index 0000000..e1098be
+--- /dev/null
++++ b/Sources/SwiftJLI/Native/Entropy/CLosslessRowDecoder.swift
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: Apache-2.0
++import SwiftJLIEntropyC
++
++/// Scan-local, non-Sendable metadata borrowed by synchronous caller-thread row
++/// calls only. The provider's output pointer never enters worker work or an
++/// escaping closure. Fixed 1,048-byte metadata on supported 64-bit ABIs is
++/// covered by the existing 1 MiB decoder reserve; no resource limit is raised.
++/// The body must not let the kernel or its pointer escape or use it concurrently.
++struct CLosslessRowKernel {
++    let table: UnsafePointer<SJLIACHuffman>
++    let usesCodeZero: Bool
++
++    static func withBorrowed(table: HuffmanTable, enabled: Bool, allowCodeZero: Bool = true,
++                            _ body: (CLosslessRowKernel?) throws -> Void) rethrows {
++        guard enabled, table.minCode.count == 17, table.maxCode.count == 17,
++              table.valPtr.count == 17, table.values.count <= 256,
++              table.lookaheadLength.count == 256, table.lookaheadSymbol.count == 256,
++              table.valPtr.allSatisfy({ $0 >= 0 && $0 <= 256 }),
++              table.lookaheadLength.allSatisfy({ $0 <= 8 }) else {
++            try body(nil)
++            return
++        }
++        // Copy the same canonical and short-prefix metadata as the C AC leaf.
++        // Its scan-local preparation is avoided entirely on the scalar fallback.
++        var metadata = SJLIACHuffman()
++        withUnsafeMutableBytes(of: &metadata.minimum) { target in
++            table.minCode.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        withUnsafeMutableBytes(of: &metadata.maximum) { target in
++            table.maxCode.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        withUnsafeMutableBytes(of: &metadata.value_offsets) { target in
++            for index in 0..<17 {
++                target.storeBytes(of: Int64(table.valPtr[index]),
++                    toByteOffset: index * MemoryLayout<Int64>.stride, as: Int64.self)
++            }
++        }
++        withUnsafeMutableBytes(of: &metadata.values) { target in
++            table.values.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        withUnsafeMutableBytes(of: &metadata.lengths) { target in
++            table.lookaheadLength.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        withUnsafeMutableBytes(of: &metadata.symbols) { target in
++            table.lookaheadSymbol.withUnsafeBytes { target.copyMemory(from: $0) }
++        }
++        metadata.value_count = UInt32(table.values.count)
++        // A table property, not an image/fixture identity: the one-bit zero
++        // code carries a bounded magnitude. Its row constants need no new
++        // table or allocation. Explicit opt-out retains the generic C oracle.
++        let usesCodeZero = allowCodeZero && table.lookaheadLength[0] == 1
++            && (1...7).contains(table.lookaheadSymbol[0])
++        try withUnsafePointer(to: &metadata) { try body(.init(table: $0, usesCodeZero: usesCodeZero)) }
++    }
++}
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index c522fa0..1a74a1f 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -403,6 +403,47 @@ struct BitReader {
+         }
+     }
+ 
++    /// One synchronous C call per validated row. All input/table/output owners
++    /// enclose this call, and no pointer is saved or passed to another thread.
++    /// Publish reader state before translating failure so a truncated row has
++    /// the same partial output, physical prefetch and next-read behaviour as Swift.
++    mutating func decodeLeftUInt16Row(using kernel: CLosslessRowKernel,
++        sampleCount: Int, seed: Int32, into output: UnsafeMutableRawBufferPointer
++    ) throws -> (first: Int32, last: Int32) {
++        guard (1...65535).contains(sampleCount), (0...65535).contains(seed),
++              output.count >= sampleCount * 2, let destination = output.baseAddress else {
++            throw JLIError.decodingFailed("Invalid C lossless row arguments")
++        }
++        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
++                               available: UInt32(bitsAvailable), marker: 0)
++        var result = SJLILosslessRowResult()
++        let status = withExtendedLifetime(data) {
++            if kernel.usesCodeZero {
++                return sjli_lossless_left_u16_code0_row(buffer.baseAddress,
++                    buffer.count, &state, kernel.table, UInt32(seed), sampleCount,
++                    destination, output.count, &result)
++            }
++            return sjli_lossless_left_u16_row(buffer.baseAddress,
++                buffer.count, &state, kernel.table, UInt32(seed), sampleCount,
++                destination, output.count, &result)
++        }
++        byteOffset = state.byte_offset
++        bitBuffer = state.accumulator
++        bitsAvailable = Int(state.available)
++        switch status {
++        case SJLI_AC_OK: return (Int32(result.first), Int32(result.last))
++        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
++        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
++        case SJLI_AC_MARKER:
++            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
++        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
++        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
++        case SJLI_AC_INVALID_WIDTH:
++            throw JLIError.decodingFailed("invalid bit-read width \(state.marker)")
++        default: throw JLIError.decodingFailed("Invalid C lossless row arguments")
++        }
++    }
++
+     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
+     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
+     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,
+diff --git a/Sources/SwiftJLIEntropyC/EntropyReader.h b/Sources/SwiftJLIEntropyC/EntropyReader.h
+new file mode 100644
+index 0000000..9447d09
+--- /dev/null
++++ b/Sources/SwiftJLIEntropyC/EntropyReader.h
+@@ -0,0 +1,99 @@
++// SPDX-License-Identifier: Apache-2.0
++// Original shared reader bodies copied byte-for-byte from qualified ACBlock.c.
++// Keep the AC/DC translation unit unchanged; these scoped row leaves retain
++// the same bounded prefetch and error semantics without cross-file hot calls.
++#ifndef SWIFTJLI_ROW_ENTROPY_READER_H
++#define SWIFTJLI_ROW_ENTROPY_READER_H
++#include "SwiftJLIEntropyC.h"
++#include <string.h>
++
++static inline __attribute__((always_inline)) int bulk(const uint8_t *input, size_t count, SJLIACState *r) {
++    if (count - r->byte_offset < 8) return 0;
++    uint64_t word;
++    memcpy(&word, input + r->byte_offset, sizeof(word));
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++    word = __builtin_bswap64(word);
++#endif
++    const uint64_t inverse = ~word;
++    if (((inverse - UINT64_C(0x0101010101010101)) & ~inverse &
++         UINT64_C(0x8080808080808080)) != 0) return 0;
++    const unsigned bytes = (64 - r->available) / 8;
++    if (r->available == 0) r->accumulator = word;
++    else r->accumulator = (r->accumulator << (8 * bytes)) |
++                          (word >> (64 - 8 * bytes));
++    r->available += 8 * bytes;
++    r->byte_offset += bytes;
++    return 1;
++}
++
++static inline __attribute__((always_inline)) void fill(const uint8_t *input, size_t count, SJLIACState *r) {
++    if (r->available < 8 && bulk(input, count, r)) return;
++    while (r->available < 8) {
++        if (r->byte_offset == count) return;
++        const uint8_t byte = input[r->byte_offset];
++        if (byte == 0xff) {
++            if (count - r->byte_offset < 2 || input[r->byte_offset + 1] != 0) return;
++            r->byte_offset += 2;
++        } else r->byte_offset += 1;
++        r->accumulator = (r->accumulator << 8) | byte;
++        r->available += 8;
++    }
++}
++
++// These hot helpers preserve the original call-free AC leaf. Release
++// C size optimisation otherwise outlines the shared bodies after adding the
++// DC+AC entrypoint, adding calls and state traffic inside the coefficient loop.
++static inline __attribute__((always_inline)) SJLIACStatus read_bits(const uint8_t *input, size_t count,
++                                    SJLIACState *r, unsigned width, uint32_t *value) {
++    // All callers prove width <= 16. A zero category consumes no bits; avoid
++    // shifting by 64 when the accumulator is full.
++    if (width == 0) { *value = 0; return SJLI_AC_OK; }
++    while (r->available < width) {
++        if (bulk(input, count, r)) break;
++        if (r->byte_offset == count) return SJLI_AC_END;
++        const uint8_t byte = input[r->byte_offset++];
++        if (byte == 0xff) {
++            if (r->byte_offset == count) return SJLI_AC_END_AFTER_FF;
++            const uint8_t next = input[r->byte_offset];
++            if (next != 0) { r->marker = next; return SJLI_AC_MARKER; }
++            r->byte_offset += 1;
++        }
++        r->accumulator = (r->accumulator << 8) | byte;
++        r->available += 8;
++    }
++    r->available -= width;
++    *value = (uint32_t)((r->accumulator >> r->available) & ((UINT64_C(1) << width) - 1));
++    return SJLI_AC_OK;
++}
++
++static inline __attribute__((always_inline)) SJLIACStatus symbol(const uint8_t *input, size_t count,
++                                 SJLIACState *r, const SJLIACHuffman *table,
++                                 uint8_t *value) {
++    if (r->available < 8) fill(input, count, r);
++    if (r->available >= 8) {
++        const unsigned prefix = (unsigned)((r->accumulator >> (r->available - 8)) & 255);
++        const unsigned length = table->lengths[prefix];
++        if (length != 0) {
++            r->available -= length;
++            *value = table->symbols[prefix];
++            return SJLI_AC_OK;
++        }
++    }
++    uint32_t code = 0;
++    for (unsigned length = 1; length <= 16; ++length) {
++        uint32_t bit;
++        SJLIACStatus status = read_bits(input, count, r, 1, &bit);
++        if (status != SJLI_AC_OK) return status;
++        code = (code << 1) | bit;
++        if (table->maximum[length] >= 0 && (int64_t)code <= table->maximum[length]) {
++            const int64_t index = table->value_offsets[length] +
++                                  (int64_t)code - table->minimum[length];
++            if (index < 0 || (uint64_t)index >= table->value_count) return SJLI_AC_CODE_INDEX;
++            *value = table->values[index];
++            return SJLI_AC_OK;
++        }
++    }
++    return SJLI_AC_INVALID_CODE;
++}
++
++#endif
+diff --git a/Sources/SwiftJLIEntropyC/LosslessCodeZeroRow.c b/Sources/SwiftJLIEntropyC/LosslessCodeZeroRow.c
+new file mode 100644
+index 0000000..afe988c
+--- /dev/null
++++ b/Sources/SwiftJLIEntropyC/LosslessCodeZeroRow.c
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: Apache-2.0
++// Original SwiftJLI one-bit category row; separate translation unit preserves
++// the generic row's own inline context for long-magnitude tables.
++#include "EntropyReader.h"
++
++SJLIACStatus sjli_lossless_left_u16_code0_row(const void *raw_input, size_t input_count,
++    SJLIACState *restrict state, const SJLIACHuffman *restrict table, uint32_t seed,
++    size_t count, void *output, size_t output_count,
++    SJLILosslessRowResult *restrict result) {
++    const uint8_t *input = (const uint8_t *)raw_input;
++    if ((!input && input_count != 0) || !state || !table || !output || !result ||
++        count == 0 || count > 65535 || seed > 65535 || output_count < count * 2 ||
++        table->value_count > 256 || state->byte_offset > input_count ||
++        state->available > 64 || table->lengths[0] != 1 ||
++        table->symbols[0] < 1 || table->symbols[0] > 7) return SJLI_AC_INVALID_ARGUMENT;
++    // All shifts are bounded before evaluation. The first canonical one-bit
++    // code is zero; every remaining code begins with one and keeps fallback.
++    const unsigned category = table->symbols[0];
++    const unsigned consumed = category + 1;
++    const uint32_t magnitude_mask = (UINT32_C(1) << category) - 1;
++    const uint32_t sign_threshold = UINT32_C(1) << (category - 1);
++    uint8_t *bytes = (uint8_t *)output;
++    SJLIACState reader = *state;
++    SJLILosslessRowResult decoded = {0};
++    SJLIACStatus status = SJLI_AC_OK;
++    uint32_t value = seed;
++    for (size_t index = 0; index < count; ++index) {
++        if (reader.available < 8) fill(input, input_count, &reader);
++        if (reader.available >= 8 && ((reader.accumulator >> (reader.available - 1)) & 1) == 0) {
++            reader.available -= consumed;
++            const uint32_t magnitude = (uint32_t)(reader.accumulator >> reader.available) & magnitude_mask;
++            // Unsigned subtraction is defined modulo2^32; the final mask is
++            // exactly the retained signed difference plus modulo65536 predictor.
++            value = (value + magnitude - (magnitude < sign_threshold ? magnitude_mask : 0)) & 65535;
++            bytes[index * 2] = (uint8_t)value;
++            bytes[index * 2 + 1] = (uint8_t)(value >> 8);
++        } else {
++            SJLILosslessRowResult single;
++            status = sjli_lossless_left_u16_row(input, input_count, &reader, table,
++                value, 1, bytes + index * 2, 2, &single);
++            if (status != SJLI_AC_OK) break;
++            value = single.last;
++        }
++        if (index == 0) decoded.first = (uint16_t)value;
++        decoded.last = (uint16_t)value;
++        decoded.written += 1;
++    }
++    *result = decoded;
++    *state = reader;
++    return status;
++}
+diff --git a/Sources/SwiftJLIEntropyC/LosslessRow.c b/Sources/SwiftJLIEntropyC/LosslessRow.c
+new file mode 100644
+index 0000000..ffd983e
+--- /dev/null
++++ b/Sources/SwiftJLIEntropyC/LosslessRow.c
+@@ -0,0 +1,83 @@
++// SPDX-License-Identifier: Apache-2.0
++// Original scalar lossless row; independent of the qualified AC/DC leaf.
++#include "EntropyReader.h"
++
++static inline SJLIACStatus lossless_difference(const uint8_t *input, size_t count,
++    SJLIACState *r, const SJLIACHuffman *table, int32_t *difference) {
++    if (r->available < 8) fill(input, count, r);
++    if (r->available >= 8) {
++        const unsigned prefix = (unsigned)((r->accumulator >> (r->available - 8)) & 255);
++        const unsigned length = table->lengths[prefix];
++        if (length != 0) {
++            const unsigned category = table->symbols[prefix];
++            if (category == 0 || category == 16) {
++                r->available -= length;
++                *difference = category == 0 ? 0 : -32768;
++                return SJLI_AC_OK;
++            }
++            if (category < 16 && r->available >= length + category) {
++                r->available -= length + category;
++                const uint32_t magnitude = (uint32_t)((r->accumulator >> r->available) &
++                                                     ((UINT64_C(1) << category) - 1));
++                *difference = (int32_t)magnitude;
++                if (magnitude < (UINT32_C(1) << (category - 1)))
++                    *difference -= (int32_t)((UINT32_C(1) << category) - 1);
++                return SJLI_AC_OK;
++            }
++        }
++    }
++    uint8_t category;
++    SJLIACStatus status = symbol(input, count, r, table, &category);
++    if (status != SJLI_AC_OK) return status;
++    if (category == 0 || category == 16) {
++        *difference = category == 0 ? 0 : -32768;
++        return SJLI_AC_OK;
++    }
++    // This lossless path reads only widths1...15 here. Mirror Swift's checked
++    // readBits failure before attempting any oversized shift or refill.
++    if (category > 16) {
++        r->marker = category;
++        return SJLI_AC_INVALID_WIDTH;
++    }
++    uint32_t magnitude;
++    status = read_bits(input, count, r, category, &magnitude);
++    if (status != SJLI_AC_OK) return status;
++    *difference = (int32_t)magnitude;
++    if (magnitude < (UINT32_C(1) << (category - 1)))
++        *difference -= (int32_t)((UINT32_C(1) << category) - 1);
++    return SJLI_AC_OK;
++}
++
++SJLIACStatus sjli_lossless_left_u16_row(const void *raw_input, size_t input_count,
++    SJLIACState *restrict state, const SJLIACHuffman *restrict table, uint32_t seed,
++    size_t count, void *output, size_t output_count,
++    SJLILosslessRowResult *restrict result) {
++    const uint8_t *input = (const uint8_t *)raw_input;
++    if ((!input && input_count != 0) || !state || !table || !output || !result ||
++        count == 0 || count > 65535 || seed > 65535 || output_count < count * 2 ||
++        table->value_count > 256 || state->byte_offset > input_count ||
++        state->available > 64) return SJLI_AC_INVALID_ARGUMENT;
++    // Character accesses may write the representation of caller storage bound
++    // to any sample type; no Swift UInt8 binding or alignment is assumed.
++    uint8_t *bytes = (uint8_t *)output;
++    SJLIACState reader = *state;
++    SJLILosslessRowResult decoded = {0};
++    SJLIACStatus status = SJLI_AC_OK;
++    uint32_t value = seed;
++    for (size_t index = 0; index < count; ++index) {
++        int32_t difference;
++        status = lossless_difference(input, input_count, &reader, table, &difference);
++        if (status != SJLI_AC_OK) break;
++        // Conversion of a negative signed value to uint32_t is defined modulo
++        // 2^32; the final mask gives the exact Swift modulo-65536 result.
++        value = (value + (uint32_t)difference) & 65535;
++        bytes[index * 2] = (uint8_t)value;
++        bytes[index * 2 + 1] = (uint8_t)(value >> 8);
++        if (index == 0) decoded.first = (uint16_t)value;
++        decoded.last = (uint16_t)value;
++        decoded.written += 1;
++    }
++    *result = decoded;
++    *state = reader;
++    return status;
++}
+diff --git a/Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h b/Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h
+index 90b63d0..3a69c3a 100644
+--- a/Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h
++++ b/Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h
+@@ -57,4 +57,36 @@ SJLIACStatus sjli_dct_decode_block(const void *raw_input, size_t input_count,
+     SJLIACState *state, const SJLIACHuffman *dc_table, const SJLIACHuffman *ac_table,
+     const uint32_t *lookup, size_t lookup_count, int32_t *previous_dc,
+     unsigned precision, int32_t *output, size_t output_count);
++typedef struct {
++    uint16_t first;
++    uint16_t last;
++    uint32_t written;
++} SJLILosslessRowResult;
++
++// Original synchronous left-predictor/Pt0 row leaf. There is no heap, I/O,
++// callback or worker. The caller retains input and output owners until return;
++// output is a raw byte borrow (unaligned is allowed). State, metadata and result
++// must be disjoint from each other and from the input/output buffers. No
++// restrict assumption is made about caller output versus compressed input.
++// Metadata has the same validated invariants as the AC leaf above.
++// count is 1...65535 and seed is a reconstructed value in 0...65535. The result
++// and state are published on entropy failure, with only the complete sample
++// prefix written. Categories >16 fail after their symbol, before any magnitude
++// read (state.marker carries that width); category16 means -32768 with no
++// extra bits. All arithmetic is modulo
++// 65536 regardless of JPEG precision, matching the retained Swift reference.
++// Invalid arguments leave state, result and output unchanged.
++SJLIACStatus sjli_lossless_left_u16_row(const void *raw_input, size_t input_count,
++    SJLIACState *state, const SJLIACHuffman *table, uint32_t seed,
++    size_t count, void *output, size_t output_count,
++    SJLILosslessRowResult *result);
++
++// Optional scalar row for a canonical one-bit code0 carrying category1...7.
++// Bounds/borrows/publication match the generic row. Width, sign threshold and
++// mask are fixed once per row; leading1/short input uses the generic C row for
++// one sample without consuming bits first. No extra lookup or allocation.
++SJLIACStatus sjli_lossless_left_u16_code0_row(const void *raw_input, size_t input_count,
++    SJLIACState *state, const SJLIACHuffman *table, uint32_t seed,
++    size_t count, void *output, size_t output_count,
++    SJLILosslessRowResult *result);
+ #endif
+diff --git a/Tests/SwiftJLITests/Native/CLosslessRowTests.swift b/Tests/SwiftJLITests/Native/CLosslessRowTests.swift
+new file mode 100644
+index 0000000..dd78661
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/CLosslessRowTests.swift
+@@ -0,0 +1,501 @@
++// SPDX-License-Identifier: Apache-2.0
++import Foundation
++import Synchronization
++import Testing
++@testable import SwiftJLI
++
++/// Observes the existing owner's synchronous lease without adopting a pointer.
++/// Copying only a small failure prefix proves partial row output preceded abort.
++private final class CLosslessObservedStorage: WritableImageStorage {
++    struct Observation: Sendable {
++        var borrows = 0
++        var aborts = 0
++        var seals = 0
++        var failurePrefix: [UInt8] = []
++    }
++    private let owner: OwnedImageStorage
++    let observation = Mutex(Observation())
++    init(byteCount: Int) throws { owner = try OwnedImageStorage(byteCount: byteCount) }
++    var byteCount: Int { owner.byteCount }
++    var allocationID: UUID { owner.allocationID }
++    func reserveWrite() throws -> StorageWriteLease { try owner.reserveWrite() }
++    func withUnsafeMutableBytes<R>(lease: StorageWriteLease,
++        _ body: (UnsafeMutableRawBufferPointer) throws -> R) throws -> R {
++        try owner.withUnsafeMutableBytes(lease: lease) { bytes in
++            observation.withLock { $0.borrows += 1 }
++            do { return try body(bytes) }
++            catch {
++                let prefix = Array(bytes.prefix(20))
++                observation.withLock { $0.failurePrefix = prefix }
++                throw error
++            }
++        }
++    }
++    func finishAndSeal(lease: StorageWriteLease) throws -> any ReadOnlyImageStorage {
++        let sealed = try owner.finishAndSeal(lease: lease)
++        observation.withLock { $0.seals += 1 }
++        return sealed
++    }
++    func abortAndInvalidate(lease: StorageWriteLease) throws {
++        try owner.abortAndInvalidate(lease: lease)
++        observation.withLock { $0.aborts += 1 }
++    }
++}
++
++@Suite struct CLosslessRowTests {
++    private func difference(_ table: HuffmanTable, _ reader: inout BitReader) throws -> Int32 {
++        if let value = reader.fastDecodeLosslessDifference(table) { return value }
++        let category = Int(try HuffmanDecoder.decodeSymbol(from: &reader, table: table))
++        if category == 0 { return 0 }
++        if category == 16 { return -32768 }
++        return try HuffmanDecoder.decodeValue(from: &reader, category: category)
++    }
++
++    private func reference(_ reader: inout BitReader, table: HuffmanTable, count: Int,
++        seed: Int32, into output: UnsafeMutableRawBufferPointer
++    ) throws -> (first: Int32, last: Int32) {
++        var first: Int32 = 0, value = seed
++        for index in 0..<count {
++            value = (value + (try difference(table, &reader))) & 0xFFFF
++            if index == 0 { first = value }
++            output[index * 2] = UInt8(truncatingIfNeeded: value)
++            output[index * 2 + 1] = UInt8(value >> 8)
++        }
++        return (first, value)
++    }
++
++    /// Compare all partial bytes, next-read errors and physical/aligned cursors,
++    /// not merely successful sample values. The destination begins at an odd byte.
++    private func compare(_ bytes: [UInt8], skipping: Int = 0, table: HuffmanTable,
++        kernel: CLosslessRowKernel, count: Int, seed: Int32 = 32768
++    ) throws -> Bool {
++        var referenceReader = BitReader(data: bytes), candidate = referenceReader
++        _ = try referenceReader.readBits(skipping)
++        _ = try candidate.readBits(skipping)
++        var expected = [UInt8](repeating: 0xA5, count: count * 2 + 8), actual = expected
++        let lhs = Result { try expected.withUnsafeMutableBytes { bytes in
++            try reference(&referenceReader, table: table, count: count, seed: seed,
++                into: .init(rebasing: bytes[3..<(3 + count * 2)]))
++        } }
++        let rhs = Result { try actual.withUnsafeMutableBytes { bytes in
++            try candidate.decodeLeftUInt16Row(using: kernel, sampleCount: count, seed: seed,
++                into: .init(rebasing: bytes[3..<(3 + count * 2)]))
++        } }
++        let failed: Bool
++        switch (lhs, rhs) {
++        case (.success(let a), .success(let b)):
++            #expect(a.first == b.first && a.last == b.last)
++            failed = false
++        case (.failure(let a), .failure(let b)):
++            #expect(String(describing: a) == String(describing: b))
++            failed = true
++        default:
++            Issue.record("C lossless row changed completion/error boundary")
++            failed = true
++        }
++        #expect(actual == expected)
++        #expect(candidate.byteOffset == referenceReader.byteOffset)
++        var alignedA = referenceReader, alignedB = candidate
++        alignedA.alignToByte(); alignedB.alignToByte()
++        #expect(alignedA.byteOffset == alignedB.byteOffset)
++        let nextA = Result { try referenceReader.readBits(16) }
++        let nextB = Result { try candidate.readBits(16) }
++        switch (nextA, nextB) {
++        case (.success(let a), .success(let b)): #expect(a == b)
++        case (.failure(let a), .failure(let b)):
++            #expect(String(describing: a) == String(describing: b))
++        default: Issue.record("C lossless row changed remainder after completion/error")
++        }
++        #expect(candidate.byteOffset == referenceReader.byteOffset)
++        return failed
++    }
++
++    private func emit(category: Int, magnitude: UInt32, table: HuffmanTable, writer: inout BitWriter) {
++        let code = table.encodingTable[category]
++        writer.writeBits(UInt32(code.code), count: Int(code.length))
++        if category > 0 && category < 16 { writer.writeBits(magnitude, count: category) }
++    }
++
++    @Test func codeZeroExhaustsEveryPrefixOffsetAndCategoryBoundary() throws {
++        var tables: [HuffmanTable] = []
++        for category in 1...7 {
++            tables.append(HuffmanTable(bits: [1, 1] + Array(repeating: 0, count: 14),
++                                       values: [UInt8(category), 16]))
++            // A ninth-bit code is deliberately outside the specialised zero code. Its
++            // invalid magnitude width must still fail at the original cursor.
++            var lengths = [UInt8](repeating: 0, count: 16)
++            lengths[0] = 1; lengths[1] = 1; lengths[8] = 1
++            tables.append(HuffmanTable(bits: lengths, values: [UInt8(category), 16, 17]))
++        }
++        for invalid in [17, 31, 64, 255] {
++            tables.append(HuffmanTable(bits: [1, 1] + Array(repeating: 0, count: 14),
++                                       values: [5, UInt8(invalid)]))
++        }
++        var successes = 0, failures = 0
++        for table in tables {
++            try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { borrowed in
++                let kernel = try #require(borrowed)
++                #expect(kernel.usesCodeZero)
++                for offset in 0..<8 { for prefix in 0..<256 {
++                    var writer = BitWriter(estimatedMaxSize: 32)
++                    writer.writeBits(0, count: offset)
++                    writer.writeBits(UInt32(prefix), count: 8)
++                    for tail: UInt32 in [0xA55A, 0x1234, 0xFF00, 0xD0FF] {
++                        writer.writeBits(tail, count: 16)
++                    }
++                    writer.flush()
++                    if try compare(writer.data, skipping: offset, table: table, kernel: kernel, count: 9) {
++                        failures += 1
++                    } else { successes += 1 }
++                } }
++            }
++        }
++        #expect(successes > 0 && failures > 0)
++    }
++
++    @Test func codeZeroTruncationStuffingAndMarkersMatchGenericAndSwift() throws {
++        let table = HuffmanTable(bits: [1, 1] + Array(repeating: 0, count: 14), values: [5, 16])
++        for allowCodeZero in [false, true] {
++            try CLosslessRowKernel.withBorrowed(table: table, enabled: true,
++                                               allowCodeZero: allowCodeZero) { borrowed in
++                let kernel = try #require(borrowed)
++                #expect(kernel.usesCodeZero == allowCodeZero)
++                for prefix in UInt16(0)...255 {
++                    for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
++                                          Array(repeating: 0xA5, count: 16)] {
++                        _ = try compare([UInt8(prefix)] + tail, table: table, kernel: kernel, count: 9)
++                    }
++                }
++                var writer = BitWriter()
++                for index in 0..<129 {
++                    emit(category: index % 7 == 0 ? 16 : 5, magnitude: UInt32(index & 31),
++                         table: table, writer: &writer)
++                }
++                writer.emitRestartMarker(7); writer.writeBits(0xA55A, count: 16); writer.flush()
++                let bytes = writer.data
++                for end in 0...bytes.count {
++                    _ = try compare(Array(bytes.prefix(end)), table: table, kernel: kernel, count: 129)
++                }
++            }
++        }
++        // These valid short Huffman codes carry long magnitudes. No fixed-category
++        // row is selected, so the original generic row stays in use.
++        let longMagnitudes = HuffmanTable(bits: [1, 1] + Array(repeating: 0, count: 14), values: [15, 14])
++        try CLosslessRowKernel.withBorrowed(table: longMagnitudes, enabled: true) { borrowed in
++            let kernel = try #require(borrowed)
++            #expect(!kernel.usesCodeZero)
++        }
++    }
++
++    @Test func codeZeroSelectionRequiresItsProvenWidthAndCodeLength() throws {
++        for (length, category, expected): (Int, UInt8, Bool) in [
++            (1, 0, false), (1, 1, true), (1, 7, true), (1, 8, false),
++            (1, 15, false), (1, 16, false), (2, 5, false)] {
++            var counts = [UInt8](repeating: 0, count: 16)
++            counts[length - 1] = 1
++            let table = HuffmanTable(bits: counts, values: [category])
++            try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { borrowed in
++                let kernel = try #require(borrowed)
++                #expect(kernel.usesCodeZero == expected)
++            }
++        }
++    }
++
++    @Test func everyCategoryOffsetSeedAndShortOrLongCodeMatchesSwift() throws {
++        for length in [5, 9] {
++            var bits = [UInt8](repeating: 0, count: 16); bits[length - 1] = 17
++            let table = HuffmanTable(bits: bits, values: (0...16).map(UInt8.init))
++            try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { borrowed in
++                let kernel = try #require(borrowed)
++                for offset in 0..<8 { for seed: Int32 in [0, 2048, 32768, 65535] {
++                    var writer = BitWriter()
++                    writer.writeBits(0, count: offset)
++                    for category in 0...16 {
++                        let maximum = category > 0 && category < 16 ? UInt32((1 << category) - 1) : 0
++                        for magnitude in [UInt32(0), maximum >> 1, (maximum >> 1) + 1, maximum] {
++                            emit(category: category, magnitude: magnitude, table: table, writer: &writer)
++                        }
++                    }
++                    writer.emitRestartMarker(5)
++                    writer.writeBits(0xA55A, count: 16); writer.flush()
++                    #expect(try !compare(writer.data, skipping: offset, table: table,
++                        kernel: kernel, count: 68, seed: seed))
++                    var reader = BitReader(data: writer.data)
++                    _ = try reader.readBits(offset)
++                    var output = [UInt8](repeating: 0, count: 136)
++                    try output.withUnsafeMutableBytes {
++                        _ = try reader.decodeLeftUInt16Row(using: kernel, sampleCount: 68, seed: seed, into: $0)
++                    }
++                    try reader.skipRestartMarker(expectedIndex: 5)
++                    #expect(try reader.readBits(16) == 0xA55A)
++                } }
++            }
++        }
++    }
++
++    @Test func truncationStuffingMarkersAndInvalidCategoriesPreservePartialRows() throws {
++        let short = HuffmanTable(bits: [0, 0, 0, 0, 17] + Array(repeating: 0, count: 11),
++                                 values: (0...16).map(UInt8.init))
++        let long = HuffmanTable(bits: Array(repeating: 0, count: 8) + [17] + Array(repeating: 0, count: 7),
++                                values: (0...16).map(UInt8.init))
++        var successes = 0, failures = 0
++        for table in [short, long] {
++            try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { borrowed in
++                let kernel = try #require(borrowed)
++                for byte in UInt16(0)...255 {
++                    for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
++                        Array(repeating: 0, count: 16), Array(repeating: 0xA5, count: 16),
++                        [0, 1, 2, 3, 4, 5, 6, 0xFF, 0, 0xFF, 0xD7]] {
++                        if try compare([UInt8(byte)] + tail, table: table, kernel: kernel, count: 9) {
++                            failures += 1
++                        } else { successes += 1 }
++                    }
++                }
++                var writer = BitWriter()
++                for index in 0..<68 {
++                    let category = index % 17
++                    emit(category: category, magnitude: UInt32(index * 311), table: table, writer: &writer)
++                }
++                writer.flush()
++                let bytes = writer.data
++                for end in 0...bytes.count {
++                    _ = try compare(Array(bytes.prefix(end)), table: table, kernel: kernel, count: 68)
++                }
++            }
++        }
++        #expect(successes > 0 && failures > 0)
++        // A malformed category consumes its symbol but no magnitude bits, even
++        // when there are enough buffered bits for a tempting unchecked shift.
++        for invalid in [17, 31, 32, 63, 64, 127, 255] { for length in [2, 9] {
++            var bits = [UInt8](repeating: 0, count: 16); bits[length - 1] = 2
++            let table = HuffmanTable(bits: bits, values: [1, UInt8(invalid)])
++            try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { borrowed in
++                let kernel = try #require(borrowed)
++                for offset in 0..<8 {
++                    var writer = BitWriter()
++                    writer.writeBits(0, count: offset)
++                    for _ in 0..<5 { emit(category: 1, magnitude: 1, table: table, writer: &writer) }
++                    emit(category: invalid, magnitude: 0, table: table, writer: &writer)
++                    writer.writeBits(0xA55A, count: 16); writer.flush()
++                    #expect(try compare(writer.data, skipping: offset, table: table,
++                        kernel: kernel, count: 9))
++                }
++            }
++        } }
++    }
++
++    @Test func maximumWidthAndInvalidArgumentsRetainBufferBounds() throws {
++        let table = HuffmanTable(bits: [1, 1] + Array(repeating: 0, count: 14), values: [1, 16])
++        CLosslessRowKernel.withBorrowed(table: table, enabled: false) { #expect($0 == nil) }
++        try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { borrowed in
++            let kernel = try #require(borrowed)
++            var writer = BitWriter()
++            for index in 0..<65535 {
++                emit(category: index % 2 == 0 ? 16 : 1, magnitude: 1, table: table, writer: &writer)
++            }
++            writer.flush()
++            #expect(try !compare(writer.data, table: table, kernel: kernel, count: 65535, seed: 65535))
++            for (count, seed, capacity): (Int, Int32, Int) in [
++                (0, 0, 4), (-1, 0, 4), (65536, 0, 4), (1, -1, 4), (1, 65536, 4), (3, 0, 5)] {
++                var reader = BitReader(data: writer.data)
++                var bytes = [UInt8](repeating: 0xA5, count: capacity)
++                #expect(throws: JLIError.self) {
++                    try bytes.withUnsafeMutableBytes {
++                        _ = try reader.decodeLeftUInt16Row(using: kernel, sampleCount: count, seed: seed, into: $0)
++                    }
++                }
++                #expect(reader.byteOffset == 0 && bytes.allSatisfy { $0 == 0xA5 })
++            }
++        }
++    }
++
++    @Test func rawDestinationMayAlreadyBeBoundToUInt16() throws {
++        let table = HuffmanTable(bits: [1, 1] + Array(repeating: 0, count: 14), values: [1, 16])
++        var writer = BitWriter()
++        for _ in 0..<17 { emit(category: 1, magnitude: 1, table: table, writer: &writer) }
++        writer.flush()
++        var reader = BitReader(data: writer.data)
++        var words = [UInt16](repeating: 0xA5A5, count: 22)
++        var expected = [UInt8](repeating: 0xA5, count: words.count * 2)
++        for index in 0..<17 {
++            let value = 32769 + index
++            expected[3 + index * 2] = UInt8(truncatingIfNeeded: value)
++            expected[4 + index * 2] = UInt8(value >> 8)
++        }
++        try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { borrowed in
++            let kernel = try #require(borrowed)
++            try words.withUnsafeMutableBufferPointer { bound in
++                let raw = UnsafeMutableRawBufferPointer(bound)
++                let result = try reader.decodeLeftUInt16Row(using: kernel, sampleCount: 17,
++                    seed: 32768, into: .init(rebasing: raw[3..<37]))
++                #expect(result.first == 32769 && result.last == 32785)
++            }
++        }
++        words.withUnsafeBytes { #expect($0.elementsEqual(expected)) }
++    }
++
++    static func fixture(precision: Int, restartRows: Int, malformedRange: Bool = false)
++    throws -> (jpeg: [UInt8], expected: [UInt8], parsed: ParsedJPEG) {
++        let width = 129, height = 129
++        let lengths: [UInt8] = [1, 1] + Array(repeating: 0, count: 14)
++        let table = HuffmanTable(bits: lengths, values: [1, 16])
++        let half = Int32(1 << (precision - 1))
++        var entropy = BitWriter(), expected: [UInt8] = [], previous = half
++        for y in 0..<height {
++            let segmentStart = y == 0 || (restartRows > 0 && y % restartRows == 0)
++            if y > 0 && segmentStart { entropy.emitRestartMarker((y / restartRows - 1) & 7) }
++            var value = segmentStart ? half : previous
++            for x in 0..<width {
++                let delta: Int32 = (precision == 16 || malformedRange) && (x + y) % 3 == 0
++                    ? -32768 : ((x + y) % 2 == 0 ? 1 : -1)
++                if delta == -32768 {
++                    let code = table.encodingTable[16]
++                    entropy.writeBits(UInt32(code.code), count: Int(code.length))
++                } else { HuffmanEncoder.encodeDC(delta, table: table, writer: &entropy) }
++                value = (value + delta) & 0xFFFF
++                if x == 0 { previous = value }
++                expected += [UInt8(truncatingIfNeeded: value), UInt8(value >> 8)]
++            }
++        }
++        entropy.flush()
++        var writer = MarkerWriter()
++        writer.writeSOI()
++        writer.writeSOF(progressive: false, precision: precision, width: width, height: height,
++            components: [(1, 1, 1, 0)], lossless: true)
++        writer.writeDHT(tables: [(0, 0, lengths, [1, 16])])
++        if restartRows > 0 { writer.writeDRI(interval: width * restartRows) }
++        writer.writeSOS(components: [(1, 0, 0)], spectralStart: 1, spectralEnd: 0)
++        writer.writeEntropyData(entropy.data); writer.writeEOI()
++        var parser = MarkerReader(data: writer.data)
++        let parsed = try parser.parse()
++        let parsedTable = try #require(parsed.scans.first?.dcTables[0])
++        #expect(parsedTable.lookaheadLength[0] == 1 && parsedTable.lookaheadSymbol[0] == 1)
++        #expect(LosslessLookahead(table: parsedTable, sampleCount: width * height) == nil)
++        return (writer.data, expected, parsed)
++    }
++
++    @Test(arguments: [12, 16])
++    func cAndSwiftRowsPreserveOddPaddingRestartsAndModulo(precision: Int) throws {
++        for restartRows in [0, 1, 3] { for malformedRange in [false, true] {
++            let fixture = try Self.fixture(precision: precision, restartRows: restartRows,
++                                           malformedRange: malformedRange)
++            var outputs: [[UInt8]] = []
++            for useC in [false, true] {
++                var bytes = [UInt8](repeating: 0xA5, count: 3 + 263 * 129 + 7)
++                try bytes.withUnsafeMutableBytes { raw in
++                    try NativeOperation.$current.withValue(.init(seconds: 60)) {
++                        try JLIDecoder().decodeSharedLossless(fixture.parsed, into: .init(
++                            bytes: .init(rebasing: raw[3..<(3 + 263 * 129)]),
++                            rowBytes: 263, bytesPerSample: 2), useScalarCEntropy: useC)
++                    }
++                }
++                for row in 0..<129 {
++                    let first = 3 + row * 263
++                    #expect(bytes[first..<(first + 258)].elementsEqual(fixture.expected[(row * 258)..<((row + 1) * 258)]))
++                    #expect(bytes[(first + 258)..<(first + 263)].allSatisfy { $0 == 0xA5 })
++                }
++                #expect(bytes.prefix(3).allSatisfy { $0 == 0xA5 } && bytes.suffix(7).allSatisfy { $0 == 0xA5 })
++                outputs.append(bytes)
++            }
++            #expect(outputs[0] == outputs[1])
++        } }
++    }
++
++    @Test func rowCancellationStopsBeforeTheNextCLeaf() throws {
++        let fixture = try Self.fixture(precision: 16, restartRows: 3)
++        for useC in [false, true] {
++            let polls = Mutex(0)
++            var bytes = [UInt8](repeating: 0xA5, count: 129 * 129 * 2)
++            #expect(throws: CancellationError.self) {
++                try bytes.withUnsafeMutableBytes { raw in
++                    try NativeOperation.withSynchronousCancellation({
++                        if polls.withLock({ $0 += 1; return $0 }) == 4 { throw CancellationError() }
++                    }) {
++                        try NativeOperation.$current.withValue(.init(seconds: 60)) {
++                            try JLIDecoder().decodeSharedLossless(fixture.parsed, into: .init(
++                                bytes: raw, rowBytes: 258, bytesPerSample: 2), useScalarCEntropy: useC)
++                        }
++                    }
++                }
++            }
++            #expect(bytes.prefix(516).elementsEqual(fixture.expected.prefix(516)))
++            #expect(bytes.dropFirst(516).allSatisfy { $0 == 0xA5 })
++        }
++    }
++}
++
++@Suite struct CLosslessRowPublicTests {
++    @Test func truncatedRowAbortsAfterWritingTheSamePrefixUnderBothPolicies() async throws {
++        let lengths: [UInt8] = [1, 1] + Array(repeating: 0, count: 14)
++        var entropy = BitWriter()
++        // Both categories are admitted by the public parser. Five complete +1
++        // samples precede an incomplete all-one code in the flush padding.
++        // Unlike an invalid DHT category, this must reach destination.write.
++        for _ in 0..<5 { entropy.writeBits(1, count: 2) }
++        entropy.flush()
++        var writer = MarkerWriter()
++        writer.writeSOI()
++        writer.writeSOF(progressive: false, precision: 16, width: 129, height: 129,
++            components: [(1, 1, 1, 0)], lossless: true)
++        writer.writeDHT(tables: [(0, 0, lengths, [1, 16])])
++        writer.writeSOS(components: [(1, 0, 0)], spectralStart: 1, spectralEnd: 0)
++        writer.writeEntropyData(entropy.data); writer.writeEOI()
++        let decoder = try SwiftJLI.Decoder(), data = Data(writer.data)
++        let descriptor = try ImageDescriptor.greyscale16(width: 129, height: 129)
++        for policy: ExecutionPolicy in [.automatic, .required(.scalarCPU)] {
++            let storage = try CLosslessObservedStorage(byteCount: descriptor.requiredByteCount)
++            let destination = try ImageDestination(descriptor: descriptor, storage: storage)
++            do {
++                _ = try await decoder.decode(data, into: destination, options: .init(executionPolicy: policy))
++                Issue.record("Truncated row unexpectedly decoded")
++            } catch let error as CodecError {
++                #expect(error.category == .malformedInput)
++            }
++            let observed = storage.observation.withLock { $0 }
++            #expect(observed.borrows == 1 && observed.aborts == 1 && observed.seals == 0)
++            #expect(observed.failurePrefix == [1, 128, 2, 128, 3, 128, 4, 128, 5, 128]
++                + Array(repeating: UInt8(0), count: 10))
++            #expect(throws: CodecError.self) { _ = try destination.write { _ in } }
++            #expect(throws: CodecError.self) { try storage.reserveWrite() }
++        }
++    }
++
++    @Test(arguments: [12, 16])
++    func publicOwnedAndCallerDestinationsPreserveSamplesAndLifecycle(precision: Int) async throws {
++        let fixture = try CLosslessRowTests.fixture(precision: precision, restartRows: 3)
++        let decoder = try SwiftJLI.Decoder(), data = Data(fixture.jpeg)
++        // Automatic opts into the portable C scalar leaf; explicit scalar
++        // policies preserve Swift. Neither advertises an accelerated backend.
++        for policy: ExecutionPolicy in [.automatic, .scalarCPU, .required(.scalarCPU)] {
++            let options = DecodeOptions(executionPolicy: policy)
++            let packed = try await decoder.decode(data, options: options)
++            #expect(packed.report.backend == .scalarCPU && packed.report.fidelity == .exactSamples)
++            #expect(packed.report.pixelAllocationCount == 1 && packed.report.copyEvents.isEmpty)
++            try packed.image.storage.withUnsafeBytes { #expect($0.elementsEqual(fixture.expected)) }
++            let rowBytes = 264, capacity = 2 + 129 * rowBytes + 6
++            let plane = try PlaneDescriptor(width: 129, height: 129, offset: 2,
++                sampleStride: 2, pixelStride: 2, rowBytes: rowBytes, byteCount: capacity)
++            let descriptor = try ImageDescriptor(width: 129, height: 129,
++                storageBits: 16, meaningfulBits: precision, planes: [plane])
++            let storage = try OwnedImageStorage(byteCount: capacity)
++            let destination = try ImageDestination(descriptor: descriptor, storage: storage)
++            let decoded = try await decoder.decode(data, into: destination, options: options)
++            #expect(decoded.report.backend == .scalarCPU && decoded.report.fallbackReason == nil)
++            #expect(decoded.report.fidelity == .exactSamples)
++            #expect(decoded.report.pixelAllocationCount == 0 && decoded.report.copyEvents.isEmpty)
++            #expect(decoded.image.storage.allocationID == storage.allocationID)
++            try decoded.image.storage.withUnsafeBytes { bytes in
++                #expect(bytes.prefix(2).allSatisfy { $0 == 0 } && bytes.suffix(6).allSatisfy { $0 == 0 })
++                for row in 0..<129 {
++                    let first = 2 + row * rowBytes
++                    #expect(bytes[first..<(first + 258)].elementsEqual(fixture.expected[(row * 258)..<((row + 1) * 258)]))
++                    #expect(bytes[(first + 258)..<(first + rowBytes)].allSatisfy { $0 == 0 })
++                }
++            }
++            #expect(throws: CodecError.self) { try storage.reserveWrite() }
++        }
++        await #expect(throws: CodecError.self) {
++            _ = try await decoder.decode(data, options: .init(executionPolicy: .required(.accelerated)))
++        }
++    }
++}

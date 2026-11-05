@@ -1,0 +1,53 @@
+{
+  "sourceRevision": "14f35018d241666358480da2a8527d29ab047627",
+  "productionEquivalent": "704ddae1bafea95d8a48c01ce35887c5b6413c0d plus plan comments",
+  "commands": [
+    {
+      "name": "release-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round5-704ddae-products/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/release-cli"
+      ],
+      "startedUTC": "2026-11-03T14:49:00.821459+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:49:04.195268+00:00"
+    },
+    {
+      "name": "asan-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round5-pipeline-address/out/Products/Debug/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/asan-cli"
+      ],
+      "startedUTC": "2026-11-03T14:49:04.195570+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:49:12.765761+00:00"
+    },
+    {
+      "name": "dct-oracle",
+      "command": [
+        "python3",
+        "Scripts/verify-dct-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round5-evidence/pipeline/dct-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round5-oracle-build",
+        "--cjpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg"
+      ],
+      "startedUTC": "2026-11-03T14:49:12.766002+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:49:18.712895+00:00"
+    }
+  ],
+  "status": "passed"
+}

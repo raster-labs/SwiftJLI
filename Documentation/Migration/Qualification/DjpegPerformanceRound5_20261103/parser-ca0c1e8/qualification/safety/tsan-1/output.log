@@ -1,0 +1,391 @@
+Building for production...
+[Planning deferred tasks]
+[46 / 80]
+[57 / 89]
+[62 / 89] SwiftJLI
+[73 / 136]
+[79 / 136]
+[86 / 136]
+[87 / 136]
+[91 / 136]
+[94 / 136]
+[100 / 136]
+[103 / 136]
+[104 / 136]
+[107 / 136]
+[109 / 136]
+[110 / 136] SwiftJLI
+[123 / 138] swiftjli-cli-product
+[129 / 145]
+[132 / 145] swiftjli-cli-product
+[134 / 145] swiftjli-cli-product
+[135 / 145] swiftjli-cli-product
+/private/tmp/swiftjli-round5-parser-reservation/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift:94:20: warning: result of call to 'withUnsafeMutableBytes' is unused [#NoUsage]
+92 |             // Immediate reuse after the joined failure is covered by ASan/TSan;
+93 |             // no timing delay is used as evidence of worker completion.
+94 |             output.withUnsafeMutableBytes { $0.initializeMemory(as: UInt8.self, repeating: 7) }
+   |                    `- warning: result of call to 'withUnsafeMutableBytes' is unused [#NoUsage]
+95 |             #expect(output.allSatisfy { $0 == 7 })
+96 |         }
+
+/private/tmp/swiftjli-round5-parser-reservation/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-round5-parser-reservation/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:83:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 81 |                     var reader = BitReader(data: writer.data)
+ 82 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 83 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 84 |                     try destination.withUnsafeMutableBufferPointer {
+ 85 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+
+/private/tmp/swiftjli-round5-parser-reservation/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:31:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 29 |         let scan = Self.scan(blockCount: 2050, dcOnly: dcOnly)
+ 30 |         let table = StandardHuffmanTables.acLuminance
+ 31 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 32 |         let quantisation = (0..<64).map { Float($0 * 7 % 127 + 1) }
+ 33 |         for backend in Decoder.capabilities.availableBackends {
+
+/private/tmp/swiftjli-round5-parser-reservation/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:92:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 90 |         let scan = Self.scan(blockCount: 1025)
+ 91 |         let table = StandardHuffmanTables.acLuminance
+ 92 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 93 |         var reader = BitReader(data: scan.bytes), calls = 0
+ 94 |         #expect(throws: JLIError.self) {
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[136 / 145] SwiftJLITests-product
+[141 / 145] SwiftJLITests-product
+[143 / 145] SwiftJLITests-product
+Build complete! (49.65 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite ParserReservationTests started.
+◇ Suite JPEGDecodeParityTests started.
+◇ Suite StreamingWorkspaceAdmissionTests started.
+◇ Test sealedOwnerSupportsConcurrentReadersAndNestedRead() started.
+◇ Suite ValidatedEnvelopeTests started.
+◇ Suite NativeExecutionTests started.
+◇ Test paddedStorageCountsTowardsDecodedLimit() started.
+◇ Suite CACPublicPipelineTests started.
+◇ Suite JPEGMigrationTests started.
+◇ Test invalidResourceProfilesAndProgressFailPredictably() started.
+◇ Test reentrantLeaseOperationsRejectWithoutDeadlocking() started.
+◇ Test adaptersShareWriterAuthorityAndRejectForgedLease() started.
+◇ Test independentAllocationAndMemoryCeilingsAreEnforced() started.
+◇ Suite "ICC / Exif metadata" started.
+◇ Test imageRetainsAdapterUntilLastImageReleaseExactlyOnce() started.
+◇ Suite CLosslessRowPublicTests started.
+◇ Suite EntropyBoundaryTests started.
+◇ Suite CompressedInputOwnershipTests started.
+◇ Test sameTokenCannotAuthoriseConcurrentOverlappingBorrows() started.
+◇ Test failedFillInvalidatesDestination() started.
+◇ Test concurrentAdaptersReserveExactlyOneWriter() started.
+◇ Test validNoisyInputUsesItsBoundedWorkspaceAndRetainsExactSamples() started.
+◇ Test pixelAndDimensionLimitsRejectBeforeAllocation() started.
+◇ Test centredChromaAgreesAcrossWorkerLimits() started.
+◇ Test everyProgressiveTableVersionAndScanSnapshotIsCounted() started.
+◇ Test entropyTraversalStillPollsCancellationAndRejectsTruncatedExtents() started.
+◇ Test invalidAndOverflowingReservationsThrowBeforeAnyAllocation() started.
+◇ Test abandonedDestinationInvalidatesItsReservedOwner() started.
+◇ Test rawRGBAdobe(precision:) started.
+◇ Test repeatedQuantisersUseDefinitionCountNotFourFinalIDs() started.
+◇ Test boundedCompleteCodestreamAndPadding() started.
+◇ Test groupedReservationIncludesBothWindowsAndDeniesBeforeBorrow() started.
+◇ Test sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() started.
+◇ Test bootstrapPrecedesStructuralReadsAndArrayCopyIsChargedSeparately() started.
+◇ Test reusingExtentsStillHonoursCancellationAndLimits() started.
+◇ Test rawRGBIdentifiersAndSourceOverride() started.
+◇ Test maximumExifAndAllICCSequenceSlotsAreCountedAndReassembled() started.
+◇ Test exactParserAndDecodeLimitsRejectBeforeProviderEntryAndPermitReuse() started.
+◇ Test failureJoinsEveryStartedWorker() started.
+◇ Test independentChroma(_:) started.
+◇ Test incompleteOrTrailingStreamsNeverProduceValidatedExtents() started.
+◇ Test reusedExtentsMatchIndependentMarkerTraversal() started.
+◇ Test publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test arrayCopyAllowanceTravelsWithTheRetainedParsedOwner() started.
+◇ Test finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test componentAndTableIDsRemainDistinctAtBitBoundaries() started.
+◇ Test largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test nonStreamingOperationsRetainTheirFullReservations() started.
+◇ Test deadlineReachesJoinedWorkers() started.
+◇ Test fractionalDeadlineStillExpires() started.
+◇ Test validatedInputOwnsAnImmutableSnapshot() started.
+◇ Test limitsInvalidSamplesAndDeadlines() started.
+◇ Test automaticThresholdAndCheckedGeometryCannotUnderstateWorkspace() started.
+◇ Test allComponentEntriesAreChargedBeforeUnsupportedProfileRejection() started.
+◇ Test iccMD5StandardVectors() started.
+◇ Test sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test envelopeRejectsTruncationAndForgedLengths() started.
+◇ Test exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test publicDecodePreservesRestartCrossingAndCallerPadding(precision:floating:) started.
+◇ Test joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test rgbAndMetadata(bits:) started.
+◇ Test compactAdmissionUsesSelectedScanTableSnapshot() started.
+◇ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test "No metadata in, no metadata out" started.
+◇ Test "Lossless mode carries ICC + Exif" started.
+◇ Test truncatedRowAbortsAfterWritingTheSamePrefixUnderBothPolicies() started.
+◇ Test "Large ICC profile round-trips across multiple APP2 segments" started.
+◇ Test "Decode extracts the ICC profile cjpeg embedded (byte-exact)" started.
+◇ Test publicOwnedAndCallerDestinationsPreserveSamplesAndLifecycle(precision:) started.
+◇ Test "ICC + Exif round-trip through encode/decode (color, grayscale)" started.
+✔ Test reentrantLeaseOperationsRejectWithoutDeadlocking() passed after 0.001 seconds.
+◇ Test case passing 1 argument precision → 8 to rawRGBAdobe(precision:) started.
+◇ Test case passing 1 argument precision → 12 to rawRGBAdobe(precision:) started.
+✔ Test imageRetainsAdapterUntilLastImageReleaseExactlyOnce() passed after 0.001 seconds.
+◇ Test case passing 1 argument fixture → baseline_422_64x18 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument restarts → false to publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test agreesWithBytewiseReferenceAcrossSyntheticInputs() started.
+◇ Test case passing 1 argument fixture → baseline_422_7x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument restarts → true to publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test case passing 1 argument fixture → baseline_422_3x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_4x3 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_1x1 to independentChroma(_:) started.
+◇ Test case passing 1 argument seconds → 10.0 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 1 argument fixture → baseline_420_64x18 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 1 argument fixture → baseline_420_7x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument seconds → 120.0 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument fixture → baseline_420_3x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_4x3 to independentChroma(_:) started.
+✔ Test adaptersShareWriterAuthorityAndRejectForgedLease() passed after 0.014 seconds.
+◇ Test case passing 1 argument seconds → 1e+100 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test stuffedPairsRestartsAndMarkersCrossCheckBoundaries() started.
+◇ Test case passing 1 argument fixture → baseline_420_1x1 to independentChroma(_:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument fixture → progressive_422_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → progressive_420_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_444_63x19 to independentChroma(_:) started.
+◇ Test markerFreePayloadStillChecksDeadline() started.
+◇ Test greyscaleWriterPreservesRoundingEndianPaddingAndFinitePolicy() started.
+◇ Test case passing 2 arguments precision → 8, floating → false to largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test mutableFoundationInputCannotChangeTheRetainedSnapshot() started.
+◇ Test repeatedDecodesReleaseInputsWithoutAnOuterAutoreleasePool() started.
+◇ Test joinedReadersShareOnlyTheOwnerAndReleaseAfterCompletion() started.
+◇ Test case passing 2 arguments precision → 8, floating → true to largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test largeDataScansShareOneOwnerWithRebasedIndices(origin:) started.
+◇ Test cachedReadersStayInsideRebasedStuffedRestartAndTruncatedRanges() started.
+◇ Test case passing 2 arguments precision → 12, floating → false to largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test progressiveScansKeepSnapshotTablesAfterCallerMutationAndRelease() started.
+◇ Test parsedScansPreserveBytesAndReleaseTheOriginalAllocationExactlyOnce() started.
+◇ Test case passing 2 arguments precision → 12, floating → true to largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test case passing 2 arguments bits → 2, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 1 argument limit → 1 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 2 arguments precision → 8, floating → false to publicDecodePreservesRestartCrossingAndCallerPadding(precision:floating:) started.
+◇ Test case passing 2 arguments precision → 8, modes → (false, false) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 1 argument limit → 2 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 2 arguments bits → 2, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test paddedStorageCountsTowardsDecodedLimit() passed after 0.038 seconds.
+◇ Test case passing 1 argument bits → 8 to rgbAndMetadata(bits:) started.
+◇ Test case passing 2 arguments precision → 8, floating → true to publicDecodePreservesRestartCrossingAndCallerPadding(precision:floating:) started.
+◇ Test case passing 1 argument limit → 4 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument progressive → false to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test case passing 1 argument bits → 16 to rgbAndMetadata(bits:) started.
+◇ Test case passing 2 arguments bits → 2, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 1 argument progressive → true to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test case passing 2 arguments precision → 8, modes → (false, true) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments precision → 12, floating → false to publicDecodePreservesRestartCrossingAndCallerPadding(precision:floating:) started.
+◇ Test case passing 2 arguments bits → 2, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments precision → 12, floating → true to publicDecodePreservesRestartCrossingAndCallerPadding(precision:floating:) started.
+◇ Test case passing 2 arguments precision → 8, modes → (true, false) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments bits → 2, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments precision → 8, modes → (true, true) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments bits → 2, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 2, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 3, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test sameTokenCannotAuthoriseConcurrentOverlappingBorrows() passed after 0.165 seconds.
+◇ Test case passing 2 arguments bits → 3, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test abandonedDestinationInvalidatesItsReservedOwner() passed after 0.167 seconds.
+◇ Test case passing 2 arguments bits → 3, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 3, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test failedFillInvalidatesDestination() passed after 0.173 seconds.
+◇ Test case passing 1 argument precision → 12 to publicOwnedAndCallerDestinationsPreserveSamplesAndLifecycle(precision:) started.
+◇ Test case passing 2 arguments precision → 12, modes → (false, false) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments bits → 3, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 1 argument precision → 16 to publicOwnedAndCallerDestinationsPreserveSamplesAndLifecycle(precision:) started.
+◇ Test case passing 2 arguments bits → 3, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 3, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments precision → 12, modes → (false, true) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments bits → 4, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test pixelAndDimensionLimitsRejectBeforeAllocation() passed after 0.247 seconds.
+◇ Test case passing 2 arguments bits → 4, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 4, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 4, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments precision → 12, modes → (true, false) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments bits → 4, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 4, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test entropyTraversalStillPollsCancellationAndRejectsTruncatedExtents() passed after 0.261 seconds.
+◇ Test case passing 2 arguments bits → 4, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments precision → 12, modes → (true, true) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments bits → 5, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 5, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 5, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 5, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test invalidResourceProfilesAndProgressFailPredictably() passed after 0.287 seconds.
+◇ Test case passing 2 arguments bits → 5, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 5, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 5, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 6, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 6, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 6, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 6, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test reusingExtentsStillHonoursCancellationAndLimits() passed after 0.298 seconds.
+◇ Test case passing 2 arguments bits → 6, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test independentAllocationAndMemoryCeilingsAreEnforced() passed after 0.300 seconds.
+◇ Test case passing 2 arguments bits → 6, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test bootstrapPrecedesStructuralReadsAndArrayCopyIsChargedSeparately() passed after 0.301 seconds.
+◇ Test case passing 2 arguments bits → 6, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 7, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 7, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 7, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test invalidAndOverflowingReservationsThrowBeforeAnyAllocation() passed after 0.310 seconds.
+◇ Test case passing 2 arguments bits → 7, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 7, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 7, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 7, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 8, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 8, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 8, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 8, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 8, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 8, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 8, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 9, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 9, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 9, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 9, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 9, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 9, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 9, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test incompleteOrTrailingStreamsNeverProduceValidatedExtents() passed after 0.336 seconds.
+◇ Test case passing 2 arguments bits → 10, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 10, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 10, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 10, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 10, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 10, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 10, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 11, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 11, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test exactParserAndDecodeLimitsRejectBeforeProviderEntryAndPermitReuse() passed after 0.349 seconds.
+◇ Test case passing 2 arguments bits → 11, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 11, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 11, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 11, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 11, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 12, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 12, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 12, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 12, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 12, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 12, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 12, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 13, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 13, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 13, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 13, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 13, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 13, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 13, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 14, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 14, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 14, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 14, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 14, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 14, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 14, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 15, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 15, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 15, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 15, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 15, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 15, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 15, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 16, predictor → 1 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 16, predictor → 2 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 16, predictor → 3 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 16, predictor → 4 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 16, predictor → 5 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 16, predictor → 6 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test case passing 2 arguments bits → 16, predictor → 7 to sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+✔ Test failureJoinsEveryStartedWorker() passed after 0.369 seconds.
+✔ Test boundedCompleteCodestreamAndPadding() passed after 0.369 seconds.
+✔ Test reusedExtentsMatchIndependentMarkerTraversal() passed after 0.369 seconds.
+✔ Test maximumExifAndAllICCSequenceSlotsAreCountedAndReassembled() passed after 0.369 seconds.
+✔ Test arrayCopyAllowanceTravelsWithTheRetainedParsedOwner() passed after 0.369 seconds.
+✔ Test repeatedQuantisersUseDefinitionCountNotFourFinalIDs() passed after 0.370 seconds.
+✔ Test independentChroma(_:) with 15 test cases passed after 0.370 seconds.
+✔ Test rawRGBAdobe(precision:) with 2 test cases passed after 0.370 seconds.
+✔ Test finiteDeadlinesDoNotTrap(seconds:) with 3 test cases passed after 0.370 seconds.
+✔ Test rawRGBIdentifiersAndSourceOverride() passed after 0.370 seconds.
+✔ Test componentAndTableIDsRemainDistinctAtBitBoundaries() passed after 0.370 seconds.
+✔ Test deadlineReachesJoinedWorkers() passed after 0.370 seconds.
+✔ Test fractionalDeadlineStillExpires() passed after 0.370 seconds.
+✔ Test limitsInvalidSamplesAndDeadlines() passed after 0.371 seconds.
+✔ Test validatedInputOwnsAnImmutableSnapshot() passed after 0.371 seconds.
+✔ Test allComponentEntriesAreChargedBeforeUnsupportedProfileRejection() passed after 0.372 seconds.
+◇ Test case passing 1 argument origin → 0 to largeDataScansShareOneOwnerWithRebasedIndices(origin:) started.
+◇ Test case passing 1 argument origin → 17 to largeDataScansShareOneOwnerWithRebasedIndices(origin:) started.
+✔ Test iccMD5StandardVectors() passed after 0.372 seconds.
+✔ Test centredChromaAgreesAcrossWorkerLimits() passed after 0.373 seconds.
+✔ Test automaticThresholdAndCheckedGeometryCannotUnderstateWorkspace() passed after 0.372 seconds.
+✔ Test envelopeRejectsTruncationAndForgedLengths() passed after 0.373 seconds.
+✔ Test sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) with 105 test cases passed after 0.374 seconds.
+✔ Test everyProgressiveTableVersionAndScanSnapshotIsCounted() passed after 0.374 seconds.
+✔ Test compactAdmissionUsesSelectedScanTableSnapshot() passed after 0.374 seconds.
+✔ Test rgbAndMetadata(bits:) with 2 test cases passed after 0.374 seconds.
+✔ Test sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() passed after 0.374 seconds.
+✔ Test sealedOwnerSupportsConcurrentReadersAndNestedRead() passed after 0.375 seconds.
+✔ Test joinedWorkersRespectLimitAndBackend(limit:) with 3 test cases passed after 0.374 seconds.
+✔ Test exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) with 8 test cases passed after 0.374 seconds.
+✔ Test validNoisyInputUsesItsBoundedWorkspaceAndRetainsExactSamples() passed after 0.374 seconds.
+✔ Test "No metadata in, no metadata out" passed after 0.374 seconds.
+✔ Test "Lossless mode carries ICC + Exif" passed after 0.374 seconds.
+✔ Test truncatedRowAbortsAfterWritingTheSamePrefixUnderBothPolicies() passed after 0.374 seconds.
+✔ Test "Large ICC profile round-trips across multiple APP2 segments" passed after 0.374 seconds.
+✔ Test "ICC + Exif round-trip through encode/decode (color, grayscale)" passed after 0.374 seconds.
+✔ Test publicOwnedAndCallerDestinationsPreserveSamplesAndLifecycle(precision:) with 2 test cases passed after 0.374 seconds.
+✔ Test publicPredictiveParallelismPreservesBytes(restarts:) with 2 test cases passed after 0.374 seconds.
+✔ Test markerFreePayloadStillChecksDeadline() passed after 0.357 seconds.
+✔ Test greyscaleWriterPreservesRoundingEndianPaddingAndFinitePolicy() passed after 0.357 seconds.
+✔ Test stuffedPairsRestartsAndMarkersCrossCheckBoundaries() passed after 0.359 seconds.
+✔ Test mutableFoundationInputCannotChangeTheRetainedSnapshot() passed after 0.352 seconds.
+✔ Test joinedReadersShareOnlyTheOwnerAndReleaseAfterCompletion() passed after 0.351 seconds.
+✔ Test cachedReadersStayInsideRebasedStuffedRestartAndTruncatedRanges() passed after 0.350 seconds.
+✔ Test largeDataScansShareOneOwnerWithRebasedIndices(origin:) with 2 test cases passed after 0.351 seconds.
+✔ Test parsedScansPreserveBytesAndReleaseTheOriginalAllocationExactlyOnce() passed after 0.344 seconds.
+✔ Test "Decode extracts the ICC profile cjpeg embedded (byte-exact)" passed after 0.374 seconds.
+✔ Test concurrentAdaptersReserveExactlyOneWriter() passed after 0.375 seconds.
+✔ Test repeatedDecodesReleaseInputsWithoutAnOuterAutoreleasePool() passed after 0.352 seconds.
+✔ Suite ParserReservationTests passed after 0.375 seconds.
+✔ Suite ValidatedEnvelopeTests passed after 0.375 seconds.
+✔ Suite JPEGDecodeParityTests passed after 0.375 seconds.
+✔ Test cancellationReachesDispatchWorkersAndJoins(seconds:) with 2 test cases passed after 0.375 seconds.
+✔ Suite "ICC / Exif metadata" passed after 0.375 seconds.
+✔ Suite JPEGMigrationTests passed after 0.375 seconds.
+✔ Suite CLosslessRowPublicTests passed after 0.376 seconds.
+✔ Test progressiveScansKeepSnapshotTablesAfterCallerMutationAndRelease() passed after 0.346 seconds.
+✔ Suite CompressedInputOwnershipTests passed after 0.376 seconds.
+✔ Test agreesWithBytewiseReferenceAcrossSyntheticInputs() passed after 0.378 seconds.
+✔ Suite EntropyBoundaryTests passed after 0.381 seconds.
+✔ Test nonStreamingOperationsRetainTheirFullReservations() passed after 0.426 seconds.
+✔ Test largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) with 4 test cases passed after 0.564 seconds.
+✔ Test groupedReservationIncludesBothWindowsAndDeniesBeforeBorrow() passed after 0.666 seconds.
+✔ Suite StreamingWorkspaceAdmissionTests passed after 0.667 seconds.
+✔ Test publicDecodePreservesRestartCrossingAndCallerPadding(precision:floating:) with 4 test cases passed after 0.858 seconds.
+✔ Suite CACPublicPipelineTests passed after 0.859 seconds.
+✔ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) with 2 test cases passed after 3.412 seconds.
+✔ Suite NativeExecutionTests passed after 3.413 seconds.
+✔ Test run with 71 tests in 11 suites passed after 3.413 seconds.

@@ -1,0 +1,56 @@
+{
+  "sourceRevision": "3a5ef320c04fff03561a69b705355c0e9da2fc31",
+  "sourceWorktree": "/private/tmp/swiftjli-round5-c-ac-leaf",
+  "sourceUnchangedAndCleanAfterQualification": true,
+  "decision": "The original C AC leaf passes this bounded memory/undefined-behaviour diagnostic slice; performance acceptance remains blocked separately. No production change.",
+  "swiftAddressSanitizer": {
+    "tests": 42,
+    "suites": 10,
+    "exitCode": 0,
+    "commandReceipt": "swift-asan-command.json",
+    "log": "swift-asan.log",
+    "cObjectInstrumentation": "swift-c-instrumentation.json"
+  },
+  "standaloneAddressAndUndefinedSanitizers": {
+    "compileExitCode": 0,
+    "runExitCode": 0,
+    "commandReceipt": "clang-command.json",
+    "results": "c-harness-results.json",
+    "seed": "0x8ef16ab47c205d93",
+    "totalCases": 1145828,
+    "caseBreakdown": {
+      "randomCases": 1048576,
+      "boundaryCases": 88920,
+      "knownOutputCases": 8320,
+      "invalidArgumentCases": 12
+    },
+    "statusCounts": {
+      "OK": 423961,
+      "END": 21646,
+      "END_AFTER_FF": 3843,
+      "MARKER": 113670,
+      "CODE_INDEX": 0,
+      "INVALID_CODE": 582696,
+      "INVALID_ARGUMENT": 12
+    },
+    "sanitizerDiagnostics": 0
+  },
+  "coverage": [
+    "Eight independently generated valid canonical tables: short codes, mixed short/long codes, lengths 1 through 16, and 255/256-value table boundaries; all-ones code left unused.",
+    "Categories 0 through 15, EOB, ZRL, zero-category unusual runs, nonzero runs and run overflow through generated symbols.",
+    "Independent code/magnitude interval expansion builds lookups; known-output streams use a canonical encoder, not a second implementation of the decoder.",
+    "8320 known-output cases span four short/long tables, 16 categories, both signs and every initial available count 0 through 64.",
+    "88920 small-boundary cases exhaust counts 0 through 17, every offset 0 through count, all 65 available counts and eight tables.",
+    "1048576 fixed-seed random cases use lengths 0 through 512, bounded offsets, all available counts, eight input alignments and eight byte patterns (random, FF-free, stuffed FF00, markers, all FF, zero, alternating and FF-at-word-boundary).",
+    "Exact logical input tails and before/after output guards are ASan-poisoned. Output canaries, AC coefficient ranges, DC zero, published offset monotonicity and bit counts are checked.",
+    "12 invalid-argument cases verify rejection leaves state and output unchanged. Fixed storage is used throughout the harness and leaf."
+  ],
+  "limits": [
+    "This is a macOS ARM64 Swift 6.4/Apple Clang diagnostic, not Linux/Intel/platform qualification.",
+    "No TSan, full suite, new external oracle, allocation benchmark or timing/RSS qualification was run in this task.",
+    "Synthetic buffered-bit states exercise the stated internal bounds, including combinations not reached by normal public decoding.",
+    "The generated tables and lookups obey the leaf caller contract; arbitrary corrupt metadata is not a supported leaf input.",
+    "No findings in this bounded corpus are not a proof that every possible input is defect-free.",
+    "C-row/DC extensions are separate source revisions and are not qualified by this original-leaf receipt."
+  ]
+}

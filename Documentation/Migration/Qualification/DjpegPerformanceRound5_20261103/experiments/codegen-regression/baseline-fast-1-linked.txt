@@ -1,0 +1,80 @@
+
+/private/tmp/swiftjli-round5-evidence/isolated-small-kernel/native-baseline:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+00000001000626d0 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF>:
+1000626d0:     	stp	x20, x19, [sp, #-0x20]!
+1000626d4:     	stp	x29, x30, [sp, #0x10]
+1000626d8:     	add	x29, sp, #0x10
+1000626dc:     	mov	x19, x0
+1000626e0:     	ldr	x8, [x20, #0x38]
+1000626e4:     	cmp	x8, #0x7
+1000626e8:     	b.gt	0x100062700 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x30>
+1000626ec:     	mov	w0, #0x8                ; =8
+1000626f0:     	bl	0x100063430 <_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF>
+1000626f4:     	ldr	x8, [x20, #0x38]
+1000626f8:     	cmp	x8, #0x8
+1000626fc:     	b.lt	0x100062784 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xb4>
+100062700:     	sub	x10, x8, #0x8
+100062704:     	ldr	x9, [x20, #0x30]
+100062708:     	lsr	x10, x9, x10
+10006270c:     	and	x10, x10, #0xff
+100062710:     	cmp	x8, #0x47
+100062714:     	csel	x10, xzr, x10, hi
+100062718:     	ldr	x11, [x19, #0x30]
+10006271c:     	ldr	x12, [x11, #0x10]
+100062720:     	cmp	x10, x12
+100062724:     	b.hs	0x1000627f0 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x120>
+100062728:     	add	x11, x11, x10
+10006272c:     	ldrb	w11, [x11, #0x20]
+100062730:     	cbz	x11, 0x100062784 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xb4>
+100062734:     	ldr	x12, [x19, #0x38]
+100062738:     	ldr	x13, [x12, #0x10]
+10006273c:     	cmp	x10, x13
+100062740:     	b.hs	0x1000627f4 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x124>
+100062744:     	add	x10, x12, x10
+100062748:     	ldrb	w10, [x10, #0x20]
+10006274c:     	tst	w10, #0xffffffef
+100062750:     	b.ne	0x100062770 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xa0>
+100062754:     	mov	x9, #0x0                ; =0
+100062758:     	sub	x8, x8, x11
+10006275c:     	str	x8, [x20, #0x38]
+100062760:     	mov	w8, #-0x8000            ; =-32768
+100062764:     	cmp	w10, #0x0
+100062768:     	csel	w8, wzr, w8, eq
+10006276c:     	b	0x10006278c <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xbc>
+100062770:     	cmp	w10, #0xf
+100062774:     	b.hi	0x100062784 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xb4>
+100062778:     	add	x11, x10, x11
+10006277c:     	subs	x8, x8, x11
+100062780:     	b.hs	0x1000627a0 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xd0>
+100062784:     	mov	w8, #0x0                ; =0
+100062788:     	mov	x9, #0x100000000        ; =4294967296
+10006278c:     	mov	w8, w8
+100062790:     	orr	x0, x9, x8
+100062794:     	ldp	x29, x30, [sp, #0x10]
+100062798:     	ldp	x20, x19, [sp], #0x20
+10006279c:     	ret
+1000627a0:     	str	x8, [x20, #0x38]
+1000627a4:     	lsr	x9, x9, x8
+1000627a8:     	mov	x11, #-0x1              ; =-1
+1000627ac:     	lsl	x11, x11, x10
+1000627b0:     	cmp	x8, #0x3f
+1000627b4:     	csel	w8, wzr, w9, hi
+1000627b8:     	bic	w8, w8, w11
+1000627bc:     	sub	w9, w10, #0x1
+1000627c0:     	mov	w11, #0x1               ; =1
+1000627c4:     	lsl	w9, w11, w9
+1000627c8:     	cmp	w9, w8
+1000627cc:     	b.le	0x1000627e8 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x118>
+1000627d0:     	mov	x9, #0x0                ; =0
+1000627d4:     	mov	w11, #-0x1              ; =-1
+1000627d8:     	lsl	w10, w11, w10
+1000627dc:     	add	w8, w10, w8
+1000627e0:     	add	w8, w8, #0x1
+1000627e4:     	b	0x10006278c <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xbc>
+1000627e8:     	mov	x9, #0x0                ; =0
+1000627ec:     	b	0x10006278c <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xbc>
+1000627f0:     	brk	#0x1
+1000627f4:     	brk	#0x1

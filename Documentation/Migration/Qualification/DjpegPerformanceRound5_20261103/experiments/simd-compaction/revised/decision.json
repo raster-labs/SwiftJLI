@@ -1,0 +1,346 @@
+{
+  "status": "Completed isolated measurements; held pending and not selected for integration",
+  "candidate": "f73aa9f2e97ff9028892db99ac43d097068ccb0b",
+  "previousRejectedCandidate": "fd4b2e1c272fcc7f60ce56e640580251d072091d",
+  "baselineSource": "14f35018d241666358480da2a8527d29ab047627",
+  "baselineProduction": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "baselineObjectSHA256": "9604e96a89586c07368942799ce1c29fa835fcdfc466c0b1e20074a76d6de9ed",
+  "validation": "56 focused tests / 11 suites passed; all 12 DCT fixtures in two alternating paired rounds matched full-output SHA-256 and byte count; all 16 lossless cases in both rounds were pixel-exact. Independent source review found no actionable correctness or binding defect. These are isolated local results, not final qualification.",
+  "timingStatus": "Provisional under unrelated shared-host activity. No new accepted speed or djpeg win is claimed.",
+  "decision": "Hold pending: noise12-512 improves about 4.6 percent in both rounds and noise8 improves variably, but remaining target dct12-512 is 2.7 and 4.2 percent slower. Large DCT is mixed. Lossless follow-up has no repeated slowdown above 5 percent. This tradeoff does not establish a general improvement.",
+  "codeGeneration": "The revised assembly removes the three outlined per-four-pixel clamp/conversion calls. Clamp comparisons remain vector operations; explicit checked UInt16 lane casts scalarise the rounding/conversion to four scalar FRINTA/FCVTZS sequences. No fully vector conversion claim.",
+  "memory": "Explicit pipeline payload remains 768 KiB; no RSS measurement was run.",
+  "unexecutedGates": [
+    "ASan",
+    "TSan",
+    "full suite",
+    "RSS",
+    "external owned-output comparator",
+    "independent codec oracle",
+    "other platforms or toolchains"
+  ],
+  "dctPairedMedianChanges": [
+    {
+      "fixture": "dct12-2048.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.018645250000000002,
+      "candidateMedianSeconds": 0.0183749375,
+      "latencyChangePercent": -1.4497660261997058,
+      "outputExact": true
+    },
+    {
+      "fixture": "dct12-2048.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.017994457999999998,
+      "candidateMedianSeconds": 0.018137520999999997,
+      "latencyChangePercent": 0.7950392281890206,
+      "outputExact": true
+    },
+    {
+      "fixture": "dct12-512.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.001353396,
+      "candidateMedianSeconds": 0.001389958,
+      "latencyChangePercent": 2.7015005216507237,
+      "outputExact": true
+    },
+    {
+      "fixture": "dct12-512.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.0012024585,
+      "candidateMedianSeconds": 0.0012530835,
+      "latencyChangePercent": 4.210124507415447,
+      "outputExact": true
+    },
+    {
+      "fixture": "flat-12-512.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 6.9167e-05,
+      "candidateMedianSeconds": 7.06045e-05,
+      "latencyChangePercent": 2.078303237092838,
+      "outputExact": true
+    },
+    {
+      "fixture": "flat-12-512.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 6.8958e-05,
+      "candidateMedianSeconds": 6.7896e-05,
+      "latencyChangePercent": -1.5400678673975432,
+      "outputExact": true
+    },
+    {
+      "fixture": "flat-8-512.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 6.0333e-05,
+      "candidateMedianSeconds": 6.38125e-05,
+      "latencyChangePercent": 5.7671589345797525,
+      "outputExact": true
+    },
+    {
+      "fixture": "flat-8-512.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 6.2479e-05,
+      "candidateMedianSeconds": 6.0125e-05,
+      "latencyChangePercent": -3.767665935754416,
+      "outputExact": true
+    },
+    {
+      "fixture": "noise-12-512.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.001537709,
+      "candidateMedianSeconds": 0.00146475,
+      "latencyChangePercent": -4.744655848408252,
+      "outputExact": true
+    },
+    {
+      "fixture": "noise-12-512.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.001547583,
+      "candidateMedianSeconds": 0.0014768755,
+      "latencyChangePercent": -4.568898727887283,
+      "outputExact": true
+    },
+    {
+      "fixture": "noise-8-512.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.0011616255,
+      "candidateMedianSeconds": 0.0011409375,
+      "latencyChangePercent": -1.7809526392111752,
+      "outputExact": true
+    },
+    {
+      "fixture": "noise-8-512.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.001194521,
+      "candidateMedianSeconds": 0.0010898125,
+      "latencyChangePercent": -8.765731201042094,
+      "outputExact": true
+    },
+    {
+      "fixture": "progressiveRGB8-2048.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.059643625000000006,
+      "candidateMedianSeconds": 0.059872666500000005,
+      "latencyChangePercent": 0.38401673271870607,
+      "outputExact": true
+    },
+    {
+      "fixture": "progressiveRGB8-2048.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.058159249999999996,
+      "candidateMedianSeconds": 0.058116021000000004,
+      "latencyChangePercent": -0.0743286751462402,
+      "outputExact": true
+    },
+    {
+      "fixture": "progressiveRGB8-512.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.004698583,
+      "candidateMedianSeconds": 0.0046298955,
+      "latencyChangePercent": -1.46187691054942,
+      "outputExact": true
+    },
+    {
+      "fixture": "progressiveRGB8-512.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.0046463749999999995,
+      "candidateMedianSeconds": 0.0043582505,
+      "latencyChangePercent": -6.201059966102596,
+      "outputExact": true
+    },
+    {
+      "fixture": "rgb8-2048.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.0341343335,
+      "candidateMedianSeconds": 0.035671625,
+      "latencyChangePercent": 4.503651726494073,
+      "outputExact": true
+    },
+    {
+      "fixture": "rgb8-2048.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.0330131875,
+      "candidateMedianSeconds": 0.0335500415,
+      "latencyChangePercent": 1.6261804468290286,
+      "outputExact": true
+    },
+    {
+      "fixture": "rgb8-512.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.0030628540000000003,
+      "candidateMedianSeconds": 0.002995542,
+      "latencyChangePercent": -2.197688822255328,
+      "outputExact": true
+    },
+    {
+      "fixture": "rgb8-512.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.0028474169999999997,
+      "candidateMedianSeconds": 0.0028606869999999998,
+      "latencyChangePercent": 0.46603641124569606,
+      "outputExact": true
+    },
+    {
+      "fixture": "xyb8-2048.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.1420634585,
+      "candidateMedianSeconds": 0.1392820835,
+      "latencyChangePercent": -1.9578398480281978,
+      "outputExact": true
+    },
+    {
+      "fixture": "xyb8-2048.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.136791875,
+      "candidateMedianSeconds": 0.1375971045,
+      "latencyChangePercent": 0.5886530175860161,
+      "outputExact": true
+    },
+    {
+      "fixture": "xyb8-512.jpg",
+      "round": 1,
+      "baselineMedianSeconds": 0.0094657495,
+      "candidateMedianSeconds": 0.009805208499999999,
+      "latencyChangePercent": 3.586181949987144,
+      "outputExact": true
+    },
+    {
+      "fixture": "xyb8-512.jpg",
+      "round": 2,
+      "baselineMedianSeconds": 0.009127166499999999,
+      "candidateMedianSeconds": 0.0092896875,
+      "latencyChangePercent": 1.7806292894952724,
+      "outputExact": true
+    }
+  ],
+  "losslessPairedMedianChanges": [
+    {
+      "case": "flat-19",
+      "latencyChangePercentByRound": [
+        -3.237776048835961,
+        -7.7367443779657545
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "flat-2048",
+      "latencyChangePercentByRound": [
+        4.098283806111458,
+        -10.467790960685985
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "flat-3072",
+      "latencyChangePercentByRound": [
+        0.17624250969334732,
+        -11.496886443637155
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "flat-512",
+      "latencyChangePercentByRound": [
+        5.720295354925997,
+        -10.299003322259138
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "mixed-19",
+      "latencyChangePercentByRound": [
+        -0.6697496412055415,
+        16.29090909090909
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "mixed-2048",
+      "latencyChangePercentByRound": [
+        -0.5910257812215214,
+        0.7721577587339157
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "mixed-3072",
+      "latencyChangePercentByRound": [
+        0.025156492333278102,
+        -0.726247743718822
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "mixed-512",
+      "latencyChangePercentByRound": [
+        -1.4380758278480732,
+        -0.8414804184571079
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "noise-19",
+      "latencyChangePercentByRound": [
+        0.9219961949363364,
+        17.560755398389883
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "noise-2048",
+      "latencyChangePercentByRound": [
+        -0.3559638981404101,
+        0.2089609069989784
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "noise-3072",
+      "latencyChangePercentByRound": [
+        -0.6376833106217505,
+        3.5315790541156744
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "noise-512",
+      "latencyChangePercentByRound": [
+        -1.0970087495346448,
+        6.079078139561722
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "ramp-19",
+      "latencyChangePercentByRound": [
+        -20.31095755182625,
+        -14.460377358490561
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "ramp-2048",
+      "latencyChangePercentByRound": [
+        2.0731163039941825,
+        1.4889953091946184
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "ramp-3072",
+      "latencyChangePercentByRound": [
+        -2.2321166908274237,
+        -9.006319269512531
+      ],
+      "repeatedOverFivePercentRegression": false
+    },
+    {
+      "case": "ramp-512",
+      "latencyChangePercentByRound": [
+        -5.953582663404388,
+        4.991694257875312
+      ],
+      "repeatedOverFivePercentRegression": false
+    }
+  ]
+}

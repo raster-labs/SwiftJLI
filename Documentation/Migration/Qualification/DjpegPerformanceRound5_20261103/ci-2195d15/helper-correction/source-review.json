@@ -1,0 +1,130 @@
+{
+  "scope": "Source-only independent diagnosis and frozen test-helper proposal; no compiler/test/runtime executed in this receipt.",
+  "baselineRevision": "2195d15e05ab2359a19e635d8a83d440b7dea7ba",
+  "candidateRevision": "2436f95b4dd8a83d1513c2837cb99f280494bfdb",
+  "changedFiles": [
+    "Tests/SwiftJLITests/Native/CACPublicPipelineTests.swift"
+  ],
+  "assertionPreservation": {
+    "parameterCases": 16,
+    "testAttributeAndSetupByteIdentical": true,
+    "allPublicDecodeAndDestinationAssertionsByteIdentical": true,
+    "preflightAssertionsMovedWithoutRemoval": true,
+    "noWorkflowSkipOrFilterReduction": true
+  },
+  "productionProof": {
+    "allSourcesAndPackageUnchanged": true,
+    "priorToCurrentCriticalFiles": [
+      {
+        "path": "Sources/SwiftJLI/NativeExecution.swift",
+        "sha256": "7bcd45d343edc8c703d71af7a6811e601f58f12099422db0e1d68812562bbe29",
+        "revisions": [
+          "bbd6aede3ad2088caed4f6a06193a027b50d4857",
+          "2195d15e05ab2359a19e635d8a83d440b7dea7ba",
+          "2436f95b4dd8a83d1513c2837cb99f280494bfdb"
+        ]
+      },
+      {
+        "path": "Sources/SwiftJLI/Native/Entropy/CACDecoder.swift",
+        "sha256": "ca8fb1542701fd7ba1af4d6e1e28bd72c56f74ccd498bc695a67dac70f044004",
+        "revisions": [
+          "bbd6aede3ad2088caed4f6a06193a027b50d4857",
+          "2195d15e05ab2359a19e635d8a83d440b7dea7ba",
+          "2436f95b4dd8a83d1513c2837cb99f280494bfdb"
+        ]
+      }
+    ]
+  },
+  "facts": [
+    "CI fails in swift_task_dealloc with freed pointer was not the last allocation.",
+    "The faulting inline TaskLocal.withValue at CACPublicPipelineTests line72 executes before either public async decode.",
+    "This scope only builds temporary Huffman metadata; no C entropy decode is called there.",
+    "The previous optional-callback nominal wrapper remains unchanged.",
+    "The downloaded retained test bundle is x86_64; installed SwiftPM testing helper is arm64-only; local Testing.framework contains x86_64."
+  ],
+  "hypothesis": "The synchronous TaskLocal/temporary metadata scope in the async test frame triggers a task allocation cleanup ordering issue in this compiler/runtime combination. Not established as a compiler defect.",
+  "smallestProposedCorrection": "Extract exactly this preflight into one @inline(never) synchronous helper.",
+  "historicalFailureDistinction": "The earlier Swift6.3 null TaskLocal metadata failure was addressed with a nominal cancellation callback wrapper. This current fatal diagnostic is a non-LIFO deallocation with the wrapper unchanged.",
+  "ciSummary": [
+    {
+      "name": "Native macOS 26 Intel runtime and CLI",
+      "conclusion": "failure",
+      "stepCount": 10
+    },
+    {
+      "name": "Swift 6.4 / ubuntu-24.04",
+      "conclusion": "success",
+      "stepCount": 12
+    },
+    {
+      "name": "Apple device, simulator and Intel SDK compilation",
+      "conclusion": "cancelled",
+      "stepCount": 0
+    },
+    {
+      "name": "Swift 6.2 / ubuntu-24.04-arm",
+      "conclusion": "success",
+      "stepCount": 12
+    },
+    {
+      "name": "iOS 26+ simulator runtime",
+      "conclusion": "cancelled",
+      "stepCount": 0
+    },
+    {
+      "name": "macOS 26 / Xcode default Swift",
+      "conclusion": "cancelled",
+      "stepCount": 0
+    },
+    {
+      "name": "Shared contract byte-identity",
+      "conclusion": "success",
+      "stepCount": 5
+    },
+    {
+      "name": "Swift 6.4 / ubuntu-24.04-arm",
+      "conclusion": "success",
+      "stepCount": 12
+    },
+    {
+      "name": "Swift 6.2 / ubuntu-24.04",
+      "conclusion": "success",
+      "stepCount": 12
+    },
+    {
+      "name": "watchOS 26+ simulator runtime",
+      "conclusion": "cancelled",
+      "stepCount": 0
+    },
+    {
+      "name": "Independent consumer resolves at tools 6.2",
+      "conclusion": "success",
+      "stepCount": 7
+    },
+    {
+      "name": "visionOS 26+ simulator runtime",
+      "conclusion": "cancelled",
+      "stepCount": 0
+    },
+    {
+      "name": "tvOS 26+ simulator runtime",
+      "conclusion": "cancelled",
+      "stepCount": 0
+    }
+  ],
+  "officialHelper": {
+    "url": "https://github.com/swiftlang/swift-package-manager/blob/swift-6.3-RELEASE/Sources/swiftpm-testing-helper/Entrypoint.swift",
+    "gitBlobSHA1": "93d27cb70de00c15e708ab2533fcbf74160cdb7a",
+    "sha256": "457c415f96bc4dad0af9d0c0c125441f9808d1f0390504e5d77b28db5233d734",
+    "licence": "Apache License v2.0 with Runtime Library Exception, copyright and original notice retained verbatim",
+    "shippingDependency": false
+  },
+  "preparedSHA256": "881dadabc3900fe11aa0a7c04cf8079b4b98eab578a2d426289a02ae15efe4f5",
+  "pending": [
+    "Parent CPU grant",
+    "Retained Intel bundle reproduction with local-runtime caveat",
+    "Focused local Release candidate test",
+    "Emitted helper boundary inspection",
+    "Actual native Intel Xcode26.6 CI after correction push"
+  ]
+}

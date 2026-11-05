@@ -1,0 +1,78 @@
+{
+  "sourceRevision": "2436f95b4dd8a83d1513c2837cb99f280494bfdb",
+  "baselineRevision": "2195d15e05ab2359a19e635d8a83d440b7dea7ba",
+  "contractVersion": "0.10.0",
+  "productionChanged": false,
+  "changedFile": "Tests/SwiftJLITests/Native/CACPublicPipelineTests.swift",
+  "result": "Proposed test-only workaround passes focused local ARM64 Release; native Intel Xcode26.6 follow-up CI required.",
+  "retainedFailureReproduction": {
+    "retainedBinarySHA256": "89b60a61017dd79ad14bf104944f337efaf961bcbc5f7678878259cabb768775",
+    "helperExitCode": -6,
+    "parameterCasesStarted": 16,
+    "translated": true,
+    "sameFatalMessage": true,
+    "sameTaskLocalSourceSite": {
+      "file": "CACPublicPipelineTests.swift",
+      "line": 72,
+      "symbolOffset": 10254
+    },
+    "originalCINativeHost": "x86_64 macOS26.6.1 / Xcode26.6",
+    "localDiagnosticHost": "Rosetta on arm64 macOS27.0.1 / Xcode27.2 Swift6.4.2 runtime and Testing2403",
+    "compilerAttributionProven": false
+  },
+  "focusedLocalRelease": {
+    "exitCode": 0,
+    "tests": 1,
+    "suites": 1,
+    "parameterCases": 16,
+    "sourceAndAssertionsUnchangedExceptHelperExtraction": true,
+    "target": "arm64",
+    "compiler": "Apple Swift6.4.2",
+    "warnings": "Existing test macro warnings retained in full log; no diagnostic suppression added."
+  },
+  "emittedCode": {
+    "separateSynchronousHelper": true,
+    "directCallFromAsyncBody": true,
+    "scope": "ARM64 local compiler only"
+  },
+  "preservedFailedAttempts": [
+    {
+      "path": "runs/initial/retained.json",
+      "exitCode": -4,
+      "classification": "Setup-only @rpath Testing.framework load failure through /usr/bin/arch; no tests started. Direct execution of the same x86 helper with framework override then reproduced original fatal."
+    },
+    {
+      "path": "runs/initial/candidate-emitted-code-initial-analysis.json",
+      "exitCode": 1,
+      "classification": "Reviewer string matcher matched both helper and nested closure; refined exact symbol matcher only, no code change."
+    }
+  ],
+  "publicSampleCopyLifetimeImpact": "No production source, API, decode assertion, precision, copy policy, caller padding or storage-lifecycle coverage changed.",
+  "performanceImpact": "No shipping hot path changed; no benchmarks run for this test-only correction.",
+  "pending": [
+    "Actual native Intel Xcode26.6 Release CI at corrected source; local ARM pass is not a substitute."
+  ],
+  "artifacts": {
+    "prepared.json": "881dadabc3900fe11aa0a7c04cf8079b4b98eab578a2d426289a02ae15efe4f5",
+    "source-review.json": "50465ae384288cfdd1886c4f03e8e41df85e0ef71e971508317c4d3d5d081535",
+    "candidate.patch": "1469933e80dc9f10b747ddae06aecda01f24d6b36a643df3058f9056d74a4d50",
+    "runs/initial/build-helper.json": "1279141db8f1b8f33fd60261d59718d98d7d15aca6d61383b9d86d39cd83b2be",
+    "runs/initial/build-helper.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runs/initial/retained.json": "c0123889259e52bd8c6cba29719b6d414d4daa90fab86ac324e6b7b2e25896a0",
+    "runs/initial/retained.log": "397986e590089c4e51c9a758505b87c2864ff58c08fae28aec0f7535edf6c024",
+    "runs/initial/run-retained-direct.py": "2e6640bd10f49ec79fe802b8e3f40d9cdec30d7ed381757a06f7397cb4528d9d",
+    "runs/initial/retained-direct.json": "cbc12d734337e4fedc9e07c190ee1385df2c6c20c8cf0018c1267420076ff0fb",
+    "runs/initial/retained-direct.log": "218d5e663433ff664367f6dad837cdfdb0716ba62433eb0bb8cc52f160b6d14d",
+    "runs/initial/retained-local-crash-reports.json": "bdea92d136cf5050dfb042b639a3ed25429cdce716b925dd3eff9255ebff033e",
+    "runs/initial/swiftpm-testing-helper-x86_64-2026-11-04-023318.ips": "9caa860c936bc597016649736622c6a46de4864083005a66763a6a8ea65ce7e1",
+    "runs/initial/focused.json": "5b41d5a7054be064923405e32f20497e4f858e4732249b8a9852d201b81ad3d6",
+    "runs/initial/focused.log": "b1b379ad23655c91bb057e29d426f7dd07f1295d6d5d99183f263eb4d199cdea",
+    "runs/initial/local-host.json": "f5518c03d42271e37e9339f32b5bcc0621b4adee2dae2ad610d53b60edb0f65f",
+    "runs/initial/candidate-emitted-code.json": "6721e88a87bfca93bc4a22e3a0e84128f0bf57cb063f5b817869324795efde03",
+    "runs/initial/candidate-helper-boundary-arm64.txt": "bb1e0c409bf8d44d6e2f8a823e3dcca10def00ff515de53baab03e1ed1fd927c",
+    "runs/initial/candidate-emitted-code-initial-analysis.json": "af9f612831964f9533990b3ee154d350225ccebe9f1ca6fa9624bbeab0cb3e3e"
+  },
+  "allPreparedInputHashesUnchanged": true,
+  "candidateWorktreeClean": true,
+  "CPUReleasedToParent": true
+}

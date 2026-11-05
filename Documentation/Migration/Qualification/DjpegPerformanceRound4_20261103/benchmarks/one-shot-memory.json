@@ -1,0 +1,1033 @@
+{
+  "method": "Single public allocated-output decode per fresh process; input and final output retained, no output copy or CryptoKit; Darwin time-l peak RSS. Byte equality is independently gated in paired native benchmark. Same explicit 8 GiB workspace/10 GiB total caps in both builds; worker ceilings stated per case.",
+  "timingStatus": "Provisional host-contention run; elapsed time is not used as an acceptance result.",
+  "baselineRevision": "8ae2762710d6279cd92222f5bb5ca95f042f694e",
+  "candidateRevision": "0a8acd72ddeac6fb1911457ae28b689eef0e9db1",
+  "compilerSHA256": "448457da9a8a56741f2c8c4b8931e85b7377fc009c16918cd8ac1a8a3210ea1f",
+  "harnessSHA256": "ec175c70338b745597547c45c988215d953f7b3d6fc282aff82f05f86f5a9ba7",
+  "compileCommands": {
+    "baseline": [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-O",
+      "-parse-as-library",
+      "-swift-version",
+      "6",
+      "-strict-concurrency=complete",
+      "-target",
+      "arm64-apple-macos26.0",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+      "-I",
+      "/private/tmp/swiftjli-round3-parser-build/out/Products/Release",
+      "/private/tmp/swiftjli-round3-parser-build/out/Products/Release/SwiftJLI.o",
+      "-framework",
+      "Accelerate",
+      "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory.swift",
+      "-o",
+      "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline"
+    ],
+    "candidate": [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-O",
+      "-parse-as-library",
+      "-swift-version",
+      "6",
+      "-strict-concurrency=complete",
+      "-target",
+      "arm64-apple-macos26.0",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+      "-I",
+      "/private/tmp/swiftjli-round4-build/out/Products/Release",
+      "/private/tmp/swiftjli-round4-build/out/Products/Release/SwiftJLI.o",
+      "-framework",
+      "Accelerate",
+      "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory.swift",
+      "-o",
+      "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate"
+    ]
+  },
+  "objects": {
+    "baseline": {
+      "path": "/private/tmp/swiftjli-round3-parser-build/out/Products/Release/SwiftJLI.o",
+      "sha256": "2d981a16b18f3cb2fb7f1bc932d4c1eff24c6322bbb92c790075d1805bc23d9b"
+    },
+    "candidate": {
+      "path": "/private/tmp/swiftjli-round4-build/out/Products/Release/SwiftJLI.o",
+      "sha256": "c98eeb52d679a6879d84dc91ce1ca313e89d2dc003e70e5f666f2c16f436e9cf"
+    }
+  },
+  "binaries": {
+    "baseline": {
+      "path": "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+      "sha256": "524b075851eef0792bc9832d4ab64f7fbc03f482e4011eaec5fe112433591dc2"
+    },
+    "candidate": {
+      "path": "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+      "sha256": "8e711ff7a2e7a5784717a07363c5fba5d3f01331b3c0257b2069775b3e729634"
+    }
+  },
+  "records": [
+    {
+      "trial": 1,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 12713984,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 1,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 8732672,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 1,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 92717056,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 1,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 56918016,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 1,
+      "fixture": "rgb8-512.jpg",
+      "fixtureSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 17121280,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 1,
+      "fixture": "rgb8-512.jpg",
+      "fixtureSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 15400960,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 1,
+      "fixture": "rgb8-2048.jpg",
+      "fixtureSHA256": "6f029e5c5b0aa466794eadd5ceb4f7e28bc63edef5e1224e92ec2a88ebb3a2e2",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 155877376,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 1,
+      "fixture": "rgb8-2048.jpg",
+      "fixtureSHA256": "6f029e5c5b0aa466794eadd5ceb4f7e28bc63edef5e1224e92ec2a88ebb3a2e2",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 119603200,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 1,
+      "fixture": "progressiveRGB8-512.jpg",
+      "fixtureSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 17989632,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 1,
+      "fixture": "progressiveRGB8-512.jpg",
+      "fixtureSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 16826368,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 1,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "fixtureSHA256": "6a0d1ae30ec0b919486bad94520ee9b7c29672a2391ce77fc98f66c35f6edb40",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 155959296,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 1,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "fixtureSHA256": "6a0d1ae30ec0b919486bad94520ee9b7c29672a2391ce77fc98f66c35f6edb40",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 119668736,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 1,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 1,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 12632064,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 1,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 1,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 8798208,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 1,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 1,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 92536832,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 1,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 1,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 19644416,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 1,
+      "fixture": "mixed-2048.jpg",
+      "fixtureSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 29343744,
+      "outputSummary": "8388608 128"
+    },
+    {
+      "trial": 1,
+      "fixture": "mixed-2048.jpg",
+      "fixtureSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 20135936,
+      "outputSummary": "8388608 128"
+    },
+    {
+      "trial": 1,
+      "fixture": "noise-2048.jpg",
+      "fixtureSHA256": "2dfe60717780915e9ce381c49a4968be8d93f67aa48e6557bc0df7bfdfa9d230",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 32276480,
+      "outputSummary": "8388608 354"
+    },
+    {
+      "trial": 1,
+      "fixture": "noise-2048.jpg",
+      "fixtureSHA256": "2dfe60717780915e9ce381c49a4968be8d93f67aa48e6557bc0df7bfdfa9d230",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 23838720,
+      "outputSummary": "8388608 354"
+    },
+    {
+      "trial": 2,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 8732672,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 2,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 12681216,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 2,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 56901632,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 2,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 92700672,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 2,
+      "fixture": "rgb8-512.jpg",
+      "fixtureSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 14532608,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 2,
+      "fixture": "rgb8-512.jpg",
+      "fixtureSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 18300928,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 2,
+      "fixture": "rgb8-2048.jpg",
+      "fixtureSHA256": "6f029e5c5b0aa466794eadd5ceb4f7e28bc63edef5e1224e92ec2a88ebb3a2e2",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 119570432,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 2,
+      "fixture": "rgb8-2048.jpg",
+      "fixtureSHA256": "6f029e5c5b0aa466794eadd5ceb4f7e28bc63edef5e1224e92ec2a88ebb3a2e2",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 155959296,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 2,
+      "fixture": "progressiveRGB8-512.jpg",
+      "fixtureSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 16809984,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 2,
+      "fixture": "progressiveRGB8-512.jpg",
+      "fixtureSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 17367040,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 2,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "fixtureSHA256": "6a0d1ae30ec0b919486bad94520ee9b7c29672a2391ce77fc98f66c35f6edb40",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 119619584,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 2,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "fixtureSHA256": "6a0d1ae30ec0b919486bad94520ee9b7c29672a2391ce77fc98f66c35f6edb40",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 156041216,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 2,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 1,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 8749056,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 2,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 1,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 12566528,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 2,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 1,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 19693568,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 2,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 1,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 92504064,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 2,
+      "fixture": "mixed-2048.jpg",
+      "fixtureSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 20119552,
+      "outputSummary": "8388608 128"
+    },
+    {
+      "trial": 2,
+      "fixture": "mixed-2048.jpg",
+      "fixtureSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 29360128,
+      "outputSummary": "8388608 128"
+    },
+    {
+      "trial": 2,
+      "fixture": "noise-2048.jpg",
+      "fixtureSHA256": "2dfe60717780915e9ce381c49a4968be8d93f67aa48e6557bc0df7bfdfa9d230",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 23805952,
+      "outputSummary": "8388608 354"
+    },
+    {
+      "trial": 2,
+      "fixture": "noise-2048.jpg",
+      "fixtureSHA256": "2dfe60717780915e9ce381c49a4968be8d93f67aa48e6557bc0df7bfdfa9d230",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 32276480,
+      "outputSummary": "8388608 354"
+    },
+    {
+      "trial": 3,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 12697600,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 3,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 8798208,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 3,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 92700672,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 3,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 56934400,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 3,
+      "fixture": "rgb8-512.jpg",
+      "fixtureSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 17055744,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 3,
+      "fixture": "rgb8-512.jpg",
+      "fixtureSHA256": "e076975035045954e167a47065e9a139f0b2ff464fc1e0387ac0b205305fe55c",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 14811136,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 3,
+      "fixture": "rgb8-2048.jpg",
+      "fixtureSHA256": "6f029e5c5b0aa466794eadd5ceb4f7e28bc63edef5e1224e92ec2a88ebb3a2e2",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 155942912,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 3,
+      "fixture": "rgb8-2048.jpg",
+      "fixtureSHA256": "6f029e5c5b0aa466794eadd5ceb4f7e28bc63edef5e1224e92ec2a88ebb3a2e2",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/rgb8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 119652352,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 3,
+      "fixture": "progressiveRGB8-512.jpg",
+      "fixtureSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 18104320,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 3,
+      "fixture": "progressiveRGB8-512.jpg",
+      "fixtureSHA256": "050be0da3209a4515ac90b45afe0d419e5e99e28c1339d6e25d64a7ffcc3f20b",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-512.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 14696448,
+      "outputSummary": "786432 226"
+    },
+    {
+      "trial": 3,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "fixtureSHA256": "6a0d1ae30ec0b919486bad94520ee9b7c29672a2391ce77fc98f66c35f6edb40",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 156024832,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 3,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "fixtureSHA256": "6a0d1ae30ec0b919486bad94520ee9b7c29672a2391ce77fc98f66c35f6edb40",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/progressiveRGB8-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 119619584,
+      "outputSummary": "12582912 177"
+    },
+    {
+      "trial": 3,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 1,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 12632064,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 3,
+      "fixture": "dct12-512.jpg",
+      "fixtureSHA256": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7",
+      "workerCeiling": 1,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 8765440,
+      "outputSummary": "524288 15"
+    },
+    {
+      "trial": 3,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 1,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 92504064,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 3,
+      "fixture": "dct12-2048.jpg",
+      "fixtureSHA256": "58bc5325461d44b77feab9617b2579151a36f9a7a0c5b0dcd17adbb511513632",
+      "workerCeiling": 1,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-2048.jpg",
+        "1"
+      ],
+      "maximumRSSBytes": 19660800,
+      "outputSummary": "8388608 0"
+    },
+    {
+      "trial": 3,
+      "fixture": "mixed-2048.jpg",
+      "fixtureSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 29376512,
+      "outputSummary": "8388608 128"
+    },
+    {
+      "trial": 3,
+      "fixture": "mixed-2048.jpg",
+      "fixtureSHA256": "f90a903d3d62608b0fd13d842f399e00e518360d1fa1ed837410b75b91c43b7b",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 20119552,
+      "outputSummary": "8388608 128"
+    },
+    {
+      "trial": 3,
+      "fixture": "noise-2048.jpg",
+      "fixtureSHA256": "2dfe60717780915e9ce381c49a4968be8d93f67aa48e6557bc0df7bfdfa9d230",
+      "workerCeiling": 8,
+      "label": "baseline",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-baseline",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 32276480,
+      "outputSummary": "8388608 354"
+    },
+    {
+      "trial": 3,
+      "fixture": "noise-2048.jpg",
+      "fixtureSHA256": "2dfe60717780915e9ce381c49a4968be8d93f67aa48e6557bc0df7bfdfa9d230",
+      "workerCeiling": 8,
+      "label": "candidate",
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/private/tmp/swiftjli-round4-evidence/final/one-shot-memory-candidate",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg",
+        "8"
+      ],
+      "maximumRSSBytes": 23838720,
+      "outputSummary": "8388608 354"
+    }
+  ],
+  "status": "passed"
+}

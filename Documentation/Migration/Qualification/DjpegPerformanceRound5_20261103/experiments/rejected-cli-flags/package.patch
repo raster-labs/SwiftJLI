@@ -1,0 +1,23 @@
+diff --git a/Package.swift b/Package.swift
+index 770cc12..a049dca 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -12,7 +12,17 @@ let package = Package(
+                .executable(name: "swiftjli-cli", targets: ["SwiftJLICLI"])],
+     targets: [
+         .target(name: "SwiftJLI"),
+-        .executableTarget(name: "SwiftJLICLI", dependencies: ["SwiftJLI"]),
++        .executableTarget(
++            name: "SwiftJLICLI", dependencies: ["SwiftJLI"],
++            // This executable has no dynamically loaded plug-ins. Its symbols
++            // need not be exported; hiding them also lets the Darwin linker
++            // remove unreachable library entry points. Keep the library product
++            // and non-Darwin builds unchanged.
++            linkerSettings: [.unsafeFlags(
++                ["-Xlinker", "-no_exported_symbols", "-Xlinker", "-dead_strip"],
++                .when(platforms: [.macOS], configuration: .release)
++            )]
++        ),
+         .testTarget(name: "SwiftJLITests", dependencies: ["SwiftJLI"], resources: [.copy("Fixtures")])
+     ],
+     swiftLanguageModes: [.v6]

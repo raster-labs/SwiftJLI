@@ -1,0 +1,129 @@
+Building for production...
+[1 / 4]
+[2 / 5] SwiftJLI
+[3 / 6] SwiftJLI
+[12 / 24] swiftjli-cli-product
+[15 / 26] swiftjli-cli-product
+[17 / 26] swiftjli-cli-product
+/private/tmp/swiftjli-djpeg-round4/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-djpeg-round4/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:37:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 35 |                     var reader = BitReader(data: writer.data)
+ 36 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 37 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 38 |                     try destination.withUnsafeMutableBufferPointer {
+ 39 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+[17 / 26] SwiftJLITests-product
+[21 / 25] SwiftJLITests-product
+[23 / 25] SwiftJLITests-product
+[24 / 24] swiftjli-cli-product
+Build complete! (39.34 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Lossless restart intervals (SOF3 + DRI/RST)" started.
+◇ Suite "Progressive JPEG decode" started.
+◇ Suite "Huffman – Bit Streams, Tables, Encoding and Decoding" started.
+◇ Suite BoundedDCTWorkspaceTests started.
+◇ Suite ValidatedEnvelopeTests started.
+◇ Suite LosslessDifferenceTests started.
+◇ Test "DC encode then decode round-trips" started.
+◇ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test "Opt-in DRI encode round-trips bit-exactly and carries RST markers" started.
+◇ Test "BitReader single bit reads" started.
+◇ Test "Parallel restart EMIT is byte-identical to serial emit" started.
+◇ Test "BitReader reads written bits correctly" started.
+◇ Test validatedInputOwnsAnImmutableSnapshot() started.
+◇ Test incompleteOrTrailingStreamsNeverProduceValidatedExtents() started.
+◇ Test "cjpeg lossless restart streams decode bit-exactly (8-bit, predictor 5)" started.
+◇ Test "Segment-parallel restart decode equals serial, bit-exactly" started.
+◇ Test "cjpeg lossless restart streams decode bit-exactly (12-bit, predictor 6)" started.
+◇ Test "Optimal table is a valid prefix code (canonical, ≤16-bit, complete)" started.
+◇ Test reusedExtentsMatchIndependentMarkerTraversal() started.
+◇ Test "Optimized Huffman produces smaller output than standard, same pixels" started.
+◇ Test "BitWriter handles byte stuffing for 0xFF" started.
+◇ Test "Fast-path decode is bit-identical to bit-by-bit over random streams" started.
+◇ Test "A corrupt restart segment throws in BOTH serial and parallel decode" started.
+◇ Test "Lossless RGB with restart intervals round-trips bit-exactly (serial path)" started.
+◇ Test "Standard DC luminance table has 12 symbols" started.
+◇ Test "Additional bits encoding for negative values" started.
+◇ Test "Category function returns correct values" started.
+◇ Test everyMagnitudeAtEveryBitOffsetMatchesBitwiseReference() started.
+◇ Test "HuffmanTable stores bits array" started.
+◇ Test reusingExtentsStillHonoursCancellationAndLimits() started.
+◇ Test "BitReader throws on end of data" started.
+◇ Test longCodesTruncationMarkersAndInvalidCategoriesUseFallback() started.
+◇ Test "Optimal table round-trips encode → decode" started.
+◇ Test "Standard AC luminance table has 162 symbols" started.
+◇ Test case passing 1 argument precision → 12 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test "Progressive JPEG is detected by inspect" started.
+◇ Test "Additional bits encoding for positive values" started.
+◇ Test case passing 1 argument precision → 8 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test "Standard AC chrominance table has 162 symbols" started.
+◇ Test "Progressive encode round-trips identically to baseline (color)" started.
+◇ Test "BitWriter writes single byte correctly" started.
+◇ Test "Lookahead table resolves short codes and defers long ones" started.
+◇ Test "Progressive encode round-trips identically to baseline (grayscale)" started.
+◇ Test "Standard DC chrominance table has 12 symbols" started.
+◇ Test "AC encode then decode round-trips for simple block" started.
+◇ Test "Progressive successive-approximation encode round-trips identically (grayscale)" started.
+◇ Test "Empty frequencies fall back to the standard table" started.
+◇ Test "Progressive successive-approximation encode round-trips identically (color)" started.
+◇ Test "Progressive decode matches baseline decode pixel-for-pixel" started.
+◇ Test "Progressive + restart round-trips identically to no-restart and is djpeg-shaped" started.
+✔ Test "BitReader single bit reads" passed after 0.001 seconds.
+✔ Test "DC encode then decode round-trips" passed after 0.001 seconds.
+✔ Test "BitReader reads written bits correctly" passed after 0.001 seconds.
+✔ Test "Optimal table is a valid prefix code (canonical, ≤16-bit, complete)" passed after 0.001 seconds.
+✔ Test "BitWriter handles byte stuffing for 0xFF" passed after 0.001 seconds.
+✔ Test "cjpeg lossless restart streams decode bit-exactly (8-bit, predictor 5)" passed after 0.002 seconds.
+✔ Test "Additional bits encoding for negative values" passed after 0.001 seconds.
+✔ Test "HuffmanTable stores bits array" passed after 0.001 seconds.
+✔ Test validatedInputOwnsAnImmutableSnapshot() passed after 0.002 seconds.
+✔ Test "Lossless RGB with restart intervals round-trips bit-exactly (serial path)" passed after 0.002 seconds.
+✔ Test "Category function returns correct values" passed after 0.002 seconds.
+✔ Test "Optimized Huffman produces smaller output than standard, same pixels" passed after 0.002 seconds.
+✔ Test "Optimal table round-trips encode → decode" passed after 0.001 seconds.
+✔ Test "Standard AC luminance table has 162 symbols" passed after 0.002 seconds.
+✔ Test "BitReader throws on end of data" passed after 0.001 seconds.
+✔ Test "Additional bits encoding for positive values" passed after 0.002 seconds.
+✔ Test "Standard AC chrominance table has 162 symbols" passed after 0.001 seconds.
+✔ Test "Progressive JPEG is detected by inspect" passed after 0.001 seconds.
+✔ Test "BitWriter writes single byte correctly" passed after 0.001 seconds.
+✔ Test "cjpeg lossless restart streams decode bit-exactly (12-bit, predictor 6)" passed after 0.002 seconds.
+✔ Test "Progressive encode round-trips identically to baseline (color)" passed after 0.001 seconds.
+✔ Test "Progressive encode round-trips identically to baseline (grayscale)" passed after 0.001 seconds.
+✔ Test "AC encode then decode round-trips for simple block" passed after 0.001 seconds.
+✔ Test "Progressive successive-approximation encode round-trips identically (grayscale)" passed after 0.002 seconds.
+✔ Test "Standard DC chrominance table has 12 symbols" passed after 0.001 seconds.
+✔ Test "Empty frequencies fall back to the standard table" passed after 0.001 seconds.
+✔ Test "A corrupt restart segment throws in BOTH serial and parallel decode" passed after 0.002 seconds.
+✔ Test "Standard DC luminance table has 12 symbols" passed after 0.002 seconds.
+✔ Test reusingExtentsStillHonoursCancellationAndLimits() passed after 0.002 seconds.
+✔ Test "Progressive successive-approximation encode round-trips identically (color)" passed after 0.001 seconds.
+✔ Test "Opt-in DRI encode round-trips bit-exactly and carries RST markers" passed after 0.002 seconds.
+✔ Test "Lookahead table resolves short codes and defers long ones" passed after 0.002 seconds.
+✔ Test reusedExtentsMatchIndependentMarkerTraversal() passed after 0.002 seconds.
+✔ Test "Parallel restart EMIT is byte-identical to serial emit" passed after 0.002 seconds.
+✔ Test "Progressive decode matches baseline decode pixel-for-pixel" passed after 0.002 seconds.
+✔ Test incompleteOrTrailingStreamsNeverProduceValidatedExtents() passed after 0.002 seconds.
+✔ Suite ValidatedEnvelopeTests passed after 0.003 seconds.
+✔ Test "Progressive + restart round-trips identically to no-restart and is djpeg-shaped" passed after 0.005 seconds.
+✔ Suite "Progressive JPEG decode" passed after 0.005 seconds.
+✔ Test longCodesTruncationMarkersAndInvalidCategoriesUseFallback() passed after 0.007 seconds.
+✔ Test "Fast-path decode is bit-identical to bit-by-bit over random streams" passed after 0.010 seconds.
+✔ Suite "Huffman – Bit Streams, Tables, Encoding and Decoding" passed after 0.010 seconds.
+✔ Test "Segment-parallel restart decode equals serial, bit-exactly" passed after 0.014 seconds.
+✔ Suite "Lossless restart intervals (SOF3 + DRI/RST)" passed after 0.014 seconds.
+✔ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) with 2 test cases passed after 0.052 seconds.
+✔ Suite BoundedDCTWorkspaceTests passed after 0.053 seconds.
+✔ Test everyMagnitudeAtEveryBitOffsetMatchesBitwiseReference() passed after 0.210 seconds.
+✔ Suite LosslessDifferenceTests passed after 0.210 seconds.
+✔ Test run with 42 tests in 6 suites passed after 0.210 seconds.

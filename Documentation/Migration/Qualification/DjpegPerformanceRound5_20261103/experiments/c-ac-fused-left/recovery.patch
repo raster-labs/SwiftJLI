@@ -1,0 +1,33 @@
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index 34f7408..3a951cb 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -1250,13 +1250,27 @@ struct JLIDecoder: Sendable {
+             previousRowFirst = value
+             outputRow.storeBytes(of: UInt16(truncatingIfNeeded: value).littleEndian, as: UInt16.self)
+             for x in 1..<w {
+-                value = (value + (try losslessDifference(table, &reader))) & 0xFFFF
++                // Keep the common complete category/magnitude read in this
++                // specialised loop. The checked long-code/error path remains
++                // a separate call; no extra bits are consumed on a fast miss.
++                let difference: Int32
++                if let decoded = reader.fastDecodeLosslessDifference(table) { difference = decoded }
++                else { difference = try losslessLeftDifferenceFallback(table, &reader) }
++                value = (value + difference) & 0xFFFF
+                 outputRow.storeBytes(of: UInt16(truncatingIfNeeded: value).littleEndian,
+                     toByteOffset: x * 2, as: UInt16.self)
+             }
+         }
+     }
+ 
++    @inline(never)
++    private static func losslessLeftDifferenceFallback(_ table: HuffmanTable, _ reader: inout BitReader) throws -> Int32 {
++        let category = Int(try HuffmanDecoder.decodeSymbol(from: &reader, table: table))
++        if category == 0 { return 0 }
++        if category == 16 { return -32768 }
++        return try HuffmanDecoder.decodeValue(from: &reader, category: category)
++    }
++
+     /// Synchronous borrowed-output scan. Only one row of predictor history is
+     /// live; `aboveLeft` saves the previous-row sample before its slot is reused.
+     /// Every slot is written on the first row of a restart segment before any

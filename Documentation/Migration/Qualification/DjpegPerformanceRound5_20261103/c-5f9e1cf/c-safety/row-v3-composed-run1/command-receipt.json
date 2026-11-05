@@ -1,0 +1,38 @@
+{
+  "target": "row",
+  "sourceRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "sourceManifestSHA256": "9939f507bc2c9aa47d7d1dd4f525949756c1f1b5176359236373674df7fca002",
+  "compileCommand": [
+    "xcrun",
+    "clang",
+    "-O2",
+    "-g",
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fsanitize=address,undefined",
+    "-fno-sanitize-recover=all",
+    "-I",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v3-composed-row-source/row/include",
+    "-I",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v3-composed-row-source",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v3-composed-row-source/row_safety.c",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v3-composed-row-source/row/ACBlock.c",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v3-composed-row-source/row/LosslessRow.c",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v3-composed-row-source/row/LosslessCodeZeroRow.c",
+    "-o",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/row-v3-composed-run1/safety-harness"
+  ],
+  "cwd": "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v3-composed-row-source",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+    "ASAN_OPTIONS": "halt_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+  },
+  "startedUTC": "2026-11-03T17:26:41.378513+00:00",
+  "scope": "bounded standalone memory/undefined-behaviour diagnostic; not performance acceptance",
+  "compilerVersionExitCode": 0,
+  "compileExitCode": 1,
+  "finishedUTC": "2026-11-03T17:26:41.670201+00:00"
+}

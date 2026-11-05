@@ -1,0 +1,114 @@
+commit df14ad6f0f237ca1686d1cc457b12b1461f4936b
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 20:43:45 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 20:43:45 2026 +0530
+
+    Trial partial plain-byte prefill at AC entropy boundaries
+
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index d5497e6..cba1790 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -324,7 +324,7 @@ struct BitReader {
+     /// AC decoder stops after the Huffman symbol in that case.
+     @inline(__always)
+     mutating func fastDecodeAC(_ table: ACLookahead, remaining: Int) -> UInt32? {
+-        if bitsAvailable < ACLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
++        if bitsAvailable < ACLookahead.bits, !prefillACPrefix() { fillBuffer(upTo: 8) }
+         guard bitsAvailable >= ACLookahead.bits else { return nil }
+         // Reader mutations bound the accumulator to 0...64 valid bits. After
+         // the guard this shift is 0...51, so the masked form has identical
+@@ -336,6 +336,32 @@ struct BitReader {
+         return entry
+     }
+ 
++    /// AC lookahead alone may accept a partial plain-byte splice. The ordinary
++    /// readBits bulk refill still guarantees enough bits for its pending read.
++    /// Stop before the first possible FF byte; the zero-byte SWAR mask can flag
++    /// an earlier FE neighbour through borrow, which only shortens this prefix.
++    /// Every accepted byte is therefore plain and retains alignToByte's1:1 rewind.
++    @inline(__always)
++    private mutating func prefillACPrefix() -> Bool {
++        guard byteOffset + 8 <= buffer.count else { return false }
++        let word = withExtendedLifetime(data) {
++            UInt64(bigEndian: buffer.loadUnaligned(fromByteOffset: byteOffset, as: UInt64.self))
++        }
++        let inverted = ~word
++        let possibleFF = ((inverted &- 0x0101_0101_0101_0101) & ~inverted & 0x8080_8080_8080_8080)
++        let capacity = (64 - bitsAvailable) >> 3
++        let count = possibleFF == 0 ? capacity : min(capacity, possibleFF.leadingZeroBitCount >> 3)
++        guard count > 0 else { return false }
++        if count == 8 {
++            bitBuffer = word
++        } else {
++            bitBuffer = (bitBuffer &<< (count * 8)) | (word &>> (64 - count * 8))
++        }
++        bitsAvailable += count * 8
++        byteOffset += count
++        return true
++    }
++
+     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
+     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
+     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,
+diff --git a/Tests/SwiftJLITests/Native/ACLookaheadTests.swift b/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
+index 5f69207..8856975 100644
+--- a/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
++++ b/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
+@@ -93,8 +93,9 @@ import Testing
+             if tailIndex == 0 {
+                 // This case proves that the additional FF-free prefetch ran.
+                 #expect(fast.byteOffset > referenceReader.byteOffset)
+-            } else {
+-                // A short or FF-containing next word must not be prefetched.
++            } else if tailIndex != tails.count - 1 {
++                // Immediate FF or short input cannot be prefetched. A longer
++                // plain prefix before FF may now be buffered without consumption.
+                 #expect(fast.byteOffset == referenceReader.byteOffset)
+             }
+             var fastAligned = fast, referenceAligned = referenceReader
+@@ -110,4 +111,43 @@ import Testing
+             }
+         } }
+     }
++
++    @Test func partialPlainPrefixesNeverConsumeStuffingOrMarkers() throws {
++        let table = StandardHuffmanTables.acLuminance
++        let lookup = try #require(ACLookahead(table: table, blockCount: 512))
++        for available in 0...12 { for ffPosition in 0..<8 {
++            for boundary: [UInt8] in [[0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9], [0xFF]] {
++                for preceding: UInt8 in [0xAA, 0xFE] {
++                    let tail = Array(repeating: preceding, count: ffPosition) + boundary
++                        + Array(repeating: UInt8(0xA5), count: 16)
++                    var fast = BitReader(data: Array(repeating: 0xAA, count: 8) + tail)
++                    var slow = fast
++                    var consume = 64 - available
++                    while consume > 0 {
++                        let count = min(consume, 16)
++                        #expect(try fast.readBits(count) == slow.readBits(count))
++                        consume -= count
++                    }
++                    for remaining in [1, 2, 15, 16, 17, 62, 63] {
++                        var actual = fast, expected = slow
++                        let a = Result {
++                            if let entry = actual.fastDecodeAC(lookup, remaining: remaining) {
++                                return (Int((entry >> 16) & 255), Int32(Int16(truncatingIfNeeded: entry)))
++                            }
++                            return try reference(&actual, table, remaining: remaining)
++                        }
++                        let b = Result { try reference(&expected, table, remaining: remaining) }
++                        switch (a, b) {
++                        case (.success(let x), .success(let y)): #expect(x.0 == y.0 && x.1 == y.1)
++                        case (.failure(let x), .failure(let y)):
++                            #expect(String(describing: x) == String(describing: y))
++                        default: Issue.record("Plain-prefix prefill changed entropy result")
++                        }
++                        actual.alignToByte(); expected.alignToByte()
++                        #expect(actual.byteOffset == expected.byteOffset)
++                    }
++                }
++            }
++        } }
++    }
+ }

@@ -12,22 +12,33 @@ final class NativeCancellation: Sendable {
     }
 }
 
+/// Keep the task-local payload nominal. Swift 6.3 Release builds can fail while
+/// resolving metadata for the optional function payload during withValue.
+/// This immutable value retains the same Sendable callback without another
+/// heap owner or any change to the synchronous scope and joined-worker lifetime.
+private struct NativeSynchronousCancellationCheck: Sendable {
+    let body: @Sendable () throws -> Void
+}
+
 /// Context is explicitly installed in every joined worker. A worker never relies
 /// on inheriting Swift task locals or cancellation through a Dispatch thread.
 struct NativeOperation: Sendable {
     @TaskLocal static var current: NativeOperation?
     @TaskLocal private static var taskCancellation: NativeCancellation?
+    @TaskLocal private static var callerCancellationCheck: NativeSynchronousCancellationCheck?
     let started: ContinuousClock.Instant
     let seconds: Double
     let backend: Backend
     let maximumWorkers: Int
     let cancellation: NativeCancellation?
+    private let synchronousCancellationCheck: (@Sendable () throws -> Void)?
 
     init(seconds: Double, backend: Backend = .scalarCPU,
          started: ContinuousClock.Instant = .now, maximumWorkers: Int = 1) {
         self.seconds = seconds; self.backend = backend; self.started = started
         self.maximumWorkers = max(1, maximumWorkers)
         self.cancellation = Self.taskCancellation
+        self.synchronousCancellationCheck = Self.callerCancellationCheck?.body
     }
 
     static func withCancellation<T: Sendable>(_ body: () throws -> T) async throws -> T {
@@ -37,10 +48,26 @@ struct NativeOperation: Sendable {
         } onCancel: { token.cancel() }
     }
 
+    /// The executable has a blocking caller-thread executor and a signal/deadline
+    /// poll. Capture that poll in every operation context so joined Dispatch
+    /// workers inherit it explicitly, just like asynchronous cancellation tokens.
+    /// The callback must be thread-safe and non-blocking. No work outlives body.
+    static func withSynchronousCancellation<T>(
+        _ check: @escaping @Sendable () throws -> Void, _ body: () throws -> T
+    ) throws -> T {
+        try $callerCancellationCheck.withValue(NativeSynchronousCancellationCheck(body: check)) {
+            try check()
+            let result = try body()
+            try check()
+            return result
+        }
+    }
+
     static func check() throws {
         try Task.checkCancellation()
         if let context = current {
             try context.cancellation?.check()
+            try context.synchronousCancellationCheck?()
             // ResourceLimits accepts every positive finite Double. Converting
             // that caller value to Duration can trap outside Duration's range.
             // Elapsed components always fit in Double, so compare in seconds.

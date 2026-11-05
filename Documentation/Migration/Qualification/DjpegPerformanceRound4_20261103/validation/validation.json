@@ -1,0 +1,117 @@
+{
+  "sourceRevision": "82d4b25510daceeddb40d1a2395e683203d76526",
+  "startedUTC": "2026-11-03T07:32:31.645533+00:00",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+  },
+  "checks": [
+    {
+      "name": "release-cli-final",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round4-final-cli"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "startedUTC": "2026-11-03T07:32:31.645789+00:00",
+      "log": "release-cli-final.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:32:35.144530+00:00"
+    },
+    {
+      "name": "asan-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round4-asan/out/Products/Debug/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round4-asan-cli"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "startedUTC": "2026-11-03T07:32:35.144810+00:00",
+      "log": "asan-cli.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:32:44.068064+00:00"
+    },
+    {
+      "name": "tsan-tests",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-tsan",
+        "--sanitize",
+        "thread",
+        "--filter",
+        "CompressedInputOwnershipTests|BoundedDCTWorkspaceTests|StreamingWorkspaceAdmissionTests|LosslessRestartTests|ZeroRunLosslessTests|SequentialGreyscaleDecoderTests|ValidatedEnvelopeTests|LosslessLookaheadTests|LosslessRowStorageTests|LosslessDifferenceTests|ScopedACDecoderTests|ACLookaheadTests|NativeExecutionTests|CLISynchronousExecutionTests|OwnershipTests|CancellationPublicationTests"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "startedUTC": "2026-11-03T07:32:44.068388+00:00",
+      "log": "tsan-tests.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:33:46.216683+00:00"
+    },
+    {
+      "name": "lossless-oracle",
+      "command": [
+        "python3",
+        "Scripts/verify-lossless-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round4-lossless-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-oracle-build",
+        "--cjpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "startedUTC": "2026-11-03T07:33:46.217023+00:00",
+      "log": "lossless-oracle.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:33:56.345705+00:00"
+    },
+    {
+      "name": "dct-oracle",
+      "command": [
+        "python3",
+        "Scripts/verify-dct-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round4-dct-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-oracle-build",
+        "--cjpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "startedUTC": "2026-11-03T07:33:56.346018+00:00",
+      "log": "dct-oracle.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:33:59.158279+00:00"
+    },
+    {
+      "name": "contract-hashes",
+      "command": [
+        "shasum",
+        "-a",
+        "256",
+        "-c",
+        "COMMON_CONTRACT_SHA256.txt"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4/Documentation",
+      "startedUTC": "2026-11-03T07:33:59.158673+00:00",
+      "log": "contract-hashes.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T07:33:59.188373+00:00"
+    }
+  ],
+  "finishedUTC": "2026-11-03T07:33:59.188797+00:00"
+}

@@ -1,0 +1,495 @@
+{
+  "decision": "not accepted",
+  "reason": "Targeted DCT gains are repeatable, but the conditional lossless matrix contains repeated regressions above5%. Lossless does not call the C leaf; attribution remains unisolated and requires an explicitly scoped follow-up.",
+  "candidateRevision": "3a5ef320c04fff03561a69b705355c0e9da2fc31",
+  "baselineBuildRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "baselineProductionEquivalentRevision": "14f35018d241666358480da2a8527d29ab047627",
+  "focusedTests": {
+    "command": "swift test -c release --jobs 4 --scratch-path /private/tmp/swiftjli-round5-c-ac-leaf-build --filter CACDecoderTests|CACPublicPipelineTests|ACLookaheadTests|ScopedACDecoderTests|SequentialGreyscale|PipelinedGreyscale|ParallelSequential|NativeExecutionTests|JPEGDecodeParityTests|BoundedDCTWorkspaceTests|EntropyBoundaryTests",
+    "exitCode": 0,
+    "tests": 42,
+    "suites": 10,
+    "log": "tests.log",
+    "finishedUTC": "2026-11-03T15:40:41.724467+00:00"
+  },
+  "warningsCheck": {
+    "command": [
+      "xcrun",
+      "clang",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c11",
+      "-c",
+      "Sources/SwiftJLIEntropyC/ACBlock.c",
+      "-I",
+      "Sources/SwiftJLIEntropyC/include",
+      "-o",
+      "/private/tmp/swiftjli-round5-evidence/c-ac-leaf/warnings-check.o"
+    ],
+    "exitCode": 0,
+    "log": "warnings-check.log"
+  },
+  "dctExitCode": 0,
+  "dctExactPairs": 24,
+  "losslessExitCode": 0,
+  "losslessExactPairs": 32,
+  "productionChanged": false,
+  "sourceAndProductsVerifiedUnchanged": true,
+  "sanitisers": "Not run yet: overall performance gate failed. ASan/UBSan remain required before acceptance.",
+  "sourceReview": "Independent DCT agent found no semantic/UB/lifetime issue under documented validated metadata preconditions. Its tuple-storage hardening suggestion was applied before source pin.",
+  "memory": "One fixed1048-byte scan-local metadata value on this64-bit ABI plus24-byte reader state per synchronous call; same32KiB combined lookup; no C allocations/thread/I/O. Covered by existing1MiB scratch reserve. These are structural payload bounds, not measured peak memory.",
+  "dctPairs": [
+    {
+      "round": 1,
+      "fixture": "dct12-512.jpg",
+      "baselineMedianMS": 1.3837085,
+      "candidateMedianMS": 1.2239170000000001,
+      "changePercent": -11.54806088132,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "dct12-2048.jpg",
+      "baselineMedianMS": 18.1962915,
+      "candidateMedianMS": 16.126979,
+      "changePercent": -11.372166136160223,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "rgb8-512.jpg",
+      "baselineMedianMS": 2.9889375,
+      "candidateMedianMS": 2.9857495,
+      "changePercent": -0.10665997532567362,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "rgb8-2048.jpg",
+      "baselineMedianMS": 34.4965415,
+      "candidateMedianMS": 35.5991665,
+      "changePercent": 3.1963349137478003,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "progressiveRGB8-512.jpg",
+      "baselineMedianMS": 4.703875,
+      "candidateMedianMS": 4.704583,
+      "changePercent": 0.015051420371503532,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "baselineMedianMS": 59.038375,
+      "candidateMedianMS": 59.686541999999996,
+      "changePercent": 1.097874052258363,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "xyb8-512.jpg",
+      "baselineMedianMS": 9.345292000000002,
+      "candidateMedianMS": 9.527125000000002,
+      "changePercent": 1.9457176940003595,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "xyb8-2048.jpg",
+      "baselineMedianMS": 142.1621045,
+      "candidateMedianMS": 142.87708300000003,
+      "changePercent": 0.5029318484800704,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "flat-8-512.jpg",
+      "baselineMedianMS": 0.0639995,
+      "candidateMedianMS": 0.068125,
+      "changePercent": 6.446144110500862,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "flat-12-512.jpg",
+      "baselineMedianMS": 0.06897850000000001,
+      "candidateMedianMS": 0.07925,
+      "changePercent": 14.890871793384886,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "noise-8-512.jpg",
+      "baselineMedianMS": 1.1966255,
+      "candidateMedianMS": 1.191521,
+      "changePercent": -0.4265745632196394,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "fixture": "noise-12-512.jpg",
+      "baselineMedianMS": 1.597292,
+      "candidateMedianMS": 1.43925,
+      "changePercent": -9.894371223295428,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "dct12-512.jpg",
+      "baselineMedianMS": 1.3698124999999999,
+      "candidateMedianMS": 1.2304165,
+      "changePercent": -10.176283250444861,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "dct12-2048.jpg",
+      "baselineMedianMS": 18.378375000000002,
+      "candidateMedianMS": 16.076188,
+      "changePercent": -12.526608037979436,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "rgb8-512.jpg",
+      "baselineMedianMS": 3.080979,
+      "candidateMedianMS": 3.0256040000000004,
+      "changePercent": -1.7973183199236353,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "rgb8-2048.jpg",
+      "baselineMedianMS": 34.989,
+      "candidateMedianMS": 35.0495205,
+      "changePercent": 0.17297007630969752,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "progressiveRGB8-512.jpg",
+      "baselineMedianMS": 4.649187500000001,
+      "candidateMedianMS": 4.775625000000001,
+      "changePercent": 2.71956121365291,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "progressiveRGB8-2048.jpg",
+      "baselineMedianMS": 59.9401875,
+      "candidateMedianMS": 59.1790625,
+      "changePercent": -1.2698075060242342,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "xyb8-512.jpg",
+      "baselineMedianMS": 9.349,
+      "candidateMedianMS": 9.3202085,
+      "changePercent": -0.30796341854744114,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "xyb8-2048.jpg",
+      "baselineMedianMS": 141.5914165,
+      "candidateMedianMS": 141.4135835,
+      "changePercent": -0.12559589020003648,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "flat-8-512.jpg",
+      "baselineMedianMS": 0.06870849999999999,
+      "candidateMedianMS": 0.0662085,
+      "changePercent": -3.6385600034929855,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "flat-12-512.jpg",
+      "baselineMedianMS": 0.082042,
+      "candidateMedianMS": 0.069312,
+      "changePercent": -15.516442797591468,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "noise-8-512.jpg",
+      "baselineMedianMS": 1.2513954999999999,
+      "candidateMedianMS": 1.18475,
+      "changePercent": -5.325694394777658,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "fixture": "noise-12-512.jpg",
+      "baselineMedianMS": 1.619021,
+      "candidateMedianMS": 1.4330835000000002,
+      "changePercent": -11.484563819740446,
+      "exact": true
+    }
+  ],
+  "losslessPairs": [
+    {
+      "round": 1,
+      "case": "flat-19",
+      "baselineMedianMS": 0.008438,
+      "candidateMedianMS": 0.010021,
+      "changePercent": 18.760369755866346,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "flat-512",
+      "baselineMedianMS": 0.10400000000000001,
+      "candidateMedianMS": 0.104854,
+      "changePercent": 0.8211538461538437,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "flat-2048",
+      "baselineMedianMS": 0.851542,
+      "candidateMedianMS": 0.8685625,
+      "changePercent": 1.99878573223633,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "flat-3072",
+      "baselineMedianMS": 1.8908954999999998,
+      "candidateMedianMS": 1.920167,
+      "changePercent": 1.548023145647126,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "ramp-19",
+      "baselineMedianMS": 0.008187,
+      "candidateMedianMS": 0.008291999999999999,
+      "changePercent": 1.2825210699890066,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "ramp-512",
+      "baselineMedianMS": 0.7494375,
+      "candidateMedianMS": 0.6762079999999999,
+      "changePercent": -9.771261779668084,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "ramp-2048",
+      "baselineMedianMS": 10.698729,
+      "candidateMedianMS": 11.9241255,
+      "changePercent": 11.453664262362384,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "ramp-3072",
+      "baselineMedianMS": 22.956938,
+      "candidateMedianMS": 24.6751875,
+      "changePercent": 7.484663242110079,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "noise-19",
+      "baselineMedianMS": 0.0065,
+      "candidateMedianMS": 0.0071875,
+      "changePercent": 10.576923076923084,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "noise-512",
+      "baselineMedianMS": 2.225333,
+      "candidateMedianMS": 2.342979,
+      "changePercent": 5.286669455762372,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "noise-2048",
+      "baselineMedianMS": 35.836271,
+      "candidateMedianMS": 36.5283125,
+      "changePercent": 1.9311202887152934,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "noise-3072",
+      "baselineMedianMS": 80.1752915,
+      "candidateMedianMS": 80.96697950000001,
+      "changePercent": 0.9874463630731078,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "mixed-19",
+      "baselineMedianMS": 0.007916999999999999,
+      "candidateMedianMS": 0.005646,
+      "changePercent": -28.685107995452817,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "mixed-512",
+      "baselineMedianMS": 0.801333,
+      "candidateMedianMS": 0.9312495000000001,
+      "changePercent": 16.212548341326283,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "mixed-2048",
+      "baselineMedianMS": 12.322458000000001,
+      "candidateMedianMS": 13.021791499999999,
+      "changePercent": 5.675275987956274,
+      "exact": true
+    },
+    {
+      "round": 1,
+      "case": "mixed-3072",
+      "baselineMedianMS": 27.5982085,
+      "candidateMedianMS": 28.791395999999995,
+      "changePercent": 4.323423746871091,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "flat-19",
+      "baselineMedianMS": 0.0084375,
+      "candidateMedianMS": 0.006271,
+      "changePercent": -25.677037037037042,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "flat-512",
+      "baselineMedianMS": 0.1114375,
+      "candidateMedianMS": 0.109458,
+      "changePercent": -1.7763320246775072,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "flat-2048",
+      "baselineMedianMS": 0.8443750000000001,
+      "candidateMedianMS": 0.88475,
+      "changePercent": 4.781643227239085,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "flat-3072",
+      "baselineMedianMS": 1.9340834999999998,
+      "candidateMedianMS": 1.9514790000000002,
+      "changePercent": 0.8994182515905003,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "ramp-19",
+      "baselineMedianMS": 0.0070209999999999995,
+      "candidateMedianMS": 0.007375,
+      "changePercent": 5.042016806722693,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "ramp-512",
+      "baselineMedianMS": 0.7667290000000001,
+      "candidateMedianMS": 0.7428330000000001,
+      "changePercent": -3.1166161707722018,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "ramp-2048",
+      "baselineMedianMS": 10.599979499999998,
+      "candidateMedianMS": 11.757896,
+      "changePercent": 10.923761692180655,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "ramp-3072",
+      "baselineMedianMS": 21.700333,
+      "candidateMedianMS": 24.0093955,
+      "changePercent": 10.640677726005388,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "noise-19",
+      "baselineMedianMS": 0.0068125,
+      "candidateMedianMS": 0.0077919999999999994,
+      "changePercent": 14.377981651376137,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "noise-512",
+      "baselineMedianMS": 2.1812915,
+      "candidateMedianMS": 2.496771,
+      "changePercent": 14.462968383638785,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "noise-2048",
+      "baselineMedianMS": 37.152479,
+      "candidateMedianMS": 36.467104,
+      "changePercent": -1.8447624988900513,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "noise-3072",
+      "baselineMedianMS": 81.51424949999999,
+      "candidateMedianMS": 80.7512915,
+      "changePercent": -0.9359811378745642,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "mixed-19",
+      "baselineMedianMS": 0.0066455,
+      "candidateMedianMS": 0.0066045,
+      "changePercent": -0.6169588443307505,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "mixed-512",
+      "baselineMedianMS": 0.9286875,
+      "candidateMedianMS": 0.9219160000000001,
+      "changePercent": -0.7291473181236907,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "mixed-2048",
+      "baselineMedianMS": 12.971604,
+      "candidateMedianMS": 13.040792,
+      "changePercent": 0.5333804516388208,
+      "exact": true
+    },
+    {
+      "round": 2,
+      "case": "mixed-3072",
+      "baselineMedianMS": 27.447937,
+      "candidateMedianMS": 28.637312499999997,
+      "changePercent": 4.333205442725974,
+      "exact": true
+    }
+  ],
+  "finishedUTC": "2026-11-03T15:43:10.039032+00:00"
+}

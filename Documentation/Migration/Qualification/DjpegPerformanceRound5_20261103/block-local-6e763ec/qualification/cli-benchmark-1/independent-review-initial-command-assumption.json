@@ -1,0 +1,681 @@
+{
+  "status": "findings",
+  "reviewer": "/root/round4_audit",
+  "createdUTC": "2026-11-03T19:54:25.369799+00:00",
+  "scope": "Independent source/hash/record/arithmetic review only; no CLI, decoder, build, test, benchmark or profiling execution. Original matrices/summary/runner unchanged.",
+  "baselineRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "candidateRevision": "6e763ec2099e162bae52a40109ff74269ea9899f",
+  "receiptSHA256": {
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-prepared/plan.json": "b1bb1f848e2053623a3ad836c6f5b426dec6dcc5f46fb656e3112e5e6a2a1d9d",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-prepared/run.py": "ec13f05069f6f460b7afeeb4e1edb6e473e7b5c1d421e34517015c61131c6a94",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-prepared/summarise.py": "6c14536711cda49a675b01f7832146d41ad7873e9d4a3be674e7a54e74b1a414",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-benchmark-1/receipt.json": "a5aabd1331a554ed2ea235d7f75f263c8dcabe25ea201ced97f2062d29e0fbe9",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-benchmark-1/summary.json": "cfae7f71cc25655836ec4d415ce2333fb2f77a2ed2f2e2a8cdabc1f15cd66a98",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-benchmark-1/original-3.2.1.json": "f028b7dbfd7b5d202aaa5988d9db23dd0780699bd39ec71771588cabbb79e4c7",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-benchmark-1/lossless-patterns-3.2.1.json": "c6fef5aef1d0dc19ebd025a0c3e8217f5c4d9dec28fd93d0b7aeabe05d30f178",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-benchmark-1/original-3.2.0.json": "ed502c4be70e20baac1baac1b614b0c23800d139c7580bd7a9d2c9ea1a07fe69",
+    "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/cli-benchmark-1/lossless-patterns-3.2.0.json": "33c32e4c9c35100b00a93833f3fff7f626f8cfd1ecbf7ab64ed0f21d45e0b8a9"
+  },
+  "checksPassed": 1064,
+  "checksTotal": 1068,
+  "failedChecks": [
+    "original-3.2.1 fixed CLI commands ('dct12', 512, 1)",
+    "original-3.2.1 fixed CLI commands ('dct12', 512, 2)",
+    "original-3.2.0 fixed CLI commands ('dct12', 512, 1)",
+    "original-3.2.0 fixed CLI commands ('dct12', 512, 2)"
+  ],
+  "inputPinsVerified": 253,
+  "totals": {
+    "acceptedTimingRecords": 76,
+    "excludedQualityRecords": 8,
+    "measuredChildRuns": 4560,
+    "repeatedBaselineOver5PercentCases": 0,
+    "individualBaselineOver5PercentRecords": 0,
+    "candidateLowerRSSRecordsThanDjpeg": 0,
+    "largestIndividualBaselineSlowdownPercent": 4.545225222874816
+  },
+  "matrices": [
+    {
+      "name": "original-3.2.1",
+      "acceptedRecords": 6,
+      "admittedCases": 3,
+      "excludedRecords": 4,
+      "cases": [
+        {
+          "profile": "lossless16",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -1.1201936445554894,
+            1.0483425428681414
+          ],
+          "elapsedVsDjpegPercent": [
+            23.312361497814305,
+            20.093533899149605
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "lossless16",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -0.870974273225622,
+            -2.159588955172098
+          ],
+          "elapsedVsDjpegPercent": [
+            -17.180329242850767,
+            -19.391367117025116
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "dct12",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -2.858098429391853,
+            -1.6004817831840268
+          ],
+          "elapsedVsDjpegPercent": [
+            24.940644534195844,
+            25.588615659988623
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        }
+      ],
+      "djpegRepeatedLatencyWins": 1,
+      "candidateLowerRSSRecordsThanDjpeg": 0,
+      "repeatedBaselineOver5PercentCases": [],
+      "baselineDeltaRangePercent": [
+        -2.858098429391853,
+        1.0483425428681414
+      ]
+    },
+    {
+      "name": "lossless-patterns-3.2.1",
+      "acceptedRecords": 32,
+      "admittedCases": 16,
+      "excludedRecords": 0,
+      "cases": [
+        {
+          "profile": "flat",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            -0.48272922775420835,
+            -1.4764966152557624
+          ],
+          "elapsedVsDjpegPercent": [
+            36.204410492696184,
+            23.48148581468028
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -1.3377889781606256,
+            -1.2058466292823034
+          ],
+          "elapsedVsDjpegPercent": [
+            16.6622895653354,
+            13.879961705501898
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -0.3993757947058141,
+            1.8790850580110874
+          ],
+          "elapsedVsDjpegPercent": [
+            -48.304555985845774,
+            -44.676313514709584
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            -1.6426116272817648,
+            -1.6179903938841278
+          ],
+          "elapsedVsDjpegPercent": [
+            -63.92284773176517,
+            -62.254661353120234
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            -1.3362904439017997,
+            4.545225222874816
+          ],
+          "elapsedVsDjpegPercent": [
+            28.77518130478891,
+            29.32250217651773
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -1.4191093237010066,
+            -1.02129458256216
+          ],
+          "elapsedVsDjpegPercent": [
+            15.329108963101866,
+            15.541013522856396
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -18.660042398430942,
+            -18.995951666089717
+          ],
+          "elapsedVsDjpegPercent": [
+            -46.31118918935765,
+            -46.763255760724185
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            -22.68317830363218,
+            -24.329670096155542
+          ],
+          "elapsedVsDjpegPercent": [
+            -56.95531758072852,
+            -58.303090273995274
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            1.3215612026665546,
+            -2.7486613057679854
+          ],
+          "elapsedVsDjpegPercent": [
+            27.99799585786509,
+            26.968917617670442
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -0.7619105464501508,
+            0.4838597492102137
+          ],
+          "elapsedVsDjpegPercent": [
+            18.303015938851708,
+            20.099682171185364
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            2.2869253057155037,
+            2.415034591700027
+          ],
+          "elapsedVsDjpegPercent": [
+            -8.337324500241138,
+            -8.868743221329467
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            1.5345138892485677,
+            -0.020851569951929605
+          ],
+          "elapsedVsDjpegPercent": [
+            -13.972390211277197,
+            -14.95346546041938
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            1.090525705556744,
+            -0.8591053822585182
+          ],
+          "elapsedVsDjpegPercent": [
+            27.60520089878158,
+            28.996028047968014
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            1.114958192390314,
+            -2.497904764919756
+          ],
+          "elapsedVsDjpegPercent": [
+            20.179066327776084,
+            19.839369010555586
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            0.9366221516095452,
+            -0.3811488949573616
+          ],
+          "elapsedVsDjpegPercent": [
+            -15.917558615618354,
+            -16.57407324857877
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            1.931090474888042,
+            -1.7726212611638426
+          ],
+          "elapsedVsDjpegPercent": [
+            -23.693772847683604,
+            -25.018480535711273
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        }
+      ],
+      "djpegRepeatedLatencyWins": 8,
+      "candidateLowerRSSRecordsThanDjpeg": 0,
+      "repeatedBaselineOver5PercentCases": [],
+      "baselineDeltaRangePercent": [
+        -24.329670096155542,
+        4.545225222874816
+      ]
+    },
+    {
+      "name": "original-3.2.0",
+      "acceptedRecords": 6,
+      "admittedCases": 3,
+      "excludedRecords": 4,
+      "cases": [
+        {
+          "profile": "lossless16",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -1.4022121884058825,
+            -0.8803210880231949
+          ],
+          "elapsedVsDjpegPercent": [
+            24.237526557396706,
+            22.68992383797288
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "lossless16",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -1.2214389065649311,
+            -0.6715179956955253
+          ],
+          "elapsedVsDjpegPercent": [
+            -15.3700943689975,
+            -16.970808383450063
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "dct12",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            0.2859204432957396,
+            -1.7114162365314267
+          ],
+          "elapsedVsDjpegPercent": [
+            27.21357653803862,
+            31.05254044352861
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        }
+      ],
+      "djpegRepeatedLatencyWins": 1,
+      "candidateLowerRSSRecordsThanDjpeg": 0,
+      "repeatedBaselineOver5PercentCases": [],
+      "baselineDeltaRangePercent": [
+        -1.7114162365314267,
+        0.2859204432957396
+      ]
+    },
+    {
+      "name": "lossless-patterns-3.2.0",
+      "acceptedRecords": 32,
+      "admittedCases": 16,
+      "excludedRecords": 0,
+      "cases": [
+        {
+          "profile": "flat",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            3.7309043654491614,
+            -1.6282286635640908
+          ],
+          "elapsedVsDjpegPercent": [
+            40.61576005030601,
+            30.985987952223716
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -4.154874161777844,
+            0.47324503094612336
+          ],
+          "elapsedVsDjpegPercent": [
+            20.778893305811465,
+            22.395367084144404
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            1.64835346040062,
+            1.608846306052425
+          ],
+          "elapsedVsDjpegPercent": [
+            -43.83069662441601,
+            -38.23841334847301
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "flat",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            2.5447105782507196,
+            -0.744368168665932
+          ],
+          "elapsedVsDjpegPercent": [
+            -55.456433324543575,
+            -56.30426703474479
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            0.7250363020329109,
+            -0.5784988246036016
+          ],
+          "elapsedVsDjpegPercent": [
+            27.375617593894354,
+            27.90555122652878
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -0.8976918218069119,
+            0.5055366577954246
+          ],
+          "elapsedVsDjpegPercent": [
+            15.920887115004101,
+            16.791934063701184
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -16.309393155278983,
+            -16.609962256050657
+          ],
+          "elapsedVsDjpegPercent": [
+            -46.00472754538808,
+            -47.31446318259184
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "ramp",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            -24.875540653382465,
+            -22.069599112644124
+          ],
+          "elapsedVsDjpegPercent": [
+            -58.83487590630976,
+            -57.07985752206805
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            3.532519878134388,
+            3.1990041073746145
+          ],
+          "elapsedVsDjpegPercent": [
+            33.487372817878416,
+            29.48929201430408
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -2.38998391966585,
+            1.787630897857051
+          ],
+          "elapsedVsDjpegPercent": [
+            20.273031448531633,
+            22.710685028345967
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -0.13090021982263833,
+            1.6437175811743643
+          ],
+          "elapsedVsDjpegPercent": [
+            -9.515096756929575,
+            -9.289873582997343
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "noise",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            0.37884483343277875,
+            0.6760794497980394
+          ],
+          "elapsedVsDjpegPercent": [
+            -15.938436011437195,
+            -15.272222162000782
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 19,
+          "elapsedVsBaselinePercent": [
+            0.5159903224169371,
+            -0.2984728397448455
+          ],
+          "elapsedVsDjpegPercent": [
+            31.538799510156768,
+            27.741631699096956
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 512,
+          "elapsedVsBaselinePercent": [
+            -0.1511418020362365,
+            1.769770604518861
+          ],
+          "elapsedVsDjpegPercent": [
+            20.12579961090646,
+            21.99151149095848
+          ],
+          "candidateBeatsDjpegBothRounds": false,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 2048,
+          "elapsedVsBaselinePercent": [
+            -1.0199525577298751,
+            -0.5181480925356197
+          ],
+          "elapsedVsDjpegPercent": [
+            -15.553027190847967,
+            -14.981656069836891
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": true,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        },
+        {
+          "profile": "mixed",
+          "size": 3072,
+          "elapsedVsBaselinePercent": [
+            0.04201544875730434,
+            -0.5193145658342724
+          ],
+          "elapsedVsDjpegPercent": [
+            -23.05310206004194,
+            -22.579039484037644
+          ],
+          "candidateBeatsDjpegBothRounds": true,
+          "candidateBeatsBaselineBothRounds": false,
+          "candidateSlowerThanBaselineOver5PercentBothRounds": false
+        }
+      ],
+      "djpegRepeatedLatencyWins": 8,
+      "candidateLowerRSSRecordsThanDjpeg": 0,
+      "repeatedBaselineOver5PercentCases": [],
+      "baselineDeltaRangePercent": [
+        -24.875540653382465,
+        3.7309043654491614
+      ]
+    }
+  ],
+  "hostVMCPUPercentObservedRange": [
+    93.8,
+    146.3
+  ],
+  "limitations": [
+    "Timings remain provisional with ongoing host VM and other process activity. These are launch/read/decode/PNM-output-to-dev-null CLI measurements, separate from the full-output API comparator.",
+    "Keep denominators separate for each libjpeg version and each matrix: original1/3 and patterns8/16 repeated latency wins per version. Newly admitted noise2048/noise3072/mixed3072 are included because both ca0 and candidate admit them; older5f9 denominators cannot be pooled.",
+    "No repeated or individual elapsed-time slowdown above5percent versusca0 appears in this run, but smaller repeated slowdowns remain visible in cases; this is not zero regression.",
+    "All76accepted records retain exact baseline/candidate samples and PNM. Lossless maximum difference0 versus djpeg; DCT12maximum difference1 within fixed4. Eight RGB/profile-round exclusions remain difference3 against fixed2 and have no timings.",
+    "Djpeg has lower median childRSS for every acceptedCLIrecord; startup/smallCLIandDCT512latency gaps remain. Native2048DCTresults are not established by this CLIoriginal matrix.",
+    "This review validates retained raw JSON sample/statistic/quality evidence and its source/artifact linkage; it does not rerun output comparison or independently reconstruct every child timing from absent per-child stderr logs."
+  ]
+}

@@ -1,0 +1,971 @@
+(lldb) target create "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/swiftpm-testing-helper"
+Current executable set to '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/swiftpm-testing-helper' (arm64).
+(lldb) settings set -- target.run-args  "--test-bundle-path" "/private/tmp/swiftjli-round5-evidence/ci-41602314446/arm64-artifact/Users/runner/work/SwiftJLI/SwiftJLI/.build/arm64-apple-macosx/release/SwiftJLIPackageTests.xctest/Contents/MacOS/SwiftJLIPackageTests" "--testing-library" "swift-testing"
+(lldb) settings set target.env-vars DYLD_FRAMEWORK_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks
+(lldb) run
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "DICOM reader robustness / malformed input" started.
+◇ Suite "Color Space – RGB/YCbCr/XYB Conversions and Chroma Sampling" started.
+◇ Suite SequentialGreyscaleDecoderTests started.
+◇ Suite "Adaptive-quant field (jpegli port)" started.
+◇ Suite "ICC / Exif metadata" started.
+◇ Suite "IDCT accuracy (ISO/IEC 10918-2 Annex A)" started.
+◇ Suite "Frozen regression corpus (medical dimensions)" started.
+◇ Suite "Conformance evidence (medical safety-critical claims)" started.
+◇ Suite FloatEncodeTests started.
+◇ Suite "Byte-order sample access" started.
+◇ Suite LosslessLookaheadTests started.
+◇ Test abandonedDestinationInvalidatesItsReservedOwner() started.
+◇ Suite "Progressive JPEG decode" started.
+◇ Suite LosslessRowStorageTests started.
+◇ Suite ScaledDecodeTests started.
+◇ Suite JPEGDecodeParityTests started.
+◇ Suite AdvancedDCTTests started.
+◇ Suite "Lossless JPEG (SOF3)" started.
+◇ Suite "DCT – Forward and Inverse Discrete Cosine Transform" started.
+◇ Test frozenCorpusHashImplementationMatchesVectors() started.
+◇ Suite "JPEG Markers – Writer and Reader" started.
+◇ Suite "Perceptual quantization (jpegli tables)" started.
+◇ Suite ColourInputTests started.
+◇ Suite "Float32 decode output" started.
+◇ Suite UInt12InputTests started.
+◇ Suite JPEGMigrationTests started.
+◇ Suite LosslessDifferenceTests started.
+◇ Suite DistanceRangeTests started.
+◇ Suite "Encoder & Decoder – Full JPEG Pipeline" started.
+◇ Suite ScopedACDecoderTests started.
+◇ Test extremeIntegerInputsThrowWithoutOverflowTraps() started.
+◇ Suite ValidatedEnvelopeTests started.
+◇ Suite XYBFloatDecodeTests started.
+◇ Suite "DICOM reader" started.
+◇ Suite "Encoder robustness / edge cases" started.
+◇ Test failedFillInvalidatesDestination() started.
+◇ Suite StreamingWorkspaceAdmissionTests started.
+◇ Suite JPEGInspectionTests started.
+◇ Suite XYBAPITests started.
+◇ Suite "JLISwift Core Types" started.
+◇ Suite NearLosslessAPITests started.
+◇ Suite "DICOM color / photometric" started.
+◇ Suite "Scaled decode conformance (vs djpeg -scale)" started.
+◇ Suite BulkBitWriterTests started.
+◇ Suite NativeExecutionTests started.
+◇ Suite FloatDecodeTests started.
+◇ Suite CompressedInputOwnershipTests started.
+◇ Suite "Lossless restart intervals (SOF3 + DRI/RST)" started.
+◇ Suite "Quantization – Tables, Zigzag, and Quantize/Dequantize" started.
+◇ Suite LossyAPITests started.
+◇ Suite SharedDCTStorageTests started.
+◇ Test invalidResourceProfilesAndProgressFailPredictably() started.
+◇ Suite MedicalSafetyTests started.
+◇ Suite ICCProfileIdentityTests started.
+◇ Suite RGBOutputBatchTests started.
+◇ Suite "XYB color" started.
+◇ Suite "Huffman – Bit Streams, Tables, Encoding and Decoding" started.
+◇ Suite EntropyBoundaryTests started.
+◇ Suite "Contract image layer" started.
+◇ Suite "DICOM writer" started.
+◇ Suite BoundedDCTWorkspaceTests started.
+◇ Suite ACLookaheadTests started.
+◇ Suite CLISynchronousExecutionTests started.
+◇ Test publicOperationsEncodeDecodeAndAdvertiseRealCapabilities() started.
+◇ Suite "Edge cases" started.
+◇ Test paddedOddSizedSamplesPreservePrecision(_:) started.
+◇ Test nativeByteOrderIsResolvedAndColourMeaningValidated() started.
+◇ Test cancellationDuringSyntheticRowsInvalidatesDestination() started.
+◇ Test unknownMeasurementsStayUnknownAndMetadataIsBounded() started.
+◇ Test paddedStorageCountsTowardsDecodedLimit() started.
+◇ Suite ZeroRunLosslessTests started.
+◇ Test pixelAndDimensionLimitsRejectBeforeAllocation() started.
+◇ Suite UpstreamJPEGTests started.
+◇ Suite "Decoder robustness / malformed input" started.
+◇ Test decoderPreservesTaskCancellationError() started.
+◇ Test imageRetainsAdapterUntilLastImageReleaseExactlyOnce() started.
+◇ Test explicitLargerMetadataLimitIsHonoured() started.
+◇ Test planarDescriptorsMapEveryComponentAndRejectOverlap() started.
+◇ Test independentAllocationAndMemoryCeilingsAreEnforced() started.
+◇ Test adaptersShareWriterAuthorityAndRejectForgedLease() started.
+◇ Suite RGBInputBatchTests started.
+◇ Test reentrantLeaseOperationsRejectWithoutDeadlocking() started.
+◇ Test shortCapacityAndInvalidStrideAreRejected() started.
+◇ Test metadataAndDestinationLimitsUseCallerBudget() started.
+◇ Test sealedOwnerSupportsConcurrentReadersAndNestedRead() started.
+◇ Test cancellationIsCheckedBeforeAllocatingStorage() started.
+◇ Test configurationsAndBackendRequestsRejectUnsupportedChoices() started.
+◇ Test safeSampleWriterRejectsOutOfRangeWithoutTruncating() started.
+◇ Test sameTokenCannotAuthoriseConcurrentOverlappingBorrows() started.
+◇ Test DCTBackendSelectionPreservesNumericalAccuracy() started.
+◇ Test cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test scalarRoundingMatchesAccelerateTieRule() started.
+◇ Test safeSampleAccessHonoursExplicitBigEndian() started.
+◇ Test meaningfulPrecisionRejectsInvalidValues() started.
+◇ Test predecessorIdentityMatrixIsRetained() started.
+◇ Test "Random bytes and random-behind-DICM never trap" started.
+◇ Test "Corrupted element length fields never trap" started.
+◇ Test "Deeply nested / unterminated sequences never trap" started.
+◇ Test scalarMatrixHonoursStridesAndDimensions() started.
+◇ Test concurrentDCTDecodersKeepIndependentScratch() started.
+◇ Test "Corrupted encapsulated fragment framing never traps" started.
+◇ Test concurrentAdaptersReserveExactlyOneWriter() started.
+◇ Test "Grayscale to Y plane preserves values" started.
+◇ Test "Downsampling and upsampling preserves dimensions" started.
+◇ Test "Black pixel converts to YCbCr correctly" started.
+◇ Test "Single-byte mutations never trap" started.
+◇ Test "Image-level round-trip preserves pixel values" started.
+◇ Test "Sampling factors match expected values" started.
+◇ Test "Image-level RGB to YCbCr conversion has correct dimensions" started.
+◇ Test case passing 1 argument precision → 16 to paddedOddSizedSamplesPreservePrecision(_:) started.
+◇ Test "White pixel converts to YCbCr correctly" started.
+◇ Test case passing 1 argument precision → 12 to paddedOddSizedSamplesPreservePrecision(_:) started.
+◇ Test "Hostile geometry headers never trap (bomb / zero / overflow)" started.
+◇ Test "RGB → YCbCr → RGB round-trips within tolerance" started.
+◇ Test "Horizontal downsampling halves width" started.
+◇ Test invalidExtentsRejectBeforeWriting() started.
+◇ Test "4:4:4 sampling returns original dimensions" started.
+◇ Test "Field is finite, ≥0, and higher on busy blocks than smooth" started.
+◇ Test "sRGB → scaled-XYB → sRGB round-trips near-exactly (exact opsin inverse)" started.
+◇ Test "No metadata in, no metadata out" started.
+◇ Test "Uniform plane yields a roughly uniform, finite field" started.
+◇ Test malformedEntropyAndExpiredOperationsStillReject() started.
+◇ Test "Every frozen case matches its hash and meets its acceptance criterion" started.
+◇ Test "ICC + Exif round-trip through encode/decode (color, grayscale)" started.
+◇ Test "jpegli adaptive-quant path encodes → decodes with sane quality" started.
+◇ Test "C2: lossless decode cross-validates bit-exactly vs libjpeg-turbo fixtures" started.
+◇ Test "C6/C7: fail-safe + IDCT conformance are proven by dedicated suites" started.
+◇ Test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test "Corpus manifest (record + regeneration aid)" started.
+◇ Test "IDCT accuracy, full range [-256, 255]" started.
+◇ Test "IDCT accuracy, over-range [-300, 300]" started.
+◇ Test "Decode extracts the ICC profile cjpeg embedded (byte-exact)" started.
+◇ Test "C4: signed lossless is bit-exact; signed lossy is rejected" started.
+◇ Test batchConsumerFailureStopsBeforeReusingItsBorrow() started.
+◇ Test "Large ICC profile round-trips across multiple APP2 segments" started.
+◇ Test writesGoldenBytesForPackedAndPadded12And16BitSamples() started.
+◇ Test "C5: encapsulated JPEG-in-DICOM reconstructs pixels bit-exactly" started.
+◇ Test refusesShortProviderBeforeLoadingSample() started.
+◇ Test explicitQuantisationMatchesIntegerEncoding(components:progressive:) started.
+◇ Test "C1: lossless round-trip is bit-exact at 8/12/16-bit, predictors 1–7" started.
+◇ Test "Progressive decode matches baseline decode pixel-for-pixel" started.
+◇ Test "IDCT accuracy, small range [-5, 5]" started.
+◇ Test "Lossless mode carries ICC + Exif" started.
+◇ Test "Progressive JPEG is detected by inspect" started.
+◇ Test "Progressive successive-approximation encode round-trips identically (color)" started.
+◇ Test "Progressive encode round-trips identically to baseline (color)" started.
+◇ Test "Progressive successive-approximation encode round-trips identically (grayscale)" started.
+◇ Test "Progressive + restart round-trips identically to no-restart and is djpeg-shaped" started.
+◇ Test floatInputRequiresPolicyAndFiniteValues() started.
+◇ Test independentChroma(_:) started.
+◇ Test "C3: near-lossless bounds max per-pixel error to 2^Pt − 1" started.
+◇ Test rawRGBAdobe(precision:) started.
+◇ Test initialisesExternalSampleBytesAtOddAddressWithoutChangingPadding() started.
+◇ Test "Progressive encode round-trips identically to baseline (grayscale)" started.
+◇ Test rejectsCoordinatesBeforeOffsetArithmetic() started.
+◇ Test sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() started.
+◇ Test "DQT marker writes quantization table" started.
+◇ Test "MarkerReader reads SOF0 frame info correctly" started.
+◇ Test "APP0 marker starts with correct identifier" started.
+◇ Test boundedCompleteCodestreamAndPadding() started.
+◇ Test "MarkerReader rejects non-JPEG data" started.
+◇ Test "SOF2 marker for progressive" started.
+◇ Test previewsStillAdmitFullFrameWorkspace() started.
+◇ Test "MarkerReader detects progressive SOF2" started.
+◇ Test "EOI marker is correctly written" started.
+◇ Test readsIndependentGoldenBytesFromOddPhysicalAddress() started.
+◇ Test "Truncation at every prefix length never traps (native + encapsulated)" started.
+◇ Test "MarkerReader detects 4:2:0 subsampling" started.
+◇ Test "XYB samples have the expected structure (neutral gray ⇒ X≈mid, B−Y≈mid)" started.
+◇ Test centredChromaAgreesAcrossWorkerLimits() started.
+◇ Test "SOI marker is correctly written" started.
+◇ Test "Perceptual tables differ from the Annex K path" started.
+◇ Test "Higher quality (lower distance) yields a larger file" started.
+◇ Test preconvertedYCbCrMatchesNativeWithoutAnRGBTransform(bits:width:) started.
+◇ Test rawRGBIdentifiersAndSourceOverride() started.
+◇ Test outOfPrecisionWriteInvalidatesDestination() started.
+◇ Test "SOF0 marker for grayscale" started.
+◇ Test rgbaUsesSourceStrideAndDiscardsOnlyExplicitAlpha(bits:width:) started.
+◇ Test "4:2:0 chroma table is coarser than 4:4:4 (extra rescale)" started.
+◇ Test "Lossless encode round-trips bit-exact for every predictor (8- and 12-bit)" started.
+◇ Test "Lossless decode is bit-exact (predictor 1 = left)" started.
+◇ Test "Perceptual-quant encode round-trips with sane error (color + grayscale)" started.
+◇ Test "Lossless decode is bit-exact (predictor 7 = (left+above)/2)" started.
+◇ Test "Near-lossless decode (point transform Pt=2) matches djpeg" started.
+◇ Test "Sub-8-bit lossless precision with .uint8 input reads 1 byte/sample (no over-read)" started.
+◇ Test scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test "Writer and reader round-trip SOI" started.
+◇ Test explicitGreyscaleAndXYBRemainFused(kind:bits:) started.
+◇ Test "Near-lossless encode round-trips to input with low Pt bits cleared" started.
+◇ Test "Parallel lossless residual sweep is byte-identical to serial and round-trips" started.
+◇ Test "distanceForQuality is monotonic and matches libjxl anchors" started.
+◇ Test "Lossless 16-bit encode round-trips bit-exact" started.
+◇ Test "Near-lossless 16-bit encode round-trips to input with low Pt bits cleared" started.
+◇ Test "Lossless float32 is rejected (use the bit-exact integer output)" started.
+◇ Test "Near-lossless decode (point transform Pt=1) matches djpeg" started.
+◇ Test everyPrefixAndBitOffsetMatchesBitwiseReference() started.
+◇ Test "Quant-table values are valid and coarsen with distance" started.
+◇ Test ambiguousOrUnqualifiedInterpretationsReject() started.
+◇ Test "Lossless color decode is bit-exact (RGB stored directly)" started.
+◇ Test discardedUInt12AlphaStillRequiresValidPrecision() started.
+◇ Test lookupRejectsInvalidStorageBeforeWriting() started.
+◇ Test "Forward DCT of all-zero block returns all zeros" started.
+◇ Test "Forward DCT of constant block concentrates energy in DC" started.
+◇ Test fusedReaderPreservesSamplesAndIgnoresPadding() started.
+◇ Test adaptiveOptionsRejectInapplicableCombinations() started.
+◇ Test outOfRangeSamplesRejectAtEveryPosition(_:) started.
+◇ Test "8-bit grayscale float32 == round to the uint8 output, per sample" started.
+◇ Test "Batched forward DCT matches per-block forward DCT" started.
+◇ Test "YCbCr color float32 is rejected with a clear error" started.
+◇ Test publicAdaptiveProfilesMatchNative(components:jpegli:) started.
+◇ Test "DCT preserves energy (Parseval's theorem)" started.
+◇ Test "12-bit grayscale float32 rounds to the uint16 value (carries sub-integer precision)" started.
+◇ Test longCodesTruncationMarkersAndInvalidCategoriesUseFallback() started.
+◇ Test "Forward then inverse DCT round-trips correctly" started.
+◇ Test allocationAndLongMagnitudeDispatchAreBounded() started.
+◇ Test "Lossless color encode round-trips bit-exact" started.
+◇ Test invalidDistanceStillRejects(distance:) started.
+◇ Test independentCjpegFixturesMatchExactSamples() started.
+◇ Test allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test "Inverse DCT of all-zero block returns all zeros" started.
+◇ Test "1/2 & 1/4 scaled decode: grayscale (8/12-bit) box-average + non-multiple dims" started.
+◇ Test "Encoder handles 4:2:0 subsampling" started.
+◇ Test truncatedEntropyMissingRestartsAndDeadlineStillThrow() started.
+◇ Test "Grayscale encode-decode round-trip" started.
+◇ Test largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test "Lossless 16-bit decode is bit-exact" started.
+◇ Test "Cosine matrix is orthonormal" started.
+◇ Test "Encoder rejects invalid quality" started.
+◇ Test saturatedQuantTablesAreRepresentableAtExtremeFiniteDistance() started.
+◇ Test "Decoder inspect rejects non-JPEG data" started.
+◇ Test "Encoder produces valid JPEG starting with SOI" started.
+◇ Test "Inspect returns correct metadata for encoded JPEG" started.
+◇ Test iccMD5StandardVectors() started.
+◇ Test "Higher quality produces larger output" started.
+◇ Test "Encode-decode round-trip preserves pixel values within JPEG tolerance" started.
+◇ Test "Decoder rejects non-JPEG data" started.
+◇ Test "Batched inverse DCT matches per-block inverse DCT" started.
+◇ Test "Encoder handles 1×1 pixel image" started.
+◇ Test sharedLosslessPreservesPrecisionAndPadding(bits:predictor:) started.
+◇ Test rgbAndMetadata(bits:) started.
+◇ Test finiteDistancesBeyondOldAdapterLimitEncode(distance:components:) started.
+◇ Test envelopeRejectsTruncationAndForgedLengths() started.
+◇ Test "Encoder rejects negative distance" started.
+◇ Test "Adaptive quant field changes the output and round-trips (4:4:4)" started.
+◇ Test limitsInvalidSamplesAndDeadlines() started.
+◇ Test "Restart markers round-trip identically to no-restart and emit DRI + RSTn" started.
+◇ Test "Parallel trellis + AC-count encode is deterministic and round-trips (large image)" started.
+◇ Test "12-bit grayscale round-trips with sub-1% error and outputs uint16" started.
+◇ Test "Larger distance produces smaller output (monotonic rate)" started.
+◇ Test "1/2 & 1/4 scaled decode equal the box-average of the full decode (color 4:4:4)" started.
+◇ Test "Distance overrides quality when both are set" started.
+◇ Test "Encode then decode produces image with correct dimensions" started.
+◇ Test "1/8 scaled decode handles non-multiple dims and 12-bit grayscale" started.
+◇ Test "Encoder handles non-multiple-of-8 dimensions" started.
+◇ Test validatedInputOwnsAnImmutableSnapshot() started.
+◇ Test everyMagnitudeAtEveryBitOffsetMatchesBitwiseReference() started.
+◇ Test "Encoder handles grayscale images" started.
+◇ Test "float32 input clamps out-of-range values to [0,1]" started.
+◇ Test "1/8 scaled decode yields a block-average thumbnail (color)" started.
+◇ Test "Parallel Step-7 reconstruction is bit-identical to serial (large image)" started.
+◇ Test reusingExtentsStillHonoursCancellationAndLimits() started.
+◇ Test "12-bit preserves more precision than 8-bit on a fine gradient" started.
+◇ Test "Setting .float32 no longer throws (latent bufferSizeMismatch fixed)" started.
+◇ Test "12-bit JPEG reports precision 12 via inspect" started.
+◇ Test fractionalSRGBMatchesNativeBeforeIntegerRounding() started.
+◇ Test "Unsigned 12-bit-in-16 data masks non-significant high bits" started.
+◇ Test "12-bit color round-trips and outputs uint16 RGB" started.
+◇ Test "float32 input ([0,1]) encodes identically to its 8-bit quantization" started.
+◇ Test "Oversized geometry is rejected (decompression-bomb guard)" started.
+◇ Test "Short PixelData is rejected, not silently under-filled" started.
+◇ Test incompleteOrTrailingStreamsNeverProduceValidatedExtents() started.
+◇ Test "DICOMWindowRenderer matches DICOMImage rendering pixel-exactly" started.
+◇ Test "Signed 12-bit-in-16 data is sign-extended from the stored sign bit" started.
+◇ Test "Plane-interleaved RGB (PlanarConfiguration 1) is reassembled correctly" started.
+◇ Test "render8bit re-maps an explicit window/level" started.
+◇ Test "An undefined-length sequence before the pixel module does not derail parsing" started.
+✔ Test abandonedDestinationInvalidatesItsReservedOwner() passed after 0.002 seconds.
+◇ Test "Rescale slope/intercept are applied before windowing (CT not blown white)" started.
+◇ Test reusedExtentsMatchIndependentMarkerTraversal() started.
+◇ Test "Nested undefined-length sequences inside undefined-length items are skipped recursively" started.
+◇ Test malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test "DICOMWindowRenderer matches DICOMImage render12bit on RGB input too" started.
+◇ Test "Non-finite rescale/window DS values are sanitized, not trapped on" started.
+◇ Test coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test "A correctly-sized image still reads after the guards" started.
+◇ Test "Shifted HighBit (highBit > bitsStored - 1) aligns unsigned and signed samples to canonical intensities" started.
+◇ Test unknownProfilesAndIgnoredXYBOptionsAreRejected() started.
+◇ Test "DICOMWindowRenderer passes 8-bit RGB through window-independently" started.
+◇ Test nonStreamingOperationsRetainTheirFullReservations() started.
+◇ Test "No rescale tags → identity (8-bit photographic DICOM unchanged)" started.
+◇ Test sharedXYBMatchesNativeAndDescribesSRGB(storageBits:width:) started.
+◇ Test exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+◇ Test "windowDefaults prefers the stored WindowCenter/WindowWidth" started.
+◇ Test invalidDestinationIsRejectedBeforeWriting() started.
+◇ Test outputProfileAgreesWithSystemSRGB() started.
+◇ Test embeddedSRGBProfileMatchesOriginal() started.
+◇ Test normalisationDoesNotInferOtherColourProfiles() started.
+◇ Test "Default encoder configuration has sensible values" started.
+◇ Test "RGB encode across dimensions × subsampling × progressive modes round-trips" started.
+◇ Test automaticThresholdAndCheckedGeometryCannotUnderstateWorkspace() started.
+◇ Test "Encoder rejects invalid quality" started.
+◇ Test "Pixel format bytes per component" started.
+◇ Test "JLIImage accepts float32 pixel format" started.
+◇ Test "Color model component counts" started.
+◇ Test "Grayscale 8/12-bit encode across dimensions round-trips" started.
+◇ Test "JLIImage rejects zero width" started.
+◇ Test "Encoder rejects negative distance" started.
+◇ Test "Decoder inspect rejects non-JPEG data" started.
+◇ Test "MONOCHROME1 inverts polarity vs MONOCHROME2 end to end" started.
+◇ Test "JLIImage accepts 16-bit pixel format" started.
+◇ Test explicitRawFloatOutputMatchesNative(bits:progressive:) started.
+◇ Test "Platform capabilities are detected" started.
+◇ Test recognisedXYBRemainsVisibleWhenAncillaryMetadataIsDiscarded() started.
+◇ Test unsupportedFloatInterpretationsFailBeforeBorrowing() started.
+◇ Test "JLIImage rejects zero height" started.
+◇ Test "Decoder rejects minimal JPEG without frame data" started.
+◇ Test "JLIImage accepts correctly sized buffer" started.
+◇ Test "Encoder produces valid JPEG for valid input" started.
+◇ Test "JLIImage rejects mismatched buffer size" started.
+◇ Test "Decoder rejects non-JPEG data" started.
+◇ Test "True RGB photometric is passed through unchanged" started.
+◇ Test largeDataScansShareOneOwnerWithRebasedIndices(origin:) started.
+◇ Test "YBR_FULL_422 is treated as YBR (converted), not RGB" started.
+◇ Test inspectionUsesExistingMalformedInputAndResourceChecks() started.
+◇ Test "YBR_FULL is converted to RGB on render (not shown as raw YCbCr)" started.
+◇ Test "1/2 scaled decode agrees with djpeg -scale 1/2" started.
+◇ Test predictivePointTransformIsNotClaimedExact() started.
+◇ Test parsedScansPreserveBytesAndReleaseTheOriginalAllocationExactlyOnce() started.
+◇ Test alignmentStuffingGrowthAndRestartMatchIndependentBits() started.
+◇ Test emptyBulkPreservesPendingBits() started.
+◇ Test "A corrupt restart segment throws in BOTH serial and parallel decode" started.
+◇ Test "1/4 scaled decode agrees with djpeg -scale 1/4" started.
+◇ Test pointTransformHonoursMaximumError(bits:maximumError:) started.
+◇ Test nonstandardSamplingKeepsItsExactFactors() started.
+◇ Test "Parallel restart EMIT is byte-identical to serial emit" started.
+◇ Test dctFeaturesAreEncodedRatherThanOutputGeometry(bits:sampling:) started.
+◇ Test "cjpeg lossless restart streams decode bit-exactly (8-bit, predictor 5)" started.
+◇ Test progressiveScansKeepSnapshotTablesAfterCallerMutationAndRelease() started.
+◇ Test repeatedDecodesReleaseInputsWithoutAnOuterAutoreleasePool() started.
+◇ Test cachedReadersStayInsideRebasedStuffedRestartAndTruncatedRanges() started.
+◇ Test "Opt-in DRI encode round-trips bit-exactly and carries RST markers" started.
+◇ Test borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test "XYB ICC profile is a valid ICC and matches our inverse transform" started.
+◇ Test "Signed data on the lossy DCT path is rejected, not silently corrupted" started.
+◇ Test "Lossless RGB with restart intervals round-trips bit-exactly (serial path)" started.
+◇ Test "Quality 50 returns the standard table" started.
+◇ Test "cjpeg lossless restart streams decode bit-exactly (12-bit, predictor 6)" started.
+◇ Test "XYB encode → our decode round-trips, and embeds the XYB ICC + APP14" started.
+◇ Test portableIdentifierPreservesTheCompleteXYBProfile() started.
+◇ Test nearLosslessIsReportedLossy() started.
+◇ Test "Segment-parallel restart decode equals serial, bit-exactly" started.
+◇ Test publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test batchEdgesPaddedRowsAndFractionalSamplesMatchNativeOutput() started.
+◇ Test "Inverse zigzag order undoes zigzag" started.
+◇ Test joinedReadersShareOnlyTheOwnerAndReleaseAfterCompletion() started.
+◇ Test "Zigzag order position 0 is DC coefficient (index 0)" started.
+◇ Test fractionalDeadlineStillExpires() started.
+◇ Test "Signed 16-bit data round-trips bit-exactly through the lossless path" started.
+◇ Test "Optimal table is a valid prefix code (canonical, ≤16-bit, complete)" started.
+◇ Test "Distance is continuous across the q=30 branch boundary" started.
+◇ Test "Standard tables have no zero values" started.
+◇ Test defaultConfigurationIsLossy() started.
+◇ Test diagnosticLosslessIsNumericallyLossless() started.
+◇ Test agreesWithBytewiseReferenceAcrossSyntheticInputs() started.
+◇ Test "Optimized Huffman produces smaller output than standard, same pixels" started.
+◇ Test joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test "Zigzag order has correct length" started.
+◇ Test markerFreePayloadStillChecksDeadline() started.
+◇ Test mutableFoundationInputCannotChangeTheRetainedSnapshot() started.
+◇ Test "isSigned defaults to false and unsigned lossy encoding is unaffected" started.
+◇ Test plainLosslessConfigurationIsLossless() started.
+◇ Test deadlineReachesJoinedWorkers() started.
+◇ Test "Standard AC chrominance table has 162 symbols" started.
+◇ Test "BitWriter writes single byte correctly" started.
+◇ Test "Scaled table values are clamped between 1 and 255" started.
+◇ Test "Quality 1 produces maximum quantization" started.
+◇ Test stuffedPairsRestartsAndMarkersCrossCheckBoundaries() started.
+◇ Test "Distance → quality is monotonically decreasing" started.
+◇ Test "A lying NumberOfFrames is clamped to the native data actually present" started.
+◇ Test "Writer rejects an invalid pixel module" started.
+◇ Test layoutsOutsideTheSharedProfileAreRefused() started.
+◇ Test "Category function returns correct values" started.
+✔ Test frozenCorpusHashImplementationMatchesVectors() passed after 0.004 seconds.
+◇ Test "Quality 100 produces all ones" started.
+◇ Test "Standard chrominance table has 64 values" started.
+◇ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test "BitWriter handles byte stuffing for 0xFF" started.
+◇ Test capabilitiesReportWhatIsImplemented() started.
+◇ Test preflightRejectionLeavesTheDestinationReusable() started.
+◇ Test "AC encode then decode round-trips for simple block" started.
+◇ Test "BitReader reads written bits correctly" started.
+◇ Test failureJoinsEveryStartedWorker() started.
+◇ Test aDestinationGrantsOneWriteOnly() started.
+◇ Test greyscaleWriterPreservesRoundingEndianPaddingAndFinitePolicy() started.
+◇ Test "Quantize then dequantize approximates original" started.
+◇ Test inspectionDescribesWhatDecodeProduces() started.
+◇ Test aNonZeroPlaneOffsetIsHonoured() started.
+◇ Test finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test "Optimal table round-trips encode → decode" started.
+◇ Test cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test "Native signed 16-bit round-trips and sign-extends on read" started.
+◇ Test everyPrefixOffsetAndRunBoundaryMatchesReference() started.
+◇ Test roundTripThroughTheContractSurfaceOnly() started.
+◇ Test "Standard DC chrominance table has 12 symbols" started.
+✔ Test failedFillInvalidatesDestination() passed after 0.004 seconds.
+◇ Test contractEncodeMatchesTheEstablishedEncoderByteForByte(pad:) started.
+◇ Test "Zigzag scan round-trips correctly" started.
+◇ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() started.
+◇ Test "Public SwiftJLI Encoder and Decoder round-trip encapsulated DICOM lossless and colour streams with bounded limits" started.
+◇ Test theAllocatingConvenienceAgreesWithTheDestinationPath() started.
+◇ Test "A multi-fragment encapsulated stream is concatenated by the reader" started.
+◇ Test backendReportMatchesActualChoice() started.
+◇ Test "Distance maps to expected IJG quality landmarks" started.
+◇ Test publicDCTRoundTripAndDirectStorage(bits:nc:) started.
+◇ Test laterEntropyFailureInvalidatesStreamedDestination() started.
+◇ Test nestedHostScopeRetainsTaskCancellationForJoinedWorkers() started.
+◇ Test "Writer rejects a pixel buffer that doesn't match the geometry" started.
+◇ Test "BitReader throws on end of data" started.
+◇ Test hostCancellationReachesJoinedWorkersWithoutASwiftTask() started.
+◇ Test hostDeadlineAndMalformedCategoriesRemainDistinct() started.
+◇ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test "Quantizing zero block produces zero block" started.
+◇ Test "Native 8-bit RGB round-trips with pixels preserved" started.
+◇ Test allocationAndCoverageDispatchAreBounded() started.
+◇ Test "Lookahead table resolves short codes and defers long ones" started.
+◇ Test DCTDeadlinesAndCancellationPropagate() started.
+◇ Test "Encapsulated multi-frame: each frame round-trips bit-exactly via the BOT" started.
+◇ Test "Empty frequencies fall back to the standard table" started.
+◇ Test "BitReader single bit reads" started.
+◇ Test "Native 16-bit grayscale round-trips through writer → reader" started.
+◇ Test hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test decodeWritesTheCallerDestinationExactly(pad:) started.
+◇ Test malformedDCTMutationsStayWithinPublicErrors() started.
+◇ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test "Additional bits encoding for negative values" started.
+◇ Test "Out-of-range restart interval throws cleanly (16-bit DRI field), never traps" started.
+◇ Test mismatchedDestinationsAreRefused() started.
+◇ Test resourceLimitsAreEnforced() started.
+◇ Test explicitOptionsAndUnsupportedPrecision() started.
+◇ Test "Additional bits encoding for positive values" started.
+◇ Test "1/2 & 1/4 scaled decode of 12-bit grayscale equals the box-average" started.
+◇ Test "decodeFramesConcurrently equals the serial per-frame decode, in order" started.
+SwiftJLITests/resource_bundle_accessor.swift:12: Fatal error: could not load resource bundle: from /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/SwiftJLI_SwiftJLITests.bundle or /Users/runner/work/SwiftJLI/SwiftJLI/.build/arm64-apple-macosx/release/SwiftJLI_SwiftJLITests.bundle
+◇ Test "HuffmanTable stores bits array" started.
+◇ Test "Lossless JPEG encapsulated in DICOM round-trips bit-exactly end to end" started.
+◇ Test rowPaddingNeverReachesTheCodestream() started.
+◇ Test "Progressive restart with interval 1 (every MCU) round-trips identically" started.
+◇ Test "Multi-frame encapsulated DICOM with multiple fragments per frame groups via the Basic Offset Table" started.
+◇ Test "DC encode then decode round-trips" started.
+◇ Test "Standard luminance table has 64 values" started.
+◇ Test "Restart interval larger than the image still round-trips (no resets fire)" started.
+◇ Test "Standard DC luminance table has 12 symbols" started.
+✔ Test extremeIntegerInputsThrowWithoutOverflowTraps() passed after 0.005 seconds.
+◇ Test "Standard AC luminance table has 162 symbols" started.
+◇ Test case passing 1 argument point → .sealing to cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test case passing 1 argument point → .validatingSealedStorage to cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test "ICC profile round-trips at exact APP2 segment boundaries" started.
+✔ Test invalidResourceProfilesAndProgressFailPredictably() passed after 0.005 seconds.
+◇ Test "Native multi-frame: frame 0 exposed, all frames recoverable" started.
+◇ Test "Fast-path decode is bit-identical to bit-by-bit over random streams" started.
+2026-11-03 18:18:38.551971+0530 swiftpm-testing-helper[26542:4602825] SwiftJLITests/resource_bundle_accessor.swift:12: Fatal error: could not load resource bundle: from /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/SwiftJLI_SwiftJLITests.bundle or /Users/runner/work/SwiftJLI/SwiftJLI/.build/arm64-apple-macosx/release/SwiftJLI_SwiftJLITests.bundle
+CONFORMANCE C2 PASS — cross-validation vs libjpeg-turbo (cjpeg -lossless fixtures) :: 4 reference streams decoded bit-exact (8-bit p1/p7, 16-bit, RGB)
+◇ Test case passing 1 argument precision → 8 to scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+CONFORMANCE C6 PASS — fail-safe on malformed input :: see FuzzTests + DICOMFuzzTests (throws, never traps)
+CONFORMANCE C7 PASS — ISO/IEC 10918-2 Annex A IDCT accuracy :: see IDCTConformanceTests (3 ranges, large margin)
+✔ Test paddedOddSizedSamplesPreservePrecision(_:) with 2 test cases passed after 0.004 seconds.
+MANIFEST corpus=frozen-medical cases=9
+warning: SwiftJLIPackageTests was compiled with optimization - stepping may behave oddly; variables may not be available.
+warning: SwiftJLIPackageTests was compiled with a different Swift compiler (version '6.3.3.1.3') than the Swift compiler integrated into LLDB (version '6.4.2.1.9'). Swift expression evaluation requires a matching compiler and debugger from the same toolchain.
+Process 26542 launched: '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/swiftpm-testing-helper' (arm64)
+Process 26542 stopped
+* thread #30, name = '[Swift Testing] test predecessorIdentityMatrixIsRetained() - running (Task 1763)', queue = 'com.apple.root.default-qos.cooperative', stop reason = Fatal error: could not load resource bundle: from /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/SwiftJLI_SwiftJLITests.bundle or /Users/runner/work/SwiftJLI/SwiftJLI/.build/arm64-apple-macosx/release/SwiftJLI_SwiftJLITests.bundle
+       frame #4: 0x0000000105373814 SwiftJLIPackageTests`closure #1() in variable initialization expression of static NSBundle.module at resource_bundle_accessor.swift:12:13 [opt]
+Target 0: (swiftpm-testing-helper) stopped.
+(lldb) thread backtrace all
+  thread #1, queue = 'com.apple.main-thread'
+       frame #0: 0x000000019f090c20 libsystem_kernel.dylib`mach_msg2_trap + 8
+       frame #1: 0x000000019f0a38e0 libsystem_kernel.dylib`mach_msg2_internal + 76
+       frame #2: 0x000000019f099a28 libsystem_kernel.dylib`mach_msg_overwrite + 480
+       frame #3: 0x000000019f090fac libsystem_kernel.dylib`mach_msg + 24
+       frame #4: 0x000000019f196aec CoreFoundation`__CFRunLoopServiceMachPort + 160
+       frame #5: 0x000000019f195334 CoreFoundation`__CFRunLoopRun + 1172
+       frame #6: 0x000000019f26f82c CoreFoundation`_CFRunLoopRunSpecificWithOptions + 536
+       frame #7: 0x000000019f20d4c4 CoreFoundation`CFRunLoopRun + 64
+       frame #8: 0x00000002cba273e8 libswift_Concurrency.dylib`CFMainExecutor.run() + 48
+       frame #9: 0x00000002cba275ec libswift_Concurrency.dylib`protocol witness for RunLoopExecutor.run() in conformance DispatchMainExecutor + 40
+       frame #10: 0x00000002cba27c18 libswift_Concurrency.dylib`swift_task_asyncMainDrainQueueImpl + 140
+       frame #11: 0x00000002cb9d1c98 libswift_Concurrency.dylib`swift_task_asyncMainDrainQueue + 92
+       frame #12: 0x00000001051c5ee0 SwiftJLIPackageTests`main at runner.swift:0 [opt]
+       frame #13: 0x000000010000088c swiftpm-testing-helper`___lldb_unnamed_symbol_10000076c + 288
+       frame #14: 0x0000000100000748 swiftpm-testing-helper`___lldb_unnamed_symbol_100000730 + 24
+       frame #15: 0x000000019ecffe80 dyld`start + 6688
+  thread #18, name = '[Swift Testing] test "Hostile geometry headers never trap (bomb / zero / overflow)" - running (Task 1837)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000019f09ed9c libsystem_kernel.dylib`__ulock_wait2 + 8
+       frame #1: 0x000000019f0ddaa0 libsystem_platform.dylib`_os_unfair_lock_lock_slow + 172
+       frame #2: 0x0000000104bdaa80 Testing`specialized static Backtrace._willThrow(_:from:forKey:) + 92
+       frame #3: 0x0000000104bda564 Testing`closure #1 in closure #1 in closure #1 in variable initialization expression of static Backtrace.__SWIFT_TESTING_IS_CAPTURING_A_BACKTRACE_FOR_A_THROWN_ERROR__ + 132
+       frame #4: 0x00000001b366437c libswiftCore.dylib`swift_willThrow + 56
+       frame #5: 0x0000000105230ab4 SwiftJLIPackageTests`static DICOMReader.read(data=260 values) at DICOMReader.swift:0 [opt]
+       frame #6: 0x000000010522e8a4 SwiftJLIPackageTests`DICOMFuzzTests.probe(data=260 values) at DICOMFuzzTests.swift:60:30 [opt] [inlined]
+       frame #7: 0x000000010522e898 SwiftJLIPackageTests`specialized DICOMFuzzTests.hostileGeometry() at DICOMFuzzTests.swift:141:13 [opt]
+       frame #8: 0x000000010522d278 SwiftJLIPackageTests`DICOMFuzzTests.hostileGeometry() at <compiler-generated>:0 [opt] [inlined]
+       frame #9: 0x000000010522d270 SwiftJLIPackageTests`$s13SwiftJLITests14DICOMFuzzTestsV15hostileGeometry4TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV15hostileGeometry4TestfMp_17Z2c3ef9b8dce4b91afMu_@Sendable () in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV15hostileGeometry4TestfMp_17Z2c3ef9b8dce4b91afMu_@Sendable () at -f33f14.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV15hostileGeometry4TestfMp_.swift:5:173 [opt] [inlined]
+       frame #10: 0x000000010522d270 SwiftJLIPackageTests`static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV15hostileGeometry4TestfMp_17Z2c3ef9b8dce4b91afMu_@Sendable () at -f33f14.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV15hostileGeometry4TestfMp_.swift:7:13 [opt] [inlined]
+       frame #11: 0x000000010522d270 SwiftJLIPackageTests`specialized implicit closure #1 in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV15hostileGeometry4TestfMp_25generator2c3ef9b8dce4b91afMu_@Sendable () at -f33f14.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV15hostileGeometry4TestfMp_.swift:18:17 [opt]
+       frame #12: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #13: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #14: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #15: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #16: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #17: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #18: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #19: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #20: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #21: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #22: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #23: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #24: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #25: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #26: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #27: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #28: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #29: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #19, name = '[Swift Testing] test "Random bytes and random-behind-DICM never trap" - running (Task 1820)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000019f09ed9c libsystem_kernel.dylib`__ulock_wait2 + 8
+       frame #1: 0x000000019f0ddaa0 libsystem_platform.dylib`_os_unfair_lock_lock_slow + 172
+       frame #2: 0x0000000104bdaa80 Testing`specialized static Backtrace._willThrow(_:from:forKey:) + 92
+       frame #3: 0x0000000104bda564 Testing`closure #1 in closure #1 in closure #1 in variable initialization expression of static Backtrace.__SWIFT_TESTING_IS_CAPTURING_A_BACKTRACE_FOR_A_THROWN_ERROR__ + 132
+       frame #4: 0x00000001b366437c libswiftCore.dylib`swift_willThrow + 56
+       frame #5: 0x000000010522f92c SwiftJLIPackageTests`static DICOMReader.read(data=1484 values) at DICOMReader.swift:0 [opt]
+       frame #6: 0x000000010522eb7c SwiftJLIPackageTests`DICOMFuzzTests.probe(data=1484 values) at DICOMFuzzTests.swift:60:30 [opt] [inlined]
+       frame #7: 0x000000010522eb70 SwiftJLIPackageTests`specialized DICOMFuzzTests.randomBytes() at DICOMFuzzTests.swift:152:13 [opt]
+       frame #8: 0x000000010522d340 SwiftJLIPackageTests`DICOMFuzzTests.randomBytes() at <compiler-generated>:0 [opt] [inlined]
+       frame #9: 0x000000010522d33c SwiftJLIPackageTests`$s13SwiftJLITests14DICOMFuzzTestsV11randomBytes4TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV11randomBytes4TestfMp_16cac3225b0b366a33fMu_@Sendable () in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV11randomBytes4TestfMp_16cac3225b0b366a33fMu_@Sendable () at -6a52da.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV11randomBytes4TestfMp_.swift:5:169 [opt] [inlined]
+       frame #10: 0x000000010522d33c SwiftJLIPackageTests`static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV11randomBytes4TestfMp_16cac3225b0b366a33fMu_@Sendable () at -6a52da.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV11randomBytes4TestfMp_.swift:7:13 [opt] [inlined]
+       frame #11: 0x000000010522d33c SwiftJLIPackageTests`specialized implicit closure #1 in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV11randomBytes4TestfMp_25generatorcac3225b0b366a33fMu_@Sendable () at -6a52da.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV11randomBytes4TestfMp_.swift:18:17 [opt]
+       frame #12: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #13: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #14: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #15: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #16: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #17: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #18: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #19: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #20: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #21: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #22: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #23: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #24: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #25: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #26: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #27: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #28: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #29: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #20, name = '[Swift Testing] test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) - running test case #2 (Task 1855)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000019eef7958 libsystem_malloc.dylib`_xzm_malloc_pac + 336
+       frame #1: 0x00000001b36af26c libswiftCore.dylib`swift::swift_slowAllocTyped(unsigned long, unsigned long, unsigned long long) + 64
+       frame #2: 0x00000001b3644ed4 libswiftCore.dylib`swift_allocObject + 136
+       frame #3: 0x0000000104b1ec94 Testing`Event.ConsoleOutputRecorder.colorDots(for:) + 628
+       frame #4: 0x0000000104b1f074 Testing`closure #1 in Event.ConsoleOutputRecorder.record(_:in:) + 292
+       frame #5: 0x00000001b38da0d0 libswiftCore.dylib`LazyMapSequence.Iterator.next() + 396
+       frame #6: 0x00000001b37b4970 libswiftCore.dylib`BidirectionalCollection<>.joined(separator:) + 1200
+       frame #7: 0x0000000104b1df28 Testing`Event.ConsoleOutputRecorder.record(_:in:) + 340
+       frame #8: 0x0000000104ae2a5c Testing`closure #5 in entryPoint(passing:forSwiftPackageManager:eventHandler:) + 164
+       frame #9: 0x0000000104b1a988 Testing`closure #1 in Runner.configureAttachmentHandling() + 220
+       frame #10: 0x0000000104bd7be4 Testing`closure #1 in Runner.configureIssueRecordingEventHandling(testIssueRecorder:) + 400
+       frame #11: 0x0000000104b41fa4 Testing`Event._post(in:configuration:) + 360
+       frame #12: 0x0000000104b4c0d0 Testing`specialized static Event.post(_:for:instant:configuration:) + 1112
+       frame #13: 0x0000000104bb1978 Testing`static Runner._runSingleTestCaseIteration(_:within:) + 404
+       frame #14: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #15: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #16: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #17: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #18: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #19: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #20: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #21, name = '[Swift Testing] test "Corrupted encapsulated fragment framing never traps" - running (Task 1826)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x00000001b389fed0 libswiftCore.dylib`String.init(_:) + 68
+       frame #1: 0x00000001a155fe88 Foundation`StringProtocol.trimmingCharacters(in:) + 200
+       frame #2: 0x0000000105230c6c SwiftJLIPackageTests`static DICOMReader.read(data=<unavailable>) at DICOMReader.swift:593:38 [opt]
+       frame #3: 0x000000010522ee20 SwiftJLIPackageTests`DICOMFuzzTests.probe(data=678 values) at DICOMFuzzTests.swift:60:30 [opt] [inlined]
+       frame #4: 0x000000010522ee10 SwiftJLIPackageTests`specialized DICOMFuzzTests.encapsulatedFragmentFuzz() at DICOMFuzzTests.swift:174:13 [opt]
+       frame #5: 0x000000010522d3fc SwiftJLIPackageTests`DICOMFuzzTests.encapsulatedFragmentFuzz() at <compiler-generated>:0 [opt] [inlined]
+       frame #6: 0x000000010522d3f4 SwiftJLIPackageTests`$s13SwiftJLITests14DICOMFuzzTestsV24encapsulatedFragmentFuzz4TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV24encapsulatedFragmentFuzz4TestfMp_16c1a2ba42049e1b22fMu_@Sendable () in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV24encapsulatedFragmentFuzz4TestfMp_16c1a2ba42049e1b22fMu_@Sendable () at -4cf16f.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV24encapsulatedFragmentFuzz4TestfMp_.swift:5:182 [opt] [inlined]
+       frame #7: 0x000000010522d3f4 SwiftJLIPackageTests`static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV24encapsulatedFragmentFuzz4TestfMp_16c1a2ba42049e1b22fMu_@Sendable () at -4cf16f.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV24encapsulatedFragmentFuzz4TestfMp_.swift:7:13 [opt] [inlined]
+       frame #8: 0x000000010522d3f4 SwiftJLIPackageTests`specialized implicit closure #1 in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV24encapsulatedFragmentFuzz4TestfMp_25generatorc1a2ba42049e1b22fMu_@Sendable () at -4cf16f.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV24encapsulatedFragmentFuzz4TestfMp_.swift:18:17 [opt]
+       frame #9: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #10: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #11: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #12: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #13: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #14: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #15: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #16: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #17: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #18: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #19: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #20: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #21: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #22: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #23: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #24: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #25: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #26: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #22, name = '[Swift Testing] test "Corpus manifest (record + regeneration aid)" - running (Task 1853)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000019eef7894 libsystem_malloc.dylib`_xzm_malloc_pac + 140
+       frame #1: 0x00000001b36af26c libswiftCore.dylib`swift::swift_slowAllocTyped(unsigned long, unsigned long, unsigned long long) + 64
+       frame #2: 0x00000001b3644ed4 libswiftCore.dylib`swift_allocObject + 136
+       frame #3: 0x00000001b391d8c4 libswiftCore.dylib`Mirror.init(internalReflecting:subjectType:customAncestor:) + 276
+       frame #4: 0x00000001b365e1fc libswiftCore.dylib`Mirror.init(reflecting:) + 212
+       frame #5: 0x00000001b3664a08 libswiftCore.dylib`_print_unlocked(_:_:) + 1168
+       frame #6: 0x000000010532f1a4 SwiftJLIPackageTests`specialized DefaultStringInterpolation.appendInterpolation<A>() at <compiler-generated>:0 [opt] [inlined]
+       frame #7: 0x000000010532f180 SwiftJLIPackageTests`specialized RegressionCorpusTests.corpusManifest() at RegressionCorpusTests.swift:190:76 [opt]
+       frame #8: 0x000000010532cb54 SwiftJLIPackageTests`RegressionCorpusTests.corpusManifest() at <compiler-generated>:0 [opt] [inlined]
+       frame #9: 0x000000010532cb50 SwiftJLIPackageTests`$s13SwiftJLITests21RegressionCorpusTestsV14corpusManifest4TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static RegressionCorpusTests.$s13SwiftJLITests21RegressionCorpusTestsV14corpusManifest4TestfMp_17Z991f9ea8630d7df7fMu_@Sendable () in static RegressionCorpusTests.$s13SwiftJLITests21RegressionCorpusTestsV14corpusManifest4TestfMp_17Z991f9ea8630d7df7fMu_@Sendable () at -dcea67.@__swiftmacro_13SwiftJLITests21RegressionCorpusTestsV14corpusManifest4TestfMp_.swift:5:179 [opt] [inlined]
+       frame #10: 0x000000010532cb50 SwiftJLIPackageTests`static RegressionCorpusTests.$s13SwiftJLITests21RegressionCorpusTestsV14corpusManifest4TestfMp_17Z991f9ea8630d7df7fMu_@Sendable () at -dcea67.@__swiftmacro_13SwiftJLITests21RegressionCorpusTestsV14corpusManifest4TestfMp_.swift:7:13 [opt] [inlined]
+       frame #11: 0x000000010532cb50 SwiftJLIPackageTests`specialized implicit closure #1 in static RegressionCorpusTests.$s13SwiftJLITests21RegressionCorpusTestsV14corpusManifest4TestfMp_25generator991f9ea8630d7df7fMu_@Sendable () at -dcea67.@__swiftmacro_13SwiftJLITests21RegressionCorpusTestsV14corpusManifest4TestfMp_.swift:18:17 [opt]
+       frame #12: 0x0000000104b060a8 Testing`closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #13: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #14: 0x0000000104b060a8 Testing`closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #15: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #16: 0x0000000104bbc07c Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #17: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #18: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #19: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #20: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #21: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #22: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #23: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #24: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #25: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #26: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #27: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #28: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #29: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #30: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #31: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #32: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #33: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #23, name = '[Swift Testing] test "IDCT accuracy, full range [-256, 255]" - running (Task 1854)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000019f0e3364 libsystem_platform.dylib`os_apt_msg_async_task_running_4swift_nop
+       frame #1: 0x00000002cb9cb22c libswift_Concurrency.dylib`swift::concurrency::trace::task_status_changed(swift::AsyncTask*, unsigned char, bool, bool, bool, bool, bool, bool) + 80
+       frame #2: 0x00000002cb9d9814 libswift_Concurrency.dylib`swift::removeStatusRecord(swift::AsyncTask*, swift::TaskStatusRecord*, swift::ActiveTaskStatus&, __swift::__runtime::llvm::function_ref<void (swift::ActiveTaskStatus, swift::ActiveTaskStatus&)>) + 344
+       frame #3: 0x00000002cb9c7e54 libswift_Concurrency.dylib`swift::AsyncTask::flagAsRunning() + 312
+       frame #4: 0x00000002cb9c7b80 libswift_Concurrency.dylib`swift::runJobInEstablishedExecutorContext(swift::Job*, swift::SerialExecutorRef, swift::TaskExecutorRef) + 120
+       frame #5: 0x00000002cb9c99d4 libswift_Concurrency.dylib`swift_job_runImpl(swift::Job*, swift::SerialExecutorRef) + 156
+       frame #6: 0x000000019ef26aac libdispatch.dylib`_dispatch_root_queue_drain + 360
+       frame #7: 0x000000019ef27248 libdispatch.dylib`_dispatch_worker_thread2 + 184
+       frame #8: 0x000000019f0d1f60 libsystem_pthread.dylib`_pthread_wqthread + 232
+  thread #24, name = '[Swift Testing] test "ICC + Exif round-trip through encode/decode (color, grayscale)" - running (Task 1848)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000019f0d1b58 libsystem_pthread.dylib`_pthread_qos_class_to_thread_qos
+       frame #1: 0x000000019f0d1cdc libsystem_pthread.dylib`pthread_qos_max_parallelism + 40
+       frame #2: 0x00000001a9435998 vImage`numWorkItemsForGCD + 44
+       frame #3: 0x00000001a93ef414 vImage`vImageConvert_RGB888toPlanar8 + 244
+       frame #4: 0x000000010513ed8c SwiftJLIPackageTests`closure #1 in static AccelerateDSP.imageRGBToYCbCr(componentCount=<unavailable>, pixelCount=256, r=0x77657ba400, n=256, g=0x77657ba800, b=0x77657bac00, stride=<unavailable>) at AccelerateBackend.swift:296:17 [opt]
+       frame #5: 0x000000010513ed30 SwiftJLIPackageTests`specialized _ArrayBuffer.withUnsafeBufferPointer<A, B>() at <compiler-generated>:0 [opt] [inlined]
+       frame #6: 0x000000010513ed30 SwiftJLIPackageTests`specialized Array.withUnsafeBufferPointer<A, B>() at <compiler-generated>:0 [opt] [inlined]
+       frame #7: 0x000000010513ed30 SwiftJLIPackageTests`specialized static AccelerateDSP.imageRGBToYCbCr(data=<unavailable>, pixelCount=256, componentCount=<unavailable>) at AccelerateBackend.swift:276:14 [opt]
+       frame #8: 0x0000000105174cd0 SwiftJLIPackageTests`static AccelerateDSP.imageRGBToYCbCr() at <compiler-generated>:0 [opt] [inlined]
+       frame #9: 0x0000000105174ccc SwiftJLIPackageTests`static ColorConversion.imageRGBToYCbCr(data=<unavailable>, width=16, height=16, componentCount=<unavailable>) at JLIColorConversion.swift:45:30 [opt] [inlined]
+       frame #10: 0x0000000105174ccc SwiftJLIPackageTests`JLIEncoder.encode(image=SwiftJLI.JLIImage @ 0x00000001701cec20, configuration=SwiftJLI.JLIEncoderConfiguration @ 0x00000001701ced40, borrowedSource=nil, normalisedFloatInput=false) at JLIEncoder.swift:235:46 [opt]
+       frame #11: 0x00000001052f9fd4 SwiftJLIPackageTests`specialized MetadataTests.roundTripMetadata() at MetadataTests.swift:95:67 [opt]
+       frame #12: 0x00000001052f9650 SwiftJLIPackageTests`MetadataTests.roundTripMetadata() at <compiler-generated>:0 [opt] [inlined]
+       frame #13: 0x00000001052f9648 SwiftJLIPackageTests`$s13SwiftJLITests13MetadataTestsV09roundTripC04TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static MetadataTests.$s13SwiftJLITests13MetadataTestsV09roundTripC04TestfMp_17Z769dc48186a25e75fMu_@Sendable () in static MetadataTests.$s13SwiftJLITests13MetadataTestsV09roundTripC04TestfMp_17Z769dc48186a25e75fMu_@Sendable () at -81a046.@__swiftmacro_13SwiftJLITests13MetadataTestsV09roundTripC04TestfMp_.swift:5:168 [opt] [inlined]
+       frame #14: 0x00000001052f9648 SwiftJLIPackageTests`static MetadataTests.$s13SwiftJLITests13MetadataTestsV09roundTripC04TestfMp_17Z769dc48186a25e75fMu_@Sendable () at -81a046.@__swiftmacro_13SwiftJLITests13MetadataTestsV09roundTripC04TestfMp_.swift:7:13 [opt] [inlined]
+       frame #15: 0x00000001052f9648 SwiftJLIPackageTests`specialized implicit closure #1 in static MetadataTests.$s13SwiftJLITests13MetadataTestsV09roundTripC04TestfMp_25generator769dc48186a25e75fMu_@Sendable () at -81a046.@__swiftmacro_13SwiftJLITests13MetadataTestsV09roundTripC04TestfMp_.swift:18:17 [opt]
+       frame #16: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #17: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #18: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #19: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #20: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #21: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #22: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #23: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #24: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #25: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #26: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #27: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #28: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #29: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #30: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #31: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #32: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #33: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #25, name = '[Swift Testing] test "No metadata in, no metadata out" - running (Task 1844)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x0000000105171128 SwiftJLIPackageTests`specialized JLIDecoder.decodeParsed(parsed=SwiftJLI.ParsedJPEG @ 0x000000017025a978, configuration=SwiftJLI.JLIDecoderConfiguration @ 0x0000007985cb6820, borrowedDestination=<unavailable>, normaliseXYBOutput=false) at JLIDecoder.swift:0:42 [opt]
+       frame #1: 0x0000000105163434 SwiftJLIPackageTests`JLIDecoder.decodeParsed() at JLIDecoder.swift:0 [opt] [inlined]
+       frame #2: 0x0000000105163414 SwiftJLIPackageTests`JLIDecoder.decode(data=<unavailable>, configuration=SwiftJLI.JLIDecoderConfiguration @ 0x0000007985cb6860) at JLIDecoder.swift:67:20 [opt]
+       frame #3: 0x00000001052fb614 SwiftJLIPackageTests`specialized MetadataTests.absentMetadata() at MetadataTests.swift:141:36 [opt]
+       frame #4: 0x00000001052f98b4 SwiftJLIPackageTests`MetadataTests.absentMetadata() at <compiler-generated>:0 [opt] [inlined]
+       frame #5: 0x00000001052f98ac SwiftJLIPackageTests`$s13SwiftJLITests13MetadataTestsV06absentC04TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static MetadataTests.$s13SwiftJLITests13MetadataTestsV06absentC04TestfMp_16b04fa9e6769c15bdfMu_@Sendable () in static MetadataTests.$s13SwiftJLITests13MetadataTestsV06absentC04TestfMp_16b04fa9e6769c15bdfMu_@Sendable () at -822987.@__swiftmacro_13SwiftJLITests13MetadataTestsV06absentC04TestfMp_.swift:5:165 [opt] [inlined]
+       frame #6: 0x00000001052f98ac SwiftJLIPackageTests`static MetadataTests.$s13SwiftJLITests13MetadataTestsV06absentC04TestfMp_16b04fa9e6769c15bdfMu_@Sendable () at -822987.@__swiftmacro_13SwiftJLITests13MetadataTestsV06absentC04TestfMp_.swift:7:13 [opt] [inlined]
+       frame #7: 0x00000001052f98ac SwiftJLIPackageTests`specialized implicit closure #1 in static MetadataTests.$s13SwiftJLITests13MetadataTestsV06absentC04TestfMp_25generatorb04fa9e6769c15bdfMu_@Sendable () at -822987.@__swiftmacro_13SwiftJLITests13MetadataTestsV06absentC04TestfMp_.swift:18:17 [opt]
+       frame #8: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #9: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #10: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #11: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #12: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #13: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #14: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #15: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #16: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #17: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #18: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #19: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #20: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #21: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #22: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #23: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #24: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #25: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #26, name = '[Swift Testing] test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) - running test case #1 (Task 1852)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x00000001b36fa240 libswiftCore.dylib`resolveTypeForRequirementCheck(__swift::__runtime::llvm::StringRef, void const* const*, __swift::__runtime::llvm::function_ref<void const* (unsigned int, unsigned int)>, __swift::__runtime::llvm::function_ref<swift::TargetWitnessTable<swift::InProcess> const* (swift::TargetMetadata<swift::InProcess> const*, unsigned int)>) + 324
+       frame #1: 0x00000001b36f5ab4 libswiftCore.dylib`swift::_checkGenericRequirements(__swift::__runtime::llvm::ArrayRef<swift::GenericParamDescriptor>, __swift::__runtime::llvm::ArrayRef<swift::TargetGenericRequirementDescriptor<swift::InProcess>>, __swift::__runtime::llvm::SmallVectorImpl<void const*>&, __swift::__runtime::llvm::function_ref<void const* (unsigned int, unsigned int)>, __swift::__runtime::llvm::function_ref<void const* (unsigned int, unsigned int)>, __swift::__runtime::llvm::function_ref<swift::TargetWitnessTable<swift::InProcess> const* (swift::TargetMetadata<swift::InProcess> const*, unsigned int)>, swift::ConformanceExecutionContext*) + 204
+       frame #2: 0x00000001b36f7334 libswiftCore.dylib`swift::checkInvertibleRequirements(swift::TargetMetadata<swift::InProcess> const*, swift::InvertibleProtocolSet) + 1136
+       frame #3: 0x00000001b36f703c libswiftCore.dylib`swift::checkInvertibleRequirements(swift::TargetMetadata<swift::InProcess> const*, swift::InvertibleProtocolSet) + 376
+       frame #4: 0x00000001b36f63a4 libswiftCore.dylib`swift::_checkGenericRequirements(__swift::__runtime::llvm::ArrayRef<swift::GenericParamDescriptor>, __swift::__runtime::llvm::ArrayRef<swift::TargetGenericRequirementDescriptor<swift::InProcess>>, __swift::__runtime::llvm::SmallVectorImpl<void const*>&, __swift::__runtime::llvm::function_ref<void const* (unsigned int, unsigned int)>, __swift::__runtime::llvm::function_ref<void const* (unsigned int, unsigned int)>, __swift::__runtime::llvm::function_ref<swift::TargetWitnessTable<swift::InProcess> const* (swift::TargetMetadata<swift::InProcess> const*, unsigned int)>, swift::ConformanceExecutionContext*) + 2492
+       frame #5: 0x00000001b36e0428 libswiftCore.dylib`_gatherGenericParameters(swift::TargetContextDescriptor<swift::InProcess> const*, __swift::__runtime::llvm::ArrayRef<swift::MetadataPackOrValue>, swift::TargetMetadata<swift::InProcess> const*, __swift::__runtime::llvm::SmallVectorImpl<unsigned int>&, __swift::__runtime::llvm::SmallVectorImpl<void const*>&, swift::Demangle::__runtime::Demangler&) + 2156
+       frame #6: 0x00000001b36ec514 libswiftCore.dylib`(anonymous namespace)::DecodedMetadataBuilder::createBoundGenericType(swift::TargetContextDescriptor<swift::InProcess> const*, __swift::__runtime::llvm::ArrayRef<swift::MetadataPackOrValue>, swift::MetadataPackOrValue) const + 264
+       frame #7: 0x00000001b36ea84c libswiftCore.dylib`swift::Demangle::__runtime::TypeDecoder<(anonymous namespace)::DecodedMetadataBuilder>::decodeMangledType(swift::Demangle::__runtime::Node*, unsigned int, bool, bool) + 17752
+       frame #8: 0x00000001b36ec130 libswiftCore.dylib`swift::Demangle::__runtime::TypeDecoder<(anonymous namespace)::DecodedMetadataBuilder>::decodeGenericArgs(swift::Demangle::__runtime::Node*, unsigned int, __swift::__runtime::llvm::SmallVectorImpl<swift::MetadataPackOrValue>&) + 456
+       frame #9: 0x00000001b36e6698 libswiftCore.dylib`swift::Demangle::__runtime::TypeDecoder<(anonymous namespace)::DecodedMetadataBuilder>::decodeMangledType(swift::Demangle::__runtime::Node*, unsigned int, bool, bool) + 932
+       frame #10: 0x00000001b36e1c0c libswiftCore.dylib`swift_getTypeByMangledNodeImpl(swift::MetadataRequest, swift::Demangle::__runtime::Demangler&, swift::Demangle::__runtime::Node*, void const* const*, std::__1::function<void const* (unsigned int, unsigned int)>, std::__1::function<swift::TargetWitnessTable<swift::InProcess> const* (swift::TargetMetadata<swift::InProcess> const*, unsigned int)>) + 788
+       frame #11: 0x00000001b36de614 libswiftCore.dylib`swift_getTypeByMangledNode + 336
+       frame #12: 0x00000001b36e25f0 libswiftCore.dylib`swift_getTypeByMangledNameImpl(swift::MetadataRequest, __swift::__runtime::llvm::StringRef, void const* const*, std::__1::function<void const* (unsigned int, unsigned int)>, std::__1::function<swift::TargetWitnessTable<swift::InProcess> const* (swift::TargetMetadata<swift::InProcess> const*, unsigned int)>) + 1172
+       frame #13: 0x00000001b36dc42c libswiftCore.dylib`swift_getTypeByMangledName + 336
+       frame #14: 0x00000001b3649c8c libswiftCore.dylib`swift_getAssociatedTypeWitnessSlowImpl(swift::MetadataRequest, swift::TargetWitnessTable<swift::InProcess>*, swift::TargetMetadata<swift::InProcess> const*, swift::TargetProtocolRequirement<swift::InProcess> const*, swift::TargetProtocolRequirement<swift::InProcess> const*) + 468
+       frame #15: 0x00000001b366d874 libswiftCore.dylib`type metadata completion function for Swift.LazyMapSequence.Iterator + 52
+       frame #16: 0x00000001b36cbfbc libswiftCore.dylib`swift::GenericCacheEntry::tryInitialize(swift::TargetMetadata<swift::InProcess>*, swift::PrivateMetadataState, swift::PrivateMetadataCompletionContext*) + 768
+       frame #17: 0x00000001b36cb848 libswiftCore.dylib`swift::MetadataCacheEntryBase<swift::GenericCacheEntry, void const*>::doInitialization(swift::MetadataWaitQueue::Worker&, swift::MetadataRequest) + 104
+       frame #18: 0x00000001b36cc84c libswiftCore.dylib`std::__1::pair<swift::GenericCacheEntry*, swift::MetadataResponse> swift::LockingConcurrentMap<swift::GenericCacheEntry, swift::LockingConcurrentMapStorage<swift::GenericCacheEntry, (unsigned short)14>>::getOrInsert<swift::MetadataCacheKey, swift::MetadataRequest&, swift::TargetTypeContextDescriptor<swift::InProcess> const*&, void const* const*&>(swift::MetadataCacheKey, swift::MetadataRequest&, swift::TargetTypeContextDescriptor<swift::InProcess> const*&, void const* const*&) + 212
+       frame #19: 0x00000001b36bb990 libswiftCore.dylib`_swift_getGenericMetadata(swift::MetadataRequest, void const* const*, swift::TargetTypeContextDescriptor<swift::InProcess> const*) + 268
+       frame #20: 0x00000001b3ad0ac0 libswiftCore.dylib`__swift_instantiateGenericMetadata + 36
+       frame #21: 0x00000001b36ec6fc libswiftCore.dylib`(anonymous namespace)::DecodedMetadataBuilder::createBoundGenericType(swift::TargetContextDescriptor<swift::InProcess> const*, __swift::__runtime::llvm::ArrayRef<swift::MetadataPackOrValue>, swift::MetadataPackOrValue) const + 752
+       frame #22: 0x00000001b36ea84c libswiftCore.dylib`swift::Demangle::__runtime::TypeDecoder<(anonymous namespace)::DecodedMetadataBuilder>::decodeMangledType(swift::Demangle::__runtime::Node*, unsigned int, bool, bool) + 17752
+       frame #23: 0x00000001b36e1c0c libswiftCore.dylib`swift_getTypeByMangledNodeImpl(swift::MetadataRequest, swift::Demangle::__runtime::Demangler&, swift::Demangle::__runtime::Node*, void const* const*, std::__1::function<void const* (unsigned int, unsigned int)>, std::__1::function<swift::TargetWitnessTable<swift::InProcess> const* (swift::TargetMetadata<swift::InProcess> const*, unsigned int)>) + 788
+       frame #24: 0x00000001b36de614 libswiftCore.dylib`swift_getTypeByMangledNode + 336
+       frame #25: 0x00000001b36e25f0 libswiftCore.dylib`swift_getTypeByMangledNameImpl(swift::MetadataRequest, __swift::__runtime::llvm::StringRef, void const* const*, std::__1::function<void const* (unsigned int, unsigned int)>, std::__1::function<swift::TargetWitnessTable<swift::InProcess> const* (swift::TargetMetadata<swift::InProcess> const*, unsigned int)>) + 1172
+       frame #26: 0x00000001b36dc42c libswiftCore.dylib`swift_getTypeByMangledName + 336
+       frame #27: 0x00000001b3649c8c libswiftCore.dylib`swift_getAssociatedTypeWitnessSlowImpl(swift::MetadataRequest, swift::TargetWitnessTable<swift::InProcess>*, swift::TargetMetadata<swift::InProcess> const*, swift::TargetProtocolRequirement<swift::InProcess> const*, swift::TargetProtocolRequirement<swift::InProcess> const*) + 468
+       frame #28: 0x00000001b37b4584 libswiftCore.dylib`BidirectionalCollection<>.joined(separator:) + 196
+       frame #29: 0x0000000104be86d0 Testing`static __Expression.__fromFunctionCall(_:_:_:) + 256
+       frame #30: 0x00000001053428d4 SwiftJLIPackageTests`freestanding macro expansion #1 of expect in module SwiftJLITests file SequentialGreyscaleDecoderTests.swift line 45 column 21() at @__swiftmacro_13SwiftJLITests0042SequentialGreyscaleDecoderTestsswift_IyBInfMX44_20_6expectfMf_.swift:3:25 [opt] [inlined]
+       frame #31: 0x00000001053427f0 SwiftJLIPackageTests`specialized SequentialGreyscaleDecoderTests.scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision=8) at SequentialGreyscaleDecoderTests.swift:45:21 [opt]
+       frame #32: 0x0000000105341c7c SwiftJLIPackageTests`SequentialGreyscaleDecoderTests.scanBorrowMatchesReferenceAcrossRestartsAndLookup() at <compiler-generated>:0 [opt] [inlined]
+       frame #33: 0x0000000105341c74 SwiftJLIPackageTests`$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV49scanBorrowMatchesReferenceAcrossRestartsAndLookup4TestfMp_7__localfMu0_ #1 @Sendable (arg0=<unavailable>, _1=<unavailable>) in static SequentialGreyscaleDecoderTests.$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV49scanBorrowMatchesReferenceAcrossRestartsAndLookup4TestfMp_17Z5eb374ac4b91d19afMu_@Sendable (precision:) in static SequentialGreyscaleDecoderTests.$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV49scanBorrowMatchesReferenceAcrossRestartsAndLookup4TestfMp_17Z5eb374ac4b91d19afMu_@Sendable (precision:) at -425d3e.@__swiftmacro_13SwiftJLITests31SequentialGreyscaleDecoderTestsV49scanBorrowMatchesReferenceAcrossRestartsAndLookup4TestfMp_.swift:5:224 [opt] [inlined]
+       frame #34: 0x0000000105341c74 SwiftJLIPackageTests`static SequentialGreyscaleDecoderTests.$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV49scanBorrowMatchesReferenceAcrossRestartsAndLookup4TestfMp_17Z5eb374ac4b91d19afMu_@Sendable (arg0=<unavailable>) at -425d3e.@__swiftmacro_13SwiftJLITests31SequentialGreyscaleDecoderTestsV49scanBorrowMatchesReferenceAcrossRestartsAndLookup4TestfMp_.swift:7:13 [opt] [inlined]
+       frame #35: 0x0000000105341c74 SwiftJLIPackageTests`specialized implicit closure #1 in static SequentialGreyscaleDecoderTests.$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV49scanBorrowMatchesReferenceAcrossRestartsAndLookup4TestfMp_25generator5eb374ac4b91d19afMu_@Sendable () at -425d3e.@__swiftmacro_13SwiftJLITests31SequentialGreyscaleDecoderTestsV49scanBorrowMatchesReferenceAcrossRestartsAndLookup4TestfMp_.swift:18:17 [opt]
+       frame #36: 0x0000000104b060a8 Testing`closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #37: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #38: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #39: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #40: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #41: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #42: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #43: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #44: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #45: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #46: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #47: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #48: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #49: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #50: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #51: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #52: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #53: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #54: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #55: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #27, name = '[Swift Testing] test invalidExtentsRejectBeforeWriting() - running (Task 1839)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x00000001b36bb994 libswiftCore.dylib`_swift_getGenericMetadata(swift::MetadataRequest, void const* const*, swift::TargetTypeContextDescriptor<swift::InProcess> const*) + 272
+       frame #1: 0x00000001b3ad0af4 libswiftCore.dylib`__swift_instantiateCanonicalPrespecializedGenericMetadata + 40
+       frame #2: 0x0000000104b6c304 Testing`__checkBinaryOperation(_:_:_:expression:comments:isRequired:sourceLocation:) + 368
+       frame #3: 0x0000000105344124 SwiftJLIPackageTests`freestanding macro expansion #3 of expect in module SwiftJLITests file SequentialGreyscaleDecoderTests.swift line 122 column 13() at @__swiftmacro_13SwiftJLITests0042SequentialGreyscaleDecoderTestsswift_IyBInfMX121_12_6expectfMf1_.swift:1:1 [opt] [inlined]
+       frame #4: 0x00000001053440c0 SwiftJLIPackageTests`specialized SequentialGreyscaleDecoderTests.invalidExtentsRejectBeforeWriting() at SequentialGreyscaleDecoderTests.swift:122:13 [opt]
+       frame #5: 0x0000000105341e14 SwiftJLIPackageTests`SequentialGreyscaleDecoderTests.invalidExtentsRejectBeforeWriting() at <compiler-generated>:0 [opt] [inlined]
+       frame #6: 0x0000000105341e0c SwiftJLIPackageTests`$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV33invalidExtentsRejectBeforeWriting4TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static SequentialGreyscaleDecoderTests.$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV33invalidExtentsRejectBeforeWriting4TestfMp_16ed9835baceedd438fMu_@Sendable () in static SequentialGreyscaleDecoderTests.$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV33invalidExtentsRejectBeforeWriting4TestfMp_16ed9835baceedd438fMu_@Sendable () at -62a503.@__swiftmacro_13SwiftJLITests31SequentialGreyscaleDecoderTestsV33invalidExtentsRejectBeforeWriting4TestfMp_.swift:5:208 [opt] [inlined]
+       frame #7: 0x0000000105341e0c SwiftJLIPackageTests`static SequentialGreyscaleDecoderTests.$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV33invalidExtentsRejectBeforeWriting4TestfMp_16ed9835baceedd438fMu_@Sendable () at -62a503.@__swiftmacro_13SwiftJLITests31SequentialGreyscaleDecoderTestsV33invalidExtentsRejectBeforeWriting4TestfMp_.swift:7:13 [opt] [inlined]
+       frame #8: 0x0000000105341e0c SwiftJLIPackageTests`specialized implicit closure #1 in static SequentialGreyscaleDecoderTests.$s13SwiftJLITests31SequentialGreyscaleDecoderTestsV33invalidExtentsRejectBeforeWriting4TestfMp_25generatored9835baceedd438fMu_@Sendable () at -62a503.@__swiftmacro_13SwiftJLITests31SequentialGreyscaleDecoderTestsV33invalidExtentsRejectBeforeWriting4TestfMp_.swift:18:17 [opt]
+       frame #9: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #10: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #11: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #12: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #13: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #14: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #15: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #16: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #17: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #18: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #19: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #20: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #21: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #22: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #23: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #24: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #25: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #26: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #28, name = '[Swift Testing] test "Single-byte mutations never trap" - running (Task 1831)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000010537443c SwiftJLIPackageTests`Hasher.init(_seed:) + 4
+    ﹍ frame #1: 0x0000000105234c98 SwiftJLIPackageTests`protocol witness for Hashable._rawHashValue() in conformance String in conformance String at <compiler-generated>:0 [opt] [inlined]
+    ﹉ frame #3: 0x000000010523509c SwiftJLIPackageTests`specialized Set.init() at <compiler-generated>:0 [opt] [inlined]
+       frame #4: 0x000000010523508c SwiftJLIPackageTests`specialized Set.init() at <compiler-generated>:0 [opt] [inlined]
+       frame #5: 0x000000010523508c SwiftJLIPackageTests`specialized static DICOMReader.readExplicitVR(data=<unavailable>, offset=364) at DICOMReader.swift:640:41 [opt]
+       frame #6: 0x000000010522fbbc SwiftJLIPackageTests`static DICOMReader.readExplicitVR() at DICOMReader.swift:0:17 [opt] [inlined]
+       frame #7: 0x000000010522fba8 SwiftJLIPackageTests`static DICOMReader.read(data=716 values) at DICOMReader.swift:492:43 [opt]
+       frame #8: 0x000000010522e2e4 SwiftJLIPackageTests`DICOMFuzzTests.probe(data=716 values) at DICOMFuzzTests.swift:60:30 [opt] [inlined]
+       frame #9: 0x000000010522e2d4 SwiftJLIPackageTests`specialized DICOMFuzzTests.singleByteMutations() at DICOMFuzzTests.swift:87:71 [opt]
+       frame #10: 0x000000010522d0e0 SwiftJLIPackageTests`DICOMFuzzTests.singleByteMutations() at <compiler-generated>:0 [opt] [inlined]
+       frame #11: 0x000000010522d0d8 SwiftJLIPackageTests`$s13SwiftJLITests14DICOMFuzzTestsV19singleByteMutations4TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV19singleByteMutations4TestfMp_17Z5b667ea01ed8704efMu_@Sendable () in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV19singleByteMutations4TestfMp_17Z5b667ea01ed8704efMu_@Sendable () at -370c0c.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV19singleByteMutations4TestfMp_.swift:5:177 [opt] [inlined]
+       frame #12: 0x000000010522d0d8 SwiftJLIPackageTests`static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV19singleByteMutations4TestfMp_17Z5b667ea01ed8704efMu_@Sendable () at -370c0c.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV19singleByteMutations4TestfMp_.swift:7:13 [opt] [inlined]
+       frame #13: 0x000000010522d0d8 SwiftJLIPackageTests`specialized implicit closure #1 in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV19singleByteMutations4TestfMp_25generator5b667ea01ed8704efMu_@Sendable () at -370c0c.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV19singleByteMutations4TestfMp_.swift:18:17 [opt]
+       frame #14: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #15: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #16: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #17: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #18: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #19: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #20: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #21: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #22: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #23: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #24: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #25: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #26: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #27: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #28: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #29: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #30: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #31: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #29, name = '[Swift Testing] test "jpegli adaptive-quant path encodes → decodes with sane quality" - running (Task 1849)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000010517f6a8 SwiftJLIPackageTests`specialized IndexingIterator.next() at <compiler-generated>:0 [opt] [inlined]
+       frame #1: 0x000000010517f6a0 SwiftJLIPackageTests`static HuffmanEncoder.countAC(zigzag=<unavailable>, freq=<unavailable>) at JLIHuffman.swift:291:9 [opt] [inlined]
+       frame #2: 0x000000010517f628 SwiftJLIPackageTests`specialized static JLIEncoder.countACFreqs(quant=<unavailable>, blocks=0..<64) at JLIEncoder.swift:1389:28 [opt]
+       frame #3: 0x0000000105177bf8 SwiftJLIPackageTests`static JLIEncoder.countACFreqs() at <compiler-generated>:0 [opt] [inlined]
+       frame #4: 0x0000000105177be4 SwiftJLIPackageTests`static JLIEncoder.parallelACFreqs(quant=4096 values, blockCount=64) at JLIEncoder.swift:1402:37 [opt]
+       frame #5: 0x000000010517714c SwiftJLIPackageTests`JLIEncoder.encode(image=<unavailable>, configuration=<unavailable>, borrowedSource=<unavailable>, normalisedFloatInput=<unavailable>) at JLIEncoder.swift:479:44 [opt]
+       frame #6: 0x00000001051d78a0 SwiftJLIPackageTests`specialized AdaptiveQuantFieldTests.jpegliPathRoundTrip() at AdaptiveQuantFieldTests.swift:67:37 [opt]
+       frame #7: 0x00000001051d6d7c SwiftJLIPackageTests`AdaptiveQuantFieldTests.jpegliPathRoundTrip() at <compiler-generated>:0 [opt] [inlined]
+       frame #8: 0x00000001051d6d74 SwiftJLIPackageTests`$s13SwiftJLITests23AdaptiveQuantFieldTestsV19jpegliPathRoundTrip4TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static AdaptiveQuantFieldTests.$s13SwiftJLITests23AdaptiveQuantFieldTestsV19jpegliPathRoundTrip4TestfMp_17Z2e9d55c8e1e679b0fMu_@Sendable () in static AdaptiveQuantFieldTests.$s13SwiftJLITests23AdaptiveQuantFieldTestsV19jpegliPathRoundTrip4TestfMp_17Z2e9d55c8e1e679b0fMu_@Sendable () at -d98b83.@__swiftmacro_13SwiftJLITests23AdaptiveQuantFieldTestsV19jpegliPathRoundTrip4TestfMp_.swift:5:186 [opt] [inlined]
+       frame #9: 0x00000001051d6d74 SwiftJLIPackageTests`static AdaptiveQuantFieldTests.$s13SwiftJLITests23AdaptiveQuantFieldTestsV19jpegliPathRoundTrip4TestfMp_17Z2e9d55c8e1e679b0fMu_@Sendable () at -d98b83.@__swiftmacro_13SwiftJLITests23AdaptiveQuantFieldTestsV19jpegliPathRoundTrip4TestfMp_.swift:7:13 [opt] [inlined]
+       frame #10: 0x00000001051d6d74 SwiftJLIPackageTests`specialized implicit closure #1 in static AdaptiveQuantFieldTests.$s13SwiftJLITests23AdaptiveQuantFieldTestsV19jpegliPathRoundTrip4TestfMp_25generator2e9d55c8e1e679b0fMu_@Sendable () at -d98b83.@__swiftmacro_13SwiftJLITests23AdaptiveQuantFieldTestsV19jpegliPathRoundTrip4TestfMp_.swift:18:17 [opt]
+       frame #11: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #12: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #13: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #14: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #15: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #16: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #17: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #18: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #19: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #20: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #21: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #22: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #23: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #24: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #25: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #26: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #27: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #28: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+* thread #30, name = '[Swift Testing] test predecessorIdentityMatrixIsRetained() - running (Task 1763)', queue = 'com.apple.root.default-qos.cooperative', stop reason = Fatal error: could not load resource bundle: from /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/SwiftJLI_SwiftJLITests.bundle or /Users/runner/work/SwiftJLI/SwiftJLI/.build/arm64-apple-macosx/release/SwiftJLI_SwiftJLITests.bundle
+     frame #0: 0x00000001b365d1a8 libswiftCore.dylib`_swift_runtime_on_report
+     frame #1: 0x00000001b3777aec libswiftCore.dylib`_swift_stdlib_reportFatalErrorInFile + 204
+     frame #2: 0x00000001b37a18c8 libswiftCore.dylib`closure #1 in _assertionFailure(_:_:file:line:flags:) + 300
+     frame #3: 0x00000001b37a0d4c libswiftCore.dylib`_assertionFailure(_:_:file:line:flags:) + 216
+   * frame #4: 0x0000000105373814 SwiftJLIPackageTests`closure #1() in variable initialization expression of static NSBundle.module at resource_bundle_accessor.swift:12:13 [opt]
+     frame #5: 0x00000001053735bc SwiftJLIPackageTests`one-time initialization function for module() at resource_bundle_accessor.swift:4:45 [opt]
+     frame #6: 0x000000019ef2e5a0 libdispatch.dylib`_dispatch_client_callout + 16
+     frame #7: 0x000000019ef17624 libdispatch.dylib`_dispatch_once_callout + 32
+     frame #8: 0x00000001052a7048 SwiftJLIPackageTests`NSBundle.module.unsafeMutableAddressor() at resource_bundle_accessor.swift:4:28 [opt] [inlined]
+     frame #9: 0x00000001052a7034 SwiftJLIPackageTests`freestanding macro expansion #1 of require in module SwiftJLITests file IdentityRegressionTests.swift line 6 column 19() at IdentityRegressionTests.swift:1:36 [opt] [inlined]
+     frame #10: 0x00000001052a7034 SwiftJLIPackageTests`predecessorIdentityMatrixIsRetained() at IdentityRegressionTests.swift:6:19 [opt]
+     frame #11: 0x00000001052a4790 SwiftJLIPackageTests`$s13SwiftJLITests35predecessorIdentityMatrixIsRetained4TestfMp_7__localfMu_ #1 @Sendable (_0=<unavailable>) in $s13SwiftJLITests35predecessorIdentityMatrixIsRetained4TestfMp_17Z3997d3db00c4d87cfMu_@Sendable () in $s13SwiftJLITests35predecessorIdentityMatrixIsRetained4TestfMp_17Z3997d3db00c4d87cfMu_@Sendable () at @__swiftmacro_13SwiftJLITests35predecessorIdentityMatrixIsRetained4TestfMp_.swift:4:100 [opt] [inlined]
+     frame #12: 0x00000001052a4788 SwiftJLIPackageTests`$s13SwiftJLITests35predecessorIdentityMatrixIsRetained4TestfMp_17Z3997d3db00c4d87cfMu_@Sendable () at -8e6118.@__swiftmacro_13SwiftJLITests35predecessorIdentityMatrixIsRetained4TestfMp_.swift:6:13 [opt]
+     frame #13: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+     frame #14: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+     frame #15: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+     frame #16: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+     frame #17: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+     frame #18: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+     frame #19: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+     frame #20: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+     frame #21: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+     frame #22: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+     frame #23: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+     frame #24: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+     frame #25: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+     frame #26: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+     frame #27: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+     frame #28: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+     frame #29: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+     frame #30: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #15, queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000019eef9008 libsystem_malloc.dylib`_xzm_free_main + 332
+       frame #1: 0x00000002cb9d2ab8 libswift_Concurrency.dylib`swift::StackAllocator<984ul, &swift::TaskAllocatorSlabMetadata, swift::TaskAllocatorConfiguration>::~StackAllocator() + 124
+       frame #2: 0x00000002cb9cf5dc libswift_Concurrency.dylib`swift::AsyncTask::~AsyncTask() + 124
+       frame #3: 0x00000002cb9cf804 libswift_Concurrency.dylib`destroyTask(swift::HeapObject*) + 20
+       frame #4: 0x00000001b364b2a4 libswiftCore.dylib`_swift_release_dealloc + 64
+       frame #5: 0x00000001b36b1ae4 libswiftCore.dylib`bool swift::RefCounts<swift::RefCountBitsT<(swift::RefCountInlinedness)1>>::doDecrementSlow<(swift::PerformDeinit)1>(swift::RefCountBitsT<(swift::RefCountInlinedness)1>, unsigned int) + 168
+       frame #6: 0x00000002cb9c7c50 libswift_Concurrency.dylib`swift::runJobInEstablishedExecutorContext(swift::Job*, swift::SerialExecutorRef, swift::TaskExecutorRef) + 328
+       frame #7: 0x00000002cb9c99d4 libswift_Concurrency.dylib`swift_job_runImpl(swift::Job*, swift::SerialExecutorRef) + 156
+       frame #8: 0x000000019ef26aac libdispatch.dylib`_dispatch_root_queue_drain + 360
+       frame #9: 0x000000019ef27248 libdispatch.dylib`_dispatch_worker_thread2 + 184
+       frame #10: 0x000000019f0d1f60 libsystem_pthread.dylib`_pthread_wqthread + 232
+  thread #31, name = '[Swift Testing] test "Every frozen case matches its hash and meets its acceptance criterion" - running (Task 1847)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x000000019eef22b4 libsystem_malloc.dylib`_xzm_xzone_malloc_freelist_outlined + 768
+       frame #1: 0x000000019ef035f0 libsystem_malloc.dylib`malloc_type_posix_memalign + 156
+       frame #2: 0x00000001b3644db8 libswiftCore.dylib`swift_slowAlloc + 100
+       frame #3: 0x000000010517ce00 SwiftJLIPackageTests`specialized static UnsafeMutablePointer.allocate() at JLIEncoder.swift:0:20 [opt] [inlined]
+       frame #4: 0x000000010517cdf8 SwiftJLIPackageTests`specialized static UnsafeMutableBufferPointer.allocate() at <compiler-generated>:0 [opt] [inlined]
+       frame #5: 0x000000010517cdf8 SwiftJLIPackageTests`specialized JLIEncoder.encodeLossless(image=SwiftJLI.JLIImage @ 0x000000017062e550, configuration=<unavailable>, precision=16, isGrayscale=true, borrowedSource=some) at JLIEncoder.swift:682:59 [opt]
+       frame #6: 0x00000001051744ec SwiftJLIPackageTests`JLIEncoder.encodeLossless() at <compiler-generated>:0 [opt] [inlined]
+       frame #7: 0x00000001051744d0 SwiftJLIPackageTests`JLIEncoder.encode(image=SwiftJLI.JLIImage @ 0x000000017062e550, configuration=SwiftJLI.JLIEncoderConfiguration @ 0x000000017062eaf0, borrowedSource=some, normalisedFloatInput=false) at JLIEncoder.swift:128:24 [opt]
+       frame #8: 0x000000010532d8b8 SwiftJLIPackageTests`specialized RegressionCorpusTests.runCorpus() at RegressionCorpusTests.swift:138:70 [opt]
+       frame #9: 0x000000010532ca8c SwiftJLIPackageTests`RegressionCorpusTests.runCorpus() at <compiler-generated>:0 [opt] [inlined]
+       frame #10: 0x000000010532ca84 SwiftJLIPackageTests`$s13SwiftJLITests21RegressionCorpusTestsV03runD04TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static RegressionCorpusTests.$s13SwiftJLITests21RegressionCorpusTestsV03runD04TestfMp_16b683026ab10f7c30fMu_@Sendable () in static RegressionCorpusTests.$s13SwiftJLITests21RegressionCorpusTestsV03runD04TestfMp_16b683026ab10f7c30fMu_@Sendable () at -090c52.@__swiftmacro_13SwiftJLITests21RegressionCorpusTestsV03runD04TestfMp_.swift:5:170 [opt] [inlined]
+       frame #11: 0x000000010532ca84 SwiftJLIPackageTests`static RegressionCorpusTests.$s13SwiftJLITests21RegressionCorpusTestsV03runD04TestfMp_16b683026ab10f7c30fMu_@Sendable () at -090c52.@__swiftmacro_13SwiftJLITests21RegressionCorpusTestsV03runD04TestfMp_.swift:7:13 [opt] [inlined]
+       frame #12: 0x000000010532ca84 SwiftJLIPackageTests`specialized implicit closure #1 in static RegressionCorpusTests.$s13SwiftJLITests21RegressionCorpusTestsV03runD04TestfMp_25generatorb683026ab10f7c30fMu_@Sendable () at -090c52.@__swiftmacro_13SwiftJLITests21RegressionCorpusTestsV03runD04TestfMp_.swift:18:17 [opt]
+       frame #13: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #14: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #15: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #16: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #17: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #18: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #19: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #20: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #21: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #22: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #23: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #24: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #25: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #26: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #27: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #28: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #29: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #30: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+  thread #32, name = '[Swift Testing] test "Corrupted element length fields never trap" - running (Task 1821)', queue = 'com.apple.root.default-qos.cooperative'
+       frame #0: 0x00000001b3647398 libswiftCore.dylib`swift_bridgeObjectRelease
+       frame #1: 0x00000001b3663f08 libswiftCore.dylib`void tuple_destroy<false, false>(swift::OpaqueValue*, swift::TargetMetadata<swift::InProcess> const*) + 84
+       frame #2: 0x0000000105236664 SwiftJLIPackageTests`merged outlined destroy of (group: Swift.UInt16, element: Swift.UInt16, vr: Swift.Optional<Swift.String>, valueRange: Swift.Range<Swift.Int>, next: Swift.Int, undefinedLength: Swift.Bool) + 48
+       frame #3: 0x00000001052303ec SwiftJLIPackageTests`static DICOMReader.read(data=706 values) at <compiler-generated>:0 [opt]
+       frame #4: 0x000000010522e660 SwiftJLIPackageTests`DICOMFuzzTests.probe(data=706 values) at DICOMFuzzTests.swift:60:30 [opt] [inlined]
+       frame #5: 0x000000010522e650 SwiftJLIPackageTests`specialized DICOMFuzzTests.lengthFieldFuzz() at DICOMFuzzTests.swift:112:25 [opt]
+       frame #6: 0x000000010522d1ac SwiftJLIPackageTests`DICOMFuzzTests.lengthFieldFuzz() at <compiler-generated>:0 [opt] [inlined]
+       frame #7: 0x000000010522d1a4 SwiftJLIPackageTests`$s13SwiftJLITests14DICOMFuzzTestsV15lengthFieldFuzz4TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV15lengthFieldFuzz4TestfMp_17Z793bdf46658699f9fMu_@Sendable () in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV15lengthFieldFuzz4TestfMp_17Z793bdf46658699f9fMu_@Sendable () at -00d983.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV15lengthFieldFuzz4TestfMp_.swift:5:173 [opt] [inlined]
+       frame #8: 0x000000010522d1a4 SwiftJLIPackageTests`static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV15lengthFieldFuzz4TestfMp_17Z793bdf46658699f9fMu_@Sendable () at -00d983.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV15lengthFieldFuzz4TestfMp_.swift:7:13 [opt] [inlined]
+       frame #9: 0x000000010522d1a4 SwiftJLIPackageTests`specialized implicit closure #1 in static DICOMFuzzTests.$s13SwiftJLITests14DICOMFuzzTestsV15lengthFieldFuzz4TestfMp_25generator793bdf46658699f9fMu_@Sendable () at -00d983.@__swiftmacro_13SwiftJLITests14DICOMFuzzTestsV15lengthFieldFuzz4TestfMp_.swift:18:17 [opt]
+       frame #10: 0x0000000104bbbea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+       frame #11: 0x0000000104bbe034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #12: 0x0000000104bb2604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #13: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #14: 0x0000000104b8b358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+       frame #15: 0x0000000104bb1ff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+       frame #16: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #17: 0x0000000104bcc744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+       frame #18: 0x0000000104bc8080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+       frame #19: 0x0000000104bb2de8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+       frame #20: 0x0000000104bb1a5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+       frame #21: 0x0000000104bbdabc Testing`specialized static Runner._runTestCase(_:within:in:)
+       frame #22: 0x0000000104bb1160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+       frame #23: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #24: 0x0000000104b0ef20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+       frame #25: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+       frame #26: 0x0000000104bba9d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+       frame #27: 0x0000000104b060ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)

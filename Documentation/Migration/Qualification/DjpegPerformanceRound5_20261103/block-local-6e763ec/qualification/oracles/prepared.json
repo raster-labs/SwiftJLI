@@ -1,0 +1,60 @@
+{
+  "status": "prepared-and-qualified-products-bound; execution held pending root CPU grant",
+  "sourceRevision": "6e763ec2099e162bae52a40109ff74269ea9899f",
+  "createdUTC": "2026-11-03T19:50:15.219962+00:00",
+  "historicalQualifiedMethodRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "plans": [
+    {
+      "kind": "large-dct-oracle",
+      "prepared": "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/prepared.json",
+      "preparedSHA256": "9708b75ac8b100c374fc8f1ce21e5f843938a08bb354cea3167e82f162965f5f",
+      "commands": [
+        [
+          "python3",
+          "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/build.py",
+          "--execute"
+        ],
+        [
+          "python3",
+          "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-dct-oracle/run.py",
+          "--execute"
+        ]
+      ],
+      "status": "held-unexecuted",
+      "runOutputAbsent": true
+    },
+    {
+      "kind": "large-lossless-oracle",
+      "prepared": "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-lossless-oracle/prepared.json",
+      "preparedSHA256": "c5bc6e6674dd98ecb3dad6266c57a621e757618210245e9dbd89dc6647b4b8f3",
+      "commands": [
+        [
+          "python3",
+          "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-lossless-oracle/run.py",
+          "--binary",
+          "/private/tmp/swiftjli-round5-empty-scratch-fix-release-build/out/Products/Release/swiftjli-cli",
+          "--source-revision",
+          "6e763ec2099e162bae52a40109ff74269ea9899f",
+          "--output",
+          "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/oracles/large-lossless-oracle/run1",
+          "--execute"
+        ]
+      ],
+      "status": "held-unexecuted",
+      "runOutputAbsent": true
+    }
+  ],
+  "methodChanges": false,
+  "DCTProfiles": 8,
+  "DCTDirectionComparisons": 16,
+  "fixedMaximumSampleDifferences": {
+    "8": 2,
+    "12": 4
+  },
+  "losslessProfiles": 6,
+  "losslessStreams": 12,
+  "losslessExactOutputs": 24,
+  "noRuntimeExecuted": true,
+  "preservedPreviousPreparation": "/private/tmp/swiftjli-round5-evidence/flat-small-recovery-guards/oracles",
+  "activationRequirement": "Archive the held plans, bind a root CPU grant in an activation addendum, and switch only the execution status before fresh build/run directories. No workload, tolerance or timing changes."
+}

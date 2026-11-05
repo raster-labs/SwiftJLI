@@ -1,0 +1,244 @@
+--- v2-source/row_safety.c
++++ v3-composed-row-source/row_safety.c
+@@ -1,21 +1,24 @@
+ // SPDX-License-Identifier: Apache-2.0
+-/* Standalone source-only extension: pinned generic lossless row leaf. */
++/* Exact composed code-zero row: independent encoded corpus, generic differential and alias metamorphic checks. */
+ #include "safety_support.h"
+ enum { MAX_SAMPLES=65535, ROW_BYTES=MAX_SAMPLES*2 };
+ static uint8_t input_large[LARGE_INPUT+64];
+-static uint32_t output_words[(ROW_BYTES+128)/4];
++static uint32_t output_words[(ROW_BYTES+128)/4],reference_words[(ROW_BYTES+128)/4];
++static uint64_t differential_cases,codezero_categories[8];
+ static uint16_t expected_samples[MAX_SAMPLES];
+ static size_t symbol_ends[MAX_SAMPLES],sample_ends[MAX_SAMPLES];
+ static struct { uint64_t pre[2]; SJLIACState value; uint64_t post[2]; } reader_box;
+ static struct { uint64_t pre[2]; SJLILosslessRowResult value; uint64_t post[2]; } result_box;
+-static uint8_t alias_a[512],alias_b[512],alias_snapshot[512];
++static uint8_t alias_a[512],alias_b[512],alias_c[512],alias_snapshot[512];
+ 
+-/* Adapt only this invocation boundary for a separately pinned short-table
+-   entrypoint later. The corpus and publication/alias oracles stay unchanged. */
++/* Only this entrypoint is under primary test. The generic composed row is
++   a separately called differential oracle, not an independent decoder. */
+ static SJLIACStatus row_call(const void *input,size_t input_count,SJLIACState *state,
+  const SJLIACHuffman *table,uint32_t seed,size_t count,void *output,size_t output_count,
+  SJLILosslessRowResult *result) {
+- return sjli_lossless_left_u16_row(input,input_count,state,table,seed,count,output,output_count,result);
++ if(table && table->lengths[0]==1 && table->symbols[0]>=1 && table->symbols[0]<=7)
++  ++codezero_categories[table->symbols[0]];
++ return sjli_lossless_left_u16_code0_row(input,input_count,state,table,seed,count,output,output_count,result);
+ }
+ static uint16_t sample_at(const uint8_t *bytes,size_t index) {
+  return (uint16_t)((unsigned)bytes[index*2]|((unsigned)bytes[index*2+1]<<8));
+@@ -25,13 +28,22 @@
+  int expected_status,const uint16_t *expected,size_t expected_written,size_t expected_consumed) {
+  require(count>=1&&count<=MAX_SAMPLES&&seed<=65535&&alignment<8,"row harness extents");
+  uint8_t *out_storage=(uint8_t *)(void *)output_words,*output=out_storage+16+alignment;
++ uint8_t *ref_storage=(uint8_t *)(void *)reference_words,*reference=ref_storage+16+alignment;
+  size_t out_capacity=count*2+64;
++ __asan_unpoison_memory_region(ref_storage,out_capacity);memset(ref_storage,0xa5,out_capacity);
+  __asan_unpoison_memory_region(out_storage,out_capacity);memset(out_storage,0xa5,out_capacity);
+  for(unsigned i=0;i<2;++i)reader_box.pre[i]=reader_box.post[i]=result_box.pre[i]=result_box.post[i]=canary;
+  reader_box.value=initial;result_box.value=(SJLILosslessRowResult){0xface,0xbeef,0x12345678};
+  poison_input(storage,capacity,input,input_count);poison_input(out_storage,out_capacity,output,count*2);
++ poison_input(ref_storage,out_capacity,reference,count*2);
++ SJLIACState reference_state=initial;SJLILosslessRowResult reference_result={0xface,0xbeef,0x12345678};
+  SJLIACStatus status=row_call(input,input_count,&reader_box.value,&model->table,seed,count,output,count*2,&result_box.value);
++ SJLIACStatus reference_status=sjli_lossless_left_u16_row(input,input_count,&reference_state,&model->table,seed,count,reference,count*2,&reference_result);
+  __asan_unpoison_memory_region(storage,capacity);__asan_unpoison_memory_region(out_storage,out_capacity);
++ __asan_unpoison_memory_region(ref_storage,out_capacity);
++ require(status==reference_status && same_state(&reader_box.value,&reference_state),"code-zero/generic status and complete reader state");
++ require(result_box.value.first==reference_result.first && result_box.value.last==reference_result.last && result_box.value.written==reference_result.written,"code-zero/generic published result");
++ require(memcmp(out_storage,ref_storage,out_capacity)==0,"code-zero/generic output and canaries");++differential_cases;
+  for(unsigned i=0;i<2;++i)require(reader_box.pre[i]==canary&&reader_box.post[i]==canary&&result_box.pre[i]==canary&&result_box.post[i]==canary,"row state/result canary");
+  check_state(&reader_box.value,initial.byte_offset,input_count);
+  require((unsigned)status<=SJLI_AC_INVALID_WIDTH&&status!=SJLI_AC_INVALID_ARGUMENT&&status!=SJLI_AC_CODE_INDEX,"valid row state/table rejected");
+@@ -61,7 +73,7 @@
+ }
+ static void category_rows(void) {
+  const unsigned seeds[]={0,1,2048,32767,32768,65534,65535};
+- for(unsigned table=0;table<3;++table)for(unsigned category=0;category<=16;++category){
++ for(unsigned table=0;table<DC_MODELS;++table)for(unsigned category=0;category<=16;++category){
+   const Model *model=&dc_models[table];unsigned maximum=category>0&&category<16?(1u<<category)-1:0;
+   const unsigned magnitudes[]={0,maximum/2,maximum/2+1,maximum};
+   logical_count=0;for(size_t i=0;i<17;++i)encode_sample(model,category,magnitudes[i%4],i);
+@@ -88,7 +100,7 @@
+ static void length_boundaries(void) {
+  const size_t lengths[]={1,2,3,7,8,9,63,64,65,255,256,257,65534,65535};
+  const unsigned seeds[]={0,32768,65535},buffered[]={0,7,8,13,63,64};
+- for(unsigned table=0;table<3;table+=2)for(unsigned li=0;li<sizeof(lengths)/sizeof(lengths[0]);++li){
++ for(unsigned table=0;table<DC_MODELS;table+=2)for(unsigned li=0;li<sizeof(lengths)/sizeof(lengths[0]);++li){
+   size_t samples=lengths[li];const Model *model=&dc_models[table];mixed_row(model,samples);
+   for(unsigned si=0;si<3;++si){expected_mixed(samples,seeds[si]);
+    for(unsigned ai=0;ai<6;++ai){unsigned available=buffered[ai];uint8_t *input=input_large+16+available%8;
+@@ -100,7 +112,7 @@
+ }
+ static void failures_and_truncation(void) {
+  const unsigned invalid[]={17,31,32,63,64,127,255};
+- for(unsigned table=0;table<3;++table){const Model *model=&dc_models[table];
++ for(unsigned table=0;table<DC_MODELS;++table){const Model *model=&dc_models[table];
+   for(unsigned bad=0;bad<sizeof(invalid)/sizeof(invalid[0]);++bad){
+    logical_count=0;for(size_t i=0;i<5;++i){encode_sample(model,1,1,i);expected_samples[i]=(uint16_t)(32769+i);}
+    put_symbol(model,invalid[bad]);size_t consumed=logical_count;pad_bits();
+@@ -124,7 +136,7 @@
+  }
+ }
+ static void invalid_arguments(void) {
+- for(unsigned variant=0;variant<17;++variant){
++ for(unsigned variant=0;variant<22;++variant){
+   uint8_t input_byte=0,bytes[16];memset(bytes,0xa5,sizeof(bytes));
+   SJLIACState state={0,123,0,0xa9};SJLILosslessRowResult result={1,2,3};SJLIACHuffman table=dc_models[0].table;
+   const void *input=&input_byte;void *output=bytes;SJLIACState *statep=&state;SJLILosslessRowResult *resultp=&result;const SJLIACHuffman *tablep=&table;
+@@ -133,7 +145,9 @@
+    case 0:input=NULL;break;case 1:output=NULL;break;case 2:statep=NULL;break;case 3:resultp=NULL;break;case 4:tablep=NULL;break;
+    case 5:seed=65536;break;case 6:seed=UINT32_MAX;break;case 7:count=0;break;case 8:count=65536;break;case 9:count=SIZE_MAX;break;
+    case 10:output_count=5;break;case 11:table.value_count=257;break;case 12:state.available=65;break;
+-   case 13:state.byte_offset=2;break;case 14:state.byte_offset=SIZE_MAX;break;case 15:output_count=0;break;default:state.available=UINT32_MAX;break;
++   case 13:state.byte_offset=2;break;case 14:state.byte_offset=SIZE_MAX;break;case 15:output_count=0;break;case 16:state.available=UINT32_MAX;break;
++   case 17:table.lengths[0]=0;break;case 18:table.lengths[0]=2;break;case 19:table.symbols[0]=0;break;
++   case 20:table.symbols[0]=8;break;default:table.symbols[0]=255;break;
+   }
+   SJLIACState initial=state;SJLIACStatus status=row_call(input,input_count,statep,tablep,seed,count,output,output_count,resultp);
+   require(status==SJLI_AC_INVALID_ARGUMENT&&same_state(&state,&initial),"row invalid argument/state");
+@@ -146,22 +160,26 @@
+  const int deltas[]={-16,-1,0,1,16,80};
+  for(unsigned trial=0;trial<10000;++trial){
+   for(unsigned i=0;i<sizeof(alias_a);++i)alias_a[i]=(uint8_t)random64();
+-  size_t input_start=64+trial%8,input_count=(size_t)(random64()%129),samples=1+(trial%32);
++  size_t input_start=64+trial%8,input_count=(size_t)(random64()%129),samples=1+(trial%DC_MODELS2);
+   size_t output_start=(size_t)((int)input_start+deltas[trial%6]);
+-  pattern(alias_a+input_start,input_count,trial/65);memcpy(alias_b,alias_a,sizeof(alias_a));memcpy(alias_snapshot,alias_a,sizeof(alias_a));
++  pattern(alias_a+input_start,input_count,trial/65);memcpy(alias_b,alias_a,sizeof(alias_a));memcpy(alias_snapshot,alias_a,sizeof(alias_a));memcpy(alias_c,alias_a,sizeof(alias_a));
+   size_t lower=input_start<output_start?input_start:output_start;
+   size_t upper=input_start+input_count>output_start+samples*2?input_start+input_count:output_start+samples*2;
+-  __asan_poison_memory_region(alias_a,lower);__asan_poison_memory_region(alias_b,lower);
+-  __asan_poison_memory_region(alias_a+upper,sizeof(alias_a)-upper);__asan_poison_memory_region(alias_b+upper,sizeof(alias_b)-upper);
+-  SJLIACState a={(size_t)(random64()%(input_count+1)),random64(),trial%65,0xa9},b=a;
+-  size_t start=a.byte_offset;uint32_t seed=(uint32_t)(random64()&65535),value=seed;SJLILosslessRowResult ar={0},br={0};
+-  const Model *model=&dc_models[trial%3];
++  __asan_poison_memory_region(alias_a,lower);__asan_poison_memory_region(alias_b,lower);__asan_poison_memory_region(alias_c,lower);
++  __asan_poison_memory_region(alias_a+upper,sizeof(alias_a)-upper);__asan_poison_memory_region(alias_b+upper,sizeof(alias_b)-upper);__asan_poison_memory_region(alias_c+upper,sizeof(alias_c)-upper);
++  SJLIACState a={(size_t)(random64()%(input_count+1)),random64(),trial%65,0xa9},b=a,c=a;
++  size_t start=a.byte_offset;uint32_t seed=(uint32_t)(random64()&65535),value=seed;SJLILosslessRowResult ar={0},br={0},cr={0};
++  const Model *model=&dc_models[trial%DC_MODELS];
+   SJLIACStatus ast=row_call(alias_a+input_start,input_count,&a,&model->table,seed,samples,alias_a+output_start,samples*2,&ar),bst=SJLI_AC_OK;
++  SJLIACStatus cst=sjli_lossless_left_u16_row(alias_c+input_start,input_count,&c,&model->table,seed,samples,alias_c+output_start,samples*2,&cr);
+   for(size_t i=0;i<samples;++i){SJLILosslessRowResult single={0};
+    bst=row_call(alias_b+input_start,input_count,&b,&model->table,value,1,alias_b+output_start+i*2,2,&single);
+    if(bst!=SJLI_AC_OK)break;if(i==0)br.first=single.first;br.last=single.last;br.written+=1;value=single.last;
+   }
+-  __asan_unpoison_memory_region(alias_a,sizeof(alias_a));__asan_unpoison_memory_region(alias_b,sizeof(alias_b));
++  __asan_unpoison_memory_region(alias_a,sizeof(alias_a));__asan_unpoison_memory_region(alias_b,sizeof(alias_b));__asan_unpoison_memory_region(alias_c,sizeof(alias_c));
++  require(ast==cst&&same_state(&a,&c),"aliased code-zero/generic status and reader state");
++  require(ar.first==cr.first&&ar.last==cr.last&&ar.written==cr.written,"aliased code-zero/generic result");
++  require(memcmp(alias_a,alias_c,sizeof(alias_a))==0,"aliased code-zero/generic complete buffer");++differential_cases;
+   require(ast==bst&&same_state(&a,&b),"row alias one-row/one-sample state equivalence");
+   require(ar.first==br.first&&ar.last==br.last&&ar.written==br.written,"row alias partial result equivalence");
+   require(memcmp(alias_a,alias_b,sizeof(alias_a))==0,"row alias byte equivalence");check_state(&a,start,input_count);
+@@ -173,23 +191,32 @@
+  }
+ }
+ static void random_and_boundaries(void) {
+- for(unsigned model=0;model<TABLES;++model)for(size_t count=0;count<=17;++count)
++ for(unsigned model=0;model<DC_MODELS;++model)for(size_t count=0;count<=17;++count)
+   for(size_t offset=0;offset<=count;++offset)for(unsigned available=0;available<=64;++available){
+    uint8_t *input=input_small+16+cases%8;pattern(input,count,(unsigned)(count+offset+available+model));
+    SJLIACState state={offset,random64(),available,0xa9};
+-   check_call(input_small,sizeof(input_small),input,count,state,&dc_models[model%3],32768,9,available%8,-1,NULL,SIZE_MAX,SIZE_MAX);++boundary_cases;
++   check_call(input_small,sizeof(input_small),input,count,state,&dc_models[model%DC_MODELS],32768,9,available%8,-1,NULL,SIZE_MAX,SIZE_MAX);++boundary_cases;
+   }
+  for(unsigned i=0;i<RANDOM_CASES;++i){
+   unsigned available=(i/TABLES)%65,alignment=(i/65)%8;size_t count=(size_t)(random64()%(INPUT_MAX+1));
+   uint8_t *storage=i%8==0?(uint8_t *)(void *)input_words:input_small,*input=storage+16+alignment;
+   pattern(input,count,i/(TABLES*65));SJLIACState state={(size_t)(random64()%(count+1)),random64(),available,0xa9};
+-  check_call(storage,sizeof(input_small),input,count,state,&dc_models[i%3],(uint32_t)(random64()&65535),1+i%32,alignment,-1,NULL,SIZE_MAX,SIZE_MAX);++random_cases;
++  check_call(storage,sizeof(input_small),input,count,state,&dc_models[i%DC_MODELS],(uint32_t)(random64()&65535),1+i%32,alignment,-1,NULL,SIZE_MAX,SIZE_MAX);++random_cases;
++ }
++}
++static void every_short_prefix(void) {
++ for(unsigned model=0;model<DC_MODELS;++model)for(unsigned prefix=0;prefix<256;++prefix)for(unsigned tail=0;tail<8;++tail){
++  uint8_t *input=input_small+16+tail;pattern(input,17,prefix+model);
++  SJLIACState state={tail%3,((uint64_t)prefix<<tail)|((UINT64_C(1)<<tail)-1),8+tail,0xa9};
++  check_call(input_small,sizeof(input_small),input,17,state,&dc_models[model],32768,9,tail,-1,NULL,SIZE_MAX,SIZE_MAX);++boundary_cases;
+  }
+ }
+ int main(void) {
+- random_state=UINT64_C(0x16a1f095bdc72863);make_models();make_dc_models();
+- invalid_arguments();category_rows();length_boundaries();failures_and_truncation();aliases();random_and_boundaries();
++ random_state=UINT64_C(0xc0d0187a9b56e243);make_models();make_dc_models();
++ invalid_arguments();category_rows();length_boundaries();failures_and_truncation();aliases();every_short_prefix();random_and_boundaries();
+  require(status_counts[SJLI_AC_OK]&&status_counts[SJLI_AC_INVALID_WIDTH]&&status_counts[SJLI_AC_END]&&status_counts[SJLI_AC_MARKER],"row status coverage");
+  for(unsigned i=0;i<=64;++i)require(available_counts[i],"row missing available-bit width");
+- print_counters("lossless row","0x16a1f095bdc72863",8);return 0;
+-}
++ for(unsigned category=1;category<=7;++category)require(codezero_categories[category],"missing first-code-zero category");
++ require(differential_cases+guard_cases==cases,"missing generic differential case");
++ print_counters("composed code-zero lossless row","0xc0d0187a9b56e243",8);return 0;
++}
+--- v2-source/safety_support.h
++++ v3-composed-row-source/safety_support.h
+@@ -9,14 +9,14 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-enum { TABLES=8, RANDOM_CASES=1048576, INPUT_MAX=512, LARGE_INPUT=524288, BIT_CAPACITY=2097152 };
++enum { TABLES=8, DC_MODELS=21, RANDOM_CASES=1048576, INPUT_MAX=512, LARGE_INPUT=524288, BIT_CAPACITY=2097152 };
+ typedef struct {
+     SJLIACHuffman table;
+     uint32_t lookup[8192];
+     uint16_t codes[256];
+     uint8_t widths[256];
+ } Model;
+-static Model models[TABLES], dc_models[3];
++static Model models[TABLES], dc_models[DC_MODELS];
+ static uint64_t random_state, cases;
+ static uint64_t status_counts[16], available_counts[65], category_counts[256];
+ static uint64_t random_cases, boundary_cases, known_cases, alias_cases, guard_cases;
+@@ -111,10 +111,21 @@
+ }
+ 
+ 
++/* Twenty-one canonical models: category1...7 has code0/length1; the
++   remaining valid and invalid lossless categories use length6,9 or16.
++   The canonical encoder leaves the all-one code unused independently of
++   production table-building code. */
+ static inline void make_dc_models(void) {
+  const uint8_t symbols[]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,31,32,63,64,127,255};
+- const unsigned widths[]={5,9,16};
+- for(unsigned i=0;i<3;++i) { unsigned counts[17]={0}; counts[widths[i]]=sizeof(symbols); build(&dc_models[i],counts,symbols); }
++ const unsigned widths[]={6,9,16};
++ for(unsigned category=1;category<=7;++category)for(unsigned shape=0;shape<3;++shape){
++  unsigned counts[17]={0};uint8_t ordered[sizeof(symbols)];size_t n=1;
++  ordered[0]=(uint8_t)category;
++  for(size_t i=0;i<sizeof(symbols);++i)if(symbols[i]!=category)ordered[n++]=symbols[i];
++  require(n==sizeof(symbols),"code-zero model symbols");
++  counts[1]=1;counts[widths[shape]]=(unsigned)sizeof(symbols)-1;
++  build(&dc_models[(category-1)*3+shape],counts,ordered);
++ }
+ }
+ static inline void record_status(SJLIACStatus status,unsigned available) {
+  require((unsigned)status<16,"status outside harness counters"); ++cases; ++status_counts[(unsigned)status];
+--- v2-source/run_safety.py
++++ v3-composed-row-source/run_safety.py
+@@ -17,7 +17,7 @@
+ 
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+-    parser.add_argument("--target", choices=["combined", "row"], required=True)
++    parser.add_argument("--target", choices=["row"], required=True)
+     parser.add_argument("--receipt-dir", type=Path, required=True)
+     parser.add_argument("--execute", action="store_true")
+     args = parser.parse_args()
+@@ -30,7 +30,10 @@
+         "-fsanitize=address,undefined", "-fno-sanitize-recover=all",
+         "-I", str(root / args.target / "include"), "-I", str(root),
+         str(root / (args.target + "_safety.c")),
+-        str(root / args.target / "ACBlock.c"), "-o", str(output / "safety-harness"),
++        str(root / args.target / "ACBlock.c"),
++        str(root / args.target / "LosslessRow.c"),
++        str(root / args.target / "LosslessCodeZeroRow.c"),
++        "-o", str(output / "safety-harness"),
+     ]
+     if not args.execute:
+         print(json.dumps({"status": "NOT EXECUTED", "target": args.target,

@@ -1,0 +1,85 @@
+(lldb) target create "/private/tmp/swiftjli-round5-evidence/ci-41602314446/local-runner/swiftpm-testing-helper"
+Current executable set to '/private/tmp/swiftjli-round5-evidence/ci-41602314446/local-runner/swiftpm-testing-helper' (arm64).
+(lldb) settings set -- target.run-args  "--test-bundle-path" "/private/tmp/swiftjli-round5-evidence/ci-41602314446/arm64-artifact/Users/runner/work/SwiftJLI/SwiftJLI/.build/arm64-apple-macosx/release/SwiftJLIPackageTests.xctest/Contents/MacOS/SwiftJLIPackageTests" "--testing-library" "swift-testing" "--filter" "CLISynchronousExecutionTests/hostDeadlineAndMalformedCategoriesRemainDistinct"
+(lldb) settings set target.env-vars DYLD_FRAMEWORK_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks
+(lldb) run
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite CLISynchronousExecutionTests started.
+◇ Test hostDeadlineAndMalformedCategoriesRemainDistinct() started.
+Process 31215 launched: '/private/tmp/swiftjli-round5-evidence/ci-41602314446/local-runner/swiftpm-testing-helper' (arm64)
+Process 31215 stopped
+* thread #18, name = '[Swift Testing] test hostDeadlineAndMalformedCategoriesRemainDistinct() - running (Task 474)', queue = 'com.apple.root.default-qos.cooperative', stop reason = EXC_BAD_ACCESS (code=1, address=0xfffffffffffffff8)
+       frame #0: 0x00000002cb9d8660 libswift_Concurrency.dylib`swift_task_localValuePushImpl(swift::HeapObject const*, swift::OpaqueValue*, swift::TargetMetadata<swift::InProcess> const*) + 68
+libswift_Concurrency.dylib`swift_task_localValuePushImpl:
+->  0x2cb9d8660 <+68>: ldr    x8, [x25, #-0x8]!
+    0x2cb9d8664 <+72>: mov    x16, x8
+    0x2cb9d8668 <+76>: mov    x17, x25
+    0x2cb9d866c <+80>: movk   x17, #0x2e3f, lsl #48
+Target 0: (swiftpm-testing-helper) stopped.
+(lldb) register read x0 x1 x2 x25 pc
+      x0 = 0x0000000000000000
+      x1 = 0x0000000000002003
+      x2 = 0x0000000000002003
+     x25 = 0x0000000000000000
+      pc = 0x00000002cb9d8660  libswift_Concurrency.dylib`swift_task_localValuePushImpl(swift::HeapObject const*, swift::OpaqueValue*, swift::TargetMetadata<swift::InProcess> const*) + 68
+(lldb) thread backtrace
+* thread #18, name = '[Swift Testing] test hostDeadlineAndMalformedCategoriesRemainDistinct() - running (Task 474)', queue = 'com.apple.root.default-qos.cooperative', stop reason = EXC_BAD_ACCESS (code=1, address=0xfffffffffffffff8)
+   * frame #0: 0x00000002cb9d8660 libswift_Concurrency.dylib`swift_task_localValuePushImpl(swift::HeapObject const*, swift::OpaqueValue*, swift::TargetMetadata<swift::InProcess> const*) + 68
+     frame #1: 0x00000001050d1cf0 SwiftJLIPackageTests`specialized TaskLocal.withValue<A>() at NativeExecution.swift:0 [opt] [inlined]
+     frame #2: 0x00000001050d1ccc SwiftJLIPackageTests`specialized static NativeOperation.withSynchronousCancellation<A>(check=<unavailable>) at NativeExecution.swift:50:38 [opt] [inlined]
+     frame #3: 0x00000001050d1ccc SwiftJLIPackageTests`Decoder.decodeSynchronously(data=0 bytes, destination=nil, options=SwiftJLI.DecodeOptions @ 0x00000001700b55a8, cancellationCheck=0x0000000105178124 SwiftJLIPackageTests`closure #1 @Sendable () throws -> () in closure #3 () throws -> SwiftJLI.DecodedImage in SwiftJLITests.CLISynchronousExecutionTests.hostDeadlineAndMalformedCategoriesRemainDistinct() throws -> () at @__swiftmacro_13SwiftJLITests0039CLISynchronousExecutionTestsswift_jrGEmfMX110_8_6expectfMf_.swift:2) at CLISynchronousExecution.swift:15:29 [opt]
+  ﹍ frame #4: 0x0000000105178100 SwiftJLIPackageTests`closure #3 in CLISynchronousExecutionTests.hostDeadlineAndMalformedCategoriesRemainDistinct(decoder=SwiftJLI.Decoder @ 0x00000001700b6c98) at @__swiftmacro_13SwiftJLITests0039CLISynchronousExecutionTestsswift_jrGEmfMX110_8_6expectfMf_.swift:2:25 [opt]
+  ﹉ frame #6: 0x0000000104af3684 Testing`__checkClosureCall(performing:throws:mismatchExplanation:expression:comments:isRequired:sourceLocation:) + 660
+     frame #7: 0x0000000104af220c Testing`__checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:) + 292
+     frame #8: 0x000000010517ab1c SwiftJLIPackageTests`freestanding macro expansion #1 of expect in module SwiftJLITests file CLISynchronousExecutionTests.swift line 111 column 9() at @__swiftmacro_13SwiftJLITests0039CLISynchronousExecutionTestsswift_jrGEmfMX110_8_6expectfMf_.swift:1:1 [opt] [inlined]
+     frame #9: 0x000000010517a918 SwiftJLIPackageTests`specialized CLISynchronousExecutionTests.hostDeadlineAndMalformedCategoriesRemainDistinct() at CLISynchronousExecutionTests.swift:111:9 [opt]
+     frame #10: 0x0000000105178478 SwiftJLIPackageTests`CLISynchronousExecutionTests.hostDeadlineAndMalformedCategoriesRemainDistinct() at <compiler-generated>:0 [opt] [inlined]
+     frame #11: 0x0000000105178470 SwiftJLIPackageTests`$s13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_7__localfMu0_ #1 @Sendable (_0=<unavailable>) in static CLISynchronousExecutionTests.$s13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_17Z420bb98adbcfd3e2fMu_@Sendable () in static CLISynchronousExecutionTests.$s13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_17Z420bb98adbcfd3e2fMu_@Sendable () at -781132.@__swiftmacro_13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_.swift:5:220 [opt] [inlined]
+     frame #12: 0x0000000105178470 SwiftJLIPackageTests`static CLISynchronousExecutionTests.$s13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_17Z420bb98adbcfd3e2fMu_@Sendable () at -781132.@__swiftmacro_13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_.swift:7:13 [opt] [inlined]
+     frame #13: 0x0000000105178470 SwiftJLIPackageTests`specialized implicit closure #1 in static CLISynchronousExecutionTests.$s13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_25generator420bb98adbcfd3e2fMu_@Sendable () at -781132.@__swiftmacro_13SwiftJLITests28CLISynchronousExecutionTestsV48hostDeadlineAndMalformedCategoriesRemainDistinct4TestfMp_.swift:18:17 [opt]
+     frame #14: 0x0000000104b47ea8 Testing`specialized static Runner._applyScopingTraits(for:testCase:_:)
+     frame #15: 0x0000000104b4a034 Testing`specialized closure #1 in closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+     frame #16: 0x0000000104b3e604 Testing`closure #1 in closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+     frame #17: 0x0000000104a920ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+     frame #18: 0x0000000104b17358 Testing`specialized static Issue.withErrorRecording(at:configuration:isolation:_:)
+     frame #19: 0x0000000104b3dff8 Testing`closure #1 in static Runner._runSingleTestCaseIteration(_:within:)
+     frame #20: 0x0000000104a920ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+     frame #21: 0x0000000104b58744 Testing`specialized closure #1 in TestCancellable.withCancellationHandling(_:)
+     frame #22: 0x0000000104b54080 Testing`specialized TestCancellable.withCancellationHandling(_:)
+     frame #23: 0x0000000104b3ede8 Testing`specialized static Test.Case.withCurrent(_:perform:)
+     frame #24: 0x0000000104b3da5c Testing`static Runner._runSingleTestCaseIteration(_:within:)
+     frame #25: 0x0000000104b49abc Testing`specialized static Runner._runTestCase(_:within:in:)
+     frame #26: 0x0000000104b3d160 Testing`closure #4 in static Runner._runTestCases(_:within:context:)
+     frame #27: 0x0000000104a920ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+     frame #28: 0x0000000104a9af20 Testing`(1) await resume partial function for reabstraction thunk helper from @escaping @callee_guaranteed @Sendable @async (@unowned Swift.Int, @in_guaranteed Testing.Test.Case) -> () to @escaping @callee_guaranteed @Sendable @async (@in_guaranteed (offset: Swift.Int, element: Testing.Test.Case)) -> (@error @owned Swift.Error)
+     frame #29: 0x0000000104a920ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+     frame #30: 0x0000000104b469d4 Testing`specialized closure #1 in closure #1 in static Runner._forEach(in:namingTasksWith:_:)
+     frame #31: 0x0000000104a920ac Testing`partial apply for closure #1 in __checkClosureCall(throws:performing:expression:comments:isRequired:sourceLocation:)
+(lldb) disassemble -n swift_task_localValuePushImpl -c 24
+libswift_Concurrency.dylib`swift_task_localValuePushImpl:
+    0x2cb9d861c <+0>:  pacibsp 
+    0x2cb9d8620 <+4>:  stp    x26, x25, [sp, #-0x50]!
+    0x2cb9d8624 <+8>:  stp    x24, x23, [sp, #0x10]
+    0x2cb9d8628 <+12>: stp    x22, x21, [sp, #0x20]
+    0x2cb9d862c <+16>: stp    x20, x19, [sp, #0x30]
+    0x2cb9d8630 <+20>: stp    x29, x30, [sp, #0x40]
+    0x2cb9d8634 <+24>: add    x29, sp, #0x40
+    0x2cb9d8638 <+28>: mov    x19, x2
+    0x2cb9d863c <+32>: mov    x20, x1
+    0x2cb9d8640 <+36>: mov    x21, x0
+    0x2cb9d8644 <+40>: bl     0x2cb9c825c               ; swift_task_getCurrent
+    0x2cb9d8648 <+44>: cbz    x0, 0x2cb9d8718           ; <+252>
+    0x2cb9d864c <+48>: mov    x22, x0
+    0x2cb9d8650 <+52>: bl     0x2cb9da2e0               ; swift_task_hasTaskGroupStatusRecord
+    0x2cb9d8654 <+56>: mov    x23, x0
+    0x2cb9d8658 <+60>: mov    x25, x19
+    0x2cb9d865c <+64>: ldr    x26, [x22, #0x88]
+->  0x2cb9d8660 <+68>: ldr    x8, [x25, #-0x8]!
+    0x2cb9d8664 <+72>: mov    x16, x8
+    0x2cb9d8668 <+76>: mov    x17, x25
+    0x2cb9d866c <+80>: movk   x17, #0x2e3f, lsl #48
+    0x2cb9d8670 <+84>: autda  x16, x17
+    0x2cb9d8674 <+88>: mov    x17, x16
+    0x2cb9d8678 <+92>: xpacd  x17

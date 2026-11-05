@@ -1,0 +1,363 @@
+{
+  "baselineSHA": "8ae2762710d6279cd92222f5bb5ca95f042f694e",
+  "baselineProductionSHA": "5351088d3bb4630a32de6509e4d62210ad14aaa0",
+  "suitePolicy": "0.10.0",
+  "childWorktree": "/private/tmp/swiftjli-round4-dct",
+  "childHead": "41acd7235435f67d9336cbfd07f5215e42f7fed8",
+  "acceptedChildCommits": [
+    {
+      "sha": "7302f7e",
+      "change": "Bound per-worker DCT scratch; omit unused full-resolution buffers from previews",
+      "tests": "47 affected Release declarations plus corrected 6370-block targeted test"
+    },
+    {
+      "sha": "0b69c46",
+      "change": "Direct serial greyscale destination output; exact shared ties-away and Float-bit conversion",
+      "tests": "49 affected Release declarations; default8 12 fixtures x2 and explicit1worker six fixtures x2 exact output"
+    },
+    {
+      "sha": "b315eff",
+      "change": "Stream sequential greyscale coefficients in1024-block batches for explicit1worker",
+      "tests": "72 affected Release declarations; six fixtures x2 exact output; later entropy failure invalidates destination"
+    },
+    {
+      "sha": "a4cd761",
+      "change": "Use streaming automatically for small accelerated greyscale frames",
+      "tests": "72 affected Release declarations; default8 12 fixtures x2 exact output"
+    },
+    {
+      "sha": "e3ee589",
+      "change": "Adopt shared dispatch/workspace plan; applied directly to main before integrated resource qualification"
+    },
+    {
+      "sha": "41acd72",
+      "change": "Mirror final scalar<=2048 automatic threshold, immutable worker ceiling and backend-aware selector; main already owns this change; final qualification belongs to parent"
+    }
+  ],
+  "acceptedMemoryEvidence": {
+    "method": "Three ordered repeats of Darwin time-l maximumRSS around native benchmark executables (one checked decode plus25 timed/warmup decodes), not CLI RSS or isolated algorithm workspace.",
+    "boundedDefault8": {
+      "dct12-512": [
+        21839872,
+        19824640
+      ],
+      "dct12-2048": [
+        120979456,
+        89489408
+      ],
+      "rgb8-2048": [
+        194723840,
+        164102144
+      ]
+    },
+    "streamExplicit1Worker": {
+      "dct12-512": [
+        21741568,
+        14794752
+      ],
+      "dct12-2048": [
+        120619008,
+        46596096
+      ]
+    },
+    "limitation": "Native default8 harness does not exercise explicit1worker streaming on large frames. Original CLI2048 decode exceeded the existing workspace reservation even with--max-memory10GiB; workspace and total-memory limits are distinct."
+  },
+  "rejectedExperiments": [
+    {
+      "variant": "Parallel split inside each1024-block IDCT batch",
+      "tests": "72 affected Release declarations;12 fixtures x2 exact",
+      "reason": "2048 baseline25.003/24.827ms versus26.683/26.736ms; slower"
+    },
+    {
+      "variant": "Four grouped1024 transforms in4096-block window",
+      "tests": "73 affected Release declarations;12 fixtures x2 exact",
+      "reason": "Immediate repeated2048 measurements were16-36percent slower; rejected"
+    },
+    {
+      "variant": "Eight grouped1024 transforms in8192-block window",
+      "tests": "73 affected Release declarations;12 fixtures x2 exact",
+      "reason": "Initially nearbaseline, but three-way rotation repeated6.9-12.2percent regressions; rejected despite about59percent RSS saving"
+    },
+    {
+      "variant": "Automatic scalar streaming at4096blocks",
+      "tests": "five512 fixtures x2 exact output",
+      "reason": "Consistent12-21percent dct12 and29-30percent flat8 regressions; final selector restricts automatic scalar streaming to2048blocks"
+    }
+  ],
+  "finalLargeDispatch": "No grouped window or new parallel pointer carrier ships. Large default decodes retain full coefficients/planes with bounded reconstruction scratch; explicit1worker greyscale uses bounded streaming.",
+  "sanitizerStatus": "No child sanitizer run; parent performs integrated Release,ASan,TSan,CLI and independent oracle gates.",
+  "experimentalPatchNote": "Rejected patches include source snapshots and minor documentation/selector edits between builds; exact measured binary/object hashes are in benchmark JSON. They are not accepted production source pins.",
+  "artifacts": [
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-bounded-benchmark.log",
+      "sha256": "7010a529bcc1a926af449997390787b345727118ad75e942cecc1b92184b97b0",
+      "bytes": 1496
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-bounded-rss.json",
+      "sha256": "b159f8527fde14892d5ce02f331ccfa02dbd332e97a0019c49633bba7c9dddf7",
+      "bytes": 12186
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-bounded-rss.log",
+      "sha256": "d2df03e949d997a578f54ab738287478b2eb6dd766546b0ae12d466b6a40fc46",
+      "bytes": 523
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-bounded-tests.log",
+      "sha256": "e1bdd5f548bf42727a03be9f4f1b3279464d59ec36db864bd228b5eb1956bb03",
+      "bytes": 2620
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-bounded.json",
+      "sha256": "6c025d964b3bf6ba819a6055a140d390ada852b8ebb0b6c1a4874abcfd9ff413",
+      "bytes": 40632
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-direct-benchmark.log",
+      "sha256": "5cf7f2db25f957f4302c8f89c4abff67b31589f75384256c51f2f4ca5732576a",
+      "bytes": 1490
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-direct-oneworker-rss.json",
+      "sha256": "4ce79125cfa24e55a21507d7d4d9680688afb6b3016dde83a2989e128a87cd98",
+      "bytes": 12510
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-direct-oneworker-rss.log",
+      "sha256": "80896c802b87468338ed8c140b4680926f817ef0e504ef6c29f0cef7fc6547cc",
+      "bytes": 524
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-direct-oneworker.json",
+      "sha256": "85fbf010a0e3b0522482b45d98398bddc456a8bebcf32b16addea3cbd54e35e3",
+      "bytes": 21369
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-direct-oneworker.log",
+      "sha256": "fe430a81ccc533ca3572230af8e1ed89680fe4d28d304408c2a83c8137bca7b0",
+      "bytes": 770
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-direct-rss.json",
+      "sha256": "ca04bb1a38cb8df52bd0b525acc18af450983d25232c20623c1c9cbedfe70909",
+      "bytes": 12150
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-direct-rss.log",
+      "sha256": "5c05bf13b7ff5193832028423105503ea2fac2ff956c9065f93ca6e85031b7aa",
+      "bytes": 521
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-direct-tests.log",
+      "sha256": "584025ade215dc89c77bf141868f23786513c50823ba069768ad5228ba440bc7",
+      "bytes": 14012
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-direct.json",
+      "sha256": "9b4cbe566dc17366feae954c05103723d9d8e397e7361f31857156b922254a52",
+      "bytes": 40689
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-existing-pair.py",
+      "sha256": "3acaf9b23d83345ecb63ea894f4f3c351e8469d6fd3f610dd4048d245248f843",
+      "bytes": 1554
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped-final-rejected.patch",
+      "sha256": "58f9ae241c98e45bc64e7a4828a42e46b29b746d859d65ebd359036620bfafde",
+      "bytes": 17837
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped4-repeat.json",
+      "sha256": "1edc184a9191df5bd47c64a6ba708ec2c513f99d3d6bbd71b8fb2ae760a052ed",
+      "bytes": 27785
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped4-repeat.log",
+      "sha256": "7aa89eaf8b840863902c8dc6e8dab95c1fd54b6e22c52fa4fa5a7c62effdadcb",
+      "bytes": 1036
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped4-tests.log",
+      "sha256": "d5a20667a78aa61a504f98cb1898b27d7fefe7f8cd9ad67cdfbff3a863ef1e38",
+      "bytes": 19277
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped4.json",
+      "sha256": "205c3cde258619b21ea3c6026bcc786d0a97dc57e619402718a2fb6187bb4aa7",
+      "bytes": 40855
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped4.log",
+      "sha256": "bf5cb7687c98678e2458ad1e75ed5a74fec6fb4d5282b8c4bdcc5cd018a4f3c7",
+      "bytes": 1491
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped8-repeat.json",
+      "sha256": "fc125e9207d8500930ed6cf1fc3b2b14151d8389ece31bda22071f87a9eb3ad6",
+      "bytes": 27806
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped8-repeat.log",
+      "sha256": "50143bb6850970bf085b3afea7531e3cb3ad3c5f5be6fdbff40cc2e5e085e647",
+      "bytes": 1036
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped8-rss.json",
+      "sha256": "bfffd4ee6c0dfce07a92c8ad000bca4b4d6333ada182f6e79d3515104e5b1dd0",
+      "bytes": 4002
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped8-rss.log",
+      "sha256": "e8d7b8b3b41d960bfc343bce61c10b233699716dfffb3d282405ab18ca777895",
+      "bytes": 168
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped8-tests.log",
+      "sha256": "31c6392c86f8cceeb64088ae4e95ec563a239270f9c217c4df4bfb6c22e44447",
+      "bytes": 19292
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped8.json",
+      "sha256": "557a06ecd133d264a339e9b3e84973c2e9742503e37cf2f05f17bed08b6b7919",
+      "bytes": 40938
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped8.log",
+      "sha256": "2761f2a2f5199f8c1ab5602b091369557018613433f893cde2d067dc5a443fff",
+      "bytes": 1491
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-grouped8.patch",
+      "sha256": "5dc28bcefc136df473df8a8d1b2c764749d194d124d6bea0453b82620e20a731",
+      "bytes": 16146
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-memory.py",
+      "sha256": "76c3a9cd9c95a3c1d275cf142e2308300fd052a8d43873bdc4bdcc589904eddb",
+      "bytes": 1771
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-oneworker-benchmark.py",
+      "sha256": "491bb28101b258309f4a4aa816fcb690929846f2e598c2c6f3a96f27142288e3",
+      "bytes": 2940
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-oneworker.swift",
+      "sha256": "e6c13503fbf98c9b92862b3764d322f6caf7cbcb6332e8118b5ad78df97ec65f",
+      "bytes": 1489
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-parallel-batch-tests.log",
+      "sha256": "f6f058814b087bfe916f2d301b880527fea5684b4ba6081bfd3ad603e47a71be",
+      "bytes": 18886
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-parallel-batch.json",
+      "sha256": "4cdbc9f963f9d4d495349d5e432305a183b439489b7710c03fef76dc5728ddd7",
+      "bytes": 40729
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-parallel-batch.log",
+      "sha256": "bc219742d84fd67b9979b985781703f822b4213f5184ed9676969398d044047e",
+      "bytes": 1492
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-parallel-batch.patch",
+      "sha256": "8e9ef071e81e932018f07aa4f216d9bbd9e3b1610f2b197ac89cc592fecea7f8",
+      "bytes": 7928
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-scalar-benchmark.py",
+      "sha256": "0d025b072420dce6372018e31cb5ff66d4e127c45904f5a4f071eba734be9379",
+      "bytes": 2932
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-scalar.swift",
+      "sha256": "32e71cc5f2b716bf0b610c9d5461cfa5626e4ab27233638cc355b0cc4ed05900",
+      "bytes": 1499
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-scalar512.json",
+      "sha256": "941e048f6fb7077b62230fed13eac7d7fe10d3df55e78a304665349e9a7c2e45",
+      "bytes": 18417
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-scalar512.log",
+      "sha256": "a4619774468eda63791693af07b43e63e8e5c4536bd0ca64a97672002dd2e475",
+      "bytes": 649
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-small-default-tests.log",
+      "sha256": "b43dd2de082881b1f759a99c98a5f9440357db05e4bdff3b10c08e74347753a2",
+      "bytes": 18817
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-small-default.json",
+      "sha256": "e8edf1ae50f3f069c815c2b7558e2f5d5e41f75e993a852bd33bdb71f07e45fd",
+      "bytes": 40709
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-small-default.log",
+      "sha256": "8bbfadd2f220819cb0453dc2b4f6a2b4c0d6fc6470bf440efbd68107f3714c54",
+      "bytes": 1494
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-stream-default8-versus1.json",
+      "sha256": "f520d64b306e61c134b64753ec090f1a6ba2329713ede3e07727de9a96f25afd",
+      "bytes": 27646
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-stream-default8-versus1.log",
+      "sha256": "6156cc92c49e1a8d4af7015eecc1db623c01431e4ce2c496a93af8f927daa75d",
+      "bytes": 1038
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-stream-oneworker-rss.json",
+      "sha256": "ed97a907a64da2a9aaa43635bfd7ad313eb41fec3640b0d44f8e4da97d15ecfb",
+      "bytes": 12510
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-stream-oneworker-rss.log",
+      "sha256": "a01bd3cc53fc404c6bc782027cc00c74747d0c90d19265454d786860b41665bb",
+      "bytes": 523
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-stream-oneworker.json",
+      "sha256": "bc69e8d99d31d910458631aa8844586937d4e9e1f665c8f0b80381d317e6da04",
+      "bytes": 21389
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-stream-oneworker.log",
+      "sha256": "e5b022b7f680de447ba0808acf2a2658c8d55088c384fca553fc4db0d8f32aa7",
+      "bytes": 772
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-stream-tests.log",
+      "sha256": "bae007a62cbee5259e0561f00f59499bda3775e17485536a63f0e03a7c3775cb",
+      "bytes": 18886
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-tests.log",
+      "sha256": "37e7d6f33882b8496df8ef6faabacf0c7c2dd92910de6de6a29ba317efdcf015",
+      "bytes": 13629
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-threeway.json",
+      "sha256": "1c49ce7d62371ab5e319409637932fc2135bc39d7f234a52ddc935b1a33d7699",
+      "bytes": 7116
+    },
+    {
+      "path": "/private/tmp/swiftjli-round4-dct-threeway.log",
+      "sha256": "3b174fbedf37fe974a80eb8012434015785b8b0d7f2dca5111e20fdcee900c1a",
+      "bytes": 189
+    }
+  ],
+  "commands": {
+    "accepted72Release": "DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test -c release --jobs 4 --scratch-path /private/tmp/swiftjli-round4-dct-build --filter \"BoundedDCTWorkspaceTests|SequentialGreyscaleDecoderTests|SharedDCTStorageTests|EncoderDecoderTests|Float32DecodeTests|ScaledDecodeTests|NativeExecutionTests|ContractImageLayerTests|CLISynchronousExecutionTests\"",
+    "acceptedDefaultDCT": "python3 /private/tmp/swiftjli-round2-final-dct-benchmark.py --baseline-products /private/tmp/swiftjli-round3-parser-build/out/Products/Release --candidate-products /private/tmp/swiftjli-round4-dct-build/out/Products/Release --output /private/tmp/swiftjli-round4-dct-small-default.json",
+    "accepted1WorkerDCT": "python3 /private/tmp/swiftjli-round4-dct-oneworker-benchmark.py --baseline-products /private/tmp/swiftjli-round3-parser-build/out/Products/Release --candidate-products /private/tmp/swiftjli-round4-dct-build/out/Products/Release --output /private/tmp/swiftjli-round4-dct-stream-oneworker.json",
+    "accepted1WorkerRSS": "python3 /private/tmp/swiftjli-round4-dct-memory.py --candidate-products /private/tmp/swiftjli-round4-dct-build/out/Products/Release --binary-prefix /private/tmp/swiftjli-round4-dct-stream-oneworker --output /private/tmp/swiftjli-round4-dct-stream-oneworker-rss.json"
+  }
+}

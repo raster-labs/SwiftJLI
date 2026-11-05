@@ -24,6 +24,8 @@ Swift 6.2 manifest minimum with Swift 6.4 as the qualified primary toolchain, Sw
 
 The merged codec builds on the completed API/storage foundation. Read the [current acceptance ledger](Documentation/Migration/ACCEPTANCE.md) first; [migration checkpoints](Documentation/Migration/STATUS.md) and [foundation evidence](Documentation/MILESTONE1.md) retain historical results.
 
+The latest [JPEG performance and memory report](Documentation/Migration/Qualification/DjpegPerformanceRound5_20261103/block-local-6e763ec/README.md) records exact ARM64 block-local DCT, smaller scratch windows and lossless entropy improvements, including a repaired concurrency defect. Fresh comparisons show lower library latency in 11 of 12 eligible cases and lower dense/noisy DCT RSS by about 0.5–0.8 MiB versus the preceding SwiftJLI build. All eight large lossless CLI cases beat both pinned djpeg versions in two provisional rounds. Small CLI latency, single-worker DCT and DCT/process memory remain open gaps; the overall optimisation goal is not complete.
+
 - [Coding-agent entry point](AGENTS.md) and [codec-specific implementation plan](IMPLEMENTATION.md).
 - [Application migration guide: JLISwift → SwiftJLI](MIGRATION.md), including current limitations, API mappings and a staged cutover checklist for humans and coding agents.
 - [Suite policy](Documentation/SUITE_POLICY.md) and [common API](Documentation/COMMON_API.md).

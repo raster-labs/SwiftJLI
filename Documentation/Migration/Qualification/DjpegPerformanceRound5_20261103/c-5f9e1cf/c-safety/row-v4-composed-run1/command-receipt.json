@@ -1,0 +1,45 @@
+{
+  "target": "row",
+  "sourceRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "sourceManifestSHA256": "6917fd9808e0c4bd215a2f097a67895a44f64c7c02d1cf5ebc061ae905aee1f8",
+  "compileCommand": [
+    "xcrun",
+    "clang",
+    "-O2",
+    "-g",
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fsanitize=address,undefined",
+    "-fno-sanitize-recover=all",
+    "-I",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v4-composed-row-source/row/include",
+    "-I",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v4-composed-row-source",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v4-composed-row-source/row_safety.c",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v4-composed-row-source/row/ACBlock.c",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v4-composed-row-source/row/LosslessRow.c",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v4-composed-row-source/row/LosslessCodeZeroRow.c",
+    "-o",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/row-v4-composed-run1/safety-harness"
+  ],
+  "cwd": "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v4-composed-row-source",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+    "ASAN_OPTIONS": "halt_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+  },
+  "startedUTC": "2026-11-03T17:27:06.485991+00:00",
+  "scope": "bounded standalone memory/undefined-behaviour diagnostic; not performance acceptance",
+  "compilerVersionExitCode": 0,
+  "compileExitCode": 0,
+  "binarySHA256": "db8cf49fb9d6e22483c6a885995f14588f60a3a8758a6bbbfe511514f9dc6157",
+  "runCommand": [
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/row-v4-composed-run1/safety-harness"
+  ],
+  "runExitCode": 0,
+  "runElapsedSeconds": 2.5768997499981197,
+  "counterValidation": "passed",
+  "finishedUTC": "2026-11-03T17:27:09.644742+00:00"
+}

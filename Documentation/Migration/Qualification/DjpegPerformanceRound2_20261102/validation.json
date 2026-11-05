@@ -1,0 +1,142 @@
+{
+  "startedUTC": "2026-11-02T14:47:50.294550+00:00",
+  "cwd": "/private/tmp/swiftjli-djpeg-round2",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+  },
+  "checks": [
+    {
+      "name": "baseline-tests",
+      "command": [
+        "swift",
+        "test",
+        "--package-path",
+        "/private/tmp/swiftjli-djpeg-performance",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round2-final-baseline-build"
+      ],
+      "startedUTC": "2026-11-02T14:47:50.294689+00:00",
+      "log": "baseline-tests.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:47:52.567956+00:00"
+    },
+    {
+      "name": "release-tests",
+      "command": [
+        "swift",
+        "test",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round2-final-build"
+      ],
+      "startedUTC": "2026-11-02T14:47:52.568226+00:00",
+      "log": "release-tests.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:48:30.030845+00:00"
+    },
+    {
+      "name": "release-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round2-qualification-cli"
+      ],
+      "startedUTC": "2026-11-02T14:51:00.722727+00:00",
+      "log": "release-cli.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:51:03.889401+00:00"
+    },
+    {
+      "name": "asan-tests",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round2-final-asan",
+        "--sanitize",
+        "address"
+      ],
+      "startedUTC": "2026-11-02T14:51:03.889648+00:00",
+      "log": "asan-tests.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:54:02.540808+00:00"
+    },
+    {
+      "name": "asan-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round2-final-asan/out/Products/Debug/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round2-qualification-asan-cli"
+      ],
+      "startedUTC": "2026-11-02T14:54:02.541121+00:00",
+      "log": "asan-cli.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:54:09.921268+00:00"
+    },
+    {
+      "name": "tsan-tests",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round2-final-tsan",
+        "--sanitize",
+        "thread",
+        "--filter",
+        "LosslessLookaheadTests|LosslessRowStorageTests|LosslessDifferenceTests|ScopedACDecoderTests|ACLookaheadTests|NativeExecutionTests|CLISynchronousExecutionTests|OwnershipTests|CancellationPublicationTests"
+      ],
+      "startedUTC": "2026-11-02T14:54:09.921536+00:00",
+      "log": "tsan-tests.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:54:43.810253+00:00"
+    },
+    {
+      "name": "lossless-interop",
+      "command": [
+        "python3",
+        "Scripts/verify-lossless-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round2-final-lossless-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round2-final-oracle-build"
+      ],
+      "startedUTC": "2026-11-02T14:54:43.810611+00:00",
+      "log": "lossless-interop.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:54:48.428313+00:00"
+    },
+    {
+      "name": "dct-interop",
+      "command": [
+        "python3",
+        "Scripts/verify-dct-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round2-final-dct-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round2-final-oracle-build"
+      ],
+      "startedUTC": "2026-11-02T14:54:48.428666+00:00",
+      "log": "dct-interop.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-02T14:54:51.180894+00:00"
+    }
+  ],
+  "finishedUTC": "2026-11-02T14:54:51.181222+00:00"
+}

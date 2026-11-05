@@ -1,0 +1,31 @@
+[
+  {
+    "command": [
+      "python3",
+      "/private/tmp/swiftjli-round2-final-dct-benchmark.py",
+      "--baseline-products",
+      "/private/tmp/swiftjli-round5-ac-chroma-products",
+      "--candidate-products",
+      "/private/tmp/swiftjli-round5-dct-build/out/Products/Release",
+      "--output",
+      "/private/tmp/swiftjli-round5-dct-evidence/dc-candidate-native.json",
+      "--rounds",
+      "2"
+    ],
+    "exitCode": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/private/tmp/swiftjli-round5-dct-evidence/make-late-ac.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/private/tmp/swiftjli-round5-dct-evidence/dc-extra-benchmark.py"
+    ],
+    "exitCode": 0
+  }
+]

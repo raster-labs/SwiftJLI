@@ -1,0 +1,180 @@
+Building for production...
+[1 / 4]
+[2 / 5] SwiftJLI
+[3 / 6] SwiftJLI
+[11 / 12] SwiftJLITests-product
+/private/tmp/swiftjli-round5-dct/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-round5-dct/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:37:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 35 |                     var reader = BitReader(data: writer.data)
+ 36 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 37 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 38 |                     try destination.withUnsafeMutableBufferPointer {
+ 39 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+[12 / 13] SwiftJLITests-product
+[17 / 21] SwiftJLITests-product
+[19 / 21] SwiftJLITests-product
+[20 / 20] swiftjli-cli-product
+Build complete! (42.33 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite ScopedACDecoderTests started.
+◇ Suite SequentialGreyscaleDecoderTests started.
+◇ Suite ACLookaheadTests started.
+◇ Suite "JPEG Markers – Writer and Reader" started.
+◇ Suite BoundedDCTWorkspaceTests started.
+◇ Suite JPEGDecodeParityTests started.
+◇ Suite DCOnlyDCTTests started.
+◇ Suite "Huffman – Bit Streams, Tables, Encoding and Decoding" started.
+◇ Test invalidExtentsRejectBeforeWriting() started.
+◇ Test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test malformedEntropyAndExpiredOperationsStillReject() started.
+◇ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test batchConsumerFailureStopsBeforeReusingItsBorrow() started.
+◇ Test invalidDestinationIsRejectedBeforeWriting() started.
+◇ Test rawRGBAdobe(precision:) started.
+◇ Test malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() started.
+◇ Test coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test boundedCompleteCodestreamAndPadding() started.
+◇ Test centredChromaAgreesAcrossWorkerLimits() started.
+◇ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test everyUnclippedTwelveBitDCAmplitudeKeepsFloatBits() started.
+◇ Test laterEntropyFailureInvalidatesStreamedDestination() started.
+◇ Test sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() started.
+◇ Test "MarkerReader rejects non-JPEG data" started.
+◇ Test everyPrefixOffsetAndRunBoundaryMatchesReference() started.
+◇ Test "MarkerReader reads SOF0 frame info correctly" started.
+◇ Test independentChroma(_:) started.
+◇ Test "SOF2 marker for progressive" started.
+◇ Test "Writer and reader round-trip SOI" started.
+◇ Test rawRGBIdentifiersAndSourceOverride() started.
+◇ Test widerPrefetchPreservesLogicalCursorAndMarkerBoundaries() started.
+◇ Test "MarkerReader detects 4:2:0 subsampling" started.
+◇ Test allocationAndCoverageDispatchAreBounded() started.
+◇ Test "APP0 marker starts with correct identifier" started.
+◇ Test case passing 1 argument precision → 12 to scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test case passing 1 argument precision → 8 to rawRGBAdobe(precision:) started.
+◇ Test "DQT marker writes quantization table" started.
+◇ Test case passing 1 argument precision → 8 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test "BitReader reads written bits correctly" started.
+◇ Test "EOI marker is correctly written" started.
+◇ Test case passing 1 argument precision → 12 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test case passing 1 argument precision → 8 to scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test amplifiedExtremesTailsAndMixedACKeepExactOutput() started.
+◇ Test case passing 1 argument precision → 12 to rawRGBAdobe(precision:) started.
+◇ Test "Additional bits encoding for positive values" started.
+◇ Test "SOI marker is correctly written" started.
+◇ Test "SOF0 marker for grayscale" started.
+◇ Test case passing 1 argument combined → false to malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test "MarkerReader detects progressive SOF2" started.
+◇ Test "Standard DC luminance table has 12 symbols" started.
+◇ Test "Optimal table is a valid prefix code (canonical, ≤16-bit, complete)" started.
+◇ Test "Lookahead table resolves short codes and defers long ones" started.
+◇ Test "Standard AC chrominance table has 162 symbols" started.
+◇ Test case passing 1 argument combined → true to malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test "Category function returns correct values" started.
+◇ Test "Standard DC chrominance table has 12 symbols" started.
+◇ Test "Empty frequencies fall back to the standard table" started.
+◇ Test "Standard AC luminance table has 162 symbols" started.
+◇ Test "Fast-path decode is bit-identical to bit-by-bit over random streams" started.
+◇ Test "HuffmanTable stores bits array" started.
+◇ Test "BitReader throws on end of data" started.
+◇ Test "AC encode then decode round-trips for simple block" started.
+◇ Test "Optimal table round-trips encode → decode" started.
+◇ Test "BitReader single bit reads" started.
+◇ Test "BitWriter writes single byte correctly" started.
+◇ Test "Optimized Huffman produces smaller output than standard, same pixels" started.
+◇ Test "DC encode then decode round-trips" started.
+◇ Test case passing 1 argument combined → true to coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test case passing 1 argument combined → false to coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test "BitWriter handles byte stuffing for 0xFF" started.
+◇ Test case passing 1 argument precision → 8 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test "Additional bits encoding for negative values" started.
+◇ Test case passing 1 argument precision → 12 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test case passing 1 argument fixture → baseline_422_64x18 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_7x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_3x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_4x3 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_1x1 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_64x18 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_7x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_3x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_4x3 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_1x1 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → progressive_422_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_444_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → progressive_420_63x19 to independentChroma(_:) started.
+✔ Test malformedEntropyAndExpiredOperationsStillReject() passed after 0.003 seconds.
+✔ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) with 2 test cases passed after 0.003 seconds.
+✔ Test invalidDestinationIsRejectedBeforeWriting() passed after 0.004 seconds.
+✔ Test invalidExtentsRejectBeforeWriting() passed after 0.004 seconds.
+✔ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() passed after 0.004 seconds.
+✔ Test boundedCompleteCodestreamAndPadding() passed after 0.004 seconds.
+✔ Test batchConsumerFailureStopsBeforeReusingItsBorrow() passed after 0.004 seconds.
+✔ Test "MarkerReader reads SOF0 frame info correctly" passed after 0.004 seconds.
+✔ Test "MarkerReader rejects non-JPEG data" passed after 0.004 seconds.
+✔ Test "SOF2 marker for progressive" passed after 0.004 seconds.
+✔ Test "Writer and reader round-trip SOI" passed after 0.004 seconds.
+✔ Test centredChromaAgreesAcrossWorkerLimits() passed after 0.004 seconds.
+✔ Test "MarkerReader detects 4:2:0 subsampling" passed after 0.004 seconds.
+✔ Test coefficientsAndRestartPositionMatchArrayReference(combined:) with 2 test cases passed after 0.004 seconds.
+✔ Test widerPrefetchPreservesLogicalCursorAndMarkerBoundaries() passed after 0.004 seconds.
+✔ Test allocationAndCoverageDispatchAreBounded() passed after 0.004 seconds.
+✔ Test laterEntropyFailureInvalidatesStreamedDestination() passed after 0.004 seconds.
+✔ Test "APP0 marker starts with correct identifier" passed after 0.004 seconds.
+✔ Test sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() passed after 0.004 seconds.
+✔ Test rawRGBAdobe(precision:) with 2 test cases passed after 0.004 seconds.
+✔ Test "BitReader reads written bits correctly" passed after 0.004 seconds.
+✔ Test "DQT marker writes quantization table" passed after 0.004 seconds.
+✔ Test "EOI marker is correctly written" passed after 0.004 seconds.
+✔ Test "Additional bits encoding for positive values" passed after 0.004 seconds.
+✔ Test "Standard DC luminance table has 12 symbols" passed after 0.004 seconds.
+✔ Test "SOI marker is correctly written" passed after 0.004 seconds.
+✔ Test "Optimal table is a valid prefix code (canonical, ≤16-bit, complete)" passed after 0.004 seconds.
+✔ Test "MarkerReader detects progressive SOF2" passed after 0.004 seconds.
+✔ Test "Standard AC chrominance table has 162 symbols" passed after 0.004 seconds.
+✔ Test "SOF0 marker for grayscale" passed after 0.004 seconds.
+✔ Test "Standard DC chrominance table has 12 symbols" passed after 0.004 seconds.
+✔ Test "Category function returns correct values" passed after 0.004 seconds.
+✔ Test "Empty frequencies fall back to the standard table" passed after 0.004 seconds.
+✔ Test "HuffmanTable stores bits array" passed after 0.004 seconds.
+✔ Test rawRGBIdentifiersAndSourceOverride() passed after 0.004 seconds.
+✔ Test "Standard AC luminance table has 162 symbols" passed after 0.004 seconds.
+✔ Test "Lookahead table resolves short codes and defers long ones" passed after 0.004 seconds.
+✔ Test "BitReader throws on end of data" passed after 0.004 seconds.
+✔ Test "BitWriter writes single byte correctly" passed after 0.004 seconds.
+✔ Test "BitReader single bit reads" passed after 0.004 seconds.
+✔ Test "DC encode then decode round-trips" passed after 0.004 seconds.
+✔ Test "AC encode then decode round-trips for simple block" passed after 0.004 seconds.
+✔ Test "Optimal table round-trips encode → decode" passed after 0.004 seconds.
+✔ Test "Additional bits encoding for negative values" passed after 0.003 seconds.
+✔ Test "BitWriter handles byte stuffing for 0xFF" passed after 0.003 seconds.
+✔ Test independentChroma(_:) with 15 test cases passed after 0.004 seconds.
+✔ Test "Optimized Huffman produces smaller output than standard, same pixels" passed after 0.004 seconds.
+✔ Suite "JPEG Markers – Writer and Reader" passed after 0.004 seconds.
+✔ Suite JPEGDecodeParityTests passed after 0.004 seconds.
+✔ Test "Fast-path decode is bit-identical to bit-by-bit over random streams" passed after 0.009 seconds.
+✔ Suite "Huffman – Bit Streams, Tables, Encoding and Decoding" passed after 0.009 seconds.
+✔ Test amplifiedExtremesTailsAndMixedACKeepExactOutput() passed after 0.014 seconds.
+✔ Test everyUnclippedTwelveBitDCAmplitudeKeepsFloatBits() passed after 0.017 seconds.
+✔ Suite DCOnlyDCTTests passed after 0.017 seconds.
+✔ Test malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) with 2 test cases passed after 0.021 seconds.
+✔ Suite ScopedACDecoderTests passed after 0.021 seconds.
+✔ Test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) with 2 test cases passed after 0.031 seconds.
+✔ Suite SequentialGreyscaleDecoderTests passed after 0.031 seconds.
+✔ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) with 2 test cases passed after 0.086 seconds.
+✔ Suite BoundedDCTWorkspaceTests passed after 0.086 seconds.
+✔ Test everyPrefixOffsetAndRunBoundaryMatchesReference() passed after 0.260 seconds.
+✔ Suite ACLookaheadTests passed after 0.260 seconds.
+✔ Test run with 54 tests in 8 suites passed after 0.260 seconds.

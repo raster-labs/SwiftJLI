@@ -1,0 +1,70 @@
+{
+  "sourceRevision": "f4a05be9f3003a48adaa840abd48fcf6071f009d",
+  "status": "passed",
+  "commands": [
+    {
+      "name": "release-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round5-f4a05be-products/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round5-evidence/integrated-compact-group/release-cli"
+      ],
+      "startedUTC": "2026-11-03T14:28:49.672037+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:28:53.106188+00:00"
+    },
+    {
+      "name": "asan-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round5-asan/out/Products/Debug/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round5-evidence/integrated-compact-group/asan-cli"
+      ],
+      "startedUTC": "2026-11-03T14:28:53.106473+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:29:01.834502+00:00"
+    },
+    {
+      "name": "lossless-oracle",
+      "command": [
+        "python3",
+        "Scripts/verify-lossless-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round5-evidence/integrated-compact-group/lossless-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round5-oracle-build",
+        "--cjpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg"
+      ],
+      "startedUTC": "2026-11-03T14:29:01.834751+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:29:11.684016+00:00"
+    },
+    {
+      "name": "dct-oracle",
+      "command": [
+        "python3",
+        "Scripts/verify-dct-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round5-evidence/integrated-compact-group/dct-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round5-oracle-build",
+        "--cjpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg"
+      ],
+      "startedUTC": "2026-11-03T14:29:11.684250+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T14:29:14.350852+00:00"
+    }
+  ]
+}

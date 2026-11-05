@@ -1,0 +1,231 @@
+Building for production...
+[Planning deferred tasks]
+[5 / 9] SwiftJLI
+[6 / 10] SwiftJLI
+[16 / 22] swiftjli-cli-product
+[18 / 24] swiftjli-cli-product
+[20 / 24] swiftjli-cli-product
+/private/tmp/swiftjli-round4-dct/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-round4-dct/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:79:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 77 |                     var reader = BitReader(data: writer.data)
+ 78 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 79 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 80 |                     try destination.withUnsafeMutableBufferPointer {
+ 81 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+[20 / 24] SwiftJLITests-product
+[25 / 26] SwiftJLITests-product
+[28 / 30] SwiftJLITests-product
+[29 / 29] swiftjli-cli-product
+Build complete! (40.21 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Encoder & Decoder – Full JPEG Pipeline" started.
+◇ Suite "Float32 decode output" started.
+◇ Suite BoundedDCTWorkspaceTests started.
+◇ Suite SequentialGreyscaleDecoderTests started.
+◇ Suite SharedDCTStorageTests started.
+◇ Suite ScaledDecodeTests started.
+◇ Suite NativeExecutionTests started.
+◇ Suite CLISynchronousExecutionTests started.
+◇ Suite "Contract image layer" started.
+◇ Test "1/8 scaled decode handles non-multiple dims and 12-bit grayscale" started.
+◇ Test "Encoder handles grayscale images" started.
+◇ Test "Distance overrides quality when both are set" started.
+◇ Test "YCbCr color float32 is rejected with a clear error" started.
+◇ Test "12-bit grayscale float32 rounds to the uint16 value (carries sub-integer precision)" started.
+◇ Test "Parallel Step-7 reconstruction is bit-identical to serial (large image)" started.
+◇ Test "Parallel trellis + AC-count encode is deterministic and round-trips (large image)" started.
+◇ Test "12-bit preserves more precision than 8-bit on a fine gradient" started.
+◇ Test "1/2 & 1/4 scaled decode equal the box-average of the full decode (color 4:4:4)" started.
+◇ Test "12-bit grayscale round-trips with sub-1% error and outputs uint16" started.
+◇ Test "8-bit grayscale float32 == round to the uint8 output, per sample" started.
+◇ Test "Lossless float32 is rejected (use the bit-exact integer output)" started.
+◇ Test "12-bit color round-trips and outputs uint16 RGB" started.
+◇ Test "Higher quality produces larger output" started.
+◇ Test "float32 input ([0,1]) encodes identically to its 8-bit quantization" started.
+◇ Test "float32 input clamps out-of-range values to [0,1]" started.
+◇ Test "Encoder handles non-multiple-of-8 dimensions" started.
+◇ Test "Adaptive quant field changes the output and round-trips (4:4:4)" started.
+◇ Test "Restart markers round-trip identically to no-restart and emit DRI + RSTn" started.
+◇ Test "Encode-decode round-trip preserves pixel values within JPEG tolerance" started.
+◇ Test "Decoder rejects non-JPEG data" started.
+◇ Test "Encode then decode produces image with correct dimensions" started.
+◇ Test "1/2 & 1/4 scaled decode: grayscale (8/12-bit) box-average + non-multiple dims" started.
+◇ Test "Encoder handles 1×1 pixel image" started.
+◇ Test "Encoder rejects invalid quality" started.
+◇ Test "Encoder produces valid JPEG starting with SOI" started.
+◇ Test "Setting .float32 no longer throws (latent bufferSizeMismatch fixed)" started.
+◇ Test "Inspect returns correct metadata for encoded JPEG" started.
+◇ Test borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test "12-bit JPEG reports precision 12 via inspect" started.
+◇ Test "Encoder rejects negative distance" started.
+◇ Test scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test "1/8 scaled decode yields a block-average thumbnail (color)" started.
+◇ Test previewsStillAdmitFullFrameWorkspace() started.
+◇ Test "Decoder inspect rejects non-JPEG data" started.
+◇ Test groupedWindowsPreserveRestartAndDCState(window:) started.
+◇ Test "Encoder handles 4:2:0 subsampling" started.
+◇ Test "Larger distance produces smaller output (monotonic rate)" started.
+◇ Test laterEntropyFailureInvalidatesStreamedDestination() started.
+◇ Test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test "Grayscale encode-decode round-trip" started.
+◇ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() started.
+◇ Test finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test failureJoinsEveryStartedWorker() started.
+◇ Test invalidExtentsRejectBeforeWriting() started.
+◇ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test malformedEntropyAndExpiredOperationsStillReject() started.
+◇ Test batchConsumerFailureStopsBeforeReusingItsBorrow() started.
+◇ Test deadlineReachesJoinedWorkers() started.
+◇ Test fractionalDeadlineStillExpires() started.
+◇ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test hostCancellationReachesJoinedWorkersWithoutASwiftTask() started.
+◇ Test publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test nestedHostScopeRetainsTaskCancellationForJoinedWorkers() started.
+◇ Test hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test hostDeadlineAndMalformedCategoriesRemainDistinct() started.
+◇ Test capabilitiesReportWhatIsImplemented() started.
+◇ Test contractEncodeMatchesTheEstablishedEncoderByteForByte(pad:) started.
+◇ Test rowPaddingNeverReachesTheCodestream() started.
+◇ Test resourceLimitsAreEnforced() started.
+◇ Test mismatchedDestinationsAreRefused() started.
+◇ Test theAllocatingConvenienceAgreesWithTheDestinationPath() started.
+◇ Test decodeWritesTheCallerDestinationExactly(pad:) started.
+◇ Test aDestinationGrantsOneWriteOnly() started.
+◇ Test inspectionDescribesWhatDecodeProduces() started.
+◇ Test preflightRejectionLeavesTheDestinationReusable() started.
+◇ Test aFailureDuringTheWriteInvalidatesTheDestination() started.
+◇ Test aNonZeroPlaneOffsetIsHonoured() started.
+◇ Test case passing 2 arguments precision → 8, components → 3 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 2 arguments bits → 8, components → 3 to scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test layoutsOutsideTheSharedProfileAreRefused() started.
+◇ Test case passing 2 arguments precision → 12, components → 1 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test roundTripThroughTheContractSurfaceOnly() started.
+◇ Test case passing 2 arguments bits → 12, components → 1 to scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test case passing 1 argument window → 4096 to groupedWindowsPreserveRestartAndDCState(window:) started.
+◇ Test case passing 2 arguments precision → 12, components → 3 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 2 arguments bits → 12, components → 3 to scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test case passing 1 argument window → 8192 to groupedWindowsPreserveRestartAndDCState(window:) started.
+◇ Test case passing 1 argument precision → 8 to scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test case passing 2 arguments bits → 8, components → 1 to scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) started.
+◇ Test case passing 2 arguments precision → 8, components → 1 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 1 argument precision → 12 to scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test case passing 1 argument seconds → 10.0 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 1 argument seconds → 120.0 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument seconds → 1e+100 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument limit → 1 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument precision → 8 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test case passing 1 argument limit → 2 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument precision → 8 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument precision → 12 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test case passing 1 argument limit → 4 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument precision → 12 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test case passing 1 argument progressive → false to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test case passing 1 argument progressive → true to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test case passing 1 argument restarts → false to publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test case passing 1 argument restarts → true to publicPredictiveParallelismPreservesBytes(restarts:) started.
+✔ Test "Higher quality produces larger output" passed after 0.016 seconds.
+✔ Test "12-bit grayscale round-trips with sub-1% error and outputs uint16" passed after 0.016 seconds.
+✔ Test "YCbCr color float32 is rejected with a clear error" passed after 0.017 seconds.
+✔ Test "Encoder handles grayscale images" passed after 0.017 seconds.
+✔ Test "1/2 & 1/4 scaled decode equal the box-average of the full decode (color 4:4:4)" passed after 0.017 seconds.
+◇ Test case passing 1 argument lossy → false to hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test case passing 1 argument lossy → true to hostAdaptersPreserveBytesAndReports(lossy:) started.
+✔ Test "1/8 scaled decode handles non-multiple dims and 12-bit grayscale" passed after 0.017 seconds.
+✔ Test "float32 input clamps out-of-range values to [0,1]" passed after 0.017 seconds.
+✔ Test "Lossless float32 is rejected (use the bit-exact integer output)" passed after 0.017 seconds.
+✔ Test "Decoder rejects non-JPEG data" passed after 0.017 seconds.
+✔ Test "Encoder handles non-multiple-of-8 dimensions" passed after 0.017 seconds.
+✔ Test "12-bit grayscale float32 rounds to the uint16 value (carries sub-integer precision)" passed after 0.017 seconds.
+◇ Test case passing 1 argument pad → 0 to contractEncodeMatchesTheEstablishedEncoderByteForByte(pad:) started.
+✔ Test "12-bit color round-trips and outputs uint16 RGB" passed after 0.017 seconds.
+◇ Test case passing 1 argument pad → 6 to contractEncodeMatchesTheEstablishedEncoderByteForByte(pad:) started.
+◇ Test case passing 1 argument pad → 64 to contractEncodeMatchesTheEstablishedEncoderByteForByte(pad:) started.
+✔ Test "12-bit preserves more precision than 8-bit on a fine gradient" passed after 0.018 seconds.
+✔ Test "Encode-decode round-trip preserves pixel values within JPEG tolerance" passed after 0.018 seconds.
+◇ Test case passing 1 argument pad → 0 to decodeWritesTheCallerDestinationExactly(pad:) started.
+✔ Test "Distance overrides quality when both are set" passed after 0.018 seconds.
+◇ Test case passing 1 argument pad → 6 to decodeWritesTheCallerDestinationExactly(pad:) started.
+◇ Test case passing 1 argument pad → 64 to decodeWritesTheCallerDestinationExactly(pad:) started.
+✔ Test "Encoder handles 1×1 pixel image" passed after 0.019 seconds.
+✔ Test "Setting .float32 no longer throws (latent bufferSizeMismatch fixed)" passed after 0.020 seconds.
+✔ Test "1/2 & 1/4 scaled decode: grayscale (8/12-bit) box-average + non-multiple dims" passed after 0.020 seconds.
+✔ Test "Encoder produces valid JPEG starting with SOI" passed after 0.020 seconds.
+✔ Test "12-bit JPEG reports precision 12 via inspect" passed after 0.019 seconds.
+✔ Test "Encode then decode produces image with correct dimensions" passed after 0.020 seconds.
+✔ Test "Encoder rejects negative distance" passed after 0.019 seconds.
+✔ Test "Encoder rejects invalid quality" passed after 0.020 seconds.
+✔ Test "Decoder inspect rejects non-JPEG data" passed after 0.020 seconds.
+✔ Test "8-bit grayscale float32 == round to the uint8 output, per sample" passed after 0.020 seconds.
+✔ Test "float32 input ([0,1]) encodes identically to its 8-bit quantization" passed after 0.020 seconds.
+✔ Test "1/8 scaled decode yields a block-average thumbnail (color)" passed after 0.020 seconds.
+✔ Test "Encoder handles 4:2:0 subsampling" passed after 0.020 seconds.
+✔ Test "Inspect returns correct metadata for encoded JPEG" passed after 0.020 seconds.
+✔ Test previewsStillAdmitFullFrameWorkspace() passed after 0.020 seconds.
+✔ Test "Larger distance produces smaller output (monotonic rate)" passed after 0.020 seconds.
+✔ Test "Adaptive quant field changes the output and round-trips (4:4:4)" passed after 0.021 seconds.
+✔ Test "Restart markers round-trip identically to no-restart and emit DRI + RSTn" passed after 0.021 seconds.
+✔ Test "Grayscale encode-decode round-trip" passed after 0.020 seconds.
+✔ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() passed after 0.020 seconds.
+✔ Test scaledDecodeMatchesNativeAndPreservesStorage(bits:components:) with 4 test cases passed after 0.021 seconds.
+✔ Test laterEntropyFailureInvalidatesStreamedDestination() passed after 0.020 seconds.
+✔ Test finiteDeadlinesDoNotTrap(seconds:) with 3 test cases passed after 0.021 seconds.
+✔ Test malformedEntropyAndExpiredOperationsStillReject() passed after 0.021 seconds.
+✔ Test invalidExtentsRejectBeforeWriting() passed after 0.021 seconds.
+✔ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) with 2 test cases passed after 0.021 seconds.
+✔ Test batchConsumerFailureStopsBeforeReusingItsBorrow() passed after 0.021 seconds.
+✔ Test failureJoinsEveryStartedWorker() passed after 0.021 seconds.
+✔ Test deadlineReachesJoinedWorkers() passed after 0.021 seconds.
+✔ Test fractionalDeadlineStillExpires() passed after 0.021 seconds.
+✔ Test borrowedPixelsMatchPackedKernels(precision:components:) with 4 test cases passed after 0.021 seconds.
+✔ Test groupedWindowsPreserveRestartAndDCState(window:) with 2 test cases passed after 0.021 seconds.
+✔ Test hostCancellationReachesJoinedWorkersWithoutASwiftTask() passed after 0.021 seconds.
+✔ Test hostAdaptersPreserveBytesAndReports(lossy:) with 2 test cases passed after 0.021 seconds.
+✔ Test hostDeadlineAndMalformedCategoriesRemainDistinct() passed after 0.021 seconds.
+✔ Test capabilitiesReportWhatIsImplemented() passed after 0.021 seconds.
+✔ Test rowPaddingNeverReachesTheCodestream() passed after 0.021 seconds.
+✔ Test contractEncodeMatchesTheEstablishedEncoderByteForByte(pad:) with 3 test cases passed after 0.021 seconds.
+✔ Test mismatchedDestinationsAreRefused() passed after 0.021 seconds.
+✔ Test resourceLimitsAreEnforced() passed after 0.021 seconds.
+✔ Test theAllocatingConvenienceAgreesWithTheDestinationPath() passed after 0.021 seconds.
+✔ Test decodeWritesTheCallerDestinationExactly(pad:) with 3 test cases passed after 0.021 seconds.
+✔ Test aDestinationGrantsOneWriteOnly() passed after 0.021 seconds.
+✔ Test inspectionDescribesWhatDecodeProduces() passed after 0.021 seconds.
+✔ Test preflightRejectionLeavesTheDestinationReusable() passed after 0.021 seconds.
+✔ Test aNonZeroPlaneOffsetIsHonoured() passed after 0.021 seconds.
+✔ Test aFailureDuringTheWriteInvalidatesTheDestination() passed after 0.021 seconds.
+✔ Test layoutsOutsideTheSharedProfileAreRefused() passed after 0.021 seconds.
+✔ Test roundTripThroughTheContractSurfaceOnly() passed after 0.021 seconds.
+✔ Suite "Float32 decode output" passed after 0.022 seconds.
+✔ Suite ScaledDecodeTests passed after 0.022 seconds.
+✔ Suite SharedDCTStorageTests passed after 0.023 seconds.
+✔ Test cancellationReachesDispatchWorkersAndJoins(seconds:) with 2 test cases passed after 0.022 seconds.
+✔ Suite "Contract image layer" passed after 0.022 seconds.
+✔ Test nestedHostScopeRetainsTaskCancellationForJoinedWorkers() passed after 0.022 seconds.
+✔ Suite CLISynchronousExecutionTests passed after 0.023 seconds.
+✔ Test joinedWorkersRespectLimitAndBackend(limit:) with 3 test cases passed after 0.033 seconds.
+✔ Test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) with 2 test cases passed after 0.034 seconds.
+✔ Suite SequentialGreyscaleDecoderTests passed after 0.034 seconds.
+✔ Test publicPredictiveParallelismPreservesBytes(restarts:) with 2 test cases passed after 0.035 seconds.
+✔ Test "Parallel trellis + AC-count encode is deterministic and round-trips (large image)" passed after 0.050 seconds.
+✔ Test "Parallel Step-7 reconstruction is bit-identical to serial (large image)" passed after 0.058 seconds.
+✔ Suite "Encoder & Decoder – Full JPEG Pipeline" passed after 0.058 seconds.
+✔ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) with 2 test cases passed after 0.061 seconds.
+✔ Suite NativeExecutionTests passed after 0.062 seconds.
+✔ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) with 2 test cases passed after 0.133 seconds.
+✔ Suite BoundedDCTWorkspaceTests passed after 0.134 seconds.
+✔ Test run with 73 tests in 9 suites passed after 0.134 seconds.

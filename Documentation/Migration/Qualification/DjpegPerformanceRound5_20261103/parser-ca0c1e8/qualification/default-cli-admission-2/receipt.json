@@ -1,0 +1,358 @@
+{
+  "status": "passed",
+  "sourceRevision": "ca0c1e874177f429ed199f3ed8ef6ac1315ee66a",
+  "baselineRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "startedUTC": "2026-11-03T18:13:02.577649+00:00",
+  "priorAttempt": "default-cli-admission-1 failed at baseline CLI argument validation because .pgm conflicted with --output-format pnm; no candidate decode ran. This version changes only output suffix to .pnm.",
+  "scope": "Newly admitted cases only, separate from unchanged-eligibility CLI timing. No timing or RSS claim. Full 16-bit sample equality to original source and djpeg3.2.1.",
+  "limits": "Unmodified default CLI limits: 512 MiB maximumWorkspaceBytes and 1 GiB maximumMemoryBytes, with existing CLI reservations deducted. No command passes a resource override.",
+  "pinnedInputs": {
+    "/private/tmp/swiftjli-round5-evidence/parser-reservation/run-admission-v2.py": "5459b6189b4eeb822a7049b7a51d8474917bed5b4528970f874ad9024842bf46",
+    "/private/tmp/swiftjli-round5-evidence/parser-reservation/source.json": "a1a5030644156b9e58849d3e83bd1c9d067390a86f7c46d435804fea17b57369",
+    "/private/tmp/swiftjli-round5-parser-reservation/Sources/SwiftJLI/Options.swift": "dd43c63592bf4d74c53626374fb4494b0815315f0f64bc1a2831f9c066b5d787",
+    "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli": "dfda666f9660b858743dc0008cc0c55217ff1426f3359cbca72e678c351fa5c8",
+    "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli": "39a684f56965f0a6c86bd37c2189ae7376b915672973476780a17abf345a97eb",
+    "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg": "6d0302f8018b3322521cae94de7f58ab484db40f0cc8e0f0cb6e92d456fd5088",
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg": "2dfe60717780915e9ce381c49a4968be8d93f67aa48e6557bc0df7bfdfa9d230",
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.raw": "66ba755ac94405df57861b8b50fd1ff5ce47552806795e28a93e61f6213a7d57",
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-3072.jpg": "d263f04bc7ca5fc52ca8ab0a92ed4d137761f7d294e4365c10673bd92d43394b",
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-3072.raw": "4460c00a63bbe15da0dae7eeb37c5efc33a5f5155bd6afab72d4b38e6b5b6323",
+    "/private/tmp/swiftjli-native-matrix-fixtures/mixed-3072.jpg": "f222705521fa02adb7b78fb151cc28400e5af9f60cc79053297843568dc76b83",
+    "/private/tmp/swiftjli-native-matrix-fixtures/mixed-3072.raw": "fd9cf134ee53bb8cf0cfba59d7d69dc8020366afc5d8693d44a6a8bc9d26027c"
+  },
+  "commands": [
+    {
+      "label": "djpeg-version",
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-version"
+      ],
+      "expectedExitCode": 0,
+      "startedUTC": "2026-11-03T18:13:02.579806+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T18:13:02.583168+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "fa9e74d8ec23674a4104f8e612bcdf425c27b6dd90644f652614348fdfc8e2b9"
+    },
+    {
+      "label": "noise-2048-baseline",
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-2048-baseline.pnm",
+        "--output-format",
+        "pnm"
+      ],
+      "expectedExitCode": 5,
+      "startedUTC": "2026-11-03T18:13:02.590556+00:00",
+      "exitCode": 5,
+      "finishedUTC": "2026-11-03T18:13:02.597674+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "cdb13eca1cbfcf8fcfb4c79fc2dc91adb157fa6e603d2ffd6b5c45d574428d50"
+    },
+    {
+      "label": "noise-2048-candidate",
+      "command": [
+        "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-2048-candidate.pnm",
+        "--output-format",
+        "pnm"
+      ],
+      "expectedExitCode": 0,
+      "startedUTC": "2026-11-03T18:13:02.598068+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T18:13:03.055627+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "noise-2048-djpeg",
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-2048-djpeg.pnm",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg"
+      ],
+      "expectedExitCode": 0,
+      "startedUTC": "2026-11-03T18:13:03.074831+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T18:13:03.112064+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "noise-3072-baseline",
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-3072.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-3072-baseline.pnm",
+        "--output-format",
+        "pnm"
+      ],
+      "expectedExitCode": 5,
+      "startedUTC": "2026-11-03T18:13:03.147624+00:00",
+      "exitCode": 5,
+      "finishedUTC": "2026-11-03T18:13:03.156150+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "cdb13eca1cbfcf8fcfb4c79fc2dc91adb157fa6e603d2ffd6b5c45d574428d50"
+    },
+    {
+      "label": "noise-3072-candidate",
+      "command": [
+        "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-3072.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-3072-candidate.pnm",
+        "--output-format",
+        "pnm"
+      ],
+      "expectedExitCode": 0,
+      "startedUTC": "2026-11-03T18:13:03.156434+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T18:13:03.208168+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "noise-3072-djpeg",
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-3072-djpeg.pnm",
+        "/private/tmp/swiftjli-native-matrix-fixtures/noise-3072.jpg"
+      ],
+      "expectedExitCode": 0,
+      "startedUTC": "2026-11-03T18:13:03.249040+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T18:13:03.332884+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "mixed-3072-baseline",
+      "command": [
+        "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-3072.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/mixed-3072-baseline.pnm",
+        "--output-format",
+        "pnm"
+      ],
+      "expectedExitCode": 5,
+      "startedUTC": "2026-11-03T18:13:03.389011+00:00",
+      "exitCode": 5,
+      "finishedUTC": "2026-11-03T18:13:03.396181+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "cdb13eca1cbfcf8fcfb4c79fc2dc91adb157fa6e603d2ffd6b5c45d574428d50"
+    },
+    {
+      "label": "mixed-3072-candidate",
+      "command": [
+        "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-3072.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/mixed-3072-candidate.pnm",
+        "--output-format",
+        "pnm"
+      ],
+      "expectedExitCode": 0,
+      "startedUTC": "2026-11-03T18:13:03.396565+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T18:13:03.440036+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "mixed-3072-djpeg",
+      "command": [
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "-strict",
+        "-pnm",
+        "-outfile",
+        "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/mixed-3072-djpeg.pnm",
+        "/private/tmp/swiftjli-native-matrix-fixtures/mixed-3072.jpg"
+      ],
+      "expectedExitCode": 0,
+      "startedUTC": "2026-11-03T18:13:03.483726+00:00",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T18:13:03.556370+00:00",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "comparisons": [
+    {
+      "case": "noise-2048",
+      "decoder": "candidate",
+      "allSamplesExact": true,
+      "samplesCompared": 4194304,
+      "sourceSHA256": "66ba755ac94405df57861b8b50fd1ff5ce47552806795e28a93e61f6213a7d57",
+      "actualLittleEndianSHA256": "66ba755ac94405df57861b8b50fd1ff5ce47552806795e28a93e61f6213a7d57",
+      "outputFile": "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-2048-candidate.pnm",
+      "outputFileSHA256": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+      "outputBytes": 8388627,
+      "descriptor": {
+        "width": 2048,
+        "height": 2048,
+        "components": 1,
+        "maximumSample": 65535
+      }
+    },
+    {
+      "case": "noise-2048",
+      "decoder": "djpeg",
+      "allSamplesExact": true,
+      "samplesCompared": 4194304,
+      "sourceSHA256": "66ba755ac94405df57861b8b50fd1ff5ce47552806795e28a93e61f6213a7d57",
+      "actualLittleEndianSHA256": "66ba755ac94405df57861b8b50fd1ff5ce47552806795e28a93e61f6213a7d57",
+      "outputFile": "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-2048-djpeg.pnm",
+      "outputFileSHA256": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+      "outputBytes": 8388627,
+      "descriptor": {
+        "width": 2048,
+        "height": 2048,
+        "components": 1,
+        "maximumSample": 65535
+      }
+    },
+    {
+      "case": "noise-3072",
+      "decoder": "candidate",
+      "allSamplesExact": true,
+      "samplesCompared": 9437184,
+      "sourceSHA256": "4460c00a63bbe15da0dae7eeb37c5efc33a5f5155bd6afab72d4b38e6b5b6323",
+      "actualLittleEndianSHA256": "4460c00a63bbe15da0dae7eeb37c5efc33a5f5155bd6afab72d4b38e6b5b6323",
+      "outputFile": "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-3072-candidate.pnm",
+      "outputFileSHA256": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+      "outputBytes": 18874387,
+      "descriptor": {
+        "width": 3072,
+        "height": 3072,
+        "components": 1,
+        "maximumSample": 65535
+      }
+    },
+    {
+      "case": "noise-3072",
+      "decoder": "djpeg",
+      "allSamplesExact": true,
+      "samplesCompared": 9437184,
+      "sourceSHA256": "4460c00a63bbe15da0dae7eeb37c5efc33a5f5155bd6afab72d4b38e6b5b6323",
+      "actualLittleEndianSHA256": "4460c00a63bbe15da0dae7eeb37c5efc33a5f5155bd6afab72d4b38e6b5b6323",
+      "outputFile": "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/noise-3072-djpeg.pnm",
+      "outputFileSHA256": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+      "outputBytes": 18874387,
+      "descriptor": {
+        "width": 3072,
+        "height": 3072,
+        "components": 1,
+        "maximumSample": 65535
+      }
+    },
+    {
+      "case": "mixed-3072",
+      "decoder": "candidate",
+      "allSamplesExact": true,
+      "samplesCompared": 9437184,
+      "sourceSHA256": "fd9cf134ee53bb8cf0cfba59d7d69dc8020366afc5d8693d44a6a8bc9d26027c",
+      "actualLittleEndianSHA256": "fd9cf134ee53bb8cf0cfba59d7d69dc8020366afc5d8693d44a6a8bc9d26027c",
+      "outputFile": "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/mixed-3072-candidate.pnm",
+      "outputFileSHA256": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+      "outputBytes": 18874387,
+      "descriptor": {
+        "width": 3072,
+        "height": 3072,
+        "components": 1,
+        "maximumSample": 65535
+      }
+    },
+    {
+      "case": "mixed-3072",
+      "decoder": "djpeg",
+      "allSamplesExact": true,
+      "samplesCompared": 9437184,
+      "sourceSHA256": "fd9cf134ee53bb8cf0cfba59d7d69dc8020366afc5d8693d44a6a8bc9d26027c",
+      "actualLittleEndianSHA256": "fd9cf134ee53bb8cf0cfba59d7d69dc8020366afc5d8693d44a6a8bc9d26027c",
+      "outputFile": "/private/tmp/swiftjli-round5-evidence/parser-reservation/default-cli-admission-2/mixed-3072-djpeg.pnm",
+      "outputFileSHA256": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+      "outputBytes": 18874387,
+      "descriptor": {
+        "width": 3072,
+        "height": 3072,
+        "components": 1,
+        "maximumSample": 65535
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case": "noise-2048",
+      "inputBytes": 8421567,
+      "outputs": {
+        "candidate": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93",
+        "djpeg": "8cc91fb1c77354083d88b8529619ee720944800675911a3aa6f3ecc8591f8b93"
+      },
+      "baselineAdmission": "resourceLimitExceeded (exit5)",
+      "baselineOutputExists": false,
+      "candidateAdmission": "success (exit0) under unchanged defaults"
+    },
+    {
+      "case": "noise-3072",
+      "inputBytes": 18948169,
+      "outputs": {
+        "candidate": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e",
+        "djpeg": "a96c486552a75eed919a7cc7d092d0d703e5ec8e886337915582e5f53647859e"
+      },
+      "baselineAdmission": "resourceLimitExceeded (exit5)",
+      "baselineOutputExists": false,
+      "candidateAdmission": "success (exit0) under unchanged defaults"
+    },
+    {
+      "case": "mixed-3072",
+      "inputBytes": 10456714,
+      "outputs": {
+        "candidate": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30",
+        "djpeg": "ee37de3c31b7b837797a0483d388fea70d201f564b9e89deb38872b82d650e30"
+      },
+      "baselineAdmission": "resourceLimitExceeded (exit5)",
+      "baselineOutputExists": false,
+      "candidateAdmission": "success (exit0) under unchanged defaults"
+    }
+  ],
+  "identityChecks": {
+    "/private/tmp/swiftjli-round5-evidence/parser-reservation/run-admission-v2.py": true,
+    "/private/tmp/swiftjli-round5-evidence/parser-reservation/source.json": true,
+    "/private/tmp/swiftjli-round5-parser-reservation/Sources/SwiftJLI/Options.swift": true,
+    "/private/tmp/swiftjli-round5-c-row-qualification-5f9e1cf-release-build/out/Products/Release/swiftjli-cli": true,
+    "/private/tmp/swiftjli-round5-parser-reservation-release-build/out/Products/Release/swiftjli-cli": true,
+    "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg": true,
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.jpg": true,
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-2048.raw": true,
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-3072.jpg": true,
+    "/private/tmp/swiftjli-native-matrix-fixtures/noise-3072.raw": true,
+    "/private/tmp/swiftjli-native-matrix-fixtures/mixed-3072.jpg": true,
+    "/private/tmp/swiftjli-native-matrix-fixtures/mixed-3072.raw": true
+  },
+  "finishedUTC": "2026-11-03T18:13:03.663044+00:00",
+  "sourceUnchanged": true
+}

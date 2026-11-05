@@ -199,15 +199,32 @@ enum AccelerateDSP {
     ///
     /// Pointer-based so disjoint block ranges can run on separate cores;
     /// `output` and `scratch` must each hold `64·n` floats for *this* range.
+    /// The coefficient, output and scratch buffers must be disjoint throughout
+    /// this call. Reusing coefficient storage requires the separate pack phase
+    /// to finish before temporarily rebinding that storage for packed IDCT.
     static func inverseDCTBatchDequantized(
         zigzag: UnsafePointer<Int32>, quantTable qt: UnsafePointer<Float>,
         output: UnsafeMutablePointer<Float>, scratch: UnsafeMutablePointer<Float>,
         blockCount n: Int
     ) {
         guard n > 0 else { return }
-        let eightN = JLI_DSPCount(8 * n)
-        let rowStride = 8 * n
+        if prepareDCOnlyDCTBatch(zigzag: zigzag, quantTable: qt, scratch: scratch, blockCount: n) {
+            writeDCOnlyDCTBatch(values: UnsafePointer(scratch), output: output, blockCount: n)
+            return
+        }
+        packDequantizedDCTBatch(zigzag: zigzag, quantTable: qt, scratch: scratch, blockCount: n)
+        inverseDCTBatchPacked(output: output, scratch: scratch, blockCount: n)
+    }
 
+    /// Consumes all coefficient reads before reconstruction. `scratch` must be
+    /// independent of `zigzag` and hold `64·n` Floats. On return the coefficient
+    /// storage may be reused; the packed layout is the sole input to the IDCT.
+    static func packDequantizedDCTBatch(
+        zigzag: UnsafePointer<Int32>, quantTable qt: UnsafePointer<Float>,
+        scratch: UnsafeMutablePointer<Float>, blockCount n: Int
+    ) {
+        guard n > 0 else { return }
+        let rowStride = 8 * n
         // Fused pack: M[r·8N + 8i + c] = dequant(zigzag coefficient at natural
         // position 8r+c) — replaces inverse-zigzag scatter + dequant sweep + pack
         // memcpy with one pass.
@@ -225,7 +242,18 @@ enum AccelerateDSP {
                 }
             }
         }
+    }
 
+    /// Reconstructs the packed input using the established two GEMM shapes.
+    /// Both Float buffers hold `64·n` elements and must be disjoint. No original
+    /// coefficient pointer is retained or accessed by this phase.
+    static func inverseDCTBatchPacked(
+        output: UnsafeMutablePointer<Float>, scratch: UnsafeMutablePointer<Float>,
+        blockCount n: Int
+    ) {
+        guard n > 0 else { return }
+        let eightN = JLI_DSPCount(8 * n)
+        let rowStride = 8 * n
         // Pass 1: T = Cᵀ · M (8 × 8N).
         jliDSP_mmul(dctMatrixTransposed, 1, scratch, 1, output, 1, 8, eightN, 8)
 
@@ -240,6 +268,48 @@ enum AccelerateDSP {
 
         // Pass 2: f = V · C (8N × 8). Output per-block-contig.
         jliDSP_mmul(scratch, 1, dctMatrix, 1, output, 1, eightN, 8, 8)
+    }
+
+    /// A DC-only batch needs the same two rounded multiplications as the two
+    /// matrix passes, followed by replication. Do not replace them by DC/8:
+    /// the stored Float basis squared is not exactly 1/8. Quantisation tables
+    /// on this decode path are validated positive JPEG integer values, so
+    /// nonzero integer DC cannot underflow to signed zero. Int32 extremes
+    /// multiplied by the largest 16-bit table value remain finite in Float.
+    /// All AC slots are examined before scratch is changed; a mixed batch keeps
+    /// the original GEMM shapes and arithmetic. On success scratch holds one
+    /// Float per block and all coefficient reads are complete. Input and
+    /// scratch have distinct, correctly bound storage for this borrow.
+    static func prepareDCOnlyDCTBatch(
+        zigzag: UnsafePointer<Int32>, quantTable: UnsafePointer<Float>,
+        scratch: UnsafeMutablePointer<Float>, blockCount: Int
+    ) -> Bool {
+        guard blockCount > 0 else { return false }
+        for block in 0..<blockCount {
+            let coefficients = zigzag + block * 64
+            var nonzero: Int32 = 0
+            for index in 1..<64 { nonzero |= coefficients[index] }
+            if nonzero != 0 { return false }
+        }
+        let basis = dctMatrix[0]
+        for block in 0..<blockCount {
+            let dequantised = Float(zigzag[block * 64]) * quantTable[0]
+            let firstPass = dequantised * basis
+            scratch[block] = firstPass * basis
+        }
+        return true
+    }
+
+    /// Replicates prepared DC values without accessing coefficient storage.
+    /// `values` and `output` must be disjoint Float borrows, holding respectively
+    /// `blockCount` and `64·blockCount` elements.
+    static func writeDCOnlyDCTBatch(
+        values: UnsafePointer<Float>, output: UnsafeMutablePointer<Float>, blockCount: Int
+    ) {
+        guard blockCount > 0 else { return }
+        for block in 0..<blockCount {
+            (output + block * 64).update(repeating: values[block], count: 64)
+        }
     }
 
     // MARK: - Image-level color conversion (BT.601)

@@ -1,0 +1,129 @@
+Building for production...
+[3 / 13] SwiftJLITests-product
+/private/tmp/swiftjli-round5-ac-pairs/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift:88:20: warning: result of call to 'withUnsafeMutableBytes' is unused [#NoUsage]
+86 |             // Immediate reuse after the joined failure is covered by ASan/TSan;
+87 |             // no timing delay is used as evidence of worker completion.
+88 |             output.withUnsafeMutableBytes { $0.initializeMemory(as: UInt8.self, repeating: 7) }
+   |                    `- warning: result of call to 'withUnsafeMutableBytes' is unused [#NoUsage]
+89 |             #expect(output.allSatisfy { $0 == 7 })
+90 |         }
+
+/private/tmp/swiftjli-round5-ac-pairs/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-round5-ac-pairs/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:83:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 81 |                     var reader = BitReader(data: writer.data)
+ 82 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 83 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 84 |                     try destination.withUnsafeMutableBufferPointer {
+ 85 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+
+/private/tmp/swiftjli-round5-ac-pairs/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:31:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 29 |         let scan = Self.scan(blockCount: 2050, dcOnly: dcOnly)
+ 30 |         let table = StandardHuffmanTables.acLuminance
+ 31 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 32 |         let quantisation = (0..<64).map { Float($0 * 7 % 127 + 1) }
+ 33 |         for backend in Decoder.capabilities.availableBackends {
+
+/private/tmp/swiftjli-round5-ac-pairs/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:92:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 90 |         let scan = Self.scan(blockCount: 1025)
+ 91 |         let table = StandardHuffmanTables.acLuminance
+ 92 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 93 |         var reader = BitReader(data: scan.bytes), calls = 0
+ 94 |         #expect(throws: JLIError.self) {
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[5 / 14] SwiftJLITests-product
+[10 / 14] SwiftJLITests-product
+[12 / 14] SwiftJLITests-product
+Build complete! (32.82 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite BoundedDCTWorkspaceTests started.
+◇ Suite ACPairLookaheadTests started.
+◇ Suite PipelinedGreyscaleTests started.
+◇ Suite ScopedACDecoderTests started.
+◇ Suite StreamingWorkspaceAdmissionTests started.
+◇ Suite ACLookaheadTests started.
+◇ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test alternatingSlotsPreserveCanonicalBitsRestartsAndOddPadding(precision:floating:) started.
+◇ Test laterEntropyFailureInvalidatesStreamedDestination(dimensions:) started.
+◇ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() started.
+◇ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test everyPrefixOffsetAndRunBoundaryMatchesReference() started.
+◇ Test allPrefixesOffsetsAndBlockEdgesMatchSingleEntryReference() started.
+◇ Test producerCancellationAndWorkerFailureJoinBeforeReturning() started.
+◇ Test invalidDestinationIsRejectedBeforeWriting() started.
+◇ Test widerPrefetchPreservesLogicalCursorAndMarkerBoundaries() started.
+◇ Test automaticThresholdAndCheckedGeometryCannotUnderstateWorkspace() started.
+◇ Test fullBlocksAndPartialErrorsPreserveCoefficientsAndLogicalCursor() started.
+◇ Test allocationAndCoverageDispatchAreBounded() started.
+◇ Test coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test case passing 1 argument dimensions → (513, 777) to laterEntropyFailureInvalidatesStreamedDestination(dimensions:) started.
+◇ Test largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 1 argument precision → 8 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test nonStreamingOperationsRetainTheirFullReservations() started.
+◇ Test compactAdmissionUsesSelectedScanTableSnapshot() started.
+◇ Test case passing 1 argument precision → 8 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test groupedReservationIncludesBothWindowsAndDeniesBeforeBorrow() started.
+◇ Test case passing 1 argument precision → 12 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test case passing 2 arguments precision → 8, floating → false to alternatingSlotsPreserveCanonicalBitsRestartsAndOddPadding(precision:floating:) started.
+◇ Test case passing 1 argument dimensions → (511, 509) to laterEntropyFailureInvalidatesStreamedDestination(dimensions:) started.
+◇ Test case passing 2 arguments precision → 8, floating → true to alternatingSlotsPreserveCanonicalBitsRestartsAndOddPadding(precision:floating:) started.
+◇ Test malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test case passing 2 arguments precision → 12, floating → false to alternatingSlotsPreserveCanonicalBitsRestartsAndOddPadding(precision:floating:) started.
+◇ Test case passing 1 argument precision → 12 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test case passing 2 arguments precision → 12, floating → true to alternatingSlotsPreserveCanonicalBitsRestartsAndOddPadding(precision:floating:) started.
+◇ Test case passing 1 argument combined → false to coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test case passing 1 argument combined → true to coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test case passing 2 arguments precision → 8, modes → (false, false) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments precision → 8, floating → false to largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test case passing 2 arguments precision → 8, modes → (false, true) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments precision → 8, floating → true to largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test case passing 2 arguments precision → 12, floating → false to largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test case passing 2 arguments precision → 8, modes → (true, false) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments precision → 12, floating → true to largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) started.
+◇ Test case passing 2 arguments precision → 8, modes → (true, true) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments precision → 12, modes → (false, false) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments precision → 12, modes → (false, true) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments precision → 12, modes → (true, false) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+◇ Test case passing 2 arguments precision → 12, modes → (true, true) to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) started.
+✔ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) with 2 test cases passed after 0.010 seconds.
+◇ Test case passing 1 argument combined → false to malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test case passing 1 argument combined → true to malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+✔ Test invalidDestinationIsRejectedBeforeWriting() passed after 0.012 seconds.
+✔ Test allocationAndCoverageDispatchAreBounded() passed after 0.012 seconds.
+✔ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() passed after 0.012 seconds.
+✔ Test widerPrefetchPreservesLogicalCursorAndMarkerBoundaries() passed after 0.012 seconds.
+✔ Test automaticThresholdAndCheckedGeometryCannotUnderstateWorkspace() passed after 0.012 seconds.
+✔ Test compactAdmissionUsesSelectedScanTableSnapshot() passed after 0.012 seconds.
+✔ Test laterEntropyFailureInvalidatesStreamedDestination(dimensions:) with 2 test cases passed after 0.012 seconds.
+✔ Test coefficientsAndRestartPositionMatchArrayReference(combined:) with 2 test cases passed after 0.012 seconds.
+✔ Test producerCancellationAndWorkerFailureJoinBeforeReturning() passed after 0.012 seconds.
+✔ Test exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:modes:) with 8 test cases passed after 0.012 seconds.
+✔ Test nonStreamingOperationsRetainTheirFullReservations() passed after 0.012 seconds.
+✔ Test groupedReservationIncludesBothWindowsAndDeniesBeforeBorrow() passed after 0.012 seconds.
+✔ Test largeCompactScanKeepsOneCanonicalBatchAndExactBudget(precision:floating:) with 4 test cases passed after 0.016 seconds.
+✔ Suite StreamingWorkspaceAdmissionTests passed after 0.017 seconds.
+✔ Test alternatingSlotsPreserveCanonicalBitsRestartsAndOddPadding(precision:floating:) with 4 test cases passed after 0.022 seconds.
+✔ Suite PipelinedGreyscaleTests passed after 0.022 seconds.
+✔ Test fullBlocksAndPartialErrorsPreserveCoefficientsAndLogicalCursor() passed after 0.032 seconds.
+✔ Test malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) with 2 test cases passed after 0.033 seconds.
+✔ Suite ScopedACDecoderTests passed after 0.033 seconds.
+✔ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) with 2 test cases passed after 0.083 seconds.
+✔ Suite BoundedDCTWorkspaceTests passed after 0.084 seconds.
+✔ Test allPrefixesOffsetsAndBlockEdgesMatchSingleEntryReference() passed after 0.323 seconds.
+✔ Suite ACPairLookaheadTests passed after 0.324 seconds.
+✔ Test everyPrefixOffsetAndRunBoundaryMatchesReference() passed after 0.338 seconds.
+✔ Suite ACLookaheadTests passed after 0.338 seconds.
+✔ Test run with 20 tests in 6 suites passed after 0.338 seconds.

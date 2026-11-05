@@ -1,0 +1,135 @@
+{
+  "sourceRevision": "5351088d3bb4630a32de6509e4d62210ad14aaa0",
+  "startedUTC": "2026-11-03T05:47:31.060680+00:00",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+  },
+  "checks": [
+    {
+      "name": "release-cli-final",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round3-parser-build/out/Products/Release/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round3-final-cli"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round3",
+      "startedUTC": "2026-11-03T05:47:31.060921+00:00",
+      "log": "release-cli-final.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:47:34.013929+00:00"
+    },
+    {
+      "name": "asan-tests",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round3-asan",
+        "--sanitize",
+        "address"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round3",
+      "startedUTC": "2026-11-03T05:47:34.014196+00:00",
+      "log": "asan-tests.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:51:21.907253+00:00"
+    },
+    {
+      "name": "asan-cli",
+      "command": [
+        "python3",
+        "Scripts/test-cli.py",
+        "--binary",
+        "/private/tmp/swiftjli-round3-asan/out/Products/Debug/swiftjli-cli",
+        "--output",
+        "/private/tmp/swiftjli-round3-asan-cli"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round3",
+      "startedUTC": "2026-11-03T05:51:21.907651+00:00",
+      "log": "asan-cli.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:51:30.682302+00:00"
+    },
+    {
+      "name": "tsan-tests",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round3-tsan",
+        "--sanitize",
+        "thread",
+        "--filter",
+        "ZeroRunLosslessTests|SequentialGreyscaleDecoderTests|ValidatedEnvelopeTests|LosslessLookaheadTests|LosslessRowStorageTests|LosslessDifferenceTests|ScopedACDecoderTests|ACLookaheadTests|NativeExecutionTests|CLISynchronousExecutionTests|OwnershipTests|CancellationPublicationTests"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round3",
+      "startedUTC": "2026-11-03T05:51:30.682623+00:00",
+      "log": "tsan-tests.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:52:19.302985+00:00"
+    },
+    {
+      "name": "lossless-oracle",
+      "command": [
+        "python3",
+        "Scripts/verify-lossless-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round3-lossless-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round3-oracle-build",
+        "--cjpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round3",
+      "startedUTC": "2026-11-03T05:52:19.303334+00:00",
+      "log": "lossless-oracle.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:52:29.629921+00:00"
+    },
+    {
+      "name": "dct-oracle",
+      "command": [
+        "python3",
+        "Scripts/verify-dct-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round3-dct-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round3-oracle-build",
+        "--cjpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round3",
+      "startedUTC": "2026-11-03T05:52:29.630275+00:00",
+      "log": "dct-oracle.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:52:32.487556+00:00"
+    },
+    {
+      "name": "contract-hashes",
+      "command": [
+        "shasum",
+        "-a",
+        "256",
+        "-c",
+        "COMMON_CONTRACT_SHA256.txt"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round3/Documentation",
+      "startedUTC": "2026-11-03T05:52:32.487891+00:00",
+      "log": "contract-hashes.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:52:32.520536+00:00"
+    }
+  ],
+  "finishedUTC": "2026-11-03T05:52:32.520856+00:00"
+}

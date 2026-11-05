@@ -1,0 +1,149 @@
+commit fd4b2e1c272fcc7f60ce56e640580251d072091d
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 20:47:18 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 20:47:18 2026 +0530
+
+    Trial exact SIMD sample compaction in bounded reconstruction workers
+
+diff --git a/Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift
+index 22ae793..31fe080 100644
+--- a/Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift
+@@ -114,7 +114,48 @@ enum ParallelSequentialGreyscaleDecoder {
+         let bytes = UnsafeMutableRawBufferPointer(start: base,
+             count: try checkedMultiply(pixels.count, MemoryLayout<Float>.stride))
+         let maximum = Float((1 << precision) - 1)
+-        for index in 0..<pixels.count {
++        var index = 0
++        if !floatOutput {
++            let zero = SIMD4<Float>(repeating: 0), limit = SIMD4<Float>(repeating: maximum)
++            let exponent = SIMD4<UInt32>(repeating: 0x7F80_0000)
++            let vectorEnd = pixels.count - pixels.count % 4
++            while index < vectorEnd {
++                if index & 4095 == 0 { try NativeOperation.check() }
++                // Read all four Float values before writing any packed prefix.
++                // Scalar loads permit ordinary Float alignment; raw-byte stores
++                // preserve the Float binding and need no SIMD-aligned pointer.
++                let samples = SIMD4<Float>(pixels[index], pixels[index + 1],
++                                           pixels[index + 2], pixels[index + 3])
++                let bits = SIMD4<UInt32>(samples[0].bitPattern, samples[1].bitPattern,
++                                        samples[2].bitPattern, samples[3].bitPattern)
++                if all((bits & exponent) .!= exponent) {
++                    let rounded = samples.clamped(lowerBound: zero, upperBound: limit)
++                        .rounded(.toNearestOrAwayFromZero)
++                    let values = SIMD4<UInt16>(rounded)
++                    if bytesPerSample == 1 {
++                        bytes.storeBytes(of: SIMD4<UInt8>(truncatingIfNeeded: values),
++                            toByteOffset: index, as: SIMD4<UInt8>.self)
++                    } else {
++                        let littleEndian = SIMD4<UInt16>(values[0].littleEndian, values[1].littleEndian,
++                                                       values[2].littleEndian, values[3].littleEndian)
++                        bytes.storeBytes(of: littleEndian, toByteOffset: index * 2, as: SIMD4<UInt16>.self)
++                    }
++                } else {
++                    // Preserve the scalar failure boundary: finite lanes before
++                    // the first NaN/infinity are converted, then the same error
++                    // is thrown. No later Float representation is overwritten.
++                    for lane in 0..<4 {
++                        let sample = samples[lane]
++                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
++                        let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
++                        bytes[(index + lane) * bytesPerSample] = UInt8(truncatingIfNeeded: value)
++                        if bytesPerSample == 2 { bytes[(index + lane) * 2 + 1] = UInt8(value >> 8) }
++                    }
++                }
++                index += 4
++            }
++        }
++        for index in index..<pixels.count {
+             if index & 4095 == 0 { try NativeOperation.check() }
+             let sample = pixels[index]
+             guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+diff --git a/Tests/SwiftJLITests/Native/VectorCompactionTests.swift b/Tests/SwiftJLITests/Native/VectorCompactionTests.swift
+new file mode 100644
+index 0000000..301ccb7
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/VectorCompactionTests.swift
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: Apache-2.0
++import Testing
++@testable import SwiftJLI
++
++@Suite struct VectorCompactionTests {
++    private func reference(_ pixels: UnsafeMutableBufferPointer<Float>, precision: Int,
++                           bytesPerSample: Int) throws {
++        let maximum = Float((1 << precision) - 1)
++        let bytes = UnsafeMutableRawBufferPointer(pixels)
++        for index in pixels.indices {
++            let sample = pixels[index]
++            guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
++            let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
++            bytes[index * bytesPerSample] = UInt8(truncatingIfNeeded: value)
++            if bytesPerSample == 2 { bytes[index * 2 + 1] = UInt8(value >> 8) }
++        }
++    }
++
++    @Test(arguments: [(8, 1), (8, 2), (12, 2)])
++    func everyHalfIntegerNeighbourTailAndAlignmentMatchesScalar(format: (Int, Int)) throws {
++        let (precision, bps) = format, maximum = (1 << precision) - 1
++        var samples: [Float] = [-.greatestFiniteMagnitude, -.leastNonzeroMagnitude, -0.0,
++                                0, .leastNonzeroMagnitude, .greatestFiniteMagnitude]
++        for integer in 0...maximum {
++            let value = Float(integer), half = value + 0.5
++            samples += [value.nextDown, value, value.nextUp, half.nextDown, half, half.nextUp]
++        }
++        for prefix in 0..<4 { for tail in 0..<4 {
++            let count = samples.count - tail
++            let guardValue: Float = 987654
++            var expected = [Float](repeating: guardValue, count: prefix)
++                + samples.prefix(count) + [Float](repeating: guardValue, count: 5)
++            var actual = expected
++            try expected.withUnsafeMutableBufferPointer {
++                try reference(.init(rebasing: $0[prefix..<(prefix + count)]), precision: precision, bytesPerSample: bps)
++            }
++            try actual.withUnsafeMutableBufferPointer {
++                try ParallelSequentialGreyscaleDecoder.compactPixelsInPlace(
++                    .init(rebasing: $0[prefix..<(prefix + count)]), precision: precision,
++                    bytesPerSample: bps, floatOutput: false)
++            }
++            expected.withUnsafeBytes { e in actual.withUnsafeBytes { #expect($0.elementsEqual(e)) } }
++        } }
++        for count in 0..<9 {
++            var actual = Array(samples.prefix(count)), expected = actual
++            try expected.withUnsafeMutableBufferPointer { try reference($0, precision: precision, bytesPerSample: bps) }
++            // Empty arrays may supply a nil pointer and retain the existing rejection.
++            if count > 0 {
++                try actual.withUnsafeMutableBufferPointer {
++                    try ParallelSequentialGreyscaleDecoder.compactPixelsInPlace($0,
++                        precision: precision, bytesPerSample: bps, floatOutput: false)
++                }
++                expected.withUnsafeBytes { e in actual.withUnsafeBytes { #expect($0.elementsEqual(e)) } }
++            }
++        }
++    }
++
++    @Test(arguments: [(8, 1), (8, 2), (12, 2)])
++    func nonFiniteLanesPreserveExactPartialFailureBoundary(format: (Int, Int)) throws {
++        let (precision, bps) = format
++        for invalid in [Float.nan, -.infinity, .infinity, Float(bitPattern: 0xFFC0_0001)] {
++            for position in [0, 1, 2, 3, 4, 5, 6, 7, 4095, 4096, 4097, 4098, 4099] {
++                var expected = [Float](repeating: 123.5, count: 4103)
++                expected[position + 1] = invalid
++                var actual = expected
++                let e = Result { try expected.withUnsafeMutableBufferPointer {
++                    try reference(.init(rebasing: $0[1..<4102]), precision: precision, bytesPerSample: bps)
++                } }
++                let a = Result { try actual.withUnsafeMutableBufferPointer {
++                    try ParallelSequentialGreyscaleDecoder.compactPixelsInPlace(.init(rebasing: $0[1..<4102]),
++                        precision: precision, bytesPerSample: bps, floatOutput: false)
++                } }
++                switch (e, a) {
++                case (.failure(let e), .failure(let a)): #expect(String(describing: e) == String(describing: a))
++                default: Issue.record("Non-finite compaction unexpectedly succeeded")
++                }
++                expected.withUnsafeBytes { e in actual.withUnsafeBytes { #expect($0.elementsEqual(e)) } }
++            }
++        }
++    }
++}

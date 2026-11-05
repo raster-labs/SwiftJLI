@@ -1,0 +1,89 @@
+commit 0c786e63d1fd08f85704b6db9a04877a68967143
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 19:36:07 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 19:36:07 2026 +0530
+
+    Use proven accumulator bounds for entropy read shifts
+
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index d5497e6..fe386fc 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -235,7 +235,11 @@ struct BitReader {
+             try loadByte()
+         }
+         bitsAvailable -= count
+-        let value = (bitBuffer >> UInt64(bitsAvailable)) & ((1 << UInt64(count)) - 1)
++        // Reader mutations bound the remaining bit count to 0...64. A shift
++        // of 64 can only accompany a zero-width read, whose mask is zero.
++        // Masking therefore preserves every result without a signed-to-UInt64
++        // conversion or a general wide-shift branch on the entropy hot path.
++        let value = (bitBuffer &>> bitsAvailable) & ((1 << UInt64(count)) - 1)
+         return UInt32(truncatingIfNeeded: value)
+     }
+ 
+@@ -254,7 +258,8 @@ struct BitReader {
+     mutating func fastDecodeSymbol(_ table: HuffmanTable) -> UInt8? {
+         if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+         guard bitsAvailable >= 8 else { return nil }
+-        let peek = Int((bitBuffer >> (bitsAvailable - 8)) & 0xFF)
++        // The guard and accumulator invariant bound this shift to 0...56.
++        let peek = Int((bitBuffer &>> (bitsAvailable - 8)) & 0xFF)
+         let len = table.lookaheadLength[peek]
+         guard len != 0 else { return nil }
+         bitsAvailable -= Int(len)
+@@ -284,7 +289,8 @@ struct BitReader {
+     mutating func fastDecodeLosslessDifference(_ table: HuffmanTable) -> Int32? {
+         if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+         guard bitsAvailable >= 8 else { return nil }
+-        let peek = Int((bitBuffer >> (bitsAvailable - 8)) & 0xFF)
++        // The guard and accumulator invariant bound this shift to 0...56.
++        let peek = Int((bitBuffer &>> (bitsAvailable - 8)) & 0xFF)
+         let length = Int(table.lookaheadLength[peek])
+         guard length != 0 else { return nil }
+         let category = Int(table.lookaheadSymbol[peek])
+diff --git a/Tests/SwiftJLITests/Native/BoundedBitReadTests.swift b/Tests/SwiftJLITests/Native/BoundedBitReadTests.swift
+new file mode 100644
+index 0000000..6ae7e90
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/BoundedBitReadTests.swift
+@@ -0,0 +1,38 @@
++// SPDX-License-Identifier: Apache-2.0
++import Testing
++@testable import SwiftJLI
++
++@Suite struct BoundedBitReadTests {
++    @Test func everyValidWidthAndAccumulatorOffsetMatchesByteOracle() throws {
++        let bytes = (0..<32).map { UInt8(($0 * 73 + 19) % 255) }
++        for offset in 0..<64 { for width in 0...16 {
++            var reader = BitReader(data: bytes)
++            var remaining = offset
++            while remaining > 0 {
++                let part = min(remaining, 16)
++                _ = try reader.readBits(part)
++                remaining -= part
++            }
++            var expected: UInt32 = 0
++            for bit in offset..<(offset + width) {
++                expected = (expected << 1) | UInt32((bytes[bit / 8] >> (7 - bit % 8)) & 1)
++            }
++            #expect(try reader.readBits(width) == expected)
++        } }
++    }
++
++    @Test func zeroWidthAfterFullPrefetchAndInvalidWidthsConsumeNothing() throws {
++        let bytes: [UInt8] = [0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0x01, 0x23]
++        let longCode = HuffmanTable(bits: Array(repeating: 0, count: 8) + [1]
++            + Array(repeating: 0, count: 7), values: [0])
++        var reader = BitReader(data: bytes)
++        #expect(reader.fastDecodeSymbol(longCode) == nil)
++        #expect(reader.byteOffset == 8)
++        #expect(try reader.readBits(0) == 0)
++        for invalid in [Int.min, -1, 17, Int.max] {
++            #expect(throws: JLIError.self) { try reader.readBits(invalid) }
++        }
++        #expect(try reader.readBits(16) == 0x1234)
++        #expect(try reader.readBits(16) == 0x5678)
++    }
++}

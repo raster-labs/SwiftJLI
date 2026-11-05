@@ -1,0 +1,201 @@
+Building for debugging...
+[Planning deferred tasks]
+[48 / 82]
+[49 / 83] SwiftJLI
+[57 / 145]
+[61 / 145]
+[69 / 145]
+[72 / 145]
+[76 / 145]
+[79 / 145]
+[85 / 145]
+[88 / 145]
+[89 / 145]
+[92 / 145]
+[94 / 145]
+[99 / 145] SwiftJLI
+[108 / 145] SwiftJLI
+[110 / 145] swiftjli-cli-product
+[112 / 145] SwiftJLI
+[116 / 145] SwiftJLI
+[117 / 145]
+[122 / 146] SwiftJLI
+[131 / 147] swiftjli-cli-product
+[133 / 149] swiftjli-cli-product
+[134 / 149] SwiftJLITests-product
+[137 / 171]
+[143 / 171] SwiftJLITests-product
+[146 / 171] SwiftJLITests-product
+[148 / 171] swiftjli-cli-product
+[154 / 171] SwiftJLITests-product
+[155 / 171] SwiftJLITests-product
+[158 / 171] SwiftJLITests-product
+[160 / 171] SwiftJLITests-product
+[161 / 171] SwiftJLITests-product
+/private/tmp/swiftjli-djpeg-round3/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+[162 / 171] SwiftJLITests-product
+/private/tmp/swiftjli-djpeg-round3/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:37:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 35 |                     var reader = BitReader(data: writer.data)
+ 36 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 37 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 38 |                     try destination.withUnsafeMutableBufferPointer {
+ 39 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+[163 / 171] SwiftJLITests-product
+[165 / 171] SwiftJLITests-product
+[167 / 171] SwiftJLITests-product
+Build complete! (16.21 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite NativeExecutionTests started.
+◇ Suite ACLookaheadTests started.
+◇ Suite CLISynchronousExecutionTests started.
+◇ Suite LosslessRowStorageTests started.
+◇ Suite SequentialGreyscaleDecoderTests started.
+◇ Suite ZeroRunLosslessTests started.
+◇ Suite ScopedACDecoderTests started.
+◇ Suite LosslessDifferenceTests started.
+◇ Test adaptersShareWriterAuthorityAndRejectForgedLease() started.
+◇ Test failedFillInvalidatesDestination() started.
+◇ Suite ValidatedEnvelopeTests started.
+◇ Test cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test sameTokenCannotAuthoriseConcurrentOverlappingBorrows() started.
+◇ Test sealedOwnerSupportsConcurrentReadersAndNestedRead() started.
+◇ Test abandonedDestinationInvalidatesItsReservedOwner() started.
+◇ Test reentrantLeaseOperationsRejectWithoutDeadlocking() started.
+◇ Suite LosslessLookaheadTests started.
+◇ Test concurrentAdaptersReserveExactlyOneWriter() started.
+◇ Test everyPrefixOffsetAndRunBoundaryMatchesReference() started.
+◇ Test imageRetainsAdapterUntilLastImageReleaseExactlyOnce() started.
+◇ Test failureJoinsEveryStartedWorker() started.
+◇ Test publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test allocationAndCoverageDispatchAreBounded() started.
+◇ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test truncatedEntropyMissingRestartsAndDeadlineStillThrow() started.
+◇ Test cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test deadlineReachesJoinedWorkers() started.
+◇ Test finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test independentCjpegFixturesMatchExactSamples() started.
+◇ Test nestedHostScopeRetainsTaskCancellationForJoinedWorkers() started.
+◇ Test hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test malformedEntropyAndExpiredOperationsStillReject() started.
+◇ Test zeroRunsRetainReadBitsAndRestartBoundaries() started.
+◇ Test joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test fractionalDeadlineStillExpires() started.
+◇ Test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test invalidDestinationIsRejectedBeforeWriting() started.
+◇ Test invalidExtentsRejectBeforeWriting() started.
+◇ Test longCodesTruncationMarkersAndInvalidCategoriesUseFallback() started.
+◇ Test hostDeadlineAndMalformedCategoriesRemainDistinct() started.
+◇ Test hostCancellationReachesJoinedWorkersWithoutASwiftTask() started.
+◇ Test reusedExtentsMatchIndependentMarkerTraversal() started.
+◇ Test malformedExtentsEntropyAndDeadlineReject() started.
+◇ Test reusingExtentsStillHonoursCancellationAndLimits() started.
+◇ Test everyMagnitudeAtEveryBitOffsetMatchesBitwiseReference() started.
+◇ Test constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+◇ Test incompleteOrTrailingStreamsNeverProduceValidatedExtents() started.
+◇ Test allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test case passing 1 argument point → .sealing to cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test case passing 1 argument restarts → false to publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test case passing 1 argument progressive → true to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test validatedInputOwnsAnImmutableSnapshot() started.
+◇ Test case passing 1 argument restarts → true to publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+◇ Test case passing 1 argument progressive → false to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test case passing 1 argument seconds → 10.0 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 1 argument seconds → 1e+100 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument seconds → 120.0 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument point → .validatingSealedStorage to cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument lossy → false to hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test case passing 1 argument lossy → true to hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test case passing 1 argument limit → 1 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument combined → false to coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test case passing 1 argument limit → 2 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument combined → true to coefficientsAndRestartPositionMatchArrayReference(combined:) started.
+◇ Test case passing 1 argument limit → 4 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument precision → 8 to scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test case passing 1 argument precision → 12 to scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) started.
+◇ Test largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test allocationAndLongMagnitudeDispatchAreBounded() started.
+◇ Test everyPrefixAndBitOffsetMatchesBitwiseReference() started.
+◇ Test lookupRejectsInvalidStorageBeforeWriting() started.
+✔ Test abandonedDestinationInvalidatesItsReservedOwner() passed after 0.052 seconds.
+✔ Test reentrantLeaseOperationsRejectWithoutDeadlocking() passed after 0.052 seconds.
+◇ Test case passing 1 argument bits → 2 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+✔ Test sameTokenCannotAuthoriseConcurrentOverlappingBorrows() passed after 0.069 seconds.
+◇ Test case passing 1 argument bits → 8 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 12 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 16 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 2 to allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test case passing 1 argument bits → 8 to allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test case passing 1 argument bits → 12 to allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test case passing 1 argument bits → 16 to allPredictorsPointTransformsAndRestartEdges(bits:) started.
+✔ Test failedFillInvalidatesDestination() passed after 1.727 seconds.
+✔ Test imageRetainsAdapterUntilLastImageReleaseExactlyOnce() passed after 1.727 seconds.
+◇ Test case passing 1 argument combined → false to malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+✔ Test adaptersShareWriterAuthorityAndRejectForgedLease() passed after 1.795 seconds.
+◇ Test case passing 1 argument combined → true to malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) started.
+✔ Test deadlineReachesJoinedWorkers() passed after 2.398 seconds.
+✔ Test malformedEntropyAndExpiredOperationsStillReject() passed after 2.401 seconds.
+✔ Test failureJoinsEveryStartedWorker() passed after 2.401 seconds.
+✔ Test truncatedEntropyMissingRestartsAndDeadlineStillThrow() passed after 2.401 seconds.
+✔ Test independentCjpegFixturesMatchExactSamples() passed after 2.401 seconds.
+✔ Test fractionalDeadlineStillExpires() passed after 2.401 seconds.
+✔ Test joinedWorkersRespectLimitAndBackend(limit:) with 3 test cases passed after 2.401 seconds.
+✔ Test finiteDeadlinesDoNotTrap(seconds:) with 3 test cases passed after 2.401 seconds.
+✔ Test allocationAndCoverageDispatchAreBounded() passed after 2.402 seconds.
+✔ Test invalidDestinationIsRejectedBeforeWriting() passed after 2.401 seconds.
+✔ Test invalidExtentsRejectBeforeWriting() passed after 2.401 seconds.
+◇ Test case passing 1 argument bits → 2 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 8 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 12 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 16 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+✔ Test hostCancellationReachesJoinedWorkersWithoutASwiftTask() passed after 4.688 seconds.
+✔ Test hostDeadlineAndMalformedCategoriesRemainDistinct() passed after 4.688 seconds.
+✔ Test reusingExtentsStillHonoursCancellationAndLimits() passed after 5.062 seconds.
+✔ Test malformedExtentsEntropyAndDeadlineReject() passed after 5.063 seconds.
+✔ Test longCodesTruncationMarkersAndInvalidCategoriesUseFallback() passed after 5.063 seconds.
+✔ Test incompleteOrTrailingStreamsNeverProduceValidatedExtents() passed after 5.063 seconds.
+✔ Test reusedExtentsMatchIndependentMarkerTraversal() passed after 5.063 seconds.
+✔ Test hostAdaptersPreserveBytesAndReports(lossy:) with 2 test cases passed after 5.063 seconds.
+✔ Test zeroRunsRetainReadBitsAndRestartBoundaries() passed after 5.063 seconds.
+✔ Test coefficientsAndRestartPositionMatchArrayReference(combined:) with 2 test cases passed after 5.063 seconds.
+✔ Test scanBorrowMatchesReferenceAcrossRestartsAndLookup(precision:) with 2 test cases passed after 5.063 seconds.
+✔ Test validatedInputOwnsAnImmutableSnapshot() passed after 5.063 seconds.
+✔ Test malformedAndTruncatedEntropyPreserveReferenceBehaviour(combined:) with 2 test cases passed after 5.063 seconds.
+✔ Test constantAndChangingPlateausPreserveSamplesAndPadding(bits:) with 4 test cases passed after 5.063 seconds.
+✔ Test allocationAndLongMagnitudeDispatchAreBounded() passed after 5.034 seconds.
+✔ Test everyPrefixOffsetAndRunBoundaryMatchesReference() passed after 5.064 seconds.
+✔ Test sealedOwnerSupportsConcurrentReadersAndNestedRead() passed after 5.064 seconds.
+✔ Test concurrentAdaptersReserveExactlyOneWriter() passed after 5.064 seconds.
+✔ Test cancellationInProviderFinalisationPreventsPublication(_:) with 2 test cases passed after 5.064 seconds.
+✔ Test cancellationReachesDispatchWorkersAndJoins(seconds:) with 2 test cases passed after 5.064 seconds.
+✔ Test nestedHostScopeRetainsTaskCancellationForJoinedWorkers() passed after 5.064 seconds.
+✔ Suite SequentialGreyscaleDecoderTests passed after 5.064 seconds.
+✔ Suite ScopedACDecoderTests passed after 5.064 seconds.
+✔ Suite ValidatedEnvelopeTests passed after 5.065 seconds.
+✔ Suite ZeroRunLosslessTests passed after 5.065 seconds.
+✔ Suite ACLookaheadTests passed after 5.065 seconds.
+✔ Suite CLISynchronousExecutionTests passed after 5.065 seconds.
+✔ Test lookupRejectsInvalidStorageBeforeWriting() passed after 5.146 seconds.
+✔ Test allPredictorsPointTransformsAndRestartEdges(bits:) with 4 test cases passed after 5.545 seconds.
+✔ Suite LosslessRowStorageTests passed after 5.546 seconds.
+✔ Test publicPredictiveParallelismPreservesBytes(restarts:) with 2 test cases passed after 6.226 seconds.
+✔ Test everyMagnitudeAtEveryBitOffsetMatchesBitwiseReference() passed after 7.927 seconds.
+✔ Suite LosslessDifferenceTests passed after 7.928 seconds.
+✔ Test largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) with 4 test cases passed after 9.908 seconds.
+✔ Test everyPrefixAndBitOffsetMatchesBitwiseReference() passed after 10.827 seconds.
+✔ Suite LosslessLookaheadTests passed after 10.859 seconds.
+✔ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) with 2 test cases passed after 26.888 seconds.
+✔ Suite NativeExecutionTests passed after 26.889 seconds.
+✔ Test run with 45 tests in 10 suites passed after 26.889 seconds.

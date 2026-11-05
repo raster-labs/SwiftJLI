@@ -1,0 +1,339 @@
+{
+  "passed": false,
+  "createdUTC": "2026-11-03T18:39:04.391907+00:00",
+  "method": "Direct Mach-O text, symbol and relocation parsing. Compare every body byte after stripping only trailing boundary NOPs and canonicalising external BL displacement with exact relocation-target equality. Verify every actual linked byte after resolving BL to its recorded symbol. No builds, profiling or codec execution.",
+  "buildReceiptSHA256": "e3288d02657751cc32ab5f7b7d0f3fca354f7c8ad4a760686fadf946e72a1aaf",
+  "binarySHA256": {
+    "baselineOriginal": "f4d617acc49c430ffb642d6b8988df273032910c5cd92cc1b75321ad45c5e757",
+    "baselineAligned": "6f55a4ce409b838962d28cc05ed5e83042aa25693d7bbca64445f722d66ade73",
+    "candidateOriginal": "695ddfeb04e1781233ecc2cda6c55933b1d3f6e8fb03cd168278eaf9f43e937c",
+    "candidateAligned": "9e52a7b2ec63a074d115a0b902f878577eceef7ca74e19a83defe732857af7ce"
+  },
+  "pins": {
+    "/private/tmp/swiftjli-round5-evidence/c-row-entry-alignment/review-codegen.py": "438bc504f64d363d95ff865064b44f981fac408b1f3bb1e6a6d9840acbe10159",
+    "/private/tmp/swiftjli-round5-evidence/c-row-entry-alignment/build1/build.json": "e3288d02657751cc32ab5f7b7d0f3fca354f7c8ad4a760686fadf946e72a1aaf",
+    "/private/tmp/swiftjli-round5-evidence/c-row-entry-alignment/build1/control-SwiftJLIEntropyC.o": "7a5248da7642209719d1f00560a325550409e485f757b3a09a28ded9aafdacdd",
+    "/private/tmp/swiftjli-round5-evidence/c-row-entry-alignment/build1/aligned-SwiftJLIEntropyC.o": "465318b064b70f31495a94ecb7f250c50d690f9a317b0c2361422a1424e82f9b",
+    "/private/tmp/swiftjli-round5-evidence/c-row-entry-alignment/build1/baselineOriginal": "f4d617acc49c430ffb642d6b8988df273032910c5cd92cc1b75321ad45c5e757",
+    "/private/tmp/swiftjli-round5-5f9e1cf-fma-baseline/out/Products/Release/SwiftJLIEntropyC.o": "af98e78a51b1ee9a0bb05e209d0081e1f5201f3c977e659d342717f2331f6a36",
+    "/private/tmp/swiftjli-round5-5f9e1cf-fma-baseline/out/Products/Release/SwiftJLI.o": "e2d04c7663b64c2a0d6d12efb527bb909a0aa6a8518e1be24102011eed6494f8",
+    "/private/tmp/swiftjli-round5-evidence/c-row-entry-alignment/build1/baselineAligned": "6f55a4ce409b838962d28cc05ed5e83042aa25693d7bbca64445f722d66ade73",
+    "/private/tmp/swiftjli-round5-evidence/c-row-entry-alignment/build1/candidateOriginal": "695ddfeb04e1781233ecc2cda6c55933b1d3f6e8fb03cd168278eaf9f43e937c",
+    "/private/tmp/swiftjli-round5-composed-c-fma256-tiny-build/out/Products/Release/SwiftJLIEntropyC.o": "74b8c3b51fe4bac6246d954bff59ac523b67b556c013ab32cb779409dd8eb5dc",
+    "/private/tmp/swiftjli-round5-composed-c-fma256-tiny-build/out/Products/Release/SwiftJLI.o": "08c878a1d703878e01a48c9b4e03d7a350707db44ffe3f6a662ef5e5fae9c1cc",
+    "/private/tmp/swiftjli-round5-evidence/c-row-entry-alignment/build1/candidateAligned": "9e52a7b2ec63a074d115a0b902f878577eceef7ca74e19a83defe732857af7ce"
+  },
+  "checks": {
+    "controlTextEqualsBothOriginals": true,
+    "controlBodiesAndCallsEqualBothOriginals": true,
+    "alignedBodiesAndCallsUnchanged": false,
+    "allLinkedBodiesMatchResolvedObjectCode": true,
+    "bothAlignedBinaryRowEntriesModulo128Zero": true
+  },
+  "controlTextMatches": {
+    "baseline": true,
+    "candidate": true
+  },
+  "controlComparisons": {
+    "baseline": {
+      "_sjli_ac_decode_block": {
+        "passed": true,
+        "instructionBytes": 1300,
+        "instructionCount": 325,
+        "canonicalSHA256": "2b7faf8c2de874665f81d51cfc6fcb3eee7720d6810dc578aeefc4008227508e",
+        "firstPaddingBytes": 0,
+        "secondPaddingBytes": 0,
+        "callRelocations": []
+      },
+      "_sjli_dct_decode_block": {
+        "passed": true,
+        "instructionBytes": 2156,
+        "instructionCount": 539,
+        "canonicalSHA256": "fba87bd056f5047d3e9b439d47fdf6a39e191b08ad445c834b485f2cbd9923d3",
+        "firstPaddingBytes": 0,
+        "secondPaddingBytes": 0,
+        "callRelocations": []
+      },
+      "_sjli_lossless_left_u16_code0_row": {
+        "passed": true,
+        "instructionBytes": 688,
+        "instructionCount": 172,
+        "canonicalSHA256": "f9d323f8178aca5922ef9af4b9054e747d043370733186dfb11f30b0c8e4e9db",
+        "firstPaddingBytes": 0,
+        "secondPaddingBytes": 0,
+        "callRelocations": [
+          {
+            "type": 2,
+            "pcrel": 1,
+            "length": 2,
+            "external": 1,
+            "target": "_sjli_lossless_left_u16_row",
+            "relativeOffset": 480
+          }
+        ]
+      },
+      "_sjli_lossless_left_u16_row": {
+        "passed": true,
+        "instructionBytes": 1304,
+        "instructionCount": 326,
+        "canonicalSHA256": "998f5302bf7361d227a39dac3bc55723d6dda5b0bd66905e9bcc226d087312f9",
+        "firstPaddingBytes": 0,
+        "secondPaddingBytes": 0,
+        "callRelocations": []
+      }
+    },
+    "candidate": {
+      "_sjli_ac_decode_block": {
+        "passed": true,
+        "instructionBytes": 1300,
+        "instructionCount": 325,
+        "canonicalSHA256": "2b7faf8c2de874665f81d51cfc6fcb3eee7720d6810dc578aeefc4008227508e",
+        "firstPaddingBytes": 0,
+        "secondPaddingBytes": 0,
+        "callRelocations": []
+      },
+      "_sjli_dct_decode_block": {
+        "passed": true,
+        "instructionBytes": 2156,
+        "instructionCount": 539,
+        "canonicalSHA256": "fba87bd056f5047d3e9b439d47fdf6a39e191b08ad445c834b485f2cbd9923d3",
+        "firstPaddingBytes": 0,
+        "secondPaddingBytes": 0,
+        "callRelocations": []
+      },
+      "_sjli_lossless_left_u16_code0_row": {
+        "passed": true,
+        "instructionBytes": 688,
+        "instructionCount": 172,
+        "canonicalSHA256": "f9d323f8178aca5922ef9af4b9054e747d043370733186dfb11f30b0c8e4e9db",
+        "firstPaddingBytes": 0,
+        "secondPaddingBytes": 0,
+        "callRelocations": [
+          {
+            "type": 2,
+            "pcrel": 1,
+            "length": 2,
+            "external": 1,
+            "target": "_sjli_lossless_left_u16_row",
+            "relativeOffset": 480
+          }
+        ]
+      },
+      "_sjli_lossless_left_u16_row": {
+        "passed": true,
+        "instructionBytes": 1304,
+        "instructionCount": 326,
+        "canonicalSHA256": "998f5302bf7361d227a39dac3bc55723d6dda5b0bd66905e9bcc226d087312f9",
+        "firstPaddingBytes": 0,
+        "secondPaddingBytes": 0,
+        "callRelocations": []
+      }
+    }
+  },
+  "alignedComparison": {
+    "_sjli_ac_decode_block": {
+      "passed": true,
+      "instructionBytes": 1300,
+      "instructionCount": 325,
+      "canonicalSHA256": "2b7faf8c2de874665f81d51cfc6fcb3eee7720d6810dc578aeefc4008227508e",
+      "firstPaddingBytes": 0,
+      "secondPaddingBytes": 0,
+      "callRelocations": []
+    },
+    "_sjli_dct_decode_block": {
+      "passed": true,
+      "instructionBytes": 2156,
+      "instructionCount": 539,
+      "canonicalSHA256": "fba87bd056f5047d3e9b439d47fdf6a39e191b08ad445c834b485f2cbd9923d3",
+      "firstPaddingBytes": 0,
+      "secondPaddingBytes": 0,
+      "callRelocations": []
+    },
+    "_sjli_lossless_left_u16_code0_row": {
+      "passed": false,
+      "instructionBytes": 688,
+      "instructionCount": 172,
+      "canonicalSHA256": "f9d323f8178aca5922ef9af4b9054e747d043370733186dfb11f30b0c8e4e9db",
+      "firstPaddingBytes": 0,
+      "secondPaddingBytes": 0,
+      "callRelocations": [
+        {
+          "type": 2,
+          "pcrel": 1,
+          "length": 2,
+          "external": 1,
+          "target": "_sjli_lossless_left_u16_row",
+          "relativeOffset": 480
+        }
+      ]
+    },
+    "_sjli_lossless_left_u16_row": {
+      "passed": true,
+      "instructionBytes": 1304,
+      "instructionCount": 326,
+      "canonicalSHA256": "998f5302bf7361d227a39dac3bc55723d6dda5b0bd66905e9bcc226d087312f9",
+      "firstPaddingBytes": 0,
+      "secondPaddingBytes": 0,
+      "callRelocations": []
+    }
+  },
+  "linkedBodies": {
+    "baselineOriginal": {
+      "_sjli_ac_decode_block": {
+        "passed": true,
+        "address": "0x100091784",
+        "mod32": 4,
+        "mod64": 4,
+        "mod128": 4,
+        "bodyBytes": 1300,
+        "linkedBodySHA256": "2b7faf8c2de874665f81d51cfc6fcb3eee7720d6810dc578aeefc4008227508e"
+      },
+      "_sjli_dct_decode_block": {
+        "passed": true,
+        "address": "0x100091c98",
+        "mod32": 24,
+        "mod64": 24,
+        "mod128": 24,
+        "bodyBytes": 2156,
+        "linkedBodySHA256": "fba87bd056f5047d3e9b439d47fdf6a39e191b08ad445c834b485f2cbd9923d3"
+      },
+      "_sjli_lossless_left_u16_code0_row": {
+        "passed": true,
+        "address": "0x100092504",
+        "mod32": 4,
+        "mod64": 4,
+        "mod128": 4,
+        "bodyBytes": 688,
+        "linkedBodySHA256": "e7ed4f72cc2faddbd414509b5fdf18ec704392d2266516bac31c6c5fe4f3fb9b"
+      },
+      "_sjli_lossless_left_u16_row": {
+        "passed": true,
+        "address": "0x1000927b4",
+        "mod32": 20,
+        "mod64": 52,
+        "mod128": 52,
+        "bodyBytes": 1304,
+        "linkedBodySHA256": "998f5302bf7361d227a39dac3bc55723d6dda5b0bd66905e9bcc226d087312f9"
+      }
+    },
+    "baselineAligned": {
+      "_sjli_ac_decode_block": {
+        "passed": true,
+        "address": "0x100091800",
+        "mod32": 0,
+        "mod64": 0,
+        "mod128": 0,
+        "bodyBytes": 1300,
+        "linkedBodySHA256": "2b7faf8c2de874665f81d51cfc6fcb3eee7720d6810dc578aeefc4008227508e"
+      },
+      "_sjli_dct_decode_block": {
+        "passed": true,
+        "address": "0x100091d14",
+        "mod32": 20,
+        "mod64": 20,
+        "mod128": 20,
+        "bodyBytes": 2156,
+        "linkedBodySHA256": "fba87bd056f5047d3e9b439d47fdf6a39e191b08ad445c834b485f2cbd9923d3"
+      },
+      "_sjli_lossless_left_u16_code0_row": {
+        "passed": true,
+        "address": "0x100092580",
+        "mod32": 0,
+        "mod64": 0,
+        "mod128": 0,
+        "bodyBytes": 768,
+        "linkedBodySHA256": "b5201aec737e3754d2c5948dd19496e5a73e190c2b00a4db68eabf222375256c"
+      },
+      "_sjli_lossless_left_u16_row": {
+        "passed": true,
+        "address": "0x100092880",
+        "mod32": 0,
+        "mod64": 0,
+        "mod128": 0,
+        "bodyBytes": 1304,
+        "linkedBodySHA256": "998f5302bf7361d227a39dac3bc55723d6dda5b0bd66905e9bcc226d087312f9"
+      }
+    },
+    "candidateOriginal": {
+      "_sjli_ac_decode_block": {
+        "passed": true,
+        "address": "0x100091054",
+        "mod32": 20,
+        "mod64": 20,
+        "mod128": 84,
+        "bodyBytes": 1300,
+        "linkedBodySHA256": "2b7faf8c2de874665f81d51cfc6fcb3eee7720d6810dc578aeefc4008227508e"
+      },
+      "_sjli_dct_decode_block": {
+        "passed": true,
+        "address": "0x100091568",
+        "mod32": 8,
+        "mod64": 40,
+        "mod128": 104,
+        "bodyBytes": 2156,
+        "linkedBodySHA256": "fba87bd056f5047d3e9b439d47fdf6a39e191b08ad445c834b485f2cbd9923d3"
+      },
+      "_sjli_lossless_left_u16_code0_row": {
+        "passed": true,
+        "address": "0x100091dd4",
+        "mod32": 20,
+        "mod64": 20,
+        "mod128": 84,
+        "bodyBytes": 688,
+        "linkedBodySHA256": "e7ed4f72cc2faddbd414509b5fdf18ec704392d2266516bac31c6c5fe4f3fb9b"
+      },
+      "_sjli_lossless_left_u16_row": {
+        "passed": true,
+        "address": "0x100092084",
+        "mod32": 4,
+        "mod64": 4,
+        "mod128": 4,
+        "bodyBytes": 1304,
+        "linkedBodySHA256": "998f5302bf7361d227a39dac3bc55723d6dda5b0bd66905e9bcc226d087312f9"
+      }
+    },
+    "candidateAligned": {
+      "_sjli_ac_decode_block": {
+        "passed": true,
+        "address": "0x100091080",
+        "mod32": 0,
+        "mod64": 0,
+        "mod128": 0,
+        "bodyBytes": 1300,
+        "linkedBodySHA256": "2b7faf8c2de874665f81d51cfc6fcb3eee7720d6810dc578aeefc4008227508e"
+      },
+      "_sjli_dct_decode_block": {
+        "passed": true,
+        "address": "0x100091594",
+        "mod32": 20,
+        "mod64": 20,
+        "mod128": 20,
+        "bodyBytes": 2156,
+        "linkedBodySHA256": "fba87bd056f5047d3e9b439d47fdf6a39e191b08ad445c834b485f2cbd9923d3"
+      },
+      "_sjli_lossless_left_u16_code0_row": {
+        "passed": true,
+        "address": "0x100091e00",
+        "mod32": 0,
+        "mod64": 0,
+        "mod128": 0,
+        "bodyBytes": 768,
+        "linkedBodySHA256": "b5201aec737e3754d2c5948dd19496e5a73e190c2b00a4db68eabf222375256c"
+      },
+      "_sjli_lossless_left_u16_row": {
+        "passed": true,
+        "address": "0x100092100",
+        "mod32": 0,
+        "mod64": 0,
+        "mod128": 0,
+        "bodyBytes": 1304,
+        "linkedBodySHA256": "998f5302bf7361d227a39dac3bc55723d6dda5b0bd66905e9bcc226d087312f9"
+      }
+    }
+  },
+  "ABIFrameCallConclusion": "Byte equality preserves all opcodes, registers, stack allocation, spills/restores, local branches, sample state and public ABI; the only external call target remains the generic row. Entry padding is excluded only after the last non-NOP instruction of each body.",
+  "limitations": [
+    "This gate permits diagnostic timing only; it does not establish a speed benefit, causal explanation, safety qualification or acceptance of ba277.",
+    "128-byte entry alignment stabilises residues modulo32/64/128; inner loops are not asserted to begin on an alignment boundary."
+  ]
+}

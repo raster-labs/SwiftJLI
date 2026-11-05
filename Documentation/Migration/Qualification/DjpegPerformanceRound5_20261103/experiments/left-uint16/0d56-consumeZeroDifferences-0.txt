@@ -1,0 +1,50 @@
+
+/private/tmp/swiftjli-round5-combined-products/SwiftJLI.o:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+000000000006502c <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF>:
+   6502c:      	stp	x20, x19, [sp, #-0x20]!
+   65030:      	stp	x29, x30, [sp, #0x10]
+   65034:      	add	x29, sp, #0x10
+   65038:      	cmp	x1, #0x1
+   6503c:      	b.lt	0x6506c <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF+0x40>
+   65040:      	ldr	x8, [x0, #0x30]
+   65044:      	ldr	x9, [x8, #0x10]
+   65048:      	cbz	x9, 0x650d0 <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF+0xa4>
+   6504c:      	ldrb	w8, [x8, #0x20]
+   65050:      	cmp	w8, #0x1
+   65054:      	b.ne	0x6506c <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF+0x40>
+   65058:      	ldr	x8, [x0, #0x38]
+   6505c:      	ldr	x9, [x8, #0x10]
+   65060:      	cbz	x9, 0x650d4 <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF+0xa8>
+   65064:      	ldrb	w8, [x8, #0x20]
+   65068:      	cbz	w8, 0x6507c <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF+0x50>
+   6506c:      	mov	x0, #0x0                ; =0
+   65070:      	ldp	x29, x30, [sp, #0x10]
+   65074:      	ldp	x20, x19, [sp], #0x20
+   65078:      	ret
+   6507c:      	ldr	x8, [x20, #0x38]
+   65080:      	cmp	x8, #0x7
+   65084:      	b.gt	0x650a4 <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF+0x78>
+   65088:      	mov	w0, #0x8                ; =8
+   6508c:      	mov	x19, x1
+   65090:      	bl	0x65090 <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF+0x64>
+		0000000000065090:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF
+   65094:      	mov	x1, x19
+   65098:      	ldr	x8, [x20, #0x38]
+   6509c:      	cmp	x8, #0x1
+   650a0:      	b.lt	0x6506c <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF+0x40>
+   650a4:      	ldr	x9, [x20, #0x30]
+   650a8:      	neg	w10, w8
+   650ac:      	lsl	x9, x9, x10
+   650b0:      	clz	x9, x9
+   650b4:      	cmp	x8, x1
+   650b8:      	csel	x10, x8, x1, lo
+   650bc:      	cmp	x9, x10
+   650c0:      	csel	x0, x9, x10, lo
+   650c4:      	sub	x8, x8, x0
+   650c8:      	str	x8, [x20, #0x38]
+   650cc:      	b	0x65070 <_$s8SwiftJLI9BitReaderV22consumeZeroDifferences_7maximumSiAA12HuffmanTableV_SitF+0x44>
+   650d0:      	brk	#0x1
+   650d4:      	brk	#0x1

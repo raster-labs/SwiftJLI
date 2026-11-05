@@ -1,0 +1,3082 @@
+{
+  "binary": "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+  "binary_sha256": "dec1be550453910fa5fe9f816c4f9a97238a2faf3a16b6c7f2886be351dbcfdc",
+  "installer_sha256": "0d8351878fe71207024aa9f698852537e88c46a9e8afa792bb2502c329dbba57",
+  "test_runner_sha256": "549fe15e3aceec914626cc1f0596f4656b16ffe99fa183c554b3022a8c39734d",
+  "version": "1.1.0-dev.2",
+  "manual_sha256": "92297642a865b901f1977abb730ed1368b27f75cc4f904ef3db41de93c1cb30e",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "-h"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli capabilities [--json] [OPTIONS]\n\nReport this library's current encode/decode/inspect support without reading files.\n--json writes one JSON document to stdout; diagnostics stay on stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli capabilities --json\n  swiftjli-cli capabilities --verbose=+++\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "help",
+        "capabilities"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli capabilities [--json] [OPTIONS]\n\nReport this library's current encode/decode/inspect support without reading files.\n--json writes one JSON document to stdout; diagnostics stay on stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli capabilities --json\n  swiftjli-cli capabilities --verbose=+++\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "-h"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli capabilities [--json] [OPTIONS]\n\nReport this library's current encode/decode/inspect support without reading files.\n--json writes one JSON document to stdout; diagnostics stay on stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli capabilities --json\n  swiftjli-cli capabilities --verbose=+++\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli encode -i <path|-> -o <path|-> [OPTIONS]\n\nEncode an uncompressed image (NRRD or binary Netpbm PGM/PPM/PNM) to a JPEG stream.\nWhen reading from '-' or writing to '-', or when a path lacks a recognised extension\n(.nrrd, .pgm, .ppm, .pnm, .jpg, .jpeg), --input-format or --output-format is required.\nBinary output written to '-' goes exclusively to stdout; --json writes the operation\nreport to stderr so binary stdout is never contaminated.\n\nCODEC OPTIONS\n  -i, --input PATH           Source file or '-' for standard input.\n  -o, --output PATH          Target JPEG file or '-' for standard output.\n  --input-format FORMAT      Explicit source format: nrrd, pgm, ppm, pnm.\n  --output-format FORMAT     Explicit target format: jpeg (or jpg).\n  --mode MODE                lossless (default), near-lossless or lossy.\n  --max-error N              Maximum absolute error for near-lossless point transform.\n  --predictor N              Lossless predictor 1..7 (default 1).\n  --restart-interval N       Restart interval in MCUs 0..65535 (default 0).\n  --quality N                Lossy DCT quality 0..100 (default 90; requires --mode lossy).\n  --subsampling MODE         Lossy chroma subsampling: 444, 422, 420, greyscale.\n  --progressive MODE         Lossy scan mode: sequential, spectral-selection,\n                             or successive-approximation.\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --overwrite                Permit atomic replacement of an existing output file.\n  --json                     Write structured JSON operation report to stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "help",
+        "encode"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli encode -i <path|-> -o <path|-> [OPTIONS]\n\nEncode an uncompressed image (NRRD or binary Netpbm PGM/PPM/PNM) to a JPEG stream.\nWhen reading from '-' or writing to '-', or when a path lacks a recognised extension\n(.nrrd, .pgm, .ppm, .pnm, .jpg, .jpeg), --input-format or --output-format is required.\nBinary output written to '-' goes exclusively to stdout; --json writes the operation\nreport to stderr so binary stdout is never contaminated.\n\nCODEC OPTIONS\n  -i, --input PATH           Source file or '-' for standard input.\n  -o, --output PATH          Target JPEG file or '-' for standard output.\n  --input-format FORMAT      Explicit source format: nrrd, pgm, ppm, pnm.\n  --output-format FORMAT     Explicit target format: jpeg (or jpg).\n  --mode MODE                lossless (default), near-lossless or lossy.\n  --max-error N              Maximum absolute error for near-lossless point transform.\n  --predictor N              Lossless predictor 1..7 (default 1).\n  --restart-interval N       Restart interval in MCUs 0..65535 (default 0).\n  --quality N                Lossy DCT quality 0..100 (default 90; requires --mode lossy).\n  --subsampling MODE         Lossy chroma subsampling: 444, 422, 420, greyscale.\n  --progressive MODE         Lossy scan mode: sequential, spectral-selection,\n                             or successive-approximation.\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --overwrite                Permit atomic replacement of an existing output file.\n  --json                     Write structured JSON operation report to stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli decode -i <path|-> -o <path|-> [OPTIONS]\n\nDecode a JPEG stream into a fidelity-preserving uncompressed container:\n  - nrrd: 2D greyscale UInt16 with full 16-bit precision (NRRD0004 raw).\n  - pgm:  Binary Netpbm P5 greyscale with exact maxval (1 << bits) - 1 (2..16 bits).\n  - ppm:  Binary Netpbm P6 RGB with exact maxval (1 << bits) - 1 (2..16 bits).\n  - pnm:  Binary Netpbm P5 (greyscale) or P6 (RGB) matching source components.\nDecoding fails with exit status 4 before creating output if the target format cannot\npreserve the decoded precision, component layout, or embedded ICC/Exif metadata.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  -o, --output PATH          Target file or '-' for standard output.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --output-format FORMAT     Explicit target format: nrrd, pgm, ppm, pnm.\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --overwrite                Permit atomic replacement of an existing output file.\n  --json                     Write structured JSON operation report to stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "help",
+        "decode"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli decode -i <path|-> -o <path|-> [OPTIONS]\n\nDecode a JPEG stream into a fidelity-preserving uncompressed container:\n  - nrrd: 2D greyscale UInt16 with full 16-bit precision (NRRD0004 raw).\n  - pgm:  Binary Netpbm P5 greyscale with exact maxval (1 << bits) - 1 (2..16 bits).\n  - ppm:  Binary Netpbm P6 RGB with exact maxval (1 << bits) - 1 (2..16 bits).\n  - pnm:  Binary Netpbm P5 (greyscale) or P6 (RGB) matching source components.\nDecoding fails with exit status 4 before creating output if the target format cannot\npreserve the decoded precision, component layout, or embedded ICC/Exif metadata.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  -o, --output PATH          Target file or '-' for standard output.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --output-format FORMAT     Explicit target format: nrrd, pgm, ppm, pnm.\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --overwrite                Permit atomic replacement of an existing output file.\n  --json                     Write structured JSON operation report to stderr.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli inspect -i <path|-> [--json] [OPTIONS]\n\nInspect JPEG container and frame headers without decoding entropy scans.\nWhen reading from '-' or a path without a .jpg/.jpeg extension, pass --input-format jpeg.\n--json writes one structured JSON object to stdout; diagnostics stay on stderr.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --json                     Write structured JSON report to stdout.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "help",
+        "inspect"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli inspect -i <path|-> [--json] [OPTIONS]\n\nInspect JPEG container and frame headers without decoding entropy scans.\nWhen reading from '-' or a path without a .jpg/.jpeg extension, pass --input-format jpeg.\n--json writes one structured JSON object to stdout; diagnostics stay on stderr.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --json                     Write structured JSON report to stdout.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "--help"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli validate -i <path|-> [--json] [OPTIONS]\n\nValidate the full JPEG stream and entropy-coded scan data without writing image output.\nWhen reading from '-' or a path without a .jpg/.jpeg extension, pass --input-format jpeg.\n--json writes one structured JSON object to stdout; diagnostics stay on stderr.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --json                     Write structured JSON report to stdout.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "help",
+        "validate"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "USAGE: swiftjli-cli validate -i <path|-> [--json] [OPTIONS]\n\nValidate the full JPEG stream and entropy-coded scan data without writing image output.\nWhen reading from '-' or a path without a .jpg/.jpeg extension, pass --input-format jpeg.\n--json writes one structured JSON object to stdout; diagnostics stay on stderr.\n\nCODEC OPTIONS\n  -i, --input PATH           Source JPEG file or '-' for standard input.\n  --input-format FORMAT      Explicit source format: jpeg (or jpg).\n  --backend NAME             automatic (default), scalar, accelerated,\n                             preferred-scalar, or preferred-accelerated.\n  --copy-policy POLICY       require-sharing (default) or allow-copy.\n  --threads N                Maximum worker count (>= 1).\n  --max-memory BYTES         Maximum operation memory budget in bytes.\n  --timeout SECONDS          Command-wide deadline in seconds.\n  --json                     Write structured JSON report to stdout.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--version"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "version"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--version",
+        "--quiet"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:1"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "+"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=+"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-vv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "2"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=2"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "2"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:2"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-vvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v",
+        "-v",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "3"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=3"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "3"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:3"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "+++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=+++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-vvvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002685375\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v",
+        "-v",
+        "-v",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002592083\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "4"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.0026595\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=4"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002720083\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "4"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002611375\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:4"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002576917\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "++++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.003023041\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=++++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.0028845\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-vvvvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002604708\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-v",
+        "-v",
+        "-v",
+        "-v",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002626833\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "5"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002602834\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=5"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.00314075\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:",
+        "5"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002589542\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "-verbose:5"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002715417\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose",
+        "+++++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002891583\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--verbose=+++++"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 0.002902167\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--verbose",
+        "capabilities",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "-verbose",
+        "capabilities",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "-v",
+        "--verbose",
+        "2",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\nencode: true\ndecode: true\ninspect: true\nformats: JPEG (SOF0/SOF1/SOF2/SOF3)\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "-vv",
+        "-vvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2\nencode: true\ndecode: true\ninspect: true\nformats: JPEG (SOF0/SOF1/SOF2/SOF3)\n",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2\n[2] swiftjli-cli: reporting capabilities\n[3] swiftjli-cli: advertised formats: 1; capability values read from the library\n[4] swiftjli-cli: elapsed seconds: 7.475e-05\n[5] swiftjli-cli: arguments validated; capability report emitted; no codec payload opened\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--json",
+        "--quiet"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"canDecode\":true,\"canEncode\":true,\"canInspect\":true,\"formats\":[\"JPEG (SOF0\\/SOF1\\/SOF2\\/SOF3)\"],\"minimumAppleOS\":\"26.0\",\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--help",
+        "--quiet"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "swiftjli-cli 1.1.0-dev.2 \u2014 JPEG including native lossless JPEG\nUSAGE: swiftjli-cli [OPTIONS] <command> [OPTIONS]\n\nCOMMANDS\n  capabilities [--json]      Report actual library support.\n  encode -i PATH -o PATH     Encode NRRD or PGM/PPM/PNM input to JPEG.\n  decode -i PATH -o PATH     Decode JPEG input to NRRD or PGM/PPM/PNM.\n  inspect -i PATH [--json]   Inspect JPEG headers and frame descriptor.\n  validate -i PATH [--json]  Validate full JPEG stream and entropy scans.\n  help [command]             Show global or command-specific help.\n  version                    Show the development version.\n  transcode                  Unavailable in swiftjli-cli (exit 2).\n\nBuilds with Swift 6.2 or later; Apple OS baseline 26.0. CLI hosts: macOS/Linux.\n\nOPTIONS\n  -h, --help                 Show this help; also: help [command].\n  --version                  Show the development version.\n  -v, -vv ... -vvvvv         Increase verbosity (maximum 5).\n  --verbose LEVEL           Set verbosity to 1..5 or + through +++++.\n  --verbose=LEVEL            Equivalent explicit form; -verbose: LEVEL is accepted.\n  -q, --quiet                Suppress optional diagnostics; errors remain visible.\n\nVERBOSITY (stderr only; default 0)\n  1 summary; 2 command stages; 3 capability/descriptor details; 4 elapsed timing;\n  5 bounded diagnostic trace. Levels are cumulative. Quiet conflicts with verbosity.\n  Payload bytes, metadata, raw addresses and input/output paths are never logged.\n\nEXIT STATUS\n  0 success/help/version; 2 invalid usage or argument; 3 malformed/truncated input;\n  4 unsupported format/feature/layout/backend; 5 resource limit or deadline exceeded;\n  6 input/output failure, existing destination without --overwrite, or closed pipe;\n  7 internal failure; 130 cancelled.\n\nMANUAL\n  man swiftjli-cli (installed with the executable by Scripts/install-cli.sh).\n\nEXAMPLES\n  swiftjli-cli -h\n  swiftjli-cli capabilities --json\n  swiftjli-cli inspect -i image.jpg --json\n  swiftjli-cli validate -i image.jpg\n  swiftjli-cli decode -i image.jpg -o image.nrrd\n  swiftjli-cli encode -i image.nrrd -o image.jpg --mode lossless\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--verbose=0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--verbose=6"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--verbose=10"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--verbose=99999999999999999999999999999"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--verbose=abc"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--verbose=++++++"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--verbose=+2"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--verbose=\u0661"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--verbose="
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: An option is missing its value. Use --help for syntax.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--verbose=5",
+        "-v"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity exceeds the maximum level 5.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "-vvvvvv"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity exceeds the maximum level 5.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "-v",
+        "--quiet"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --quiet and verbosity cannot be combined.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--quiet",
+        "--verbose=1"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --quiet and verbosity cannot be combined.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--quiet",
+        "--verbose=0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Verbosity must be 1 through 5, or + through +++++.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--unknown"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unknown option. Use swiftjli-cli --help.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "bogus"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unknown command. Use swiftjli-cli --help.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "help",
+        "bogus"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unknown command. Use swiftjli-cli --help.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "extra"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unexpected positional argument. Use --input or --output for codec commands.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--verbose:"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: An option is missing its value. Use --help for syntax.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--json"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --json requires capabilities or a codec command.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--input",
+        "some-path"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Input/output and codec options require a codec command.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--output",
+        "x"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Input/output and codec options require a codec command.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "capabilities",
+        "--version"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --version cannot be combined with a command or command options.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "--input"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: An option is missing its value. Use --help for syntax.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "transcode"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Unknown command. Use swiftjli-cli --help.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --input is required for encode.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "in.jpg"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --output is required for decode.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "in.jpg",
+        "-o",
+        "out.pgm"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --output, --output-format, and --overwrite are not valid with inspect.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "-i",
+        "in.jpg",
+        "--overwrite"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --output, --output-format, and --overwrite are not valid with validate.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "in.jpg",
+        "-o",
+        "out.pgm",
+        "--mode",
+        "lossless"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Encoder options are not valid with decode.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--threads",
+        "0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --threads must be a positive integer.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--max-memory",
+        "0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --max-memory must be a positive integer byte count.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--timeout",
+        "0"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --timeout must be a positive finite number of seconds.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--backend",
+        "bogus"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Invalid --backend value. Use automatic, scalar, accelerated, preferred-scalar, or preferred-accelerated.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.jpg",
+        "--copy-policy",
+        "bogus"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Invalid --copy-policy value. Use require-sharing or allow-copy.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "-",
+        "-o",
+        "out.jpg"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --input-format is required when reading from '-' or a path without a recognised extension.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "-"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --output-format is required when writing to '-' or a path without a recognised extension.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "in.nrrd",
+        "-o",
+        "out.pgm",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: Declared --output-format conflicts with output file extension.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "--input",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/private image \u03bb.raw",
+        "--output",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/must-not-exist.jpg",
+        "-vvvvv"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported file format extension.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "--input",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/private image \u03bb.raw",
+        "--output",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/must-not-exist.nrrd",
+        "-vvvvv"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported file format extension.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "--input",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/private image \u03bb.raw",
+        "-vvvvv"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported file format extension.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "--input",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/private image \u03bb.raw",
+        "-vvvvv"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported file format extension.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/chunk-65535.pgm",
+        "--input-format",
+        "pgm",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 8229,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "-",
+        "--input-format",
+        "pgm",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 8229,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/chunk-65536.pgm",
+        "--input-format",
+        "pgm",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 8229,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "-",
+        "--input-format",
+        "pgm",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 8229,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/chunk-65537.pgm",
+        "--input-format",
+        "pgm",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 8229,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "-",
+        "--input-format",
+        "pgm",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 8229,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/chunk-131073.pgm",
+        "--input-format",
+        "pgm",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 16389,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "-",
+        "--input-format",
+        "pgm",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 16389,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/source_le.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "--json",
+        "-vvvvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2; command encode\n[2] swiftjli-cli: stage input admission and format resolution (nrrd)\n[3] swiftjli-cli: encoded 17x13 bits=16 mode=lossless (329 bytes) backend=scalarCPU\n[4] swiftjli-cli: elapsed seconds: 0.00075925\n[5] swiftjli-cli: encode committed atomically; copyEvents=0\n{\"backend\":\"scalarCPU\",\"command\":\"encode\",\"componentCount\":1,\"copyEventCount\":0,\"encodedBytes\":329,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":13,\"inputFormat\":\"nrrd\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"mode\":\"lossless\",\"outputFormat\":\"jpeg\",\"peakPixelBytes\":0,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":0,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/source_be.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16_be.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "format: jpeg\ncodingProcess: predictive\nfidelity: exactSamples\nwidth: 17\nheight: 13\ncomponents: 1\ncolour: greyscale\nbitsPerComponent: 16\nstorageBits: 16\nchromaSubsampling: greyscale\nlossless: true\nprogressive: false\nrestartInterval: 0\nscanCount: 1\npredictor: 1\npointTransform: 0\nmaximumAbsoluteError: 0\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":16,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":13,\"isLossless\":true,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"pointTransform\":0,\"predictor\":1,\"restartInterval\":0,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/upper.JpEg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":16,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":13,\"isLossless\":true,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"pointTransform\":0,\"predictor\":1,\"restartInterval\":0,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/.image.jpeg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":16,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":13,\"isLossless\":true,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"pointTransform\":0,\"predictor\":1,\"restartInterval\":0,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/caf\u00e9%20image.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":16,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":13,\"isLossless\":true,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"pointTransform\":0,\"predictor\":1,\"restartInterval\":0,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/..jpeg",
+        "--json"
+      ],
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "stdout": "",
+      "stderr": "swiftjli-cli: --input-format is required when reading from '-' or a path without a recognised extension.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/..jpeg",
+        "--json",
+        "--input-format",
+        "jpeg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":16,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":13,\"isLossless\":true,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"pointTransform\":0,\"predictor\":1,\"restartInterval\":0,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "valid: true\nformat: jpeg\ncodingProcess: predictive\nfidelity: exactSamples\nwidth: 17\nheight: 13\ncomponents: 1\nbitsPerComponent: 16\nbackend: scalarCPU\npixelAllocationCount: 1\npeakPixelBytes: 442\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"backend\":\"scalarCPU\",\"bitsPerComponent\":16,\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"height\":13,\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"peakPixelBytes\":442,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"valid\":true,\"version\":\"1.1.0-dev.2\",\"width\":17}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/decoded16.nrrd",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":13,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"outputBytes\":520,\"outputFormat\":\"nrrd\",\"peakPixelBytes\":442,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/decoded16.nrrd"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout": "",
+      "stderr": "swiftjli-cli: output I/O failure: destination already exists (pass --overwrite to replace).\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/decoded16.nrrd",
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/symlink_out.nrrd",
+        "--overwrite"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout": "",
+      "stderr": "swiftjli-cli: output I/O failure: refusing to write to non-regular file or symbolic link.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_1c_2b.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_2b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_2b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_2b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_2b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_1c_2b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":2,\"outputBytes\":109,\"outputFormat\":\"pnm\",\"peakPixelBytes\":99,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_3c_2b.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_2b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_2b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_2b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_2b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_3c_2b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":2,\"outputBytes\":307,\"outputFormat\":\"pnm\",\"peakPixelBytes\":297,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_1c_8b.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_8b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_8b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_8b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_8b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_1c_8b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":8,\"outputBytes\":111,\"outputFormat\":\"pnm\",\"peakPixelBytes\":99,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_3c_8b.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_8b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_8b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_8b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_8b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_3c_8b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":8,\"outputBytes\":309,\"outputFormat\":\"pnm\",\"peakPixelBytes\":297,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_1c_10b.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_10b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_10b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_10b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_10b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_1c_10b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":10,\"outputBytes\":211,\"outputFormat\":\"pnm\",\"peakPixelBytes\":198,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_3c_10b.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_10b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_10b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_10b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_10b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_3c_10b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":10,\"outputBytes\":607,\"outputFormat\":\"pnm\",\"peakPixelBytes\":594,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_1c_12b.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_12b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_12b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_12b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_12b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_1c_12b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":12,\"outputBytes\":211,\"outputFormat\":\"pnm\",\"peakPixelBytes\":198,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_3c_12b.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_12b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_12b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_12b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_12b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_3c_12b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":12,\"outputBytes\":607,\"outputFormat\":\"pnm\",\"peakPixelBytes\":594,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_1c_16b.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_16b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_16b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_16b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_1c_16b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_1c_16b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"outputBytes\":212,\"outputFormat\":\"pnm\",\"peakPixelBytes\":198,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/src_3c_16b.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_16b.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_16b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_16b.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_3c_16b.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rt_json_3c_16b.pnm",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":9,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"outputBytes\":608,\"outputFormat\":\"pnm\",\"peakPixelBytes\":594,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":11}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_8b_257.pnm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_8b_257.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_8b_257.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_out_1c_8b_257.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_8b_257.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 66578,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_12b_257.pnm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_12b_257.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_12b_257.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_out_1c_12b_257.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_12b_257.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 133142,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_257.pnm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_257.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_257.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_out_1c_16b_257.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_257.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 133143,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_8b_129.pnm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_8b_129.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_8b_129.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_out_3c_8b_129.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_8b_129.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 66966,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_12b_129.pnm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_12b_129.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_12b_129.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_out_3c_12b_129.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_12b_129.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 133918,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_16b_129.pnm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_16b_129.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_16b_129.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_out_3c_16b_129.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_3c_16b_129.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 133919,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_32769.pnm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_32769.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_32769.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_out_1c_16b_32769.pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_32769.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "pnm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 196631,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_32769.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_out_1c_16b_32769.pnm"
+      ],
+      "exit_code": 6,
+      "expected_exit_code": 6,
+      "stdout": "",
+      "stderr": "swiftjli-cli: output I/O failure: destination already exists (pass --overwrite to replace).\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_1c_16b_32769.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/stream_out_1c_16b_32769.pnm",
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/in12.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless12.jpg",
+        "--predictor",
+        "2",
+        "--restart-interval",
+        "19"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless12.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":12,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"exactSamples\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":15,\"isLossless\":true,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":0,\"meaningfulBits\":12,\"pointTransform\":0,\"predictor\":2,\"restartInterval\":19,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":19}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless12.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/must_not_exist_12.nrrd"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: NRRD output requires full 16-bit precision (meaningfulBits == 16); use PGM/PNM to preserve sub-16-bit precision.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/in12.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/near12.jpg",
+        "--mode",
+        "near-lossless",
+        "--max-error",
+        "3",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": "{\"backend\":\"scalarCPU\",\"command\":\"encode\",\"componentCount\":1,\"copyEventCount\":0,\"encodedBytes\":290,\"fallbackReason\":null,\"fidelity\":\"boundedError\",\"height\":15,\"inputFormat\":\"pgm\",\"maximumAbsoluteError\":3,\"meaningfulBits\":12,\"mode\":\"near-lossless(3)\",\"outputFormat\":\"jpeg\",\"peakPixelBytes\":0,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":0,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":19}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/near12.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":12,\"chromaSubsampling\":\"greyscale\",\"codingProcess\":\"predictive\",\"colour\":\"greyscale\",\"componentCount\":1,\"fidelity\":\"boundedError\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":15,\"isLossless\":false,\"isProgressive\":false,\"isXYB\":false,\"maximumAbsoluteError\":3,\"meaningfulBits\":12,\"pointTransform\":2,\"predictor\":1,\"restartInterval\":0,\"scanCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":19}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/near12.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/out_near12.pgm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/in8.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_lossless.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_lossless.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/out_rgb_lossless.ppm"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_lossless.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/must_not_exist_rgb.pgm"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: incompatibleImageLayout: PGM output requires a 1-component greyscale image.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/in8.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_scalar.jpg",
+        "--mode",
+        "lossy",
+        "--quality",
+        "90",
+        "--subsampling",
+        "444",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "scalar"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_scalar.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":8,\"chromaSubsampling\":\"4:4:4\",\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":24,\"isLossless\":false,\"isProgressive\":true,\"isXYB\":false,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"pointTransform\":null,\"predictor\":null,\"restartInterval\":0,\"scanCount\":10,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_scalar.jpg",
+        "--backend",
+        "scalar",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"backend\":\"scalarCPU\",\"bitsPerComponent\":8,\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"height\":24,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"peakPixelBytes\":2304,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"valid\":true,\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_scalar.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/out_dct_scalar.pnm",
+        "--backend",
+        "scalar"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/in8.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_preferred-accelerated.jpg",
+        "--mode",
+        "lossy",
+        "--quality",
+        "90",
+        "--subsampling",
+        "444",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "preferred-accelerated"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_preferred-accelerated.jpg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"bitsPerComponent\":8,\"chromaSubsampling\":\"4:4:4\",\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"frameCount\":1,\"hasExif\":false,\"hasICCProfile\":false,\"height\":24,\"isLossless\":false,\"isProgressive\":true,\"isXYB\":false,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"pointTransform\":null,\"predictor\":null,\"restartInterval\":0,\"scanCount\":10,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_preferred-accelerated.jpg",
+        "--backend",
+        "preferred-accelerated",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"backend\":\"accelerated\",\"bitsPerComponent\":8,\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"height\":24,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"peakPixelBytes\":2304,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"valid\":true,\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_preferred-accelerated.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/out_dct_preferred-accelerated.pnm",
+        "--backend",
+        "preferred-accelerated"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/in8.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_accelerated.jpg",
+        "--mode",
+        "lossy",
+        "--quality",
+        "90",
+        "--subsampling",
+        "444",
+        "--progressive",
+        "successive-approximation",
+        "--backend",
+        "accelerated"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_accelerated.jpg",
+        "--backend",
+        "accelerated",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "{\"backend\":\"accelerated\",\"bitsPerComponent\":8,\"codingProcess\":\"progressiveDCT\",\"colour\":\"rgb\",\"componentCount\":3,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"lossy\",\"format\":\"jpeg\",\"height\":24,\"maximumAbsoluteError\":null,\"meaningfulBits\":8,\"peakPixelBytes\":2304,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":8,\"tool\":\"swiftjli-cli\",\"valid\":true,\"version\":\"1.1.0-dev.2\",\"width\":32}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/rgb_dct_accelerated.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/out_dct_accelerated.pnm",
+        "--backend",
+        "accelerated"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "nrrd",
+        "--json",
+        "-vvv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 520,
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2; command decode\n[2] swiftjli-cli: stage input admission and format resolution (jpeg)\n[3] swiftjli-cli: decoded 17x13 bits=16 to nrrd (520 bytes) backend=scalarCPU\n{\"backend\":\"scalarCPU\",\"codingProcess\":\"predictive\",\"command\":\"decode\",\"componentCount\":1,\"copyEventCount\":0,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":13,\"inputFormat\":\"jpeg\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"outputBytes\":520,\"outputFormat\":\"nrrd\",\"peakPixelBytes\":442,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":1,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "-",
+        "--input-format",
+        "nrrd",
+        "-o",
+        "-",
+        "--output-format",
+        "jpeg",
+        "--json",
+        "-vv"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 329,
+      "stderr": "[1] swiftjli-cli: development version 1.1.0-dev.2; command encode\n[2] swiftjli-cli: stage input admission and format resolution (nrrd)\n{\"backend\":\"scalarCPU\",\"command\":\"encode\",\"componentCount\":1,\"copyEventCount\":0,\"encodedBytes\":329,\"fallbackReason\":null,\"fidelity\":\"exactSamples\",\"height\":13,\"inputFormat\":\"nrrd\",\"maximumAbsoluteError\":0,\"meaningfulBits\":16,\"mode\":\"lossless\",\"outputFormat\":\"jpeg\",\"peakPixelBytes\":0,\"peakWorkspaceBytes\":null,\"pixelAllocationCount\":0,\"storageBits\":16,\"tool\":\"swiftjli-cli\",\"version\":\"1.1.0-dev.2\",\"width\":17}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "--json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout_bytes": 414,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/trunc.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no1.jpg"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: NRRD payload length does not match header dimensions.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/detached.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no2.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported NRRD header field.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/kv.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no_kv.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: NRRD key-value metadata (:=) is not supported under strict preservation.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/unknown_field.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no_uf.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Unsupported NRRD header field.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/bad_kinds.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no_bk.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: incompatibleImageLayout: NRRD kinds must be two spatial domain axes for 2D greyscale.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/bad_maxval.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no3.jpg"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: unsupportedFormat: Netpbm maxval does not match an exact 2..16-bit precision ((1 << bits) - 1).\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/over_maxval.pgm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no4.jpg"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: Sample value exceeds declared Netpbm maxval.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/huge_dim.ppm",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no_huge.jpg"
+      ],
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: Netpbm dimensions exceed operation limits.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "inspect",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/trunc.jpg"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: Invalid JPEG marker envelope.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "validate",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/trunc.jpg"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: Invalid JPEG marker envelope.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/trunc.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no5.nrrd"
+      ],
+      "exit_code": 3,
+      "expected_exit_code": 3,
+      "stdout": "",
+      "stderr": "swiftjli-cli: malformedInput: Invalid JPEG marker envelope.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no6.nrrd",
+        "--backend",
+        "metal"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: backendUnavailable: Requested backend is unavailable in SwiftJLI.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no7.nrrd",
+        "--backend",
+        "accelerated"
+      ],
+      "exit_code": 4,
+      "expected_exit_code": 4,
+      "stdout": "",
+      "stderr": "swiftjli-cli: backendUnavailable: Requested JPEG backend is unavailable for this operation.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/source_le.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no8.jpg",
+        "--max-memory",
+        "256"
+      ],
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: Input file size exceeds the configured memory budget.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/lossless16.jpg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no9.nrrd",
+        "--max-memory",
+        "256"
+      ],
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: Input file size exceeds the configured memory budget.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/nrrd64.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/no_comb.jpg",
+        "--max-memory",
+        "12000"
+      ],
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stdout": "",
+      "stderr": "swiftjli-cli: resourceLimitExceeded: NRRD decoded buffer exceeds --max-memory.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "-",
+        "--input-format",
+        "jpeg",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/timeout_out.nrrd",
+        "--timeout",
+        "0.05"
+      ],
+      "condition": "timeout during blocking pipe read",
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "encode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/big_nrrd.nrrd",
+        "-o",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/big.jpg"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/swiftjli-round4-cli-evidence/candidate/swiftjli-cli",
+        "decode",
+        "-i",
+        "/private/tmp/swiftjli-round4-cli-evidence/cli-tests/cli stage spaces 5ow5s0su/big.jpg",
+        "-o",
+        "-",
+        "--output-format",
+        "nrrd",
+        "--timeout",
+        "0.05"
+      ],
+      "condition": "timeout during stalled pipe write",
+      "exit_code": 5,
+      "expected_exit_code": 5,
+      "stderr": "swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\n",
+      "descriptor_flags_before": 1,
+      "descriptor_flags_after": 65537
+    }
+  ],
+  "status": "failed",
+  "failure": "(5, 'swiftjli-cli: resourceLimitExceeded: CLI command deadline exceeded.\\n', 1, 65537)"
+}

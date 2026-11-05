@@ -241,23 +241,22 @@ enum JPEGCodec {
 
     static func parse(_ data: Data, options: DecodeOptions, sourceColourModel: JPEGSourceColourModel? = nil) throws -> ParsedJPEG {
         let limits = options.resourceLimits
-        // Bound copies/table storage before materialising the array or parsing.
-        let parserBudget = try checkedAdd(checkedMultiply(data.count, 64), 1_048_576)
-        try admit(workspace: parserBudget, pixels: 0, compressed: data.count, metadata: 0, limits: limits)
-        let bytes = Array(data)
-        let adobeTransform = try JPEGEnvelope.validate(bytes, limits: limits)
-        var reader = MarkerReader(data: bytes)
+        // Envelope admission gates a possible input copy before the bridge,
+        // then expanded parser allocations using counts from the same traversal.
+        let envelope = try JPEGEnvelope.validate(data, limits: limits)
+        let adobeTransform = envelope.adobeTransform
+        var reader = MarkerReader(validated: envelope)
         var parsed = try reader.parse()
         let f = parsed.frameInfo
         if let sourceColourModel {
             guard !f.isLossless, f.components.count == 3, adobeTransform == nil,
-                  parsed.iccProfile != XYBICCProfile.data else {
+                  !parsed.isXYB else {
                 throw CodecError(.unsupportedFeature, "Source colour override requires unmarked three-component DCT JPEG.")
             }
             parsed.sourceColorModel = sourceColourModel == .rgb ? .rgb : .yCbCr
         }
         if !f.isLossless {
-            let xyb = parsed.iccProfile == XYBICCProfile.data
+            let xyb = parsed.isXYB
             guard !xyb || adobeTransform == 0 else {
                 throw CodecError(.unsupportedFeature, "XYB JPEG requires Adobe transform 0.")
             }
@@ -297,7 +296,7 @@ enum JPEGCodec {
         guard !f.isLossless || scale == 1 else {
             throw CodecError(.unsupportedFeature, "Reduced-scale decode requires DCT JPEG.")
         }
-        let xyb = parsed.iccProfile == XYBICCProfile.data
+        let xyb = parsed.isXYB
         let floating = sampleFormat != .nativeInteger
         guard sampleFormat != .float32NormalisedSRGB || (xyb && !f.isLossless) else {
             throw CodecError(.unsupportedFeature, "Normalised Float32 sRGB output requires recognised XYB JPEG.")
@@ -352,10 +351,27 @@ enum JPEGCodec {
                       descriptor.iccProfile == nil || descriptor.iccProfile == source.iccProfile else {
                     throw CodecError(.incompatibleImageLayout, "Destination does not match JPEG sample interpretation.")
                 }
-                // Coefficient workspace remains full-frame even for small previews.
+                let native = JLIDecoderConfiguration(
+                    outputPixelFormat: configuration.sampleFormat != .nativeInteger ? .float32 : nil,
+                    scale: configuration.scale)
+                let normaliseXYBOutput = configuration.sampleFormat == .float32NormalisedSRGB
+                // The same plan controls native dispatch. Only that proven path
+                // replaces full-frame coefficient/reconstruction reservations.
+                let streaming = try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
+                    hasDestination: true, normaliseXYBOutput: normaliseXYBOutput,
+                    workerLimit: context.maximumWorkers, backend: context.backend)
                 let frame = parsed.frameInfo
                 let sampleCount = try checkedMultiply(checkedMultiply(frame.width, frame.height), frame.components.count)
-                let workspace = try checkedAdd(checkedAdd(checkedMultiply(data.count, 64), checkedMultiply(sampleCount, isDCT ? 128 : 8)), 1_048_576)
+                let imageWorkspace: Int
+                if let streaming { imageWorkspace = streaming.workspaceBytes }
+                else { imageWorkspace = try checkedMultiply(sampleCount, isDCT ? 128 : 8) }
+                // The parser reservation belongs to the same immutable input
+                // whose scans are decoded. It already includes a possible bridge
+                // copy and the fixed table/allocator/backend reserve.
+                guard parsed.parserWorkspaceBytes > 0 else {
+                    throw CodecError(.internalFailure, "JPEG parser admission is missing.")
+                }
+                let workspace = try checkedAdd(parsed.parserWorkspaceBytes, imageWorkspace)
                 let metadataSize = try information.metadata.validate(limits: options.resourceLimits, additionalBytes: source.iccProfile?.count ?? 0)
                 try admit(workspace: workspace, pixels: supplied?.storage.byteCount ?? descriptor.requiredByteCount,
                           compressed: data.count, metadata: metadataSize, limits: options.resourceLimits)
@@ -366,13 +382,17 @@ enum JPEGCodec {
                     let borrowed = BorrowedSampleDestination(bytes: .init(rebasing: raw[plane.offset...]),
                         rowBytes: plane.rowBytes, bytesPerSample: descriptor.storageBits / 8)
                     if isDCT {
-                        let native = JLIDecoderConfiguration(
-                            outputPixelFormat: configuration.sampleFormat != .nativeInteger ? .float32 : nil,
-                            scale: configuration.scale)
                         _ = try JLIDecoder().decodeParsed(parsed, configuration: native, borrowedDestination: borrowed,
-                            normaliseXYBOutput: configuration.sampleFormat == .float32NormalisedSRGB)
+                            normaliseXYBOutput: normaliseXYBOutput)
                     } else {
-                        try JLIDecoder().decodeSharedLossless(parsed, into: borrowed)
+                        // Internal implementation choice only: portable C rows
+                        // still report scalarCPU. Explicit scalar retains Swift;
+                        // no flag is added to the TaskLocal or DCT capture state.
+                        let useScalarCEntropy: Bool
+                        if case .automatic = options.executionPolicy { useScalarCEntropy = true }
+                        else { useScalarCEntropy = false }
+                        try JLIDecoder().decodeSharedLossless(parsed, into: borrowed,
+                            useScalarCEntropy: useScalarCEntropy)
                     }
                     try NativeOperation.check()
                 }
@@ -391,7 +411,7 @@ enum JPEGCodec {
                     pixelAllocationCount: supplied == nil ? 1 : 0,
                     peakPixelBytes: supplied == nil ? descriptor.requiredByteCount : 0,
                     sampleConversion: configuration.sampleFormat == .float32NormalisedSRGB ? .rawSRGBToNormalisedFloat32 : nil,
-                    colourConversion: parsed.iccProfile == XYBICCProfile.data ? .xybToSRGB : nil))
+                    colourConversion: parsed.isXYB ? .xybToSRGB : nil))
             }
         }
     }

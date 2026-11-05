@@ -1,0 +1,698 @@
+{
+  "candidateRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "baselineRevision": "281f3635e003dde60819be21254e982a22b30f3d",
+  "baselineProductionEquivalent": "e0cfea0fa2f702cb558f6896db03501efcd0b463",
+  "rowOrigin": "b12f8ce9432975ddf6d271ae144d617d4dbf9216",
+  "decision": "Focused correctness and paired performance gate passed; ready for parent integration and new-row safety qualification, which remain pending.",
+  "scope": "Original portable C left/Pt0/UInt16 rows for automatic lossless only. Code0 category1...7 specialisation and unchanged generic fallback live in separate C translation units. Explicit private flag replaces the prior added TaskLocal member. Qualified ACBlock.c and NativeExecution.swift remain byte-identical; copied reader helpers retain qualified always_inline attributes.",
+  "focusedRelease": {
+    "tests": 53,
+    "suites": 12,
+    "exitCode": 0,
+    "receipt": "tests.json"
+  },
+  "targetedGate": {
+    "cases": 4,
+    "rounds": 4,
+    "pixelExact": true,
+    "records": 32,
+    "summary": [
+      {
+        "case": "ramp-2048",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 10.432521,
+            "candidateMedianMS": 5.6322915,
+            "latencyChangePercent": -46.01217193811544
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 10.042937,
+            "candidateMedianMS": 5.7192085,
+            "latencyChangePercent": -43.052430777968645
+          },
+          {
+            "round": 3,
+            "baselineMedianMS": 10.206354000000001,
+            "candidateMedianMS": 5.646853999999999,
+            "latencyChangePercent": -44.673151646513546
+          },
+          {
+            "round": 4,
+            "baselineMedianMS": 9.494354,
+            "candidateMedianMS": 5.9360415,
+            "latencyChangePercent": -37.478194935642804
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "ramp-3072",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 20.462833,
+            "candidateMedianMS": 12.243604000000001,
+            "latencyChangePercent": -40.16662306729473
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 21.2064165,
+            "candidateMedianMS": 12.849687,
+            "latencyChangePercent": -39.406608372517816
+          },
+          {
+            "round": 3,
+            "baselineMedianMS": 21.4563955,
+            "candidateMedianMS": 13.426437499999999,
+            "latencyChangePercent": -37.42454318573686
+          },
+          {
+            "round": 4,
+            "baselineMedianMS": 24.451146,
+            "candidateMedianMS": 12.1887295,
+            "latencyChangePercent": -50.150682098908575
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "noise-2048",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 34.545021,
+            "candidateMedianMS": 16.2866875,
+            "latencyChangePercent": -52.85373397225608
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 36.88625,
+            "candidateMedianMS": 17.391000000000002,
+            "latencyChangePercent": -52.852350130468665
+          },
+          {
+            "round": 3,
+            "baselineMedianMS": 36.048750000000005,
+            "candidateMedianMS": 17.430270500000002,
+            "latencyChangePercent": -51.64805853184924
+          },
+          {
+            "round": 4,
+            "baselineMedianMS": 34.564771,
+            "candidateMedianMS": 16.461979000000003,
+            "latencyChangePercent": -52.37353373468032
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "noise-3072",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 77.54979100000001,
+            "candidateMedianMS": 38.045187500000004,
+            "latencyChangePercent": -50.94095418000546
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 79.443687,
+            "candidateMedianMS": 39.3931455,
+            "latencyChangePercent": -50.41374967906511
+          },
+          {
+            "round": 3,
+            "baselineMedianMS": 78.2976045,
+            "candidateMedianMS": 37.070541999999996,
+            "latencyChangePercent": -52.654308855643215
+          },
+          {
+            "round": 4,
+            "baselineMedianMS": 78.1923955,
+            "candidateMedianMS": 37.2029795,
+            "latencyChangePercent": -52.421230655351906
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      }
+    ]
+  },
+  "sameBinaryFullLossless": {
+    "cases": 16,
+    "rounds": 2,
+    "pixelExact": true,
+    "records": 64,
+    "processExitCodes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "sameBinaryHashesAsTargeted": true,
+    "summary": [
+      {
+        "case": "flat-19",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.007208,
+            "candidateMedianMS": 0.006500000000000001,
+            "latencyChangePercent": -9.822419533851278
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.008624999999999999,
+            "candidateMedianMS": 0.008229,
+            "latencyChangePercent": -4.591304347826075
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "flat-512",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.1036045,
+            "candidateMedianMS": 0.090146,
+            "latencyChangePercent": -12.990265866830109
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.097854,
+            "candidateMedianMS": 0.092562,
+            "latencyChangePercent": -5.408056901097558
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "flat-2048",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.856625,
+            "candidateMedianMS": 0.8321879999999999,
+            "latencyChangePercent": -2.852706843718078
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.8402080000000001,
+            "candidateMedianMS": 0.8149584999999999,
+            "latencyChangePercent": -3.005148725077622
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "flat-3072",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 1.8231875000000002,
+            "candidateMedianMS": 1.7671670000000002,
+            "latencyChangePercent": -3.072668060745265
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 1.7413124999999998,
+            "candidateMedianMS": 1.7962915,
+            "latencyChangePercent": 3.157331036215516
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "ramp-19",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.006771,
+            "candidateMedianMS": 0.006334,
+            "latencyChangePercent": -6.4539949785851425
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.006292,
+            "candidateMedianMS": 0.006459,
+            "latencyChangePercent": 2.6541640178003867
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "ramp-512",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.6804790000000001,
+            "candidateMedianMS": 0.37066699999999997,
+            "latencyChangePercent": -45.528517411999495
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.669729,
+            "candidateMedianMS": 0.3902915,
+            "latencyChangePercent": -41.723965962351926
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "ramp-2048",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 9.544771,
+            "candidateMedianMS": 5.668229,
+            "latencyChangePercent": -40.61430075168907
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 9.8309785,
+            "candidateMedianMS": 5.6732085,
+            "latencyChangePercent": -42.29253476650365
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "ramp-3072",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 20.4115,
+            "candidateMedianMS": 12.088417,
+            "latencyChangePercent": -40.77643975210052
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 20.685021,
+            "candidateMedianMS": 12.194478499999999,
+            "latencyChangePercent": -41.04681595440488
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "noise-19",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.006459,
+            "candidateMedianMS": 0.006771,
+            "latencyChangePercent": 4.830469112865754
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.006875,
+            "candidateMedianMS": 0.006875,
+            "latencyChangePercent": 0.0
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "noise-512",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 2.162583,
+            "candidateMedianMS": 1.0273539999999999,
+            "latencyChangePercent": -52.494123924954565
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 2.178938,
+            "candidateMedianMS": 1.0376874999999999,
+            "latencyChangePercent": -52.376455869786106
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "noise-2048",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 34.733646,
+            "candidateMedianMS": 16.345937499999998,
+            "latencyChangePercent": -52.93918323460773
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 35.023458,
+            "candidateMedianMS": 16.405041500000003,
+            "latencyChangePercent": -53.15984646633122
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "noise-3072",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 77.96389549999999,
+            "candidateMedianMS": 37.187438,
+            "latencyChangePercent": -52.30171894117321
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 78.08793750000001,
+            "candidateMedianMS": 36.754291499999994,
+            "latencyChangePercent": -52.932177905198245
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "mixed-19",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.006271,
+            "candidateMedianMS": 0.00625,
+            "latencyChangePercent": -0.33487482060277074
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.00625,
+            "candidateMedianMS": 0.006292,
+            "latencyChangePercent": 0.6720000000000059
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "mixed-512",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.8308755,
+            "candidateMedianMS": 0.8291455000000001,
+            "latencyChangePercent": -0.20821410668625528
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.816083,
+            "candidateMedianMS": 0.8276455,
+            "latencyChangePercent": 1.4168289254891997
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "mixed-2048",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 12.0438335,
+            "candidateMedianMS": 12.315979500000001,
+            "latencyChangePercent": 2.259629377971728
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 12.37825,
+            "candidateMedianMS": 12.219437999999998,
+            "latencyChangePercent": -1.2829923454446446
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "mixed-3072",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 26.9635415,
+            "candidateMedianMS": 27.625291999999998,
+            "latencyChangePercent": 2.4542417768081304
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 27.3326455,
+            "candidateMedianMS": 27.261313,
+            "latencyChangePercent": -0.26097912841989146
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      }
+    ]
+  },
+  "dctControls": {
+    "fixtures": 12,
+    "rounds": 2,
+    "outputSHA256AndBytesMatch": true,
+    "records": 48,
+    "exitCode": 0,
+    "summary": [
+      {
+        "case": "dct12-512.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 1.290104,
+            "candidateMedianMS": 1.2728335,
+            "latencyChangePercent": -1.3386905241747904
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 1.1319375,
+            "candidateMedianMS": 1.1238540000000001,
+            "latencyChangePercent": -0.7141295345370224
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "dct12-2048.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 15.612896000000001,
+            "candidateMedianMS": 15.654124999999999,
+            "latencyChangePercent": 0.2640701635365783
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 15.658375000000003,
+            "candidateMedianMS": 15.6812915,
+            "latencyChangePercent": 0.1463529900133098
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "rgb8-512.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 2.738521,
+            "candidateMedianMS": 2.8319585,
+            "latencyChangePercent": 3.411969453584618
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 2.84925,
+            "candidateMedianMS": 2.8801045000000003,
+            "latencyChangePercent": 1.082899008511018
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "rgb8-2048.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 33.109604,
+            "candidateMedianMS": 33.4269375,
+            "latencyChangePercent": 0.9584333899010256
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 33.374500000000005,
+            "candidateMedianMS": 33.409895500000005,
+            "latencyChangePercent": 0.10605552143103658
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "progressiveRGB8-512.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 4.4960415,
+            "candidateMedianMS": 4.489271,
+            "latencyChangePercent": -0.15058802281963102
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 4.423646,
+            "candidateMedianMS": 4.440729,
+            "latencyChangePercent": 0.3861746622582318
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "progressiveRGB8-2048.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 57.9715,
+            "candidateMedianMS": 57.7582295,
+            "latencyChangePercent": -0.3678885314335467
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 58.083771,
+            "candidateMedianMS": 57.963604000000004,
+            "latencyChangePercent": -0.2068856720752521
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "xyb8-512.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 9.027021,
+            "candidateMedianMS": 9.2823335,
+            "latencyChangePercent": 2.828314014113853
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 9.1357495,
+            "candidateMedianMS": 9.039417,
+            "latencyChangePercent": -1.054456451547836
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "xyb8-2048.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 137.390021,
+            "candidateMedianMS": 138.0185415,
+            "latencyChangePercent": 0.45747172569396977
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 137.21662500000002,
+            "candidateMedianMS": 137.17254150000002,
+            "latencyChangePercent": -0.03212693797124411
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "flat-8-512.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.062667,
+            "candidateMedianMS": 0.061666000000000006,
+            "latencyChangePercent": -1.597331929085477
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.06168699999999999,
+            "candidateMedianMS": 0.0622915,
+            "latencyChangePercent": 0.9799471525605119
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "flat-12-512.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 0.0691875,
+            "candidateMedianMS": 0.07077050000000001,
+            "latencyChangePercent": 2.2879855465221643
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 0.0681665,
+            "candidateMedianMS": 0.067375,
+            "latencyChangePercent": -1.1611275333191617
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "noise-8-512.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 1.1161245,
+            "candidateMedianMS": 1.121896,
+            "latencyChangePercent": 0.5171018107746894
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 1.0297085,
+            "candidateMedianMS": 1.043979,
+            "latencyChangePercent": 1.3858776537243322
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      },
+      {
+        "case": "noise-12-512.jpg",
+        "pairs": [
+          {
+            "round": 1,
+            "baselineMedianMS": 1.3008335000000002,
+            "candidateMedianMS": 1.3138124999999998,
+            "latencyChangePercent": 0.9977449073997446
+          },
+          {
+            "round": 2,
+            "baselineMedianMS": 1.2339375,
+            "candidateMedianMS": 1.252354,
+            "latencyChangePercent": 1.4924986071012558
+          }
+        ],
+        "allRoundsOverFivePercentSlower": false
+      }
+    ]
+  },
+  "interpretation": [
+    "Large ramp targets improve37.4-50.2percent across four immediate pairs; large noise improves50.4-52.9percent. Full lossless with the identical linked binaries confirms ramp512/2048/3072 gains40.6-45.5percent and noise512/2048/3072 gains52.3-53.2percent.",
+    "No full lossless or DCT control case has a greater-than5percent regression in either round. Exactness passed every executed record. The earlier b12 control regressions are not reproduced in this composition.",
+    "These results do not prove TaskLocal layout alone caused earlier regressions: the composition also retains qualified always_inline reader helpers and the qualified DC+AC base. The evidence supports the combined candidate only.",
+    "Timings are provisional shared-host SwiftJLI revision comparisons. No djpeg, cross-platform, RSS or final integrated acceptance claim is made."
+  ],
+  "qualityAndLifetime": [
+    "Independent source review found no remaining production defect; scoped raw input/output borrows stay on the caller, C performs no allocation/thread/I/O, and input/output aliasing is permitted. Metadata/state/result are separately scoped.",
+    "Native malformed category, truncation, marker, prefix/offset, cursor, modulo, max width, odd typed output, restart and cancellation cases passed. Public explicit scalar retains Swift and reports scalarCPU; automatic C rows report the same backend.",
+    "Corrected public failure-stage test uses an admitted table and truncation after five samples, then requires one provider borrow, one abort, no seal and exact partial output. Prior category17 public fixture did not prove row entry; see the retained clarification receipt.",
+    "Fixed1048-byte scan metadata fits the existing1MiB reserve; no new frame buffer, heap allocation in C or limit increase. Source-level bound is not measured RSS.",
+    "No public API, fidelity, sample interpretation or tolerance change. Five warmups plus20 samples; exact checking outside timing."
+  ],
+  "unexecuted": [
+    "New composed-row ASan/UBSan corpus",
+    "Integrated full Release/ASan/TSan",
+    "RSS",
+    "CLI and independent codec oracle",
+    "Other platforms/toolchains"
+  ],
+  "sourceProvenance": {
+    "initial": "source.json is retained initial source-only status, superseded by this completed gate receipt.",
+    "baseline": "baseline-products.json pins copied qualified281/e0 Release modules, objects and C module map.",
+    "equivalence": "source-equivalence.json proves unchanged ACBlock.c/NativeExecution.swift and exact copied helpers; does not assert emitted Swift object identity.",
+    "host": "targeted-host.jsonl and full-existing-host.jsonl retain process snapshots; DCT runner retains raw samples but did not collect per-case host snapshots.",
+    "methods": "Four fresh per-case pairs and two full sequences remain separate; full lossless reuses targeted executables byte-for-byte."
+  },
+  "finishedUTC": "2026-11-03T17:21:48.782972+00:00"
+}

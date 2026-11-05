@@ -1,0 +1,46 @@
+{
+  "sourceRevision": "14f35018d241666358480da2a8527d29ab047627",
+  "run": 41657375246,
+  "overallConclusion": "failure",
+  "jobConclusions": {
+    "cancelled": 6,
+    "success": 3,
+    "failure": 4
+  },
+  "failedJobs": [
+    {
+      "name": "Swift 6.2 / ubuntu-24.04",
+      "url": "https://github.com/raster-labs/SwiftJLI/actions/runs/41657375246/job/125991190442"
+    },
+    {
+      "name": "Swift 6.4 / ubuntu-24.04",
+      "url": "https://github.com/raster-labs/SwiftJLI/actions/runs/41657375246/job/125991190482"
+    },
+    {
+      "name": "Swift 6.2 / ubuntu-24.04-arm",
+      "url": "https://github.com/raster-labs/SwiftJLI/actions/runs/41657375246/job/125991190501"
+    },
+    {
+      "name": "Swift 6.4 / ubuntu-24.04-arm",
+      "url": "https://github.com/raster-labs/SwiftJLI/actions/runs/41657375246/job/125991190744"
+    }
+  ],
+  "observedFailure": "All four Linux Swift 6.2/6.4 architecture jobs report the same synthetic worker-failure test issues: the NaN-quantiser call succeeds and destination sentinel bytes change. Each reports 431 tests in 73 suites with two issues.",
+  "sourceDiagnosis": "PipelinedGreyscaleTests injects a NaN quantiser to force reconstruction failure. The retained ScalarDSP.vclip implementation uses min(upper,max(lower,value)), whose NaN behaviour can produce a finite clipped sample. This injection is not portable across DSP backends. Valid-JPEG sample divergence is not established by these logs.",
+  "correctionStatusAtCapture": "Subsequent test-only correction passed local focused Release at396ddd1, integrated asfd6e1a1, with unchanged shipping sources. This does not change the recorded14f failures; corrected remote CI remains unqualified.",
+  "successfulGates": [
+    "Native Intel tests and CLI",
+    "Shared contract byte identity",
+    "Independent tools-6.2 consumer"
+  ],
+  "unavailableGates": "Six Apple ARM jobs cancelled with no executed steps; unavailable, not passed.",
+  "fullFailedLog": {
+    "originalPath": "/private/tmp/swiftjli-round5-evidence/pipeline/ci-14f-failed.log",
+    "bytes": 1331943,
+    "sha256": "7f41aee45b1be4c5df93994e292fbd965d284d53bdc371c14aa4939153a14307",
+    "omissionReason": "1.33 MB combined raw log omitted; exact source-labelled failure extract and complete job snapshot retained."
+  },
+  "snapshot": "ci-14f-latest.json",
+  "extract": "ci-14f-failure-extract.txt",
+  "correctionReceipt": "../experiments/ci-worker-failure/source-equivalence.json"
+}

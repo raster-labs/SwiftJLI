@@ -1,0 +1,81 @@
+{
+  "kind": "completed standalone C ASan+UBSan diagnostic",
+  "finishedUTC": "2026-11-03T16:46:22.901415+00:00",
+  "runs": [
+    {
+      "target": "combined",
+      "sourceRevision": "e0cfea0fa2f702cb558f6896db03501efcd0b463",
+      "sourceManifest": "v2-source/source-manifest.json",
+      "sourceManifestSHA256": "8f9893396a8995bc8a98ba8beb1c78c314739a9f656036c29e4475df6674c666",
+      "commandReceipt": "combined-v2-run1/command-receipt.json",
+      "results": "combined-v2-run1/results.json",
+      "compileExitCode": 0,
+      "runExitCode": 0,
+      "counterValidation": "passed",
+      "sanitizerDiagnostics": 0,
+      "counts": {
+        "cases": 1393276,
+        "randomCases": 1048576,
+        "boundaryCases": 88920,
+        "knownCases": 255761,
+        "aliasCases": 0,
+        "invalidArgumentCases": 19
+      },
+      "statusCounts": {
+        "OK": 165509,
+        "END": 12561,
+        "END_AFTER_FF": 2435,
+        "MARKER": 76253,
+        "CODE_INDEX": 0,
+        "INVALID_CODE": 846965,
+        "INVALID_ARGUMENT": 19,
+        "INVALID_WIDTH": 111462,
+        "DC_RANGE": 178072
+      },
+      "seed": "0xdca18b3725e6409f",
+      "firstAttempt": true
+    },
+    {
+      "target": "row",
+      "sourceRevision": "06eff275d4a2b72b3497748064311a38b288aa7d",
+      "sourceManifest": "v2-source/source-manifest.json",
+      "sourceManifestSHA256": "8f9893396a8995bc8a98ba8beb1c78c314739a9f656036c29e4475df6674c666",
+      "commandReceipt": "row-v2-run1/command-receipt.json",
+      "results": "row-v2-run1/results.json",
+      "compileExitCode": 0,
+      "runExitCode": 0,
+      "counterValidation": "passed",
+      "sanitizerDiagnostics": 0,
+      "counts": {
+        "cases": 1176591,
+        "randomCases": 1048576,
+        "boundaryCases": 88920,
+        "knownCases": 29078,
+        "aliasCases": 10000,
+        "invalidArgumentCases": 17
+      },
+      "statusCounts": {
+        "OK": 47646,
+        "END": 16245,
+        "END_AFTER_FF": 3087,
+        "MARKER": 81515,
+        "CODE_INDEX": 0,
+        "INVALID_CODE": 868422,
+        "INVALID_ARGUMENT": 17,
+        "INVALID_WIDTH": 159659
+      },
+      "seed": "0x16a1f095bdc72863",
+      "firstAttempt": true
+    }
+  ],
+  "scope": "Pinned C leaves only. The integration281f3635 Swift Release/ASan/TSan gates are separate and were still running when this receipt was written.",
+  "sourceHistory": "v1 source/9f11312 was never compiled or executed. v2 source and its manifest are immutable snapshots created before execution; their source-only wording describes that creation state. These new receipts establish the later executions.",
+  "limits": [
+    "No performance acceptance, RSS/heap measurement, external oracle, platform qualification or all-input proof follows from these tests.",
+    "The generic06eff27 row result does not qualify later short-table/code-zero extensions.",
+    "Combined input/output is disjoint; only generic row input/output overlap is exercised under its explicit contract.",
+    "Synthetic buffered-bit and previous-DC extreme states include private combinations not reached by public JPEG decoding.",
+    "All metadata supplied to valid-input tests obeys the caller contract; malformed arbitrary internal tables are not supported inputs."
+  ],
+  "productionChanges": "none; all harnesses and source snapshots are isolated evidence artefacts"
+}

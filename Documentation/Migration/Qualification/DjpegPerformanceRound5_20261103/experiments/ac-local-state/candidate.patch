@@ -1,0 +1,174 @@
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index d5497e6..44140b5 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -336,6 +336,58 @@ struct BitReader {
+         return entry
+     }
+ 
++    /// Decodes one AC block while the accumulator and its bit count stay local
++    /// across coefficient stores. The caller must retain a writable, initialised
++    /// 64-element coefficient borrow throughout this synchronous call. It may
++    /// not alias this reader, its compressed input, or either Huffman table.
++    /// Neither the pointer nor a reader borrow escapes this method.
++    mutating func decodeACBlock(table: HuffmanTable, lookup: ACLookahead,
++                                coefficients: UnsafeMutablePointer<Int32>) throws {
++        coefficients.update(repeating: 0, count: 64)
++        var accumulator = bitBuffer, available = bitsAvailable
++        // All exits, including an entropy error after a partially consumed
++        // symbol, publish the exact logical bit state back to the reader.
++        defer { bitBuffer = accumulator; bitsAvailable = available }
++        var index = 1
++        while index < 64 {
++            if available < ACLookahead.bits {
++                bitBuffer = accumulator; bitsAvailable = available
++                if !bulkRefill() { fillBuffer(upTo: 8) }
++                accumulator = bitBuffer; available = bitsAvailable
++            }
++            if available >= ACLookahead.bits {
++                // available is 13...64, so the masked shift is 0...51.
++                // Keep the checked Array access and all original run guards.
++                let prefix = Int((accumulator &>> (available - ACLookahead.bits))
++                    & UInt64(ACLookahead.count - 1))
++                let entry = lookup.entries[prefix]
++                let advance = Int((entry >> 16) & 0xFF)
++                if entry != 0, advance <= 64 - index {
++                    available -= Int(entry >> 24)
++                    if advance == 0 { break }
++                    index += advance
++                    coefficients[index - 1] = Int32(Int16(truncatingIfNeeded: entry))
++                    continue
++                }
++            }
++            // Only the existing refill/fallback routines mutate byteOffset.
++            // Reload local state even if a routine throws after consuming input;
++            // this inner defer runs before the outer state-publication defer.
++            bitBuffer = accumulator; bitsAvailable = available
++            do {
++                defer { accumulator = bitBuffer; available = bitsAvailable }
++                let symbol = try HuffmanDecoder.decodeSymbol(from: &self, table: table)
++                if symbol == 0x00 { break }
++                if symbol == 0xF0 { index += 16; continue }
++                index += Int(symbol >> 4)
++                guard index < 64 else { break }
++                coefficients[index] = try HuffmanDecoder.decodeValue(from: &self,
++                    category: Int(symbol & 0x0F))
++                index += 1
++            }
++        }
++    }
++
+     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
+     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
+     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,
+diff --git a/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift b/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift
+index cb81f03..8b7878c 100644
+--- a/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift
++++ b/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift
+@@ -37,26 +37,6 @@ extension HuffmanDecoder {
+         guard output.count == 64, let coefficients = output.baseAddress else {
+             throw JLIError.decodingFailed("Invalid AC coefficient destination")
+         }
+-        coefficients.update(repeating: 0, count: 64)
+-        var index = 1
+-        while index < 64 {
+-            if let entry = reader.fastDecodeAC(lookup, remaining: 64 - index) {
+-                let advance = Int((entry >> 16) & 0xFF)
+-                if advance == 0 { break }
+-                index += advance
+-                coefficients[index - 1] = Int32(Int16(truncatingIfNeeded: entry))
+-                continue
+-            }
+-            let symbol = try decodeSymbol(from: &reader, table: table)
+-            if symbol == 0x00 { break }
+-            if symbol == 0xF0 {
+-                index += 16
+-                continue
+-            }
+-            index += Int(symbol >> 4)
+-            guard index < 64 else { break }
+-            coefficients[index] = try decodeValue(from: &reader, category: Int(symbol & 0x0F))
+-            index += 1
+-        }
++        try reader.decodeACBlock(table: table, lookup: lookup, coefficients: coefficients)
+     }
+ }
+diff --git a/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift b/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
+index 7699eb0..37f8d68 100644
+--- a/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
++++ b/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
+@@ -94,14 +94,71 @@ import Testing
+         }
+     }
+ 
+-    @Test func invalidDestinationIsRejectedBeforeWriting() {
+-        var reader = BitReader(data: [])
++    @Test(arguments: [false, true])
++    func invalidDestinationIsRejectedBeforeWriting(combined: Bool) throws {
++        var reader = BitReader(data: Array(repeating: 0xAA, count: 16))
++        let table = StandardHuffmanTables.acLuminance
++        let lookup = try #require(ACLookahead(table: table, blockCount: 512))
+         var output = [Int32](repeating: 919, count: 63)
+         #expect(throws: JLIError.self) {
+             try output.withUnsafeMutableBufferPointer {
+-                try HuffmanDecoder.decodeAC(from: &reader, table: StandardHuffmanTables.acLuminance, into: $0)
++                if combined {
++                    try HuffmanDecoder.decodeAC(from: &reader, table: table, lookup: lookup, into: $0)
++                } else {
++                    try HuffmanDecoder.decodeAC(from: &reader, table: table, into: $0)
++                }
+             }
+         }
+         #expect(output.allSatisfy { $0 == 919 })
++        #expect(reader.byteOffset == 0)
++    }
++
++    @Test func localAccumulatorPreservesEveryPrefixAndPartialFailureCursor() throws {
++        let tables = [StandardHuffmanTables.acLuminance, StandardHuffmanTables.acChrominance,
++            HuffmanTable(bits: [0, 0, 0, 15] + Array(repeating: 0, count: 12),
++                values: (0..<13).map { UInt8($0 << 4) } + [0x01, 0xF0])]
++        var successes = 0, failures = 0
++        for table in tables {
++            let lookup = try #require(ACLookahead(table: table, blockCount: 512))
++            for offset in 0..<8 { for prefix in 0..<ACLookahead.count {
++                var writer = BitWriter(estimatedMaxSize: 32)
++                writer.writeBits(0, count: offset)
++                writer.writeBits(UInt32(prefix), count: ACLookahead.bits)
++                for tail in [UInt32(0xA55A), 0x1234, 0x6789, 0x90AB] {
++                    writer.writeBits(tail, count: 16)
++                }
++                writer.flush()
++                var reference = BitReader(data: writer.data), local = reference
++                _ = try reference.readBits(offset); _ = try local.readBits(offset)
++                var expected = [Int32](repeating: 919, count: 64)
++                var actual = [Int32](repeating: 919, count: 71)
++                let lhs = Result { try HuffmanDecoder.decodeAC(from: &reference, table: table, into: &expected) }
++                let rhs = Result { try pointerDecode(&local, table: table, lookup: lookup, output: &actual) }
++                switch (lhs, rhs) {
++                case (.success, .success): successes += 1
++                case (.failure(let a), .failure(let b)):
++                    failures += 1
++                    #expect(String(describing: a) == String(describing: b))
++                default: Issue.record("Local accumulator changed block completion or failure")
++                }
++                #expect(Array(actual[3..<67]) == expected)
++                #expect(actual.prefix(3).allSatisfy { $0 == 919 })
++                #expect(actual.suffix(4).allSatisfy { $0 == 919 })
++                var referencePosition = reference, localPosition = local
++                referencePosition.alignToByte(); localPosition.alignToByte()
++                #expect(localPosition.byteOffset == referencePosition.byteOffset)
++                // Check the unaligned remainder after both successful and
++                // partially failing blocks, exposing stale-state defer bugs.
++                let expectedNext = Result { try reference.readBits(8) }
++                let actualNext = Result { try local.readBits(8) }
++                switch (expectedNext, actualNext) {
++                case (.success(let a), .success(let b)): #expect(a == b)
++                case (.failure(let a), .failure(let b)):
++                    #expect(String(describing: a) == String(describing: b))
++                default: Issue.record("Local accumulator changed post-block entropy")
++                }
++            } }
++        }
++        #expect(successes > 0 && failures > 0)
+     }
+ }

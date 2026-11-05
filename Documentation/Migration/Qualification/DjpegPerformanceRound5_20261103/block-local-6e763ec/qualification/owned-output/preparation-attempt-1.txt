@@ -1,0 +1,8 @@
+Source-preparation script failed during Python parsing before any statement executed.
+No codec/comparator build or runtime occurred; no source copy or plan was created by that failed command.
+
+  File "<stdin>", line 30
+    p['pendingArtifacts']=[str(products/'SwiftJLI.o'),str(products/'SwiftJLIEntropyC.o'),str(products/'SwiftJLI.swiftmodule'/name) for name in []] if False else ...
+SyntaxError: did you forget parentheses around the comprehension target?
+
+Repair: remove the unused conditional/list-comprehension draft and use a direct list of seven future artifact paths. This changes preparation metadata only.

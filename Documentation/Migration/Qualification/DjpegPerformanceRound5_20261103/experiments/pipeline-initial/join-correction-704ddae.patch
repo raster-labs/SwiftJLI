@@ -1,0 +1,25 @@
+commit 704ddae1bafea95d8a48c01ce35887c5b6413c0d
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 20:11:33 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 20:11:33 2026 +0530
+
+    Join the complete pipeline work item before ending borrows
+
+diff --git a/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
+index 73751c0..232c53f 100644
+--- a/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift
+@@ -48,9 +48,9 @@ enum PipelinedGreyscaleDecoder {
+                     let buffers = Buffers(coefficients: base, scratch: workspace, quantiser: quantiser)
+                     let state = State(), batches = (blocks - 1) / 1024 + 1
+                     let context = NativeOperation.current, bps = destination.bytesPerSample
+-                    state.joined.enter()
+-                    DispatchQueue.global(qos: .userInitiated).async {
+-                        defer { state.joined.leave() }
++                    // The group covers the entire submitted work item, rather
++                    // than an early signal from inside the worker body.
++                    DispatchQueue.global(qos: .userInitiated).async(group: state.joined) {
+                         do {
+                             try NativeOperation.$current.withValue(context) {
+                                 for batch in 0..<batches {

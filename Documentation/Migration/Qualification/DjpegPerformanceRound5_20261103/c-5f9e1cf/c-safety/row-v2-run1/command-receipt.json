@@ -1,0 +1,43 @@
+{
+  "target": "row",
+  "sourceRevision": "06eff275d4a2b72b3497748064311a38b288aa7d",
+  "sourceManifestSHA256": "8f9893396a8995bc8a98ba8beb1c78c314739a9f656036c29e4475df6674c666",
+  "compileCommand": [
+    "xcrun",
+    "clang",
+    "-O2",
+    "-g",
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fsanitize=address,undefined",
+    "-fno-sanitize-recover=all",
+    "-I",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v2-source/row/include",
+    "-I",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v2-source",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v2-source/row_safety.c",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v2-source/row/ACBlock.c",
+    "-o",
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/row-v2-run1/safety-harness"
+  ],
+  "cwd": "/private/tmp/swiftjli-round5-evidence/c-extension-safety/v2-source",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+    "ASAN_OPTIONS": "halt_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+  },
+  "startedUTC": "2026-11-03T16:43:42.294967+00:00",
+  "scope": "bounded standalone memory/undefined-behaviour diagnostic; not performance acceptance",
+  "compilerVersionExitCode": 0,
+  "compileExitCode": 0,
+  "binarySHA256": "f2ab434f515c42f6adccbb3103853ebb3a42c035484f878fad49e032d935a112",
+  "runCommand": [
+    "/private/tmp/swiftjli-round5-evidence/c-extension-safety/row-v2-run1/safety-harness"
+  ],
+  "runExitCode": 0,
+  "runElapsedSeconds": 1.3277128339977935,
+  "counterValidation": "passed",
+  "finishedUTC": "2026-11-03T16:43:44.002602+00:00"
+}

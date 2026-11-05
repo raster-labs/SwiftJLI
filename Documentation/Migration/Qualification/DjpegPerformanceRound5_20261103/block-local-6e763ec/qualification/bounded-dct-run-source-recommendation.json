@@ -1,0 +1,145 @@
+{
+  "status": "source-only recommendation; no implementation, build, disassembly or runtime",
+  "createdUTC": "2026-11-03T19:47:39.038690+00:00",
+  "currentRevision": "6e763ec2099e162bae52a40109ff74269ea9899f",
+  "historicalTrialRevision": "71e0138652054b942a5b6b2c32ad2cf267cad82b",
+  "historicalParentRevision": "e0cfea0fa2f702cb558f6896db03501efcd0b463",
+  "historicalParentCByteIdenticalToCurrent": true,
+  "files": [
+    {
+      "path": "Sources/SwiftJLIEntropyC/ACBlock.c",
+      "currentSHA256": "9fd0f6a6ae57c5cf93f55854464d57850d3ff33689c7a5cdb48524430def7c3c"
+    },
+    {
+      "path": "Sources/SwiftJLIEntropyC/include/SwiftJLIEntropyC.h",
+      "currentSHA256": "c5184b6712fa8ba16393937948beffa1f1c7d7fcf8d9d407082b4aecff030f82"
+    },
+    {
+      "path": "Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift",
+      "currentSHA256": "4cc664d29f8a22eff60066ee1528a41a0fa29df0c71d02e8259a651120de6fc3"
+    },
+    {
+      "path": "Sources/SwiftJLI/Native/Entropy/CSequentialGreyscaleDecoder.swift",
+      "currentSHA256": "d183ecb0cbc4d7f9dddfbb3fbc946fd9dce2d6b379b4fe5e6fe058103657d2e0"
+    },
+    {
+      "path": "Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift",
+      "currentSHA256": "bfbe0ca6cc0d81ce22b642406c98162a9a928ab9751d07f51328514b54aeee77"
+    },
+    {
+      "path": "Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift",
+      "currentSHA256": "0522cc449799e2496df895010e988ddfb19bf2fd661e0dd2323f082cb62d0616"
+    }
+  ],
+  "recommendation": "A narrow new bounded-run experiment remains justified. First replace per-block calls inside the already eligible C serial helper; optionally apply the same span calculation to the C-only pipeline branch. Retain all generic Swift loops, eligibility and reconstruction unchanged. Do not cherry-pick the historical pipeline wholesale over the current FMA256/empty-scratch fixes.",
+  "actualWorkRemoved": [
+    "One Swift bridge call plus state construction/status switch per block becomes one per bounded span.",
+    "The 24-byte cursor/accumulator/available/marker wire value is imported/exported once per span; predictor stays local in C. Exact physical stores depend on compiler codegen.",
+    "C entrypoint pointer/count/precision/table/state guards are checked once per span; the unchanged per-block DC and AC bodies retain their error checks.",
+    "No coefficient zeroing, entropy work, dequantisation or Float arithmetic is omitted; no new image scratch/allocation."
+  ],
+  "scope": [
+    "Existing 8/12-bit accelerated sequential greyscale with a successfully borrowed CDCTKernel only.",
+    "AC lookup requires at least512blocks, enough short-code coverage and a covered nonzero magnitude.",
+    "Tiny images, table-proven DC-only scans, unsupported/scalar paths, colour, progressive and lossless remain outside this route."
+  ],
+  "boundaries": {
+    "runCount": "min(rowEnd - index, restartInterval > 0 ? restartInterval - index % restartInterval : rowEnd - index)",
+    "serialRowEnd": "min(windowEnd, imageRowEnd, transformGroupEnd)",
+    "pipelineRowEnd": "min(batchEnd, imageRowEnd)",
+    "FMAGroupBlocks": 256,
+    "GEMMGroupBlocks": 1024,
+    "CMaximumBlocks": 1024,
+    "restartHandling": "Swift skips/reset the marker before the span; no run crosses the next restart.",
+    "cancellation": "Keep NativeOperation.check at each existing outer row/group/batch boundary. The existing per-block C loop has no cancellation inside that segment. Run segmentation therefore does not extend any unpolled span; maximum256 blocks on FMA and1024 on GEMM.",
+    "borrow": "Run ends synchronously inside the same input/table/coefficient borrows. No entropy pointer enters a worker; publication/scatter/joins remain unchanged."
+  },
+  "errorStateRequirements": [
+    "Copy local cursor and predictor back on both success and entropy failure before Swift throws.",
+    "DC category or magnitude failure does not clear the failing coefficient slot or alter the predictor.",
+    "Accepted DC updates the predictor before AC; AC failure retains partial cleared/filled slot with slot0 still zero.",
+    "Range failure occurs after consuming DC but before predictor/slot publication.",
+    "Completed prior blocks remain written; the partial failing block matches scalar; later slots remain untouched.",
+    "Never signal or consume the incomplete window after an entropy failure; do not fall back after any input consumption.",
+    "Invalid counts/extent/precision reject before multiplication or any state/output write. Keep1...1024 and exact blocks*64 guards."
+  ],
+  "testNeeds": [
+    "Port historical CDCTRunDecoderTests pure-Swift oracle and invalid-count/error-state tests; add255/256/257 alongside1/2/63/1024.",
+    "Repeat physical/logical cursor and next-read parity at all bit offsets, early/middle/last malformed DC/AC, stuffing and marker failures.",
+    "Extend current direct C serial tests to prove spans at256/1024 and restarts255/256/257/1023/1024.",
+    "Keep public8/12 integer/Float padded destination/copy assertions, joined cancellation/worker failure and zero-scratch TSan tests.",
+    "Fresh matched-source performance and full unrelated lossless controls required; historical held results establish no accepted gain for this new combination."
+  ],
+  "geometryExamples": [
+    {
+      "dimensions": [
+        512,
+        512
+      ],
+      "batchBlocks": 256,
+      "restartMCUs": 0,
+      "existingPerBlockCalls": 4096,
+      "proposedCalls": 64,
+      "maximumRunBlocks": 64,
+      "callReductionPercent": 98.4375,
+      "interpretation": "Static geometry count, not timing or an instruction count."
+    },
+    {
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "batchBlocks": 256,
+      "restartMCUs": 0,
+      "existingPerBlockCalls": 65536,
+      "proposedCalls": 256,
+      "maximumRunBlocks": 256,
+      "callReductionPercent": 99.609375,
+      "interpretation": "Static geometry count, not timing or an instruction count."
+    },
+    {
+      "dimensions": [
+        513,
+        257
+      ],
+      "batchBlocks": 256,
+      "restartMCUs": 1023,
+      "existingPerBlockCalls": 2145,
+      "proposedCalls": 43,
+      "maximumRunBlocks": 65,
+      "callReductionPercent": 97.99533799533799,
+      "interpretation": "Static geometry count, not timing or an instruction count."
+    },
+    {
+      "dimensions": [
+        513,
+        257
+      ],
+      "batchBlocks": 256,
+      "restartMCUs": 3,
+      "existingPerBlockCalls": 2145,
+      "proposedCalls": 743,
+      "maximumRunBlocks": 3,
+      "callReductionPercent": 65.36130536130536,
+      "interpretation": "Static geometry count, not timing or an instruction count."
+    }
+  ],
+  "historicalDecision": {
+    "path": "/private/tmp/swiftjli-round5-evidence/c-dct-runs/decision.json",
+    "sha256": "e8ee7a08618ed7d5c0d1dfb99ac1e3fcd16de0963260c4e50ac455d8ff9be31e",
+    "status": "unaccepted",
+    "failedLosslessCase": "flat-512",
+    "changesPercent": [
+      18.208704794167787,
+      6.464360066306862
+    ],
+    "DCT24PairsExact": true,
+    "directE0DeltaUnexecuted": true,
+    "fullSuiteAndSanitizersUnexecutedForThatPin": true
+  },
+  "limitations": [
+    "This is genuine call/state/check amortisation, not an established speedup. Dense AC and transform work can dominate, and restart1/very narrow rows offer little or no gain.",
+    "Historical C body refactoring and new call graph can change unrelated emitted code/layout; retain old single-block semantics and independently inspect both paths after any future build.",
+    "No current emitted-code/cycle/RSS conclusions are claimed."
+  ]
+}

@@ -1,0 +1,295 @@
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index d5497e6..4cca5f2 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -324,13 +324,26 @@ struct BitReader {
+     /// AC decoder stops after the Huffman symbol in that case.
+     @inline(__always)
+     mutating func fastDecodeAC(_ table: ACLookahead, remaining: Int) -> UInt32? {
++        table.entries.withUnsafeBufferPointer { entries in
++            guard entries.count == ACLookahead.count, let base = entries.baseAddress else { return nil }
++            return fastDecodeAC(base, remaining: remaining)
++        }
++    }
++
++    /// The caller must keep exactly ACLookahead.count (8192) initialised entries
++    /// from an ACLookahead table alive and immutable for this synchronous call.
++    /// The pointer is read only and never retained. Prefix masking below proves
++    /// the index is in 0..<8192, allowing a block-wide borrow to validate capacity
++    /// once rather than repeating the Array bounds check for every coefficient.
++    @inline(__always)
++    mutating func fastDecodeAC(_ entries: UnsafePointer<UInt32>, remaining: Int) -> UInt32? {
+         if bitsAvailable < ACLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
+         guard bitsAvailable >= ACLookahead.bits else { return nil }
+         // Reader mutations bound the accumulator to 0...64 valid bits. After
+         // the guard this shift is 0...51, so the masked form has identical
+         // semantics without a general signed-width check per coefficient.
+         let prefix = Int((bitBuffer &>> (bitsAvailable - ACLookahead.bits)) & UInt64(ACLookahead.count - 1))
+-        let entry = table.entries[prefix]
++        let entry = entries[prefix]
+         guard entry != 0, Int((entry >> 16) & 0xFF) <= remaining else { return nil }
+         bitsAvailable -= Int(entry >> 24)
+         return entry
+diff --git a/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift b/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift
+index cb81f03..fdcc48c 100644
+--- a/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift
++++ b/Sources/SwiftJLI/Native/Entropy/ScopedACDecoder.swift
+@@ -37,26 +37,34 @@ extension HuffmanDecoder {
+         guard output.count == 64, let coefficients = output.baseAddress else {
+             throw JLIError.decodingFailed("Invalid AC coefficient destination")
+         }
+-        coefficients.update(repeating: 0, count: 64)
+-        var index = 1
+-        while index < 64 {
+-            if let entry = reader.fastDecodeAC(lookup, remaining: 64 - index) {
+-                let advance = Int((entry >> 16) & 0xFF)
+-                if advance == 0 { break }
+-                index += advance
+-                coefficients[index - 1] = Int32(Int16(truncatingIfNeeded: entry))
+-                continue
++        // The immutable lookup owner remains alive through the entire block.
++        // The pointer never leaves this synchronous closure, including throws;
++        // no worker or asynchronous operation captures it.
++        try lookup.entries.withUnsafeBufferPointer { entries in
++            guard entries.count == ACLookahead.count, let lookupBase = entries.baseAddress else {
++                throw JLIError.decodingFailed("Invalid AC lookahead capacity")
+             }
+-            let symbol = try decodeSymbol(from: &reader, table: table)
+-            if symbol == 0x00 { break }
+-            if symbol == 0xF0 {
+-                index += 16
+-                continue
++            coefficients.update(repeating: 0, count: 64)
++            var index = 1
++            while index < 64 {
++                if let entry = reader.fastDecodeAC(lookupBase, remaining: 64 - index) {
++                    let advance = Int((entry >> 16) & 0xFF)
++                    if advance == 0 { break }
++                    index += advance
++                    coefficients[index - 1] = Int32(Int16(truncatingIfNeeded: entry))
++                    continue
++                }
++                let symbol = try decodeSymbol(from: &reader, table: table)
++                if symbol == 0x00 { break }
++                if symbol == 0xF0 {
++                    index += 16
++                    continue
++                }
++                index += Int(symbol >> 4)
++                guard index < 64 else { break }
++                coefficients[index] = try decodeValue(from: &reader, category: Int(symbol & 0x0F))
++                index += 1
+             }
+-            index += Int(symbol >> 4)
+-            guard index < 64 else { break }
+-            coefficients[index] = try decodeValue(from: &reader, category: Int(symbol & 0x0F))
+-            index += 1
+         }
+     }
+ }
+diff --git a/Tests/SwiftJLITests/Native/ACLookaheadTests.swift b/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
+index 5f69207..cf08715 100644
+--- a/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
++++ b/Tests/SwiftJLITests/Native/ACLookaheadTests.swift
+@@ -26,88 +26,104 @@ import Testing
+         #expect(ACLookahead(table: zeros, blockCount: 65536) == nil)
+     }
+ 
+-    @Test func everyPrefixOffsetAndRunBoundaryMatchesReference() throws {
++    @Test(arguments: [false, true])
++    func everyPrefixOffsetAndRunBoundaryMatchesReference(borrowedLookup: Bool) throws {
+         let tables = [StandardHuffmanTables.acLuminance, StandardHuffmanTables.acChrominance,
+             HuffmanTable(bits: [0, 0, 0, 15] + Array(repeating: 0, count: 12),
+                 values: (0..<13).map { UInt8($0 << 4) } + [0x01, 0xF0])]
+         for table in tables {
+             let lookup = try #require(ACLookahead(table: table, blockCount: 512))
+             var hits = 0, misses = 0
+-            for offset in 0..<8 { for prefix in 0..<ACLookahead.count {
+-                let remaining = prefix % 63 + 1
+-                var writer = BitWriter(estimatedMaxSize: 32)
+-                writer.writeBits(0, count: offset)
+-                writer.writeBits(UInt32(prefix), count: ACLookahead.bits)
+-                for tail in [UInt32(0xA55A), 0x1234, 0x6789, 0x90AB] {
+-                    writer.writeBits(tail, count: 16)
+-                }
+-                writer.flush()
+-                var fast = BitReader(data: writer.data), slow = BitReader(data: writer.data)
+-                _ = try fast.readBits(offset); _ = try slow.readBits(offset)
+-                let expected = Result { try reference(&slow, table, remaining: remaining) }
+-                let actual = Result {
+-                    if let entry = fast.fastDecodeAC(lookup, remaining: remaining) {
+-                        hits += 1
+-                        return (Int((entry >> 16) & 0xFF), Int32(Int16(truncatingIfNeeded: entry)))
++            try lookup.entries.withUnsafeBufferPointer { entries in
++                let lookupBase = try #require(entries.baseAddress)
++                #expect(entries.count == ACLookahead.count)
++                for offset in 0..<8 { for prefix in 0..<ACLookahead.count {
++                    let remaining = prefix % 63 + 1
++                    var writer = BitWriter(estimatedMaxSize: 32)
++                    writer.writeBits(0, count: offset)
++                    writer.writeBits(UInt32(prefix), count: ACLookahead.bits)
++                    for tail in [UInt32(0xA55A), 0x1234, 0x6789, 0x90AB] {
++                        writer.writeBits(tail, count: 16)
+                     }
+-                    misses += 1
+-                    return try reference(&fast, table, remaining: remaining)
+-                }
+-                switch (expected, actual) {
+-                case (.success(let lhs), .success(let rhs)):
+-                    #expect(lhs.0 == rhs.0 && lhs.1 == rhs.1)
+-                    #expect(fast.byteOffset == slow.byteOffset)
+-                    #expect(try fast.readBits(16) == slow.readBits(16))
+-                case (.failure(let lhs), .failure(let rhs)):
+-                    #expect(String(describing: lhs) == String(describing: rhs))
+-                default: Issue.record("Combined AC lookup differs from reference")
+-                }
+-            } }
++                    writer.flush()
++                    var fast = BitReader(data: writer.data), slow = BitReader(data: writer.data)
++                    _ = try fast.readBits(offset); _ = try slow.readBits(offset)
++                    let expected = Result { try reference(&slow, table, remaining: remaining) }
++                    let actual = Result {
++                        let entry = borrowedLookup
++                            ? fast.fastDecodeAC(lookupBase, remaining: remaining)
++                            : fast.fastDecodeAC(lookup, remaining: remaining)
++                        if let entry {
++                            hits += 1
++                            return (Int((entry >> 16) & 0xFF), Int32(Int16(truncatingIfNeeded: entry)))
++                        }
++                        misses += 1
++                        return try reference(&fast, table, remaining: remaining)
++                    }
++                    switch (expected, actual) {
++                    case (.success(let lhs), .success(let rhs)):
++                        #expect(lhs.0 == rhs.0 && lhs.1 == rhs.1)
++                        #expect(fast.byteOffset == slow.byteOffset)
++                        #expect(try fast.readBits(16) == slow.readBits(16))
++                    case (.failure(let lhs), .failure(let rhs)):
++                        #expect(String(describing: lhs) == String(describing: rhs))
++                    default: Issue.record("Combined AC lookup differs from reference")
++                    }
++                } }
++            }
+             #expect(hits > 0 && misses > 0)
+         }
+     }
+ 
+-    @Test func widerPrefetchPreservesLogicalCursorAndMarkerBoundaries() throws {
++    @Test(arguments: [false, true])
++    func widerPrefetchPreservesLogicalCursorAndMarkerBoundaries(borrowedLookup: Bool) throws {
+         let table = StandardHuffmanTables.acLuminance
+         let lookup = try #require(ACLookahead(table: table, blockCount: 512))
+         let tails: [[UInt8]] = [Array(repeating: 0xAA, count: 24), [], [0xFF],
+             [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+             [0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xFF, 0, 0xFF, 0xD0]]
+-        for available in 8...12 { for (tailIndex, tail) in tails.enumerated() {
+-            var fast = BitReader(data: Array(repeating: 0xAA, count: 8) + tail)
+-            var referenceReader = fast
+-            var consume = 64 - available
+-            while consume > 0 {
+-                let width = min(consume, 16)
+-                #expect(try fast.readBits(width) == referenceReader.readBits(width))
+-                consume -= width
+-            }
+-            let expected = try reference(&referenceReader, table, remaining: 63)
+-            let actual: (Int, Int32)
+-            if let entry = fast.fastDecodeAC(lookup, remaining: 63) {
+-                actual = (Int((entry >> 16) & 0xFF), Int32(Int16(truncatingIfNeeded: entry)))
+-            } else {
+-                actual = try reference(&fast, table, remaining: 63)
+-            }
+-            #expect(actual.0 == expected.0 && actual.1 == expected.1)
+-            if tailIndex == 0 {
+-                // This case proves that the additional FF-free prefetch ran.
+-                #expect(fast.byteOffset > referenceReader.byteOffset)
+-            } else {
+-                // A short or FF-containing next word must not be prefetched.
+-                #expect(fast.byteOffset == referenceReader.byteOffset)
+-            }
+-            var fastAligned = fast, referenceAligned = referenceReader
+-            fastAligned.alignToByte(); referenceAligned.alignToByte()
+-            #expect(fastAligned.byteOffset == referenceAligned.byteOffset)
+-            let nextFast = Result { try fast.readBits(16) }
+-            let nextReference = Result { try referenceReader.readBits(16) }
+-            switch (nextFast, nextReference) {
+-            case (.success(let a), .success(let b)): #expect(a == b)
+-            case (.failure(let a), .failure(let b)):
+-                #expect(String(describing: a) == String(describing: b))
+-            default: Issue.record("AC prefetch changed remaining entropy or its error")
+-            }
+-        } }
++        try lookup.entries.withUnsafeBufferPointer { entries in
++            let lookupBase = try #require(entries.baseAddress)
++            #expect(entries.count == ACLookahead.count)
++            for available in 8...12 { for (tailIndex, tail) in tails.enumerated() {
++                var fast = BitReader(data: Array(repeating: 0xAA, count: 8) + tail)
++                var referenceReader = fast
++                var consume = 64 - available
++                while consume > 0 {
++                    let width = min(consume, 16)
++                    #expect(try fast.readBits(width) == referenceReader.readBits(width))
++                    consume -= width
++                }
++                let expected = try reference(&referenceReader, table, remaining: 63)
++                let actual: (Int, Int32)
++                let entry = borrowedLookup
++                    ? fast.fastDecodeAC(lookupBase, remaining: 63)
++                    : fast.fastDecodeAC(lookup, remaining: 63)
++                if let entry {
++                    actual = (Int((entry >> 16) & 0xFF), Int32(Int16(truncatingIfNeeded: entry)))
++                } else {
++                    actual = try reference(&fast, table, remaining: 63)
++                }
++                #expect(actual.0 == expected.0 && actual.1 == expected.1)
++                if tailIndex == 0 {
++                    // This case proves that the additional FF-free prefetch ran.
++                    #expect(fast.byteOffset > referenceReader.byteOffset)
++                } else {
++                    // A short or FF-containing next word must not be prefetched.
++                    #expect(fast.byteOffset == referenceReader.byteOffset)
++                }
++                var fastAligned = fast, referenceAligned = referenceReader
++                fastAligned.alignToByte(); referenceAligned.alignToByte()
++                #expect(fastAligned.byteOffset == referenceAligned.byteOffset)
++                let nextFast = Result { try fast.readBits(16) }
++                let nextReference = Result { try referenceReader.readBits(16) }
++                switch (nextFast, nextReference) {
++                case (.success(let a), .success(let b)): #expect(a == b)
++                case (.failure(let a), .failure(let b)):
++                    #expect(String(describing: a) == String(describing: b))
++                default: Issue.record("AC prefetch changed remaining entropy or its error")
++                }
++            } }
++        }
+     }
+ }
+diff --git a/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift b/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
+index 7699eb0..e4c3ef8 100644
+--- a/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
++++ b/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift
+@@ -94,14 +94,22 @@ import Testing
+         }
+     }
+ 
+-    @Test func invalidDestinationIsRejectedBeforeWriting() {
+-        var reader = BitReader(data: [])
++    @Test(arguments: [false, true])
++    func invalidDestinationIsRejectedBeforeWriting(combined: Bool) throws {
++        var reader = BitReader(data: Array(repeating: 0xAA, count: 16))
++        let table = StandardHuffmanTables.acLuminance
++        let lookup = try #require(ACLookahead(table: table, blockCount: 512))
+         var output = [Int32](repeating: 919, count: 63)
+         #expect(throws: JLIError.self) {
+             try output.withUnsafeMutableBufferPointer {
+-                try HuffmanDecoder.decodeAC(from: &reader, table: StandardHuffmanTables.acLuminance, into: $0)
++                if combined {
++                    try HuffmanDecoder.decodeAC(from: &reader, table: table, lookup: lookup, into: $0)
++                } else {
++                    try HuffmanDecoder.decodeAC(from: &reader, table: table, into: $0)
++                }
+             }
+         }
+         #expect(output.allSatisfy { $0 == 919 })
++        #expect(reader.byteOffset == 0)
+     }
+ }

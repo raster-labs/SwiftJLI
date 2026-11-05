@@ -1,0 +1,92 @@
+commit 1273d183f2fad8387679ea36a75946076ad6a41d
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 20:47:52 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 20:47:52 2026 +0530
+
+    Make pipeline worker-failure injection independent of NaN clipping
+
+diff --git a/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift b/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
+index d4615c9..045ab2f 100644
+--- a/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
++++ b/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
+@@ -60,7 +60,11 @@ import Testing
+         let dc = try #require(scan.dcTables[selector.dcTableId]), ac = try #require(scan.acTables[selector.acTableId])
+         for failWorker in [false, true] {
+             let polls = Mutex(0)
+-            var output = [UInt8](repeating: 0xA5, count: 513 * 257)
++            // An unsupported internal sample layout fails inside the worker
++            // on every backend. NaN quantisers are not public JPEG inputs, and
++            // scalar/Accelerate clipping intentionally need not agree on NaN.
++            let bytesPerSample = failWorker ? 3 : 1
++            var output = [UInt8](repeating: 0xA5, count: 513 * 257 * bytesPerSample)
+             var reader = BitReader(data: scan.entropyData)
+             let result = Result {
+                 try NativeOperation.withSynchronousCancellation({
+@@ -71,9 +75,10 @@ import Testing
+                         try output.withUnsafeMutableBytes { bytes in
+                             try PipelinedGreyscaleDecoder.decode(reader: &reader, dcTable: dc, acTable: ac,
+                                 lookup: ACLookahead(table: ac, blockCount: plan.blockCount),
+-                                quantTable: [Float](repeating: failWorker ? .nan : 1, count: 64), plan: plan,
++                                quantTable: [Float](repeating: 1, count: 64), plan: plan,
+                                 width: 513, height: 257, precision: 8, restartInterval: parsed.restartInterval,
+-                                floatOutput: false, destination: .init(bytes: bytes, rowBytes: 513, bytesPerSample: 1))
++                                floatOutput: false, destination: .init(bytes: bytes,
++                                    rowBytes: 513 * bytesPerSample, bytesPerSample: bytesPerSample))
+                         }
+                     }
+                 }
+
+commit 93e5a38adaea746ae6edcfd1cbaf12eb9b4fceab
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 20:48:05 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 20:48:05 2026 +0530
+
+    Clarify the observed backend distinction in test commentary
+
+diff --git a/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift b/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
+index 045ab2f..67dbe7c 100644
+--- a/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
++++ b/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
+@@ -62,7 +62,7 @@ import Testing
+             let polls = Mutex(0)
+             // An unsupported internal sample layout fails inside the worker
+             // on every backend. NaN quantisers are not public JPEG inputs, and
+-            // scalar/Accelerate clipping intentionally need not agree on NaN.
++            // scalar and Accelerate clipping can differ for NaN.
+             let bytesPerSample = failWorker ? 3 : 1
+             var output = [UInt8](repeating: 0xA5, count: 513 * 257 * bytesPerSample)
+             var reader = BitReader(data: scan.entropyData)
+
+commit 396ddd100f240f496b7cd7ac1c712545f11b9cf6
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 20:49:06 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 20:49:06 2026 +0530
+
+    Exercise pipeline failure joining on scalar and accelerated backends
+
+diff --git a/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift b/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
+index 67dbe7c..9ca3aa8 100644
+--- a/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
++++ b/Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift
+@@ -52,7 +52,8 @@ import Testing
+         }
+     }
+ 
+-    @Test func producerCancellationAndWorkerFailureJoinBeforeReturning() throws {
++    @Test(arguments: [Backend.scalarCPU, .accelerated])
++    func producerCancellationAndWorkerFailureJoinBeforeReturning(backend: Backend) throws {
+         let parsed = try fixture(width: 513, precision: 8), scan = parsed.scans[0]
+         let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: .default,
+             hasDestination: true, normaliseXYBOutput: false, workerLimit: 2, backend: .accelerated))
+@@ -71,7 +72,7 @@ import Testing
+                     let n = polls.withLock { $0 += 1; return $0 }
+                     if !failWorker && n >= 5 { throw CancellationError() }
+                 }) {
+-                    try NativeOperation.$current.withValue(.init(seconds: 120, backend: .accelerated, maximumWorkers: 2)) {
++                    try NativeOperation.$current.withValue(.init(seconds: 120, backend: backend, maximumWorkers: 2)) {
+                         try output.withUnsafeMutableBytes { bytes in
+                             try PipelinedGreyscaleDecoder.decode(reader: &reader, dcTable: dc, acTable: ac,
+                                 lookup: ACLookahead(table: ac, blockCount: plan.blockCount),

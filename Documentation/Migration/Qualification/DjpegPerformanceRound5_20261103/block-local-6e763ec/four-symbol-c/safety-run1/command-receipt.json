@@ -1,0 +1,47 @@
+{
+  "target": "row",
+  "sourceRevision": "f104160bb87da441083a43e095c49a5c25596c15",
+  "sourceManifestSHA256": "4109869932ac5f9b75ac51b0566330cd1185415c05cd3bba171e0ebb638c5c9d",
+  "compileCommand": [
+    "xcrun",
+    "clang",
+    "-O2",
+    "-g",
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fsanitize=address,undefined",
+    "-fno-sanitize-recover=all",
+    "-I",
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-source/row/include",
+    "-I",
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-source",
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-source/row_safety.c",
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-source/row/ACBlock.c",
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-source/row/LosslessRow.c",
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-source/row/LosslessCodeZeroRow.c",
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-source/row/LosslessCodeZeroRowReference.c",
+    "-o",
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-run1/safety-harness"
+  ],
+  "cwd": "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-source",
+  "environmentOverrides": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+    "ASAN_OPTIONS": "halt_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+  },
+  "startedUTC": "2026-11-03T18:56:57.295588+00:00",
+  "scope": "bounded standalone memory/undefined-behaviour diagnostic; not performance acceptance",
+  "compilerVersionExitCode": 0,
+  "compileExitCode": 0,
+  "binarySHA256": "7c1caa722aa1618970ec014fbfce54f366c987e148f6cb3aeb672f68da47e3a8",
+  "runCommand": [
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/safety-run1/safety-harness"
+  ],
+  "runExitCode": 0,
+  "runElapsedSeconds": 2.807477791007841,
+  "counterValidation": "passed",
+  "inputsUnchanged": true,
+  "finishedUTC": "2026-11-03T18:57:00.819511+00:00"
+}

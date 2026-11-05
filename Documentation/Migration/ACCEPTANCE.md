@@ -1,6 +1,148 @@
 # Migration acceptance ledger — 15 October 2026
 
 **Codec and CLI implementation complete for Milestone 4 software scope; stable-release acceptance remains open.**
+
+**4 November 2026 block-local decoding follow-up:** tested source
+`6e763ec2099e162bae52a40109ff74269ea9899f`, against parser source `ca0c1e8`,
+qualifies the composition of exact ARM64 FMA reconstruction, 256-block windows,
+serial C entropy, four-symbol C lossless rows, local small-image predictor history
+and compact DC zero-pair decoding. The pipeline payload falls from 768 to 128 KiB;
+serial block-local reconstruction uses at most 64 KiB. Other architecture/scalar
+GEMM paths and all fidelity, ownership and resource ceilings are retained.
+Parent `bbc9ebe` failed TSan on shared empty-array writes; explicit empty scratch
+arrays repair that race without suppression. Full Release passes 496 tests in
+85 suites, each focused sanitiser passes 133 tests in 25 suites, and CLI passes
+252 checks. All 68 native paired outputs are exact; no case slows over 5% in both
+rounds. Independent large oracles pass 24 exact lossless outputs and 16 DCT
+comparisons with maximum difference 1 within unchanged limits 2/4.
+The [qualified checkpoint](Qualification/DjpegPerformanceRound5_20261103/block-local-6e763ec/README.md)
+records all failures and commands, exact source/fixture pins, 11/12 allocated-output
+latency wins, five lossless RSS wins and seven remaining DCT RSS losses against
+libjpeg-turbo. All eight large lossless patterns beat both djpeg versions; small
+CLI cases and all CLI RSS comparisons still favour djpeg. Timings are provisional
+under owner-authorised host contention. [New-source remote CI](Qualification/DjpegPerformanceRound5_20261103/ci-2195d15/README.md)
+passed four Linux jobs, consumer and contract checks, but Intel Release aborted
+in a task-local scope; six other Apple jobs did not execute. A test-only synchronous
+helper correction preserves all 16 cases and passes focused ARM64 Release; native
+Intel correction verification is pending. The competitive goal
+and stable-release prerequisites remain open.
+Subsequent selected-Huffman and bounded-C-run experiments are separate and are
+not included in this checkpoint. Earlier entries below retain their source pins.
+
+**4 November 2026 parser admission follow-up:** tested source
+`ca0c1e874177f429ed199f3ed8ef6ac1315ee66a`, integrated as `0dc6730` with
+byte-identical Sources, Tests and Package.swift, replaces the blanket compressed
+byte multiplier with checked table/scan/component/metadata reservations.
+Bootstrap admission precedes possible input copies; expanded admission precedes
+parsing, and final image admission still precedes provider borrowing. Every
+resource ceiling, sample policy and lifetime boundary remains unchanged.
+Full Release passes 468 tests in 79 suites; focused ASan and TSan each pass
+71 tests in 11 suites; CLI Release passes 252 checks. Native DCT/lossless
+comparisons retain exact output and have no repeated regression over 5%.
+Noise2048, noise3072 and mixed3072 now decode at default limits and match every
+original sample. All three beat both djpeg 3.2.0 and 3.2.1 in both provisional
+rounds, while process RSS still favours djpeg. The
+[separate report](Qualification/DjpegPerformanceRound5_20261103/parser-ca0c1e8/README.md)
+retains the initial harness-only extension mismatch, all raw measurements and
+source pins. These new cases are not pooled with earlier-source CLI wins.
+Current-source remote CI and remaining competitive gaps are open; the FMA
+workspace and serial-C trials remain unselected after retained regressions.
+
+**3 November 2026 C entropy follow-up:** source
+`5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd` adds original bounded C kernels
+for eligible DCT pipelines and automatic large UInt16 left-predictor lossless
+rows. Explicit scalar execution retains Swift. Public API, sample fidelity,
+resource ceilings, synchronous pointer borrows and joined-worker ownership are
+unchanged. Full local Release passes 458 tests in 78 suites; focused ASan and
+TSan each pass 80 tests in 15 suites, with all three C units instrumented.
+The standalone composed-row ASan/UBSan diagnostic passes 1,536,287 cases.
+CLI Release passes 252 checks; large independent lossless oracles pass 24 exact
+output comparisons, and 16 large DCT direction comparisons have maximum sample
+difference 1 within the unchanged 2/4 tolerances.
+[The source-pinned report](Qualification/DjpegPerformanceRound5_20261103/c-5f9e1cf/README.md)
+retains all commands, failed earlier experiments, provisional API/CLI timings,
+RSS and exclusions. Dense DCT and large ramp/noise decoding improve; small CLI,
+noisy/single-worker DCT and process-memory gaps keep the goal open. Current-source
+remote CI and additional platform gates remain pending. Smaller SIMD workspaces
+and serial C entropy trials remain unaccepted and are not included in this source.
+
+**3 November 2026 fifth performance follow-up:** source
+`14f35018d241666358480da2a8527d29ab047627` adds compact DC-only storage,
+canonical grouped reconstruction, and a joined entropy/reconstruction pipeline.
+The pipeline uses 768 KiB for its two coefficient/output slots and reconstruction
+scratch; the compact path uses 8 KiB. Provider storage remains on the caller
+thread, including the corrected RGB tile path. Large lossless ramp regressions
+are addressed without changing samples, fidelity tolerances or resource ceilings.
+Full pipeline Release passes 436 tests in 73 suites; focused ASan and TSan each
+pass 26 tests in five suites. Separate checkpoint receipts retain full 434-test
+ASan, 252 CLI checks per mode, exact lossless interoperability and DCT oracles.
+See [DjpegPerformanceRound5_20261103](Qualification/DjpegPerformanceRound5_20261103/README.md)
+for exact source and binary pins, comparisons, errors and excluded cases.
+The Swift 6.3 task-local crash has a reproduced cause and nominal-carrier fix;
+native Intel follow-up CI passes at its recorded source, while hosted Apple ARM
+capacity has prevented complete final-platform qualification. The timing results
+remain provisional. Dense small DCT, small CLI latency and process-memory gaps
+against djpeg keep the competitive goal open. Historical entries below describe
+their own source pins and are not the current qualification status.
+
+**3 November 2026 fourth performance follow-up:** source
+`0a8acd72ddeac6fb1911457ae28b689eef0e9db1` bounds DCT scratch, streams eligible
+greyscale DCT coefficients and shares immutable compressed input. Single-decode
+RSS falls 38.6% for 2048² greyscale DCT at the default worker ceiling, 78.7%
+with one worker and about 23% for 2048² RGB/progressive DCT. Samples remain
+identical to the previous revision. Final Release passes 403 tests; exact
+earlier/full and final/focused sanitiser, CLI and oracle pins are in
+[DjpegPerformanceRound4_20261103](Qualification/DjpegPerformanceRound4_20261103/README.md).
+All final timings are owner-authorised provisional measurements under sustained
+host contention. Small CLI latency and process memory still favour djpeg;
+two tiny native lossless regressions are disclosed. Resource ceilings remain
+unchanged, with lower admission reservations only where the streaming plan
+actually uses bounded buffers. The optimisation goal stays open. Baseline
+Swift 6.3.3 macOS Release CI signal-11 failures remain unresolved; local
+Swift 6.4.2 passes do not establish a fix or final-source platform qualification.
+
+**3 November 2026 third performance follow-up:** source
+`5351088d3bb4630a32de6509e4d62210ad14aaa0` reduces lossless dispatch, batches
+canonical zero differences, borrows greyscale DCT coefficient planes once per
+scan, reuses validated entropy extents and reads regular files directly into
+bounded owning buffers. All five eligible large lossless cases beat both pinned
+djpeg 3.2.0 and 3.2.1 by more than 5% in both rounds, including the original
+mixed2048 case (12.2% / 12.5% lower latency). Small CLI cases, DCT12 CLI latency
+and process memory still favour djpeg; the overall optimisation goal remains
+open. Final validation passes 388 release/ASan tests, 250 release/ASan CLI
+checks, 45 focused TSan tests, 210 lossless oracle cases per direction, 48 DCT
+profiles in both directions and 36 additional independent large zero-category
+fixtures. Decoded bytes match the preceding Swift revision; fidelity and
+resource limits remain unchanged. The raw unstable flat8 DCT timing round and
+its four-round follow-up remain separate in
+[DjpegPerformanceRound3_20261103](Qualification/DjpegPerformanceRound3_20261103/README.md).
+These are local macOS results; existing platform and stable-release gates remain open.
+
+**2 November 2026 second performance follow-up:** production source
+`b31999bd4246507fc9c7f18cd770b411faea501d`, with additional regression tests at
+`7fe1c7394c3238441b2ef0f068698e766914cebe`, adds scoped DCT coefficient decoding,
+bounded entropy lookups and synchronous CLI host adapters. Final evidence records
+378 release/ASan tests, 242 release/ASan CLI checks, 35 focused TSan tests,
+210 lossless oracle cases per direction and 48 DCT oracle profiles in both
+directions. The release binary and library object are identical before and after
+the test-only follow-up. Four large lossless cases beat djpeg 3.2.1 by more than
+5% in both rounds; only the two ramp cases meet that criterion against the exact
+3.2.0 comparator from the earlier report. The original mixed case, small CLI
+inputs and memory use still favour djpeg; two tiny native cases regress by less
+than one microsecond. Full results, exclusions and source/compiler pins are in
+[DjpegPerformanceRound2_20261102](Qualification/DjpegPerformanceRound2_20261102/README.md).
+These local measurements do not establish a universal speed win or close the
+existing platform/stable-release gates.
+
+**2 November 2026 performance follow-up:** source `d1cd30ace21e9317402b54918b3fef55d880c4d5`
+reduces greyscale lossless predictor storage and streams bounded Netpbm output.
+Matched Swift 6.4.2 builds, exact-sample comparisons, 364 release/ASan tests,
+237 release/ASan CLI checks, 22 focused TSan tests and independent lossless
+interoperability are recorded in [DjpegPerformance20261102](Qualification/DjpegPerformance20261102/README.md).
+Two large ramp cases beat djpeg in both rounds; other latency and memory gaps
+remain. These are advisory measurements on one working host, not a universal
+speed claim or a replacement for the existing release/platform gates below.
+
 [PR #19](https://github.com/raster-labs/SwiftJLI/pull/19) merged on 9 October 2026
 as `a967d27bc5756fab8b7fe9db6eb302ff0645c362`. Its tested source revision is
 `a1920c7f0ea0ec11009d3d312d680592ac9700e6`; source, tests, package, scripts and

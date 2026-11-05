@@ -1,0 +1,763 @@
+{
+  "dct12-2048-w8.sample": [
+    {
+      "thread": "Thread_5457139   DispatchQueue_1: com.apple.main-thread  (serial)",
+      "samples": 2426,
+      "categories": {
+        "other": 0,
+        "waiting": 2426
+      },
+      "topOwnFrames": [
+        [
+          "mach_msg2_trap",
+          2426
+        ],
+        [
+          "Thread_5457139   DispatchQueue_1: com.apple.main-thread  (serial)",
+          0
+        ],
+        [
+          "start",
+          0
+        ],
+        [
+          "main",
+          0
+        ],
+        [
+          "swift_task_asyncMainDrainQueue",
+          0
+        ],
+        [
+          "swift_task_asyncMainDrainQueueImpl",
+          0
+        ],
+        [
+          "protocol witness for RunLoopExecutor.run() in conformance DispatchMainExecutor",
+          0
+        ],
+        [
+          "CFMainExecutor.run()",
+          0
+        ],
+        [
+          "CFRunLoopRun",
+          0
+        ],
+        [
+          "_CFRunLoopRunSpecificWithOptions",
+          0
+        ],
+        [
+          "__CFRunLoopRun",
+          0
+        ],
+        [
+          "__CFRunLoopServiceMachPort",
+          0
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5457140   DispatchQueue_15: com.apple.root.default-qos.cooperative  (concurrent)",
+      "samples": 2426,
+      "categories": {
+        "other": 10,
+        "pipeline other / inlined code": 179,
+        "AC entropy": 2078,
+        "pipeline memcpy / memmove": 106,
+        "waiting": 12,
+        "parse / validation": 41
+      },
+      "topOwnFrames": [
+        [
+          "specialized static HuffmanDecoder.decodeAC(from:table:lookup:into:)",
+          1791
+        ],
+        [
+          "BitReader.readBits(_:)",
+          143
+        ],
+        [
+          "closure #1 in closure #3 in static PipelinedGreyscaleDecoder.decode(reader:dcTable:acTable:lookup:quantTable:plan:width:height:precision:restartInterval:floatOutput:destination:)",
+          127
+        ],
+        [
+          "specialized static HuffmanDecoder.decodeSymbolBitByBit(from:table:)",
+          127
+        ],
+        [
+          "_platform_memmove",
+          89
+        ],
+        [
+          "BitReader.fillBuffer(upTo:)",
+          31
+        ],
+        [
+          "_platform_memchr",
+          22
+        ],
+        [
+          "DYLD-STUB$$memcpy",
+          17
+        ],
+        [
+          "specialized static HuffmanDecoder.decodeValue(from:category:)",
+          12
+        ],
+        [
+          "semaphore_timedwait_trap",
+          12
+        ],
+        [
+          "mach_continuous_time",
+          6
+        ],
+        [
+          "BitReader.loadByte()",
+          5
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5457141   DispatchQueue_16: com.apple.root.user-initiated-qos  (concurrent)",
+      "samples": 2376,
+      "categories": {
+        "other": 0,
+        "pipeline other / inlined code": 4,
+        "waiting": 1308,
+        "reconstruction other": 71,
+        "compact": 546,
+        "pack dequant": 211,
+        "IDCT with caller stack": 67,
+        "BLAS with incomplete caller stack": 169
+      },
+      "topOwnFrames": [
+        [
+          "semaphore_wait_trap",
+          1308
+        ],
+        [
+          "specialized static ParallelSequentialGreyscaleDecoder.compactPixelsInPlace(_:precision:bytesPerSample:floatOutput:)",
+          531
+        ],
+        [
+          "specialized static AccelerateDSP.packDequantizedDCTBatch(zigzag:quantTable:scratch:blockCount:)",
+          211
+        ],
+        [
+          "???",
+          187
+        ],
+        [
+          "specialized static AccelerateDSP.inverseDCTBatchPacked(output:scratch:blockCount:)",
+          58
+        ],
+        [
+          "vDSP_vclip",
+          39
+        ],
+        [
+          "__sysctl",
+          11
+        ],
+        [
+          "mach_continuous_time",
+          8
+        ],
+        [
+          "__swift_instantiateConcreteTypeFromMangledNameV2",
+          3
+        ],
+        [
+          "_swift_pod_copy",
+          2
+        ],
+        [
+          "static ParallelSequentialGreyscaleDecoder.reconstructWindow(_:quantTable:scratch:zeroACGroups:precision:bytesPerSample:floatOutput:)",
+          1
+        ],
+        [
+          "initializeWithCopy for NativeOperation",
+          1
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5457141",
+      "samples": 50,
+      "categories": {
+        "other": 0,
+        "waiting": 50
+      },
+      "topOwnFrames": [
+        [
+          "__workq_kernreturn",
+          50
+        ],
+        [
+          "Thread_5457141",
+          0
+        ],
+        [
+          "start_wqthread",
+          0
+        ],
+        [
+          "_pthread_wqthread",
+          0
+        ]
+      ]
+    }
+  ],
+  "dct12-512-w1.sample": [
+    {
+      "thread": "Thread_5456441   DispatchQueue_1: com.apple.main-thread  (serial)",
+      "samples": 2915,
+      "categories": {
+        "other": 0,
+        "waiting": 2915
+      },
+      "topOwnFrames": [
+        [
+          "mach_msg2_trap",
+          2915
+        ],
+        [
+          "Thread_5456441   DispatchQueue_1: com.apple.main-thread  (serial)",
+          0
+        ],
+        [
+          "start",
+          0
+        ],
+        [
+          "main",
+          0
+        ],
+        [
+          "swift_task_asyncMainDrainQueue",
+          0
+        ],
+        [
+          "swift_task_asyncMainDrainQueueImpl",
+          0
+        ],
+        [
+          "protocol witness for RunLoopExecutor.run() in conformance DispatchMainExecutor",
+          0
+        ],
+        [
+          "CFMainExecutor.run()",
+          0
+        ],
+        [
+          "CFRunLoopRun",
+          0
+        ],
+        [
+          "_CFRunLoopRunSpecificWithOptions",
+          0
+        ],
+        [
+          "__CFRunLoopRun",
+          0
+        ],
+        [
+          "__CFRunLoopServiceMachPort",
+          0
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5456442   DispatchQueue_15: com.apple.root.default-qos.cooperative  (concurrent)",
+      "samples": 2915,
+      "categories": {
+        "other": 150,
+        "AC entropy": 1762,
+        "other entropy": 4,
+        "serial output conversion": 565,
+        "pack dequant": 185,
+        "IDCT with caller stack": 60,
+        "parse / validation": 50,
+        "BLAS with incomplete caller stack": 139
+      },
+      "topOwnFrames": [
+        [
+          "specialized static HuffmanDecoder.decodeAC(from:table:lookup:into:)",
+          1491
+        ],
+        [
+          "specialized static JLIDecoder.writeReconstructedGreyscaleBatch(pixels:firstBlock:blockCount:blocksPerRow:width:height:precision:floatOutput:destination:)",
+          509
+        ],
+        [
+          "specialized static AccelerateDSP.packDequantizedDCTBatch(zigzag:quantTable:scratch:blockCount:)",
+          185
+        ],
+        [
+          "???",
+          154
+        ],
+        [
+          "BitReader.readBits(_:)",
+          136
+        ],
+        [
+          "specialized static HuffmanDecoder.decodeSymbolBitByBit(from:table:)",
+          134
+        ],
+        [
+          "specialized static AccelerateDSP.inverseDCTBatchPacked(output:scratch:blockCount:)",
+          50
+        ],
+        [
+          "vDSP_vclip",
+          31
+        ],
+        [
+          "_platform_memchr",
+          25
+        ],
+        [
+          "BitReader.fillBuffer(upTo:)",
+          23
+        ],
+        [
+          "specialized static JLIDecoder.decodeSequentialGreyscaleInto(reader:dcTable:acTable:lookup:quantTable:plan:width:height:precision:restartInterval:floatOutput:destination:)",
+          21
+        ],
+        [
+          "specialized ACLookahead.init(table:blockCount:)",
+          18
+        ]
+      ]
+    }
+  ],
+  "dct12-512-w8.sample": [
+    {
+      "thread": "Thread_5456273   DispatchQueue_1: com.apple.main-thread  (serial)",
+      "samples": 2354,
+      "categories": {
+        "other": 0,
+        "waiting": 2354
+      },
+      "topOwnFrames": [
+        [
+          "mach_msg2_trap",
+          2354
+        ],
+        [
+          "Thread_5456273   DispatchQueue_1: com.apple.main-thread  (serial)",
+          0
+        ],
+        [
+          "start",
+          0
+        ],
+        [
+          "main",
+          0
+        ],
+        [
+          "swift_task_asyncMainDrainQueue",
+          0
+        ],
+        [
+          "swift_task_asyncMainDrainQueueImpl",
+          0
+        ],
+        [
+          "protocol witness for RunLoopExecutor.run() in conformance DispatchMainExecutor",
+          0
+        ],
+        [
+          "CFMainExecutor.run()",
+          0
+        ],
+        [
+          "CFRunLoopRun",
+          0
+        ],
+        [
+          "_CFRunLoopRunSpecificWithOptions",
+          0
+        ],
+        [
+          "__CFRunLoopRun",
+          0
+        ],
+        [
+          "__CFRunLoopServiceMachPort",
+          0
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5456284   DispatchQueue_15: com.apple.root.default-qos.cooperative  (concurrent)",
+      "samples": 2354,
+      "categories": {
+        "other": 64,
+        "pipeline other / inlined code": 187,
+        "AC entropy": 1715,
+        "other entropy": 5,
+        "waiting": 226,
+        "pipeline memcpy / memmove": 91,
+        "parse / validation": 66
+      },
+      "topOwnFrames": [
+        [
+          "specialized static HuffmanDecoder.decodeAC(from:table:lookup:into:)",
+          1485
+        ],
+        [
+          "semaphore_timedwait_trap",
+          221
+        ],
+        [
+          "specialized static HuffmanDecoder.decodeSymbolBitByBit(from:table:)",
+          130
+        ],
+        [
+          "closure #1 in closure #3 in static PipelinedGreyscaleDecoder.decode(reader:dcTable:acTable:lookup:quantTable:plan:width:height:precision:restartInterval:floatOutput:destination:)",
+          119
+        ],
+        [
+          "BitReader.readBits(_:)",
+          94
+        ],
+        [
+          "_platform_memmove",
+          78
+        ],
+        [
+          "_platform_memchr",
+          29
+        ],
+        [
+          "BitReader.fillBuffer(upTo:)",
+          22
+        ],
+        [
+          "DYLD-STUB$$memcpy",
+          13
+        ],
+        [
+          "semaphore_signal_trap",
+          13
+        ],
+        [
+          "specialized ACLookahead.init(table:blockCount:)",
+          13
+        ],
+        [
+          "specialized static HuffmanDecoder.decodeValue(from:category:)",
+          10
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5456285   DispatchQueue_16: com.apple.root.user-initiated-qos  (concurrent)",
+      "samples": 2154,
+      "categories": {
+        "other": 7,
+        "pipeline other / inlined code": 12,
+        "waiting": 1164,
+        "reconstruction other": 74,
+        "compact": 443,
+        "pack dequant": 197,
+        "IDCT with caller stack": 66,
+        "BLAS with incomplete caller stack": 191
+      },
+      "topOwnFrames": [
+        [
+          "semaphore_wait_trap",
+          1162
+        ],
+        [
+          "specialized static ParallelSequentialGreyscaleDecoder.compactPixelsInPlace(_:precision:bytesPerSample:floatOutput:)",
+          427
+        ],
+        [
+          "???",
+          208
+        ],
+        [
+          "specialized static AccelerateDSP.packDequantizedDCTBatch(zigzag:quantTable:scratch:blockCount:)",
+          197
+        ],
+        [
+          "specialized static AccelerateDSP.inverseDCTBatchPacked(output:scratch:blockCount:)",
+          56
+        ],
+        [
+          "vDSP_vclip",
+          40
+        ],
+        [
+          "__sysctl",
+          13
+        ],
+        [
+          "mach_continuous_time",
+          11
+        ],
+        [
+          "_object_remove_associations",
+          6
+        ],
+        [
+          "_xzm_free_main",
+          3
+        ],
+        [
+          "semaphore_signal_trap",
+          3
+        ],
+        [
+          "mach_msg2_trap",
+          2
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5456285",
+      "samples": 200,
+      "categories": {
+        "other": 10,
+        "waiting": 190
+      },
+      "topOwnFrames": [
+        [
+          "__workq_kernreturn",
+          190
+        ],
+        [
+          "start_wqthread",
+          10
+        ],
+        [
+          "Thread_5456285",
+          0
+        ],
+        [
+          "_pthread_wqthread",
+          0
+        ]
+      ]
+    }
+  ],
+  "noise12-512-w8.sample": [
+    {
+      "thread": "Thread_5456709   DispatchQueue_1: com.apple.main-thread  (serial)",
+      "samples": 2311,
+      "categories": {
+        "other": 0,
+        "waiting": 2311
+      },
+      "topOwnFrames": [
+        [
+          "mach_msg2_trap",
+          2311
+        ],
+        [
+          "Thread_5456709   DispatchQueue_1: com.apple.main-thread  (serial)",
+          0
+        ],
+        [
+          "start",
+          0
+        ],
+        [
+          "main",
+          0
+        ],
+        [
+          "swift_task_asyncMainDrainQueue",
+          0
+        ],
+        [
+          "swift_task_asyncMainDrainQueueImpl",
+          0
+        ],
+        [
+          "protocol witness for RunLoopExecutor.run() in conformance DispatchMainExecutor",
+          0
+        ],
+        [
+          "CFMainExecutor.run()",
+          0
+        ],
+        [
+          "CFRunLoopRun",
+          0
+        ],
+        [
+          "_CFRunLoopRunSpecificWithOptions",
+          0
+        ],
+        [
+          "__CFRunLoopRun",
+          0
+        ],
+        [
+          "__CFRunLoopServiceMachPort",
+          0
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5456710   DispatchQueue_15: com.apple.root.default-qos.cooperative  (concurrent)",
+      "samples": 2311,
+      "categories": {
+        "other": 52,
+        "pipeline other / inlined code": 192,
+        "AC entropy": 1740,
+        "waiting": 175,
+        "pipeline memcpy / memmove": 89,
+        "parse / validation": 63
+      },
+      "topOwnFrames": [
+        [
+          "specialized static HuffmanDecoder.decodeAC(from:table:lookup:into:)",
+          1564
+        ],
+        [
+          "semaphore_timedwait_trap",
+          169
+        ],
+        [
+          "BitReader.readBits(_:)",
+          92
+        ],
+        [
+          "closure #1 in closure #3 in static PipelinedGreyscaleDecoder.decode(reader:dcTable:acTable:lookup:quantTable:plan:width:height:precision:restartInterval:floatOutput:destination:)",
+          87
+        ],
+        [
+          "_platform_memmove",
+          70
+        ],
+        [
+          "specialized static HuffmanDecoder.decodeSymbolBitByBit(from:table:)",
+          62
+        ],
+        [
+          "_platform_memchr",
+          41
+        ],
+        [
+          "BitReader.fillBuffer(upTo:)",
+          40
+        ],
+        [
+          "specialized static HuffmanDecoder.decodeValue(from:category:)",
+          31
+        ],
+        [
+          "DYLD-STUB$$memcpy",
+          19
+        ],
+        [
+          "specialized ACLookahead.init(table:blockCount:)",
+          15
+        ],
+        [
+          "mach_continuous_time",
+          9
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5456711   DispatchQueue_16: com.apple.root.user-initiated-qos  (concurrent)",
+      "samples": 2136,
+      "categories": {
+        "other": 7,
+        "pipeline other / inlined code": 13,
+        "waiting": 1338,
+        "reconstruction other": 50,
+        "compact": 407,
+        "pack dequant": 139,
+        "IDCT with caller stack": 52,
+        "BLAS with incomplete caller stack": 130
+      },
+      "topOwnFrames": [
+        [
+          "semaphore_wait_trap",
+          1334
+        ],
+        [
+          "specialized static ParallelSequentialGreyscaleDecoder.compactPixelsInPlace(_:precision:bytesPerSample:floatOutput:)",
+          399
+        ],
+        [
+          "???",
+          142
+        ],
+        [
+          "specialized static AccelerateDSP.packDequantizedDCTBatch(zigzag:quantTable:scratch:blockCount:)",
+          139
+        ],
+        [
+          "specialized static AccelerateDSP.inverseDCTBatchPacked(output:scratch:blockCount:)",
+          46
+        ],
+        [
+          "vDSP_vclip",
+          18
+        ],
+        [
+          "__sysctl",
+          16
+        ],
+        [
+          "_object_remove_associations",
+          5
+        ],
+        [
+          "mach_msg2_trap",
+          4
+        ],
+        [
+          "_xzm_free_main",
+          3
+        ],
+        [
+          "swift_task_getCurrent",
+          2
+        ],
+        [
+          "swift::storeEnumTagSinglePayloadImpl(swift::OpaqueValue*, unsigned int, unsigned int, swift::TargetMetadata<swift::InProcess> const*, unsigned long, unsigned int, void (swift::OpaqueValue*, unsigned int, unsigned int, swift::TargetMetadata<swift::InProcess> const*) swiftcall*)",
+          2
+        ]
+      ]
+    },
+    {
+      "thread": "Thread_5456711",
+      "samples": 175,
+      "categories": {
+        "other": 3,
+        "waiting": 172
+      },
+      "topOwnFrames": [
+        [
+          "__workq_kernreturn",
+          172
+        ],
+        [
+          "start_wqthread",
+          3
+        ],
+        [
+          "Thread_5456711",
+          0
+        ],
+        [
+          "_pthread_wqthread",
+          0
+        ]
+      ]
+    }
+  ]
+}

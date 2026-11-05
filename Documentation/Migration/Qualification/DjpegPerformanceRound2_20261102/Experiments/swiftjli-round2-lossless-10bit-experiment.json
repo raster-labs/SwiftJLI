@@ -1,0 +1,111 @@
+{
+  "status": "rejected",
+  "baselineRevision": "b31999bd4246507fc9c7f18cd770b411faea501d",
+  "branch": "codex/djpeg-lossless-10bit-experiment",
+  "worktree": "/private/tmp/swiftjli-round2-lossless-10bit",
+  "hypothesis": "A10-bit table reduces lookup storage32KiB\u21924KiB and minimum available-bit threshold13\u219210 without changing sample arithmetic. Keep16384 sample minimum and identical coverage/category/noinline dispatch.",
+  "acceptanceGate": "More than5% mixed speedup and no repeated scalar regression.",
+  "decision": "Do not adopt: mixed native speedup only2\u20132.5%; CLI still slower than djpeg inboth rounds; tiny flat native case regressed~0.8us inboth rounds. Live accepted source remains unchanged.",
+  "testLog": "/private/tmp/swiftjli-round2-lossless-10bit-tests.log",
+  "testCommand": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift test --configuration release --scratch-path /private/tmp/swiftjli-round2-lossless-10bit-build --filter 'LosslessLookaheadTests|LosslessDifferenceTests|LosslessRowStorageTests|LosslessTests|LosslessRestartTests|NearLosslessAPITests'",
+  "tests": "exit0,29tests/6suites;40960 complete prefix/offset/table combinations and112large scan configurations; invalidcategory255 retained",
+  "nativeResult": "/private/tmp/swiftjli-round2-lossless-10bit-matrix-results.json",
+  "nativeSHA256": "ac31c5c3f61fa64f460466eecbae4c4e45ec0710d522122f46383b6224650d08",
+  "nativeSummary": {
+    "flat-19": {
+      "baselineMS": 0.00850025,
+      "candidateMS": 0.009250000000000001,
+      "percentChange": 8.820328813858413
+    },
+    "flat-512": {
+      "baselineMS": 0.52680225,
+      "candidateMS": 0.5298017500000001,
+      "percentChange": 0.5693787374674297
+    },
+    "flat-2048": {
+      "baselineMS": 7.85919775,
+      "candidateMS": 7.856323,
+      "percentChange": -0.03657816091979793
+    },
+    "flat-3072": {
+      "baselineMS": 17.485291750000002,
+      "candidateMS": 17.514395750000002,
+      "percentChange": 0.16644846660909263
+    },
+    "ramp-19": {
+      "baselineMS": 0.00833325,
+      "candidateMS": 0.00811475,
+      "percentChange": -2.622026220262197
+    },
+    "ramp-512": {
+      "baselineMS": 0.70064575,
+      "candidateMS": 0.743021,
+      "percentChange": 6.04802783717735
+    },
+    "ramp-2048": {
+      "baselineMS": 10.8663125,
+      "candidateMS": 10.902176750000002,
+      "percentChange": 0.3300498674228436
+    },
+    "ramp-3072": {
+      "baselineMS": 22.95470875,
+      "candidateMS": 22.96474,
+      "percentChange": 0.04370018417243493
+    },
+    "noise-19": {
+      "baselineMS": 0.00830175,
+      "candidateMS": 0.008604500000000001,
+      "percentChange": 3.646821453308058
+    },
+    "noise-512": {
+      "baselineMS": 2.36131225,
+      "candidateMS": 2.3421665000000003,
+      "percentChange": -0.8108097520774682
+    },
+    "noise-2048": {
+      "baselineMS": 37.34544775,
+      "candidateMS": 37.710104,
+      "percentChange": 0.9764409639458682
+    },
+    "noise-3072": {
+      "baselineMS": 83.850146,
+      "candidateMS": 84.9993125,
+      "percentChange": 1.3705002970418212
+    },
+    "mixed-19": {
+      "baselineMS": 0.00790625,
+      "candidateMS": 0.0080835,
+      "percentChange": 2.241897233201584
+    },
+    "mixed-512": {
+      "baselineMS": 1.08210425,
+      "candidateMS": 1.05562475,
+      "percentChange": -2.4470377969590285
+    },
+    "mixed-2048": {
+      "baselineMS": 16.56839575,
+      "candidateMS": 16.23828125,
+      "percentChange": -1.9924349042664602
+    },
+    "mixed-3072": {
+      "baselineMS": 36.96236475,
+      "candidateMS": 36.03686450000001,
+      "percentChange": -2.5038989151796365
+    }
+  },
+  "cliResult": "/private/tmp/swiftjli-round2-lossless-10bit-cli.json",
+  "cliSHA256": "3efc05d0fda1e16346d409d080072d0e96452c9605af48d045ce361fd68b70df",
+  "cliMeanOfRoundMediansMS": {
+    "baseline": 27.11516675,
+    "candidate": 26.818958000000002,
+    "djpeg": 26.388520999999997
+  },
+  "cliPercentChangeVsB319": -1.0924098410716843,
+  "cliPercentSlowerThanDjpeg": 1.6311524241923392,
+  "correctness": "All16nativecases pixel-exact; CLI sample differences0 against b319 and djpeg inboth rounds.",
+  "sourceBefore": "/private/tmp/swiftjli-round2-lossless-10bit-source-before.json",
+  "sourceAfter": "/private/tmp/swiftjli-round2-lossless-10bit-source-after.json",
+  "nativeRunner": "/private/tmp/swiftjli-run-round2-lossless-10bit-matrix.py",
+  "cliRunner": "/private/tmp/swiftjli-run-round2-lossless-10bit-cli.py",
+  "sourceDiff": "diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift\nindex e0bf380..5c7c8a9 100644\n--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift\n+++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift\n@@ -691,7 +691,7 @@ struct JLIDecoder: Sendable {\n             }\n             // The bounded table is only useful for sufficiently large scans\n             // with varied short categories. Choose the kernel once per scan.\n-            // Its <=32 KiB plus row history fits the existing 8-byte/sample\n+            // Its <=4 KiB plus row history fits the existing 8-byte/sample\n             // reservation at the table's >=16384-sample construction threshold.\n             if let lookup = LosslessLookahead(table: tables[0], sampleCount: count) {\n                 try Self.losslessGrayLookupInto(\ndiff --git a/Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift b/Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift\nindex c4ef5f3..5e286d0 100644\n--- a/Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift\n+++ b/Sources/SwiftJLI/Native/Entropy/LosslessLookahead.swift\n@@ -3,14 +3,14 @@\n /// One bounded scan-local table resolves a short Huffman code and its signed\n /// difference together. Zero entries use the ordinary checked decoder.\n struct LosslessLookahead {\n-    static let bits = 13\n+    static let bits = 10\n     static let count = 1 << bits\n     let entries: [UInt32]\n \n     init?(table: HuffmanTable, sampleCount: Int) {\n-        // Amortise the 8192-entry construction over at least twice that many\n-        // samples. No table/cache survives the synchronous scan operation.\n-        guard sampleCount >= Self.count * 2 else { return nil }\n+        // Keep setup off small scans despite the smaller 1024-entry table.\n+        // No table/cache survives the synchronous scan operation.\n+        guard sampleCount >= 16384 else { return nil }\n         var covered = 0, valid = 0, categories: UInt32 = 0\n         for prefix in 0..<256 {\n             let length = Int(table.lookaheadLength[prefix])\ndiff --git a/Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift b/Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift\nindex 03f2d27..5302ec4 100644\n--- a/Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift\n+++ b/Tests/SwiftJLITests/Native/LosslessLookaheadTests.swift\n@@ -12,7 +12,7 @@ import Testing\n         let short = HuffmanTable(bits: [1, 1, 1] + Array(repeating: 0, count: 13), values: [0, 1, 2])\n         #expect(LosslessLookahead(table: short, sampleCount: 16383) == nil)\n         let combined = try #require(LosslessLookahead(table: short, sampleCount: 16384))\n-        #expect(combined.entries.count * MemoryLayout<UInt32>.size == 32768)\n+        #expect(combined.entries.count * MemoryLayout<UInt32>.size == 4096)\n         let long = HuffmanTable(bits: [1] + Array(repeating: 0, count: 15), values: [15])\n         #expect(LosslessLookahead(table: long, sampleCount: 4_194_304) == nil)\n         let uniform = HuffmanTable(bits: [1, 1] + Array(repeating: 0, count: 14), values: [7, 16])\n@@ -34,7 +34,7 @@ import Testing\n                 for prefix in 0..<LosslessLookahead.count {\n                     var writer = BitWriter(estimatedMaxSize: 32)\n                     writer.writeBits(0, count: offset)\n-                    writer.writeBits(UInt32(prefix), count: 13)\n+                    writer.writeBits(UInt32(prefix), count: LosslessLookahead.bits)\n                     for tail in [UInt32(0xA55A), 0x1234, 0x6789, 0x90AB] {\n                         writer.writeBits(tail, count: 16)\n                     }\n"
+}

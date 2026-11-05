@@ -1,0 +1,477 @@
+commit 9e3b315df18b05e67fc6a6764e7bd6ef11c3d88c
+Author:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+AuthorDate: Tue Nov 3 19:49:08 2026 +0530
+Commit:     Pushparaj Chinnathambi <pushparaj.c@raster.in>
+CommitDate: Tue Nov 3 19:49:08 2026 +0530
+
+    Stream table-proven DC-only scans with compact coefficient storage
+
+diff --git a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+index f601eaf..219e195 100644
+--- a/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
++++ b/Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift
+@@ -128,15 +128,24 @@ struct JLIDecoder: Sendable {
+             let selector = scan.header.components.first { $0.componentSelector == components[0].id }
+             let dcTable = prepareDCTables(scan.dcTables)[selector?.dcTableId ?? 0] ?? StandardHuffmanTables.dcLuminance
+             let acTable = prepareACTables(scan.acTables)[selector?.acTableId ?? 0] ?? StandardHuffmanTables.acLuminance
+-            // Lookup admission uses the entire scan, as in the retained path.
+-            let lookup = ACLookahead(table: acTable, blockCount: streamingPlan.blockCount)
+             var reader = BitReader(data: scan.entropyData)
+-            try Self.decodeSequentialGreyscaleInto(reader: &reader, dcTable: dcTable,
+-                acTable: acTable, lookup: lookup,
+-                quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
+-                plan: streamingPlan,
+-                width: frame.width, height: frame.height, precision: frame.precision,
+-                restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
++            if streamingPlan.dcOnlyTable {
++                try Self.validateGreyscaleDestination(borrowedDestination, width: frame.width,
++                    height: frame.height, precision: frame.precision, floatOutput: floating)
++                try DCOnlyGreyscaleDecoder.decodeInto(reader: &reader, dcTable: dcTable, acTable: acTable,
++                    quantiser: Float(quantTables[components[0].quantTableIndex][0]), plan: streamingPlan,
++                    width: frame.width, height: frame.height, precision: frame.precision,
++                    restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
++            } else {
++                // Lookup admission uses the entire scan, as in the retained path.
++                let lookup = ACLookahead(table: acTable, blockCount: streamingPlan.blockCount)
++                try Self.decodeSequentialGreyscaleInto(reader: &reader, dcTable: dcTable,
++                    acTable: acTable, lookup: lookup,
++                    quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
++                    plan: streamingPlan,
++                    width: frame.width, height: frame.height, precision: frame.precision,
++                    restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
++            }
+             return try JLIImage(geometryOnlyWidth: frame.width, height: frame.height,
+                 pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
+                 colorModel: .grayscale, iccProfile: parsed.iccProfile, exif: parsed.exif)
+diff --git a/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift b/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift
+index 930f765..16cdb41 100644
+--- a/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift
++++ b/Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift
+@@ -12,7 +12,10 @@ struct SequentialGreyscalePlan: Sendable {
+     let blockRows: Int
+     let blockCount: Int
+     let batchBlocks: Int
++    /// The selected scan-local AC table proves every AC coefficient is zero.
++    let dcOnlyTable: Bool
+     /// Payload of one Int32 coefficient/output batch and one Float IDCT scratch.
++    /// A table-proven DC-only scan retains one value of each type per block.
+     /// This is a conservative reservation component, not measured peak memory.
+     let workspaceBytes: Int
+ 
+@@ -49,10 +52,16 @@ struct SequentialGreyscalePlan: Sendable {
+         guard workerLimit == 1 || backend == .accelerated
+                 || blockCount <= maximumAutomaticScalarBlocks else { return nil }
+         let batchBlocks = min(maximumBatchBlocks, blockCount)
+-        let samples = try checkedMultiply(batchBlocks, 64)
++        let scan = parsed.scans[0]
++        let selector = scan.header.components.first { $0.componentSelector == frame.components[0].id }
++        let acID = selector?.acTableId ?? 0
++        let acTable = scan.acTables[acID] ?? (acID == 1
++            ? StandardHuffmanTables.acChrominance : StandardHuffmanTables.acLuminance)
++        let dcOnlyTable = DCOnlyGreyscaleDecoder.accepts(acTable)
++        let samples = try checkedMultiply(batchBlocks, dcOnlyTable ? 1 : 64)
+         let bytesPerSample = try checkedAdd(MemoryLayout<Int32>.stride, MemoryLayout<Float>.stride)
+         let workspaceBytes = try checkedMultiply(samples, bytesPerSample)
+         return Self(blocksPerRow: blocksPerRow, blockRows: blockRows,
+-                    blockCount: blockCount, batchBlocks: batchBlocks, workspaceBytes: workspaceBytes)
++                    blockCount: blockCount, batchBlocks: batchBlocks, dcOnlyTable: dcOnlyTable, workspaceBytes: workspaceBytes)
+     }
+ }
+diff --git a/Sources/SwiftJLI/Native/Entropy/DCOnlyGreyscaleDecoder.swift b/Sources/SwiftJLI/Native/Entropy/DCOnlyGreyscaleDecoder.swift
+new file mode 100644
+index 0000000..f73f55d
+--- /dev/null
++++ b/Sources/SwiftJLI/Native/Entropy/DCOnlyGreyscaleDecoder.swift
+@@ -0,0 +1,112 @@
++// SPDX-License-Identifier: Apache-2.0
++
++/// A scan-local AC table containing only zero magnitude categories proves that
++/// every block has zero AC coefficients. Keep only its DC value; the ordinary
++/// coefficient decoder and its fully initialised callback contract are unchanged.
++enum DCOnlyGreyscaleDecoder {
++    static func accepts(_ table: HuffmanTable) -> Bool {
++        !table.values.isEmpty && table.values.allSatisfy { $0 & 0x0F == 0 }
++    }
++
++    /// The consumer finishes synchronously before the DC storage is reused. It
++    /// must not let the pointer escape or use it concurrently. It may overwrite
++    /// consumed values; every slot in the following batch is assigned before
++    /// publication. An entropy failure publishes no partial batch.
++    static func decodeBatches(
++        reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable,
++        blocksPerRow: Int, blockRows: Int, precision: Int, restartInterval: Int,
++        consume: (UnsafeMutableBufferPointer<Int32>, Int) throws -> Void
++    ) throws {
++        let (blocks, overflow) = blocksPerRow.multipliedReportingOverflow(by: blockRows)
++        let (_, countOverflow) = blocks.multipliedReportingOverflow(by: 64)
++        guard blocksPerRow > 0, blockRows > 0, !overflow, !countOverflow,
++              (8...12).contains(precision), restartInterval >= 0, accepts(acTable) else {
++            throw JLIError.decodingFailed("Invalid compact DC-only scan")
++        }
++        let capacity = min(SequentialGreyscalePlan.maximumBatchBlocks, blocks)
++        var values = [Int32](unsafeUninitializedCapacity: capacity) { _, count in count = capacity }
++        var previousDC: Int32 = 0
++        var restartIndex = 0
++        try values.withUnsafeMutableBufferPointer { buffer in
++            for first in stride(from: 0, to: blocks, by: SequentialGreyscalePlan.maximumBatchBlocks) {
++                let end = min(first + SequentialGreyscalePlan.maximumBatchBlocks, blocks)
++                var index = first
++                while index < end {
++                    try NativeOperation.check()
++                    let rowEnd = min(end, index + blocksPerRow - index % blocksPerRow)
++                    while index < rowEnd {
++                        if restartInterval > 0, index > 0, index % restartInterval == 0 {
++                            try reader.skipRestartMarker(expectedIndex: restartIndex)
++                            restartIndex = (restartIndex + 1) & 7
++                            previousDC = 0
++                        }
++                        let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
++                        let dc = Int64(previousDC) + Int64(difference)
++                        guard abs(dc) <= (1 << (precision + 2)) else {
++                            throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
++                        }
++                        previousDC = Int32(dc)
++                        // Preserve the ordinary decoder's handling of all zero
++                        // categories, including unusual run/zero symbols and a
++                        // run reaching beyond the last coefficient. No magnitude
++                        // bits follow any symbol admitted by accepts(_:).
++                        var coefficient = 1
++                        while coefficient < 64 {
++                            let symbol = try HuffmanDecoder.decodeSymbol(from: &reader, table: acTable)
++                            if symbol == 0 { break }
++                            if symbol == 0xF0 { coefficient += 16; continue }
++                            coefficient += Int(symbol >> 4)
++                            guard coefficient < 64 else { break }
++                            coefficient += 1
++                        }
++                        buffer[index - first] = previousDC
++                        index += 1
++                    }
++                }
++                try consume(.init(start: buffer.baseAddress, count: end - first), first)
++            }
++        }
++    }
++
++    /// The quantiser is a validated positive JPEG integer. Preserve the same
++    /// two separately rounded Float multiplications as the generic matrix IDCT.
++    /// `dc` and `output` hold blockCount disjoint, correctly bound elements.
++    static func reconstruct(_ dc: UnsafePointer<Int32>, quantiser: Float,
++                            into output: UnsafeMutablePointer<Float>, blockCount: Int) {
++        guard blockCount > 0 else { return }
++        let basis = AccelerateDSP.dctMatrix[0]
++        for block in 0..<blockCount {
++            let dequantised = Float(dc[block]) * quantiser
++            let firstPass = dequantised * basis
++            output[block] = firstPass * basis
++        }
++    }
++
++    /// Destination validation precedes this call. All entropy, reconstruction
++    /// and caller-output work is synchronous on the calling thread. The only
++    /// batches are one Int32 and one Float per block, bounded by 1024 blocks.
++    static func decodeInto(
++        reader: inout BitReader, dcTable: HuffmanTable, acTable: HuffmanTable,
++        quantiser: Float, plan: SequentialGreyscalePlan,
++        width: Int, height: Int, precision: Int, restartInterval: Int,
++        floatOutput: Bool, destination: BorrowedSampleDestination
++    ) throws {
++        var values = [Float](unsafeUninitializedCapacity: plan.batchBlocks) { _, count in count = plan.batchBlocks }
++        try values.withUnsafeMutableBufferPointer { output in
++            try decodeBatches(reader: &reader, dcTable: dcTable, acTable: acTable,
++                blocksPerRow: plan.blocksPerRow, blockRows: plan.blockRows,
++                precision: precision, restartInterval: restartInterval) { dc, first in
++                reconstruct(UnsafePointer(dc.baseAddress!), quantiser: quantiser,
++                    into: output.baseAddress!, blockCount: dc.count)
++                var center = Float(1 << (precision - 1))
++                var low: Float = 0, high = Float((1 << precision) - 1)
++                jliDSP_vsadd(output.baseAddress!, 1, &center, output.baseAddress!, 1, dc.count)
++                jliDSP_vclip(output.baseAddress!, 1, &low, &high, output.baseAddress!, 1, dc.count)
++                try SharedDCTStorage.writeGreyscaleConstantBlocks(
++                    .init(start: output.baseAddress, count: dc.count), firstBlock: first,
++                    blocksPerRow: plan.blocksPerRow, width: width, height: height,
++                    precision: precision, floatOutput: floatOutput, into: destination)
++            }
++        }
++    }
++}
+diff --git a/Tests/SwiftJLITests/Native/DCOnlyDCTTests.swift b/Tests/SwiftJLITests/Native/DCOnlyDCTTests.swift
+index 3f747fb..ab364c6 100644
+--- a/Tests/SwiftJLITests/Native/DCOnlyDCTTests.swift
++++ b/Tests/SwiftJLITests/Native/DCOnlyDCTTests.swift
+@@ -50,7 +50,16 @@ import Testing
+                     let count = c.count, workspace = s.baseAddress! + 3
+                     let dcOnly = AccelerateDSP.prepareDCOnlyDCTBatch(zigzag: UnsafePointer(c.baseAddress!),
+                         quantTable: q.baseAddress!, scratch: workspace, blockCount: blocks)
+-                    if !dcOnly {
++                    if dcOnly {
++                        let compact = stride(from: 0, to: coefficients.count, by: 64).map { coefficients[$0] }
++                        compact.withUnsafeBufferPointer { dc in
++                            DCOnlyGreyscaleDecoder.reconstruct(dc.baseAddress!, quantiser: quantiser,
++                                into: workspace, blockCount: blocks)
++                        }
++                        #expect((0..<blocks).allSatisfy {
++                            workspace[$0].bitPattern == expected[$0 * 64].bitPattern
++                        })
++                    } else {
+                         AccelerateDSP.packDequantizedDCTBatch(zigzag: UnsafePointer(c.baseAddress!),
+                             quantTable: q.baseAddress!, scratch: workspace, blockCount: blocks)
+                     }
+diff --git a/Tests/SwiftJLITests/Native/DCOnlyGreyscaleDecoderTests.swift b/Tests/SwiftJLITests/Native/DCOnlyGreyscaleDecoderTests.swift
+new file mode 100644
+index 0000000..c31df94
+--- /dev/null
++++ b/Tests/SwiftJLITests/Native/DCOnlyGreyscaleDecoderTests.swift
+@@ -0,0 +1,168 @@
++// SPDX-License-Identifier: Apache-2.0
++import Testing
++@testable import SwiftJLI
++
++@Suite struct DCOnlyGreyscaleDecoderTests {
++    private func table(codeLength: Int) -> HuffmanTable {
++        var bits = [UInt8](repeating: 0, count: 16)
++        bits[codeLength - 1] = 16
++        return HuffmanTable(bits: bits, values: (0..<16).map { UInt8($0 << 4) })
++    }
++
++    private func entropy(blocks: Int, interval: Int, ac: HuffmanTable) -> [UInt8] {
++        var writer = BitWriter(), previous: Int32 = 0
++        for index in 0..<blocks {
++            if interval > 0, index > 0, index % interval == 0 {
++                writer.emitRestartMarker((index / interval - 1) & 7)
++                previous = 0
++            }
++            let dc = Int32(index % 511 - 255)
++            HuffmanEncoder.encodeDC(dc - previous, table: StandardHuffmanTables.dcLuminance, writer: &writer)
++            previous = dc
++            // Every zero-category symbol, including non-standard run/zero and
++            // overshooting runs, follows the retained decoder's exact semantics.
++            let symbol = UInt8((index % 16) << 4)
++            let entry = ac.encodingTable[Int(symbol)]
++            var coefficient = 1
++            while coefficient < 64 {
++                writer.writeBits(UInt32(entry.code), count: Int(entry.length))
++                if symbol == 0 { break }
++                if symbol == 0xF0 { coefficient += 16 }
++                else { coefficient += Int(symbol >> 4) + 1 }
++            }
++        }
++        writer.emitRestartMarker(3)
++        writer.writeBits(0x5A, count: 8)
++        writer.flush()
++        return writer.data
++    }
++
++    @Test(arguments: [8, 12])
++    func compactValuesAndCursorMatchFullCoefficientsAcrossRunsRestartsAndTails(precision: Int) throws {
++        for codeLength in [5, 9, 16] { for interval in [0, 1, 1023, 1024, 1025] {
++            let ac = table(codeLength: codeLength)
++            #expect(DCOnlyGreyscaleDecoder.accepts(ac))
++            #expect(ACLookahead(table: ac, blockCount: 2050) == nil)
++            let bytes = entropy(blocks: 2050, interval: interval, ac: ac)
++            var reference = BitReader(data: bytes), actual = reference
++            var expected: [Int32] = [], decoded: [Int32] = [], starts: [Int] = []
++            try SequentialGreyscaleDecoder.decodeBatches(reader: &reference,
++                dcTable: StandardHuffmanTables.dcLuminance, acTable: ac, lookup: nil,
++                blocksPerRow: 41, blockRows: 50, precision: precision, restartInterval: interval) { block, _ in
++                #expect(block.enumerated().allSatisfy { $0.offset % 64 == 0 || $0.element == 0 })
++                expected += stride(from: 0, to: block.count, by: 64).map { block[$0] }
++            }
++            try DCOnlyGreyscaleDecoder.decodeBatches(reader: &actual,
++                dcTable: StandardHuffmanTables.dcLuminance, acTable: ac,
++                blocksPerRow: 41, blockRows: 50, precision: precision, restartInterval: interval) { dc, first in
++                #expect(dc.count <= 1024)
++                starts.append(first); decoded.append(contentsOf: dc)
++                dc.baseAddress!.update(repeating: 123456, count: dc.count)
++            }
++            #expect(decoded == expected)
++            #expect(starts == [0, 1024, 2048])
++            #expect(reference.byteOffset == actual.byteOffset)
++            try reference.skipRestartMarker(expectedIndex: 3)
++            try actual.skipRestartMarker(expectedIndex: 3)
++            #expect(try reference.readBits(8) == 0x5A)
++            #expect(try actual.readBits(8) == 0x5A)
++        } }
++    }
++
++    @Test func malformedEntropyAndConsumerFailureKeepBatchBoundary() throws {
++        let ac = table(codeLength: 5)
++        let complete = entropy(blocks: 2050, interval: 1024, ac: ac)
++        let marker = try #require((0..<(complete.count - 1)).first { complete[$0] == 0xFF && complete[$0 + 1] == 0xD0 })
++        var wrongRestart = complete
++        wrongRestart[marker + 1] = 0xD3
++        // The retained reader accepts any RST0...RST7 order. Preserve that
++        // behaviour; truncation still fails and no partial batch is published.
++        for (bytes, shouldFail) in [(Array(complete.prefix(marker + 15)), true),
++                                    (wrongRestart, false), ([UInt8](), true)] {
++            var reference = BitReader(data: bytes), actual = reference
++            var referenceCalls: [Int] = [], actualCalls: [Int] = []
++            let referenceError = Result { try SequentialGreyscaleDecoder.decodeBatches(reader: &reference,
++                dcTable: StandardHuffmanTables.dcLuminance, acTable: ac, lookup: nil,
++                blocksPerRow: 41, blockRows: 50, precision: 8, restartInterval: 1024) { _, first in
++                referenceCalls.append(first)
++            } }
++            let actualError = Result { try DCOnlyGreyscaleDecoder.decodeBatches(reader: &actual,
++                dcTable: StandardHuffmanTables.dcLuminance, acTable: ac,
++                blocksPerRow: 41, blockRows: 50, precision: 8, restartInterval: 1024) { _, first in
++                actualCalls.append(first)
++            } }
++            switch (referenceError, actualError) {
++            case (.failure(let expected), .failure(let received)) where shouldFail:
++                #expect(String(describing: expected) == String(describing: received))
++            case (.success, .success) where !shouldFail: break
++            default: Issue.record("Compact scan diverged from retained restart/error semantics")
++            }
++            #expect(actualCalls == referenceCalls)
++            reference.alignToByte(); actual.alignToByte()
++            #expect(actual.byteOffset == reference.byteOffset)
++        }
++        var reader = BitReader(data: complete), calls = 0
++        #expect(throws: CancellationError.self) {
++            try DCOnlyGreyscaleDecoder.decodeBatches(reader: &reader,
++                dcTable: StandardHuffmanTables.dcLuminance, acTable: ac,
++                blocksPerRow: 41, blockRows: 50, precision: 8, restartInterval: 1024) { values, first in
++                calls += 1
++                #expect(first == 0 && values.count == 1024)
++                values.baseAddress!.update(repeating: 123456, count: values.count)
++                throw CancellationError()
++            }
++        }
++        #expect(calls == 1)
++        try reader.skipRestartMarker(expectedIndex: 0)
++    }
++
++    @Test func outOfRangeDCAndExpiredOperationPublishNothing() throws {
++        let ac = table(codeLength: 5)
++        var writer = BitWriter()
++        HuffmanEncoder.encodeDC(1025, table: StandardHuffmanTables.dcLuminance, writer: &writer)
++        writer.writeBits(0, count: 5)
++        writer.flush()
++        for expired in [false, true] {
++            var reader = BitReader(data: writer.data)
++            let result = Result {
++                try NativeOperation.$current.withValue(.init(seconds: expired ? Double.leastNonzeroMagnitude : 120)) {
++                    try DCOnlyGreyscaleDecoder.decodeBatches(reader: &reader,
++                        dcTable: StandardHuffmanTables.dcLuminance, acTable: ac,
++                        blocksPerRow: 1, blockRows: 1, precision: 8, restartInterval: 0) { _, _ in
++                        Issue.record("Invalid or cancelled compact scan published output")
++                    }
++                }
++            }
++            switch result {
++            case .failure(let error): #expect(expired ? error is CodecError : error is JLIError)
++            case .success: Issue.record("Invalid or cancelled compact scan succeeded")
++            }
++        }
++    }
++
++    @Test func invalidTablesAndGeometryRejectBeforeConsumption() throws {
++        #expect(!DCOnlyGreyscaleDecoder.accepts(StandardHuffmanTables.acLuminance))
++        var mixedReader = BitReader(data: [0])
++        #expect(throws: JLIError.self) {
++            try DCOnlyGreyscaleDecoder.decodeBatches(reader: &mixedReader,
++                dcTable: StandardHuffmanTables.dcLuminance, acTable: StandardHuffmanTables.acLuminance,
++                blocksPerRow: 1, blockRows: 1, precision: 8, restartInterval: 0) { _, _ in
++                Issue.record("Mixed AC table was accepted by the compact decoder")
++            }
++        }
++        #expect(mixedReader.byteOffset == 0)
++        #expect(!DCOnlyGreyscaleDecoder.accepts(HuffmanTable(bits: [UInt8](repeating: 0, count: 16), values: [])))
++        for (columns, rows, precision, interval) in [(0, 1, 8, 0), (1, 0, 8, 0),
++            (Int.max, 2, 8, 0), (Int.max / 32, 1, 8, 0), (1, 1, 7, 0), (1, 1, 13, 0), (1, 1, 8, -1)] {
++            var reader = BitReader(data: [0])
++            #expect(throws: JLIError.self) {
++                try DCOnlyGreyscaleDecoder.decodeBatches(reader: &reader,
++                    dcTable: StandardHuffmanTables.dcLuminance, acTable: table(codeLength: 5),
++                    blocksPerRow: columns, blockRows: rows, precision: precision, restartInterval: interval) { _, _ in
++                    Issue.record("Invalid compact scan published coefficients")
++                }
++            }
++            #expect(reader.byteOffset == 0)
++        }
++    }
++}
+diff --git a/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift b/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift
+index 04d42c7..6f6f6fe 100644
+--- a/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift
++++ b/Tests/SwiftJLITests/StreamingWorkspaceAdmissionTests.swift
+@@ -36,11 +36,11 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+ @Suite struct StreamingWorkspaceAdmissionTests {
+     private static func jpeg(width: Int = 65, height: Int = 57,
+                              precision: Int = 8, progressive: Bool = false,
+-                             colour: Bool = false) throws -> Data {
++                             colour: Bool = false, flat: Bool = false) throws -> Data {
+         let bps = precision == 8 ? 1 : 2, components = colour ? 3 : 1
+         var bytes = [UInt8](repeating: 0, count: width * height * components * bps)
+         for i in 0..<(width * height * components) {
+-            let value = (i * 151 + i / width * 17 + 117) & ((1 << precision) - 1)
++            let value = flat ? (1 << (precision - 1)) : (i * 151 + i / width * 17 + 117) & ((1 << precision) - 1)
+             bytes[i * bps] = UInt8(truncatingIfNeeded: value)
+             if bps == 2 { bytes[i * bps + 1] = UInt8(value >> 8) }
+         }
+@@ -50,16 +50,20 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+         return Data(try JLIEncoder().encode(image, configuration: .init(quality: 87, progressive: progressive)))
+     }
+ 
+-    @Test(arguments: [8, 12], [false, true])
+-    func exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision: Int, floating: Bool) throws {
+-        let data = try Self.jpeg(precision: precision)
++    @Test(arguments: [8, 12], [(false, false), (false, true), (true, false), (true, true)])
++    func exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision: Int, modes: (Bool, Bool)) throws {
++        let (floating, flat) = modes
++        let data = try Self.jpeg(precision: precision, flat: flat)
+         let parsed = try JPEGCodec.parse(data, options: .init())
+         let width = 65, height = 57, bps = floating ? 4 : precision == 8 ? 1 : 2
+         let configuration = DecoderConfiguration(sampleFormat: floating ? .float32RawSamples : .nativeInteger)
+         let native = JLIDecoderConfiguration(outputPixelFormat: floating ? .float32 : nil)
+         // 9 x 8 padded blocks; shared coefficient/output and one scratch batch.
+         // This boundary deliberately includes block padding, not width*height.
+-        let workspace = data.count * 64 + 36_864 + 1_048_576
++        let workspace = data.count * 64 + (flat ? 576 : 36_864) + 1_048_576
++        let plan = try #require(try SequentialGreyscalePlan.make(parsed: parsed, configuration: native,
++            hasDestination: true, normaliseXYBOutput: false, workerLimit: 1, backend: .scalarCPU))
++        #expect(plan.dcOnlyTable == flat)
+         let offset = bps * 2, rowBytes = (width + 3) * bps
+         let planeCapacity = offset + rowBytes * height, storageCapacity = planeCapacity + 11
+         let plane = try PlaneDescriptor(width: width, height: height, offset: offset,
+@@ -124,6 +128,40 @@ private func expectWorkspaceDenial(_ body: () throws -> Void) {
+         } }
+     }
+ 
++    @Test func compactAdmissionUsesSelectedScanTableSnapshot() throws {
++        let parsed = try JPEGCodec.parse(Self.jpeg(flat: true), options: .init())
++        let scan = parsed.scans[0]
++        let zeroTable = try #require(scan.acTables[scan.header.components[0].acTableId])
++        func make(scanTables: [Int: HuffmanTable], finalTables: [Int: HuffmanTable], id: Int) -> ParsedJPEG {
++            let header = JPEGScanHeader(components: [(parsed.frameInfo.components[0].id, 0, id)],
++                spectralStart: 0, spectralEnd: 63, successiveApproxHigh: 0, successiveApproxLow: 0)
++            return ParsedJPEG(frameInfo: parsed.frameInfo, quantTables: parsed.quantTables,
++                huffmanDCTables: parsed.huffmanDCTables, huffmanACTables: finalTables,
++                scans: [.init(header: header, entropyData: scan.entropyData,
++                    dcTables: scan.dcTables, acTables: scanTables)],
++                restartInterval: 0, iccProfile: nil, exif: nil)
++        }
++        for id in [0, 1, 7] {
++            for compact in [false, true] {
++                let current = compact ? zeroTable : StandardHuffmanTables.acLuminance
++                let later = compact ? StandardHuffmanTables.acLuminance : zeroTable
++                let plan = try #require(try SequentialGreyscalePlan.make(
++                    parsed: make(scanTables: [id: current], finalTables: [id: later], id: id),
++                    configuration: .default, hasDestination: true, normaliseXYBOutput: false,
++                    workerLimit: 1, backend: .scalarCPU))
++                #expect(plan.dcOnlyTable == compact)
++                #expect(plan.workspaceBytes == (compact ? 576 : 36_864))
++            }
++            // Missing selected tables retain the decoder's standard fallback;
++            // a final merged zero table must not make admission more permissive.
++            let plan = try #require(try SequentialGreyscalePlan.make(
++                parsed: make(scanTables: [:], finalTables: [id: zeroTable], id: id),
++                configuration: .default, hasDestination: true, normaliseXYBOutput: false,
++                workerLimit: 1, backend: .scalarCPU))
++            #expect(!plan.dcOnlyTable && plan.workspaceBytes == 36_864)
++        }
++    }
++
+     @Test func nonStreamingOperationsRetainTheirFullReservations() throws {
+         let profiles: [(Data, DecoderConfiguration, Int)] = [
+             (try Self.jpeg(progressive: true), .init(), 1),

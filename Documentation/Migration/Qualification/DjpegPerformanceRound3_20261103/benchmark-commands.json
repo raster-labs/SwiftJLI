@@ -1,0 +1,164 @@
+{
+  "baseline": "c7791d5635e46f3ef30f1dd1f14d7189e228a5c0",
+  "candidate": "5351088d3bb4630a32de6509e4d62210ad14aaa0",
+  "startedUTC": "2026-11-03T05:44:07.656850+00:00",
+  "commands": [
+    {
+      "name": "cli-original-3.2.1",
+      "command": [
+        "python3",
+        "Scripts/benchmark-djpeg.py",
+        "--baseline",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+        "--candidate",
+        "/private/tmp/swiftjli-round3-parser-build/out/Products/Release/swiftjli-cli",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "--matrix",
+        "original",
+        "--fixtures",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory",
+        "--output",
+        "/private/tmp/swiftjli-round3-evidence/final/cli-original-3.2.1.json"
+      ],
+      "startedUTC": "2026-11-03T05:44:07.769614+00:00",
+      "log": "cli-original-3.2.1.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:44:17.695117+00:00"
+    },
+    {
+      "name": "cli-lossless-patterns-3.2.1",
+      "command": [
+        "python3",
+        "Scripts/benchmark-djpeg.py",
+        "--baseline",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+        "--candidate",
+        "/private/tmp/swiftjli-round3-parser-build/out/Products/Release/swiftjli-cli",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+        "--matrix",
+        "lossless-patterns",
+        "--fixtures",
+        "/private/tmp/swiftjli-native-matrix-fixtures",
+        "--output",
+        "/private/tmp/swiftjli-round3-evidence/final/cli-lossless-patterns-3.2.1.json"
+      ],
+      "startedUTC": "2026-11-03T05:44:17.695480+00:00",
+      "log": "cli-lossless-patterns-3.2.1.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:45:07.804669+00:00"
+    },
+    {
+      "name": "cli-original-3.2.0",
+      "command": [
+        "python3",
+        "Scripts/benchmark-djpeg.py",
+        "--baseline",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+        "--candidate",
+        "/private/tmp/swiftjli-round3-parser-build/out/Products/Release/swiftjli-cli",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/bin/djpeg",
+        "--matrix",
+        "original",
+        "--fixtures",
+        "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory",
+        "--output",
+        "/private/tmp/swiftjli-round3-evidence/final/cli-original-3.2.0.json"
+      ],
+      "startedUTC": "2026-11-03T05:45:07.805023+00:00",
+      "log": "cli-original-3.2.0.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:45:17.390635+00:00"
+    },
+    {
+      "name": "cli-lossless-patterns-3.2.0",
+      "command": [
+        "python3",
+        "Scripts/benchmark-djpeg.py",
+        "--baseline",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+        "--candidate",
+        "/private/tmp/swiftjli-round3-parser-build/out/Products/Release/swiftjli-cli",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/bin/djpeg",
+        "--matrix",
+        "lossless-patterns",
+        "--fixtures",
+        "/private/tmp/swiftjli-native-matrix-fixtures",
+        "--output",
+        "/private/tmp/swiftjli-round3-evidence/final/cli-lossless-patterns-3.2.0.json"
+      ],
+      "startedUTC": "2026-11-03T05:45:17.390940+00:00",
+      "log": "cli-lossless-patterns-3.2.0.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:46:05.461466+00:00"
+    },
+    {
+      "name": "native-lossless",
+      "command": [
+        "python3",
+        "/private/tmp/swiftjli-round3-evidence/final/run-native-lossless.py",
+        "--candidate-products",
+        "/private/tmp/swiftjli-round3-parser-build/out/Products/Release",
+        "--output",
+        "/private/tmp/swiftjli-round3-evidence/final/native-lossless.json"
+      ],
+      "startedUTC": "2026-11-03T05:46:05.461945+00:00",
+      "log": "native-lossless.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:46:31.678633+00:00"
+    },
+    {
+      "name": "native-dct",
+      "command": [
+        "python3",
+        "Documentation/Migration/Qualification/DjpegPerformanceRound2_20261102/swiftjli-round2-final-dct-benchmark.py",
+        "--baseline-products",
+        "/private/tmp/swiftjli-round2-final-build/out/Products/Release",
+        "--candidate-products",
+        "/private/tmp/swiftjli-round3-parser-build/out/Products/Release",
+        "--output",
+        "/private/tmp/swiftjli-round3-evidence/final/native-dct.json"
+      ],
+      "startedUTC": "2026-11-03T05:46:31.678932+00:00",
+      "log": "native-dct.log",
+      "exitCode": 0,
+      "finishedUTC": "2026-11-03T05:47:06.299042+00:00"
+    }
+  ],
+  "pins": {
+    "compiler": {
+      "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "sha256": "448457da9a8a56741f2c8c4b8931e85b7377fc009c16918cd8ac1a8a3210ea1f"
+    },
+    "baselineCLI": {
+      "path": "/private/tmp/swiftjli-round2-final-build/out/Products/Release/swiftjli-cli",
+      "sha256": "8404f40d5ff8075051965074e56a8e45acc31589f0b57ce2ee521c0d619af86d"
+    },
+    "candidateCLI": {
+      "path": "/private/tmp/swiftjli-round3-parser-build/out/Products/Release/swiftjli-cli",
+      "sha256": "af45554ab41f90198a2cce8201f6481f86a478230631ee3586128a1a9a142855"
+    },
+    "baselineLibrary": {
+      "path": "/private/tmp/swiftjli-round2-final-build/out/Products/Release/SwiftJLI.o",
+      "sha256": "d32fae90fe76c3e49f740bf0b92056991ce40682dcc97f693edf42e3f7271ab7"
+    },
+    "candidateLibrary": {
+      "path": "/private/tmp/swiftjli-round3-parser-build/out/Products/Release/SwiftJLI.o",
+      "sha256": "2d981a16b18f3cb2fb7f1bc932d4c1eff24c6322bbb92c790075d1805bc23d9b"
+    },
+    "djpeg3.2.0": {
+      "path": "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/bin/djpeg",
+      "sha256": "c4205b818a91e28aa234d1d9e0b26be45461263a7f9b38ea2f6ce7ea333c551f"
+    },
+    "djpeg3.2.1": {
+      "path": "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg",
+      "sha256": "6d0302f8018b3322521cae94de7f58ab484db40f0cc8e0f0cb6e92d456fd5088"
+    }
+  },
+  "powerBefore": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t100%; charged; 0:00 remaining present: true\n",
+  "powerAfter": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t100%; charged; 0:00 remaining present: true\n",
+  "finishedUTC": "2026-11-03T05:47:06.387311+00:00"
+}

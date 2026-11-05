@@ -1,0 +1,44 @@
+{
+  "status": "complete",
+  "purpose": "Read-only CPU sampling of accepted pipeline, not performance acceptance.",
+  "sourceRevision": "14f35018d241666358480da2a8527d29ab047627",
+  "frozenBuildRevision": "704ddae1bafea95d8a48c01ce35887c5b6413c0d",
+  "objectSHA256": "9604e96a89586c07368942799ce1c29fa835fcdfc466c0b1e20074a76d6de9ed",
+  "objectUnchanged": true,
+  "qualityReference": "/private/tmp/swiftjli-round5-evidence/pipeline/joined-native.json",
+  "qualityReferenceSHA256": "06bd2cc48bf68ee8dba8b6d4f9247a5ac9bfe6908b962d9e61659533b4bd3bb6",
+  "quality": {
+    "dct12-512-w8": {
+      "matchesArchivedBaselineAndCandidate": true,
+      "archivedRecordsCompared": 4
+    },
+    "dct12-512-w1": {
+      "matchesArchivedBaselineAndCandidate": true,
+      "archivedRecordsCompared": 4
+    },
+    "noise12-512-w8": {
+      "matchesArchivedBaselineAndCandidate": true,
+      "archivedRecordsCompared": 4
+    },
+    "dct12-2048-w8": {
+      "matchesArchivedBaselineAndCandidate": true,
+      "archivedRecordsCompared": 4
+    }
+  },
+  "findings": [
+    "The producer is dominated by AC entropy: dense512 72.9%, noise12-512 75.3%, dense2048 85.7% of producer samples.",
+    "Producer waiting falls from 9.6% at dense512 to 0.5% at dense2048. The reconstruction worker waits for ready entropy in over half of its queued-thread samples.",
+    "Compaction is the largest clearly named worker compute category: dense512 443 samples, pack 197, named IDCT 66 plus 191 BLAS samples with incomplete caller stacks.",
+    "Dense512 AC direct code 1485/1715 samples; bitwise symbol fallback with its callees 174, separate magnitude readBits 36, fillBuffer 20.",
+    "Noise12-512 AC direct code 1564/1740 samples; bitwise fallback 85, magnitude readBits 52, fillBuffer 39.",
+    "The inlined 13-bit lookup/refill source line dominates direct AC samples. Disassembly shows buffer loads, variable shift, array bounds check, entry/run guard and bit-count update, followed by an 8-bit fallback probe on misses.",
+    "The 64-coefficient clear uses 8 paired vector stores, with no separate memset call. Source-line sample coalescing prevents exact per-instruction clear/refill attribution."
+  ],
+  "limits": [
+    "Samples are wall-clock stack observations, not hardware CPU-cycle counters, hit/miss instrumentation or benchmark timings.",
+    "Sleeping main/runloop and thread-pool samples are reported separately; percentages use individual producer/worker thread denominators.",
+    "Worker samples include partial unwinds in BLAS. Named inverseDCT caller samples alone undercount transform work.",
+    "Long-code fallback cost does not establish its frequency; no 13-bit prefix miss-rate is claimed.",
+    "Sampling and host activity perturb execution; figures guide hypotheses only. No production files changed."
+  ]
+}

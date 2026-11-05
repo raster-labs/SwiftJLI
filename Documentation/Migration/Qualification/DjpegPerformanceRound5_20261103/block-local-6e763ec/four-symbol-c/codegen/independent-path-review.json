@@ -1,0 +1,164 @@
+{
+  "reviewedUTC": "2026-11-03T19:01:14.751267+00:00",
+  "scope": "Taken interior path with four zero-prefix symbols, adequate buffered bits and remaining samples; excludes row setup/refill/fallback/tail/error work. Static count is not cycles or a measured speedup.",
+  "paths": {
+    "baseline": {
+      "instructionCount": 30,
+      "instructionRangesInclusive": [
+        [
+          "0xe80",
+          "0xe88"
+        ],
+        [
+          "0xf2c",
+          "0xf38"
+        ],
+        [
+          "0xf70",
+          "0xfc8"
+        ]
+      ],
+      "stackFrameBytes": 160,
+      "callInstructions": [
+        "bl\t0xf60 <_sjli_lossless_left_u16_code0_row+0x1e0>"
+      ],
+      "instructions": [
+        "ldr\tw8, [sp, #0x30]",
+        "cmp\tw8, #0x7",
+        "b.hi\t0xf2c <_sjli_lossless_left_u16_code0_row+0x1ac>",
+        "ldr\tx9, [sp, #0x28]",
+        "sub\tw10, w8, #0x1",
+        "lsr\tx10, x9, x10",
+        "tbz\tw10, #0x0, 0xf70 <_sjli_lossless_left_u16_code0_row+0x1f0>",
+        "ldr\tw10, [sp, #0x14]",
+        "add\tw8, w8, w10",
+        "str\tw8, [sp, #0x30]",
+        "lsr\tx8, x9, x8",
+        "ldp\tw9, w10, [sp, #0x8]",
+        "and\tw8, w8, w10",
+        "lsr\tw9, w8, w9",
+        "cmp\tw9, #0x0",
+        "ldr\tw9, [sp, #0x10]",
+        "csel\tw9, w9, wzr, eq",
+        "add\tw8, w8, w4",
+        "add\tw8, w8, w9",
+        "and\tw28, w8, #0xffff",
+        "strb\tw8, [x21]",
+        "lsr\tw8, w8, #8",
+        "strb\tw8, [x21, #0x1]",
+        "cmp\tx27, #0x0",
+        "csel\tw26, w28, w26, eq",
+        "add\tx27, x27, #0x1",
+        "add\tx21, x21, #0x2",
+        "mov\tx4, x28",
+        "cmp\tx20, x27",
+        "b.ne\t0xe80 <_sjli_lossless_left_u16_code0_row+0x100>"
+      ]
+    },
+    "candidate": {
+      "instructionCount": 67,
+      "instructionRangesInclusive": [
+        [
+          "0xebc",
+          "0xec4"
+        ],
+        [
+          "0xf68",
+          "0xf74"
+        ],
+        [
+          "0xfac",
+          "0xfd8"
+        ],
+        [
+          "0x104c",
+          "0x10fc"
+        ],
+        [
+          "0x1024",
+          "0x102c"
+        ]
+      ],
+      "stackFrameBytes": 192,
+      "callInstructions": [
+        "bl\t0xf9c <_sjli_lossless_left_u16_code0_row+0x21c>"
+      ],
+      "instructions": [
+        "ldr\tw8, [sp, #0x50]",
+        "cmp\tw8, #0x7",
+        "b.hi\t0xf68 <_sjli_lossless_left_u16_code0_row+0x1e8>",
+        "ldr\tx11, [sp, #0x48]",
+        "sub\tw9, w8, #0x1",
+        "lsr\tx9, x11, x9",
+        "tbz\tw9, #0x0, 0xfac <_sjli_lossless_left_u16_code0_row+0x22c>",
+        "sub\tx10, x21, x28",
+        "add\tx9, x20, x28, lsl #1",
+        "cmp\tx10, #0x4",
+        "b.lo\t0xfdc <_sjli_lossless_left_u16_code0_row+0x25c>",
+        "ldr\tw10, [sp, #0x28]",
+        "cmp\tw8, w10",
+        "b.lo\t0xfdc <_sjli_lossless_left_u16_code0_row+0x25c>",
+        "ldp\tw13, w10, [sp, #0x20]",
+        "sub\tw10, w8, w10",
+        "lsr\tx12, x11, x10",
+        "tst\tw13, w12",
+        "b.eq\t0x104c <_sjli_lossless_left_u16_code0_row+0x2cc>",
+        "ldp\tw11, w8, [sp, #0x10]",
+        "lsr\tw8, w12, w8",
+        "ldp\tw15, w13, [sp, #0x30]",
+        "and\tw8, w8, w15",
+        "lsr\tw11, w12, w11",
+        "and\tw11, w11, w15",
+        "lsr\tw13, w12, w13",
+        "and\tw13, w13, w15",
+        "and\tw12, w15, w12",
+        "ldr\tw16, [sp, #0x2c]",
+        "cmp\tw8, w16",
+        "csel\tw14, w15, wzr, lo",
+        "add\tw8, w8, w4",
+        "sub\tw8, w8, w14",
+        "cmp\tw11, w16",
+        "csel\tw14, w15, wzr, lo",
+        "sub\tw11, w11, w14",
+        "add\tw11, w11, w8",
+        "strb\tw8, [x9]",
+        "cmp\tw13, w16",
+        "csel\tw14, w15, wzr, lo",
+        "sub\tw13, w13, w14",
+        "add\tw13, w13, w11",
+        "lsr\tw14, w8, #8",
+        "strb\tw14, [x9, #0x1]",
+        "strb\tw11, [x9, #0x2]",
+        "cmp\tw12, w16",
+        "csel\tw14, w15, wzr, lo",
+        "lsr\tw11, w11, #8",
+        "strb\tw11, [x9, #0x3]",
+        "strb\tw13, [x9, #0x4]",
+        "sub\tw11, w12, w14",
+        "add\tw26, w11, w13",
+        "and\tw4, w26, #0xffff",
+        "lsr\tw11, w13, #8",
+        "strb\tw11, [x9, #0x5]",
+        "strb\tw26, [x9, #0x6]",
+        "lsr\tw11, w26, #8",
+        "strb\tw11, [x9, #0x7]",
+        "str\tw10, [sp, #0x50]",
+        "cmp\tx28, #0x0",
+        "csel\tw27, w8, w27, eq",
+        "add\tw25, w25, #0x4",
+        "add\tx28, x28, #0x3",
+        "b\t0x1024 <_sjli_lossless_left_u16_code0_row+0x2a4>",
+        "add\tx28, x28, #0x1",
+        "cmp\tx28, x21",
+        "b.lo\t0xebc <_sjli_lossless_left_u16_code0_row+0x13c>"
+      ]
+    }
+  },
+  "baselineInstructionsPerFourSamples": 120,
+  "candidateInstructionsPerFourSamples": 67,
+  "staticReductionPercent": 44.166666666666664,
+  "pins": {
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/codegen/baseline-code0.txt": "8c09addafa22699e57901d3e50cbfd7c7ea75e3a097bc970606442c77f41441c",
+    "/private/tmp/swiftjli-round5-evidence/code0-four-symbols/codegen/candidate-code0.txt": "c1aec9aba0144899dff9a94c8c88aa1603a879ceaef494caf93b683d3f539021"
+  }
+}

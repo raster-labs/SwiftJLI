@@ -1,0 +1,14 @@
+{
+  "sourceRevision": "bd890f20b479ab3b207d77923cb56cd5b70eca0f",
+  "worktree": "/private/tmp/swiftjli-round5-dc-centre",
+  "mode": "read-only source review; no builds or tests",
+  "finding": "No actionable source-level correctness defect found.",
+  "reasoning": [
+    "Basis expression is the same Float 1/sqrt(8) as the zero-frequency matrix entry; cos(0)=1. Dequantisation and both Float multiplications remain separate, followed by centring.",
+    "For finite values, clamp nesting order is equivalent to existing ScalarDSP. Signed zero cannot become a negative output after adding the positive 8/12-bit centre under ordinary rounding.",
+    "Public SequentialGreyscalePlan already admits only precision8/12. Validated DC magnitude <=2^(precision+2) and integer JPEG quantiser <=65535 keep intermediate Float values finite.",
+    "Entropy decoding, caller output borrow, batch ownership, restart/cancellation and resource admission are unchanged.",
+    "The new rejection of private synthetic NaN/infinity values happens before the batch reaches caller storage. This is deliberately stricter than scalar clipping, but not reachable from admitted JPEG integer DC/quantiser inputs."
+  ],
+  "testReview": "New tests compare finite bit patterns against scalar/accelerated DSP contexts and check NaN/infinity rejection; runtime results were not inspected or produced in this review."
+}

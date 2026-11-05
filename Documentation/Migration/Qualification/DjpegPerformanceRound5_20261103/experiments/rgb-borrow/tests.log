@@ -1,0 +1,186 @@
+Building for production...
+[Planning deferred tasks]
+[41 / 67]
+[42 / 68] SwiftJLI
+[53 / 114]
+[59 / 114]
+[64 / 114]
+[66 / 114]
+[70 / 114]
+[73 / 114]
+[79 / 114]
+[82 / 114]
+[83 / 114]
+[86 / 114]
+[88 / 114]
+[89 / 114] SwiftJLI
+[101 / 116] swiftjli-cli-product
+[107 / 123]
+[110 / 123] swiftjli-cli-product
+[112 / 123] swiftjli-cli-product
+[113 / 123] swiftjli-cli-product
+/private/tmp/swiftjli-djpeg-round5/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-djpeg-round5/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:37:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 35 |                     var reader = BitReader(data: writer.data)
+ 36 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 37 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 38 |                     try destination.withUnsafeMutableBufferPointer {
+ 39 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+
+/private/tmp/swiftjli-djpeg-round5/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:31:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 29 |         let scan = Self.scan(blockCount: 2050, dcOnly: dcOnly)
+ 30 |         let table = StandardHuffmanTables.acLuminance
+ 31 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 32 |         let quantisation = (0..<64).map { Float($0 * 7 % 127 + 1) }
+ 33 |         for backend in Decoder.capabilities.availableBackends {
+
+/private/tmp/swiftjli-djpeg-round5/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:92:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 90 |         let scan = Self.scan(blockCount: 1025)
+ 91 |         let table = StandardHuffmanTables.acLuminance
+ 92 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 93 |         var reader = BitReader(data: scan.bytes), calls = 0
+ 94 |         #expect(throws: JLIError.self) {
+[114 / 123] SwiftJLITests-product
+[119 / 123] SwiftJLITests-product
+[121 / 123] SwiftJLITests-product
+Build complete! (48.01 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Contract image layer" started.
+◇ Suite BoundedRGBOutputTests started.
+◇ Suite CentredChromaPairTests started.
+◇ Test cancellationDuringSyntheticRowsInvalidatesDestination() started.
+◇ Suite SharedDCTStorageTests started.
+◇ Test cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test failedFillInvalidatesDestination() started.
+◇ Suite BoundedDCTWorkspaceTests started.
+◇ Test theAllocatingConvenienceAgreesWithTheDestinationPath() started.
+◇ Test abandonedDestinationInvalidatesItsReservedOwner() started.
+◇ Suite "Color Space – RGB/YCbCr/XYB Conversions and Chroma Sampling" started.
+◇ Suite ConstantDCTWriterTests started.
+◇ Test preflightRejectionLeavesTheDestinationReusable() started.
+◇ Test mismatchedDestinationsAreRefused() started.
+◇ Test aFailureDuringTheWriteInvalidatesTheDestination() started.
+◇ Test joinedRowsMatchReferenceForEachSamplingDirection() started.
+◇ Test case passing 1 argument point → .sealing to cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Suite "Byte-order sample access" started.
+◇ Suite ScopedACDecoderTests started.
+◇ Test pairsKeepIntegerRoundingAtOddEdgesAndNarrowPlanes() started.
+◇ Test joinedInternalTilesMatchSerialOutputAndPreservePadding(sourcePadding:backend:) started.
+◇ Suite JPEGDecodeParityTests started.
+◇ Test aDestinationGrantsOneWriteOnly() started.
+◇ Test metadataAndDestinationLimitsUseCallerBudget() started.
+◇ Test borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test decodeWritesTheCallerDestinationExactly(pad:) started.
+◇ Test case passing 1 argument point → .validatingSealedStorage to cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() started.
+◇ Test "Downsampling and upsampling preserves dimensions" started.
+◇ Test "Grayscale to Y plane preserves values" started.
+◇ Test laterEntropyFailureInvalidatesStreamedDestination() started.
+◇ Test "sRGB → scaled-XYB → sRGB round-trips near-exactly (exact opsin inverse)" started.
+◇ Test "Horizontal downsampling halves width" started.
+◇ Test nonFiniteConstantIsRejectedBeforeDestinationWrites() started.
+◇ Test "Image-level RGB to YCbCr conversion has correct dimensions" started.
+◇ Test "4:4:4 sampling returns original dimensions" started.
+◇ Test "Image-level round-trip preserves pixel values" started.
+◇ Test "Black pixel converts to YCbCr correctly" started.
+◇ Test "Sampling factors match expected values" started.
+◇ Test "White pixel converts to YCbCr correctly" started.
+◇ Test outOfPrecisionWriteInvalidatesDestination() started.
+◇ Test case passing 2 arguments precision → 8, components → 1 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test "XYB samples have the expected structure (neutral gray ⇒ X≈mid, B−Y≈mid)" started.
+◇ Test case passing 1 argument pad → 0 to decodeWritesTheCallerDestinationExactly(pad:) started.
+◇ Test "RGB → YCbCr → RGB round-trips within tolerance" started.
+◇ Test case passing 2 arguments precision → 8, components → 3 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 2 arguments precision → 12, components → 1 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 1 argument pad → 6 to decodeWritesTheCallerDestinationExactly(pad:) started.
+◇ Test case passing 2 arguments sourcePadding → 0, backend → .scalarCPU to joinedInternalTilesMatchSerialOutputAndPreservePadding(sourcePadding:backend:) started.
+◇ Test case passing 2 arguments precision → 12, components → 3 to borrowedPixelsMatchPackedKernels(precision:components:) started.
+◇ Test case passing 1 argument pad → 64 to decodeWritesTheCallerDestinationExactly(pad:) started.
+◇ Test case passing 2 arguments sourcePadding → 0, backend → .accelerated to joinedInternalTilesMatchSerialOutputAndPreservePadding(sourcePadding:backend:) started.
+◇ Test invalidDestinationIsRejectedBeforeWriting() started.
+◇ Test case passing 2 arguments sourcePadding → 5, backend → .scalarCPU to joinedInternalTilesMatchSerialOutputAndPreservePadding(sourcePadding:backend:) started.
+✔ Test abandonedDestinationInvalidatesItsReservedOwner() passed after 0.001 seconds.
+◇ Test boundedCompleteCodestreamAndPadding() started.
+◇ Test independentChroma(_:) started.
+◇ Test case passing 2 arguments sourcePadding → 5, backend → .accelerated to joinedInternalTilesMatchSerialOutputAndPreservePadding(sourcePadding:backend:) started.
+◇ Test centredChromaAgreesAcrossWorkerLimits() started.
+◇ Test rawRGBIdentifiersAndSourceOverride() started.
+◇ Test sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() started.
+◇ Test rawRGBAdobe(precision:) started.
+✔ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() passed after 0.002 seconds.
+✔ Test "Grayscale to Y plane preserves values" passed after 0.002 seconds.
+✔ Test failedFillInvalidatesDestination() passed after 0.002 seconds.
+✔ Test "Downsampling and upsampling preserves dimensions" passed after 0.002 seconds.
+✔ Test preflightRejectionLeavesTheDestinationReusable() passed after 0.002 seconds.
+✔ Test mismatchedDestinationsAreRefused() passed after 0.002 seconds.
+✔ Test "sRGB → scaled-XYB → sRGB round-trips near-exactly (exact opsin inverse)" passed after 0.002 seconds.
+✔ Test aFailureDuringTheWriteInvalidatesTheDestination() passed after 0.002 seconds.
+✔ Test metadataAndDestinationLimitsUseCallerBudget() passed after 0.002 seconds.
+✔ Test theAllocatingConvenienceAgreesWithTheDestinationPath() passed after 0.002 seconds.
+✔ Test pairsKeepIntegerRoundingAtOddEdgesAndNarrowPlanes() passed after 0.002 seconds.
+✔ Test "Horizontal downsampling halves width" passed after 0.002 seconds.
+✔ Test "Image-level RGB to YCbCr conversion has correct dimensions" passed after 0.002 seconds.
+✔ Test aDestinationGrantsOneWriteOnly() passed after 0.002 seconds.
+✔ Test decodeWritesTheCallerDestinationExactly(pad:) with 3 test cases passed after 0.002 seconds.
+◇ Test case passing 1 argument fixture → baseline_422_64x18 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_7x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_3x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_4x3 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_422_1x1 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_64x18 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_7x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_3x5 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_4x3 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_420_1x1 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → progressive_422_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → progressive_420_63x19 to independentChroma(_:) started.
+◇ Test case passing 1 argument fixture → baseline_444_63x19 to independentChroma(_:) started.
+✔ Test "4:4:4 sampling returns original dimensions" passed after 0.003 seconds.
+✔ Test "Image-level round-trip preserves pixel values" passed after 0.003 seconds.
+✔ Test cancellationInProviderFinalisationPreventsPublication(_:) with 2 test cases passed after 0.003 seconds.
+✔ Test "Black pixel converts to YCbCr correctly" passed after 0.003 seconds.
+✔ Test "Sampling factors match expected values" passed after 0.003 seconds.
+◇ Test case passing 1 argument precision → 8 to rawRGBAdobe(precision:) started.
+✔ Test "White pixel converts to YCbCr correctly" passed after 0.003 seconds.
+◇ Test case passing 1 argument precision → 12 to rawRGBAdobe(precision:) started.
+✔ Test "XYB samples have the expected structure (neutral gray ⇒ X≈mid, B−Y≈mid)" passed after 0.003 seconds.
+✔ Test outOfPrecisionWriteInvalidatesDestination() passed after 0.003 seconds.
+✔ Test "RGB → YCbCr → RGB round-trips within tolerance" passed after 0.003 seconds.
+✔ Test nonFiniteConstantIsRejectedBeforeDestinationWrites() passed after 0.003 seconds.
+✔ Test cancellationDuringSyntheticRowsInvalidatesDestination() passed after 0.004 seconds.
+✔ Test invalidDestinationIsRejectedBeforeWriting() passed after 0.002 seconds.
+✔ Test boundedCompleteCodestreamAndPadding() passed after 0.002 seconds.
+✔ Test joinedRowsMatchReferenceForEachSamplingDirection() passed after 0.003 seconds.
+✔ Suite "Contract image layer" passed after 0.004 seconds.
+✔ Suite "Byte-order sample access" passed after 0.004 seconds.
+✔ Test laterEntropyFailureInvalidatesStreamedDestination() passed after 0.003 seconds.
+✔ Suite "Color Space – RGB/YCbCr/XYB Conversions and Chroma Sampling" passed after 0.004 seconds.
+✔ Suite ConstantDCTWriterTests passed after 0.004 seconds.
+✔ Suite ScopedACDecoderTests passed after 0.003 seconds.
+✔ Suite CentredChromaPairTests passed after 0.004 seconds.
+✔ Test independentChroma(_:) with 15 test cases passed after 0.002 seconds.
+✔ Suite BoundedDCTWorkspaceTests passed after 0.004 seconds.
+✔ Test centredChromaAgreesAcrossWorkerLimits() passed after 0.002 seconds.
+✔ Test rawRGBIdentifiersAndSourceOverride() passed after 0.002 seconds.
+✔ Test joinedInternalTilesMatchSerialOutputAndPreservePadding(sourcePadding:backend:) with 4 test cases passed after 0.005 seconds.
+✔ Suite BoundedRGBOutputTests passed after 0.005 seconds.
+✔ Test rawRGBAdobe(precision:) with 2 test cases passed after 0.003 seconds.
+✔ Test sequentialAndLosslessScanHuffmanSnapshotsSurviveTrailingDHT() passed after 0.003 seconds.
+✔ Suite JPEGDecodeParityTests passed after 0.005 seconds.
+✔ Test borrowedPixelsMatchPackedKernels(precision:components:) with 4 test cases passed after 0.011 seconds.
+✔ Suite SharedDCTStorageTests passed after 0.012 seconds.
+✔ Test run with 38 tests in 10 suites passed after 0.012 seconds.

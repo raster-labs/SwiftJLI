@@ -1,0 +1,28 @@
+diff --git a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+index 6475994..95b1e84 100644
+--- a/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
++++ b/Sources/SwiftJLI/Native/Entropy/JLIBitStream.swift
+@@ -191,8 +191,8 @@ struct BitReader {
+                 .loadUnaligned(as: UInt64.self))
+         }
+         guard !Self.hasFFByte(word) else { return false }
+-        let k = (64 - bitsAvailable) >> 3          // whole bytes that fit (≥ 6 here)
+-        // Refill callers have 0...15 buffered bits. With an empty buffer,
++        let k = (64 - bitsAvailable) >> 3          // whole bytes that fit (≥ 5 here)
++        // Refill callers have 0...22 buffered bits. With an empty buffer,
+         // all eight bytes replace it; otherwise both shifts are within 1...63.
+         // Handle the 64-bit splice explicitly before using masked shifts.
+         if bitsAvailable == 0 {
+@@ -275,7 +275,11 @@ struct BitReader {
+             bitsAvailable -= length
+             return category == 0 ? 0 : -32768
+         }
+-        guard category < 16, bitsAvailable >= length + category else { return nil }
++        guard category < 16 else { return nil }
++        // A category can need up to 15 magnitude bits after its short code.
++        // Extend only through an FF-free bulk splice; marker/stuffed tails
++        // retain the ordinary symbol/value fallback without consuming bits.
++        if bitsAvailable < length + category, !bulkRefill() { return nil }
+         bitsAvailable -= length + category
+         let magnitude = Int32((bitBuffer >> bitsAvailable) & ((1 << category) - 1))
+         return magnitude < (1 << (category - 1)) ? magnitude - ((1 << category) - 1) : magnitude

@@ -1,0 +1,9 @@
+{
+  "status": "Rejected initial vector form; no integration",
+  "candidate": "fd4b2e1c272fcc7f60ce56e640580251d072091d",
+  "baselineProduction": "704ddae; source14f3501 only adds comments",
+  "validation": "56 tests /11 suites passed;12 native fixtures x2 paired rounds exact SHA256 and byte count. Source audit found no correctness/binding defect.",
+  "performance": "DCT512 about1.9-2.0x slower;DCT2048 about1.8-1.9x slower;noise8 about2.2x slower. Flat/colour controls mostly near baseline. Provisional shared-host timings.",
+  "diagnosis": "Release assembly emits vector FRINTA.4s but calls outlined pointwiseMax, pointwiseMin and SIMD4<UInt16>.init per four pixels. Removing these three calls is a separate possible source-only retry, not measured here.",
+  "skipped": "Lossless matrix/RSS/sanitizers omitted because DCT performance gate failed. Pipeline buffers, arithmetic and production remain unchanged."
+}

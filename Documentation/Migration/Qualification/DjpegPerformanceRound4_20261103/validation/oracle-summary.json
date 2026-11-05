@@ -1,0 +1,47 @@
+{
+  "sourceRevision": "82d4b25510daceeddb40d1a2395e683203d76526",
+  "summaryProvenance": "Derived from unchanged archived oracle logs and validation.json; the oracle scripts emit logs, not JSON reports.",
+  "oracleVersion": "libjpeg-turbo 3.2.1 (build 20261026)",
+  "checks": [
+    {
+      "name": "lossless-oracle",
+      "command": [
+        "python3",
+        "Scripts/verify-lossless-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round4-lossless-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-oracle-build",
+        "--cjpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg"
+      ],
+      "exitCode": 0,
+      "log": "lossless-oracle.log",
+      "profilesPassedInBothDirections": 210,
+      "observedMaximumSampleDifference": 0,
+      "comparisonPolicy": "Exact samples after the declared point transform."
+    },
+    {
+      "name": "dct-oracle",
+      "command": [
+        "python3",
+        "Scripts/verify-dct-interop.py",
+        "--output-dir",
+        "/private/tmp/swiftjli-round4-dct-oracle",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-oracle-build",
+        "--cjpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/cjpeg",
+        "--djpeg",
+        "/opt/homebrew/Cellar/jpeg-turbo/3.2.1/bin/djpeg"
+      ],
+      "exitCode": 0,
+      "log": "dct-oracle.log",
+      "profilesPassedInBothDirections": 48,
+      "observedMaximumSampleDifference": 2,
+      "comparisonPolicy": "Unchanged absolute sample tolerance: 2 for 8-bit; 4 for 12-bit."
+    }
+  ]
+}

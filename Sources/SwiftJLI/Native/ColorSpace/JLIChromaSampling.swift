@@ -248,25 +248,63 @@ enum ChromaSampling {
                         try NativeOperation.check()
                         let cy = min(v2 ? y / 2 : y, height - 1)
                         let ny = min(max(cy + (y.isMultiple(of: 2) ? -1 : 1), 0), height - 1)
+                        let currentRow = input + cy * width
+                        let neighbourRow = input + ny * width
+                        let destination = output + y * targetWidth
+                        // A pair of output pixels shares its centre sample.
+                        // Carry the previous/current/next vertical sums so each
+                        // source column is converted once. The integer filter
+                        // and alternating rounding biases are unchanged.
+                        if fancy && h2 && v2 {
+                            var current = 3 * Int(currentRow[0]) + Int(neighbourRow[0])
+                            var previous = current
+                            var column = 0
+                            var x = 0
+                            while x < targetWidth {
+                                let nextColumn = min(column + 1, width - 1)
+                                let next = 3 * Int(currentRow[nextColumn]) + Int(neighbourRow[nextColumn])
+                                destination[x] = Float((3 * current + previous + 8) >> 4)
+                                if x + 1 < targetWidth {
+                                    destination[x + 1] = Float((3 * current + next + 7) >> 4)
+                                }
+                                previous = current
+                                current = next
+                                column = nextColumn
+                                x += 2
+                            }
+                            continue
+                        }
+                        if fancy && h2 {
+                            var current = Int(currentRow[0])
+                            var previous = current
+                            var column = 0
+                            var x = 0
+                            while x < targetWidth {
+                                let nextColumn = min(column + 1, width - 1)
+                                let next = Int(currentRow[nextColumn])
+                                destination[x] = Float((3 * current + previous + 1) >> 2)
+                                if x + 1 < targetWidth {
+                                    destination[x + 1] = Float((3 * current + next + 2) >> 2)
+                                }
+                                previous = current
+                                current = next
+                                column = nextColumn
+                                x += 2
+                            }
+                            continue
+                        }
+                        if fancy {
+                            let bias = y.isMultiple(of: 2) ? 1 : 2
+                            for x in 0..<targetWidth {
+                                let column = min(x, width - 1)
+                                destination[x] = Float((3 * Int(currentRow[column])
+                                    + Int(neighbourRow[column]) + bias) >> 2)
+                            }
+                            continue
+                        }
                         for x in 0..<targetWidth {
                             let cx = min(h2 ? x / 2 : x, width - 1)
-                            let nx = min(max(cx + (x.isMultiple(of: 2) ? -1 : 1), 0), width - 1)
-                            let current = Int(input[cy * width + cx])
-                            let value: Int
-                            if !fancy {
-                                value = current
-                            } else if h2 && v2 {
-                                let near = 3 * current + Int(input[ny * width + cx])
-                                let far = 3 * Int(input[cy * width + nx]) + Int(input[ny * width + nx])
-                                value = (3 * near + far + (x.isMultiple(of: 2) ? 8 : 7)) >> 4
-                            } else if h2 {
-                                value = (3 * current + Int(input[cy * width + nx])
-                                         + (x.isMultiple(of: 2) ? 1 : 2)) >> 2
-                            } else {
-                                value = (3 * current + Int(input[ny * width + cx])
-                                         + (y.isMultiple(of: 2) ? 1 : 2)) >> 2
-                            }
-                            output[y * targetWidth + x] = Float(value)
+                            destination[x] = Float(Int(currentRow[cx]))
                         }
                     }
                 }

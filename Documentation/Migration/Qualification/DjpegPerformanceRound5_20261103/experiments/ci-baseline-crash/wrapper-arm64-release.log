@@ -1,0 +1,109 @@
+Building for production...
+[1 / 4]
+[2 / 5] SwiftJLI
+[3 / 6] SwiftJLI
+[11 / 17] swiftjli-cli-product
+[13 / 19] swiftjli-cli-product
+[15 / 19] swiftjli-cli-product
+/private/tmp/swiftjli-round5-ci/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-round5-ci/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:37:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 35 |                     var reader = BitReader(data: writer.data)
+ 36 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 37 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 38 |                     try destination.withUnsafeMutableBufferPointer {
+ 39 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+[15 / 19] SwiftJLITests-product
+[19 / 20] SwiftJLITests-product
+[23 / 25] SwiftJLITests-product
+[24 / 24] swiftjli-cli-product
+Build complete! (43.94 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite BoundedDCTWorkspaceTests started.
+◇ Suite NativeExecutionTests started.
+◇ Test cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Suite "Encoder & Decoder – Full JPEG Pipeline" started.
+◇ Suite StreamingWorkspaceAdmissionTests started.
+◇ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Suite CLISynchronousExecutionTests started.
+◇ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test "Parallel Step-7 reconstruction is bit-identical to serial (large image)" started.
+◇ Test case passing 1 argument point → .sealing to cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() started.
+◇ Test case passing 1 argument point → .validatingSealedStorage to cancellationInProviderFinalisationPreventsPublication(_:) started.
+◇ Test laterEntropyFailureInvalidatesStreamedDestination() started.
+◇ Test deadlineReachesJoinedWorkers() started.
+◇ Test nonStreamingOperationsRetainTheirFullReservations() started.
+◇ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument precision → 8 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test failureJoinsEveryStartedWorker() started.
+◇ Test cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+◇ Test case passing 1 argument precision → 8 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test case passing 1 argument precision → 12 to reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) started.
+◇ Test fractionalDeadlineStillExpires() started.
+◇ Test case passing 1 argument precision → 12 to tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) started.
+◇ Test nestedHostCancellationRestoresOuterPollAndReleasesCapturesAfterThrow() started.
+◇ Test automaticThresholdAndCheckedGeometryCannotUnderstateWorkspace() started.
+◇ Test hostDeadlineAndMalformedCategoriesRemainDistinct() started.
+◇ Test hostCancellationReachesJoinedWorkersWithoutASwiftTask() started.
+◇ Test hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test nestedHostScopeRetainsTaskCancellationForJoinedWorkers() started.
+◇ Test case passing 1 argument seconds → 120.0 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument progressive → true to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test case passing 1 argument progressive → false to publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) started.
+◇ Test case passing 1 argument seconds → 1e+100 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to finiteDeadlinesDoNotTrap(seconds:) started.
+◇ Test case passing 1 argument limit → 1 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument limit → 2 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument limit → 4 to joinedWorkersRespectLimitAndBackend(limit:) started.
+◇ Test case passing 1 argument restarts → false to publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test case passing 1 argument restarts → true to publicPredictiveParallelismPreservesBytes(restarts:) started.
+◇ Test case passing 1 argument seconds → 1.7976931348623157e+308 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 2 arguments precision → 8, floating → false to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+◇ Test case passing 2 arguments precision → 8, floating → true to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+◇ Test case passing 1 argument seconds → 10.0 to cancellationReachesDispatchWorkersAndJoins(seconds:) started.
+◇ Test case passing 2 arguments precision → 12, floating → false to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+◇ Test case passing 2 arguments precision → 12, floating → true to exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) started.
+✔ Test tiledGreyscaleConversionPreservesTiesAndFloatBits(precision:) with 2 test cases passed after 0.004 seconds.
+◇ Test case passing 1 argument lossy → false to hostAdaptersPreserveBytesAndReports(lossy:) started.
+◇ Test case passing 1 argument lossy → true to hostAdaptersPreserveBytesAndReports(lossy:) started.
+✔ Test deadlineReachesJoinedWorkers() passed after 0.005 seconds.
+✔ Test directGreyscaleRejectsInvalidDestinationBeforeWriting() passed after 0.005 seconds.
+✔ Test finiteDeadlinesDoNotTrap(seconds:) with 3 test cases passed after 0.005 seconds.
+✔ Test fractionalDeadlineStillExpires() passed after 0.005 seconds.
+✔ Test nestedHostCancellationRestoresOuterPollAndReleasesCapturesAfterThrow() passed after 0.005 seconds.
+✔ Test exactBudgetsIncludePaddingAndDenyBeforeOutputBorrow(precision:floating:) with 4 test cases passed after 0.005 seconds.
+✔ Test failureJoinsEveryStartedWorker() passed after 0.005 seconds.
+✔ Test hostDeadlineAndMalformedCategoriesRemainDistinct() passed after 0.005 seconds.
+✔ Test hostAdaptersPreserveBytesAndReports(lossy:) with 2 test cases passed after 0.006 seconds.
+✔ Test automaticThresholdAndCheckedGeometryCannotUnderstateWorkspace() passed after 0.006 seconds.
+✔ Test cancellationInProviderFinalisationPreventsPublication(_:) with 2 test cases passed after 0.006 seconds.
+✔ Test laterEntropyFailureInvalidatesStreamedDestination() passed after 0.006 seconds.
+✔ Test nonStreamingOperationsRetainTheirFullReservations() passed after 0.006 seconds.
+✔ Test hostCancellationReachesJoinedWorkersWithoutASwiftTask() passed after 0.006 seconds.
+✔ Suite StreamingWorkspaceAdmissionTests passed after 0.006 seconds.
+✔ Test cancellationReachesDispatchWorkersAndJoins(seconds:) with 2 test cases passed after 0.006 seconds.
+✔ Test nestedHostScopeRetainsTaskCancellationForJoinedWorkers() passed after 0.007 seconds.
+✔ Suite CLISynchronousExecutionTests passed after 0.007 seconds.
+✔ Test publicPredictiveParallelismPreservesBytes(restarts:) with 2 test cases passed after 0.022 seconds.
+✔ Test joinedWorkersRespectLimitAndBackend(limit:) with 3 test cases passed after 0.029 seconds.
+✔ Test "Parallel Step-7 reconstruction is bit-identical to serial (large image)" passed after 0.057 seconds.
+✔ Suite "Encoder & Decoder – Full JPEG Pipeline" passed after 0.058 seconds.
+✔ Test publicDCTWorkerCountsPreserveBackendAndBytes(progressive:) with 2 test cases passed after 0.064 seconds.
+✔ Suite NativeExecutionTests passed after 0.065 seconds.
+✔ Test reusedWorkerScratchPreservesOddEdgesAndCallerPadding(precision:) with 2 test cases passed after 0.102 seconds.
+✔ Suite BoundedDCTWorkspaceTests passed after 0.102 seconds.
+✔ Test run with 22 tests in 5 suites passed after 0.102 seconds.

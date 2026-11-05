@@ -1,0 +1,3839 @@
+{
+  "status": "passed",
+  "startedUTC": "2026-11-03T12:44:38.635488+00:00",
+  "method": "Normal release CLI builds; unchanged source except macOS release executable-only linker settings. Fresh process per observation; five warmups and twenty timed observations per binary/case/round. Two rounds with alternating paired binary order. Wall time includes Darwin time-l wrapper, launch, read, decode, PNM output to /dev/null and exit. Full PNM bytes must match before each round. No dropped samples or relaxed quality thresholds.",
+  "baselineRevision": "bbb0b1a9a602807643fc254fb4e0d54a162d5ae8",
+  "baselineSourceNote": "Production sources identical to prior qualified 0a8acd7; baseline products are from round4 final build.",
+  "candidateRevision": "bbb0b1a9a602807643fc254fb4e0d54a162d5ae8 plus recorded Package.swift patch",
+  "binarySHA256": {
+    "baseline": "20f8c8858c4a0ddfd89a1eb89e6390e5e88e1a7d77bb5e6acefaac786a7916b8",
+    "candidate": "d834691ba950288e4f8defd66dcd9c2d9f40a6fe22261bc43b7abf603c603127"
+  },
+  "manifestSHA256": "0926d5a57c2cfb99140ef0925ac0201681a55feb0b401e91439c22865b20c9f3",
+  "fixtureSHA256": {
+    "flat-19.jpg": "92804f8c1d4c4bf07d6bc588d8fb2b3d41894258576ff8dd25b5934d9e563aaf",
+    "flat-512.jpg": "06e35ec094133b8d5de988ea2556e891fba3d49ce85f12508a263742a585d1f2",
+    "ramp-19.jpg": "19ae64fcda43b0616d558a86bb99fce0064b39fe87c0d24938a50da18e74e39a",
+    "ramp-512.jpg": "11a34124206ad947b1fa743fb6a7131132b6ed31eacb5c607376049f31a8593f",
+    "noise-19.jpg": "fa5b17f13ce554a56836520ae66857fa2dda30c94d2aff69e17775d318640bfd",
+    "noise-512.jpg": "75ba8d63e621e504fc0fc4163836c51f07152c6862d64512e0510c198a21b269",
+    "mixed-19.jpg": "e1616e4053e8b2705d5ff07f501efa6243615403356dd35157ebf1d587bebcf0",
+    "mixed-512.jpg": "7690f836d0d50a8694f7e374410a4808402cbdfbeb22a5c14b73a159d7bfecaf",
+    "dct12-512.jpg": "2554c3991127238d613abdea0eeac10eb79ac8bafb7e8e9c7a7d37a695e04ca7"
+  },
+  "powerBefore": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t100%; charged; 0:00 remaining present: true\n",
+  "hostLoadBefore": [
+    {
+      "pid": 413,
+      "cpuPercent": 46.8,
+      "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+    },
+    {
+      "pid": 3679,
+      "cpuPercent": 10.6,
+      "process": "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"
+    },
+    {
+      "pid": 3937,
+      "cpuPercent": 61.2,
+      "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+    },
+    {
+      "pid": 13390,
+      "cpuPercent": 15.4,
+      "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+    },
+    {
+      "pid": 19833,
+      "cpuPercent": 24.5,
+      "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+    },
+    {
+      "pid": 20318,
+      "cpuPercent": 20.5,
+      "process": "/Users/pushparaj/.local/bin/limactl"
+    },
+    {
+      "pid": 20329,
+      "cpuPercent": 79.2,
+      "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+    },
+    {
+      "pid": 20350,
+      "cpuPercent": 11.8,
+      "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+    },
+    {
+      "pid": 22258,
+      "cpuPercent": 20.6,
+      "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+    }
+  ],
+  "records": [
+    {
+      "round": 1,
+      "fixture": "flat-19.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+      "outputBytes": 737,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 46.8,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3679,
+          "cpuPercent": 10.6,
+          "process": "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 50.3,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 13.8,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 22.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 82.0,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 17.9,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 12.4,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.00803275,
+            0.007427542,
+            0.007802625,
+            0.007456375,
+            0.007423333,
+            0.008130291,
+            0.007493917,
+            0.007816875,
+            0.007456625,
+            0.007074916,
+            0.00721675,
+            0.007123334,
+            0.007552375,
+            0.007629083,
+            0.006743792,
+            0.00687075,
+            0.007968292,
+            0.007068917,
+            0.007628417,
+            0.007124958
+          ],
+          "median": 0.0074565,
+          "p95": 0.00803275,
+          "minimum": 0.006743792,
+          "maximum": 0.008130291
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6766592,
+            6750208,
+            6750208,
+            6750208,
+            6799360,
+            6766592,
+            6750208,
+            6766592,
+            6750208,
+            6750208,
+            6750208,
+            6766592,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6782976,
+            6766592,
+            6766592
+          ],
+          "median": 6750208.0,
+          "p95": 6782976,
+          "minimum": 6750208,
+          "maximum": 6799360
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007584625,
+            0.00713975,
+            0.007396416,
+            0.007486875,
+            0.007562292,
+            0.007501333,
+            0.007474917,
+            0.007275792,
+            0.007421167,
+            0.007373125,
+            0.006901959,
+            0.006716708,
+            0.007151083,
+            0.007236333,
+            0.007071792,
+            0.006861,
+            0.006836875,
+            0.007022166,
+            0.007517125,
+            0.006883375
+          ],
+          "median": 0.0072560625,
+          "p95": 0.007562292,
+          "minimum": 0.006716708,
+          "maximum": 0.007584625
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6684672,
+            6684672,
+            6717440,
+            6668288,
+            6684672,
+            6717440,
+            6684672,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672
+          ],
+          "median": 6684672.0,
+          "p95": 6717440,
+          "minimum": 6668288,
+          "maximum": 6717440
+        }
+      }
+    },
+    {
+      "round": 1,
+      "fixture": "flat-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/flat-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/flat-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+      "outputBytes": 524305,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 50.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 15.2,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 11.3,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 12.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 21.4,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.1,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 83.6,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 16.0,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 13.0,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007261167,
+            0.007849875,
+            0.007686542,
+            0.007949292,
+            0.007804834,
+            0.007214458,
+            0.006989959,
+            0.007835042,
+            0.0065575,
+            0.007200084,
+            0.007632666,
+            0.008114042,
+            0.008104083,
+            0.007507542,
+            0.007762208,
+            0.007610417,
+            0.007460084,
+            0.00807075,
+            0.007571708,
+            0.007955292
+          ],
+          "median": 0.007659604,
+          "p95": 0.008104083,
+          "minimum": 0.0065575,
+          "maximum": 0.008114042
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7421952,
+            7405568,
+            7405568,
+            7405568,
+            7405568,
+            7438336,
+            7405568,
+            7503872,
+            7405568,
+            7405568,
+            7405568,
+            7405568,
+            7405568,
+            7405568,
+            7405568,
+            7405568,
+            7405568,
+            7421952,
+            7405568,
+            7405568
+          ],
+          "median": 7405568.0,
+          "p95": 7438336,
+          "minimum": 7405568,
+          "maximum": 7503872
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007114542,
+            0.007968209,
+            0.008134792,
+            0.007532666,
+            0.007329667,
+            0.007227,
+            0.007418,
+            0.0072705,
+            0.006970916,
+            0.006944709,
+            0.007470584,
+            0.007436417,
+            0.006617542,
+            0.007475916,
+            0.007635,
+            0.0074065,
+            0.006762,
+            0.007383542,
+            0.007522083,
+            0.007442875
+          ],
+          "median": 0.0074122500000000004,
+          "p95": 0.007968209,
+          "minimum": 0.006617542,
+          "maximum": 0.008134792
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7340032,
+            7340032,
+            7340032,
+            7340032,
+            7372800,
+            7340032,
+            7340032,
+            7340032,
+            7340032,
+            7356416,
+            7340032,
+            7340032,
+            7340032,
+            7372800,
+            7340032,
+            7340032,
+            7340032,
+            7340032,
+            7340032,
+            7340032
+          ],
+          "median": 7340032.0,
+          "p95": 7372800,
+          "minimum": 7340032,
+          "maximum": 7372800
+        }
+      }
+    },
+    {
+      "round": 1,
+      "fixture": "ramp-19.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+      "outputBytes": 737,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 51.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 13.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 22.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.2,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 82.1,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.5,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 16.9,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 13.6,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007907209,
+            0.007498583,
+            0.007124875,
+            0.006977583,
+            0.00799575,
+            0.007368667,
+            0.007433084,
+            0.007557167,
+            0.007352125,
+            0.007009042,
+            0.007713625,
+            0.007399125,
+            0.006899,
+            0.007492791,
+            0.006598375,
+            0.006532,
+            0.007739916,
+            0.007425541,
+            0.007774583,
+            0.006966792
+          ],
+          "median": 0.007412333,
+          "p95": 0.007907209,
+          "minimum": 0.006532,
+          "maximum": 0.00799575
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6782976,
+            6750208,
+            6750208,
+            6750208,
+            6766592,
+            6782976,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6766592,
+            6750208,
+            6766592,
+            6782976,
+            6799360,
+            6750208,
+            6750208
+          ],
+          "median": 6750208.0,
+          "p95": 6782976,
+          "minimum": 6750208,
+          "maximum": 6799360
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007584,
+            0.007422583,
+            0.007679333,
+            0.007320125,
+            0.00769125,
+            0.006751042,
+            0.007509167,
+            0.007439333,
+            0.007211667,
+            0.007513417,
+            0.007476125,
+            0.007433292,
+            0.007228334,
+            0.006859,
+            0.007117292,
+            0.006862458,
+            0.007346292,
+            0.00760075,
+            0.0078585,
+            0.007855958
+          ],
+          "median": 0.0074363125,
+          "p95": 0.007855958,
+          "minimum": 0.006751042,
+          "maximum": 0.0078585
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672
+          ],
+          "median": 6684672.0,
+          "p95": 6717440,
+          "minimum": 6684672,
+          "maximum": 6717440
+        }
+      }
+    },
+    {
+      "round": 1,
+      "fixture": "ramp-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/ramp-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/ramp-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+      "outputBytes": 524305,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 55.0,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 1192,
+          "cpuPercent": 31.1,
+          "process": "/usr/libexec/trustd"
+        },
+        {
+          "pid": 3901,
+          "cpuPercent": 10.5,
+          "process": "/Applications/ChatGPT.app/Contents/MacOS/ChatGPT"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 14.0,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 11.6,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 20.4,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 83.0,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 15.6,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 14.1,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.008109042,
+            0.008444333,
+            0.008503291,
+            0.0083965,
+            0.008474833,
+            0.008313333,
+            0.007528917,
+            0.007159209,
+            0.008863333,
+            0.007714,
+            0.008592625,
+            0.008453625,
+            0.008761792,
+            0.008127167,
+            0.007772834,
+            0.008662167,
+            0.007883834,
+            0.008543458,
+            0.00800825,
+            0.008562958
+          ],
+          "median": 0.0084204165,
+          "p95": 0.008761792,
+          "minimum": 0.007159209,
+          "maximum": 0.008863333
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7651328,
+            7618560,
+            7618560,
+            7634944,
+            7618560,
+            7634944,
+            7634944,
+            7618560,
+            7618560,
+            7618560,
+            7684096,
+            7618560,
+            7618560,
+            7634944,
+            7634944,
+            7667712,
+            7618560,
+            7684096,
+            7618560,
+            7651328
+          ],
+          "median": 7626752.0,
+          "p95": 7684096,
+          "minimum": 7618560,
+          "maximum": 7684096
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007983333,
+            0.008808708,
+            0.007830708,
+            0.008085541,
+            0.00867325,
+            0.009172209,
+            0.007961084,
+            0.00838,
+            0.007902792,
+            0.0085345,
+            0.007923375,
+            0.0080225,
+            0.007829959,
+            0.007304916,
+            0.007943625,
+            0.008221,
+            0.00821625,
+            0.008412125,
+            0.008577834,
+            0.008222625
+          ],
+          "median": 0.0081508955,
+          "p95": 0.008808708,
+          "minimum": 0.007304916,
+          "maximum": 0.009172209
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7602176,
+            7569408,
+            7569408,
+            7602176,
+            7602176,
+            7569408,
+            7569408,
+            7634944,
+            7569408,
+            7634944,
+            7569408,
+            7569408,
+            7569408,
+            7569408,
+            7569408,
+            7569408,
+            7667712,
+            7569408,
+            7602176,
+            7569408
+          ],
+          "median": 7569408.0,
+          "p95": 7634944,
+          "minimum": 7569408,
+          "maximum": 7667712
+        }
+      }
+    },
+    {
+      "round": 1,
+      "fixture": "noise-19.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+      "outputBytes": 737,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 61.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3901,
+          "cpuPercent": 12.4,
+          "process": "/Applications/ChatGPT.app/Contents/MacOS/ChatGPT"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 29.5,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 14.1,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 12.1,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 20.5,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 83.2,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.7,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 15.0,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 13.1,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007343292,
+            0.007960333,
+            0.007992542,
+            0.007567458,
+            0.007831166,
+            0.007619917,
+            0.00793575,
+            0.007955416,
+            0.0068415,
+            0.007251667,
+            0.007660584,
+            0.007804417,
+            0.007125375,
+            0.006393417,
+            0.006691084,
+            0.007734167,
+            0.007396583,
+            0.008509916,
+            0.007937375,
+            0.008035875
+          ],
+          "median": 0.0076973755,
+          "p95": 0.008035875,
+          "minimum": 0.006393417,
+          "maximum": 0.008509916
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6750208,
+            6782976,
+            6750208,
+            6799360,
+            6750208,
+            6766592,
+            6766592,
+            6750208,
+            6750208,
+            6766592,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6766592,
+            6782976,
+            6766592,
+            6766592
+          ],
+          "median": 6750208.0,
+          "p95": 6782976,
+          "minimum": 6750208,
+          "maximum": 6799360
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007926041,
+            0.007699459,
+            0.007638709,
+            0.00782275,
+            0.00743875,
+            0.007777875,
+            0.007670417,
+            0.007962917,
+            0.007824291,
+            0.007500833,
+            0.0076765,
+            0.00783225,
+            0.00776125,
+            0.007017417,
+            0.007554,
+            0.00781,
+            0.007880875,
+            0.007267167,
+            0.007782209,
+            0.007726875
+          ],
+          "median": 0.0077440625,
+          "p95": 0.007926041,
+          "minimum": 0.007017417,
+          "maximum": 0.007962917
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6684672,
+            6684672,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6668288,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6684672
+          ],
+          "median": 6684672.0,
+          "p95": 6717440,
+          "minimum": 6668288,
+          "maximum": 6717440
+        }
+      }
+    },
+    {
+      "round": 1,
+      "fixture": "noise-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/noise-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/noise-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+      "outputBytes": 524305,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 55.0,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 870,
+          "cpuPercent": 11.4,
+          "process": "/usr/libexec/spotlightknowledged.updater"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 20.6,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 11.3,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 20.8,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 20.8,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 80.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.0,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 17.3,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 13.6,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.009484125,
+            0.010245458,
+            0.010390083,
+            0.009898292,
+            0.009903792,
+            0.010388666,
+            0.009758625,
+            0.010415625,
+            0.009971417,
+            0.010664084,
+            0.010687958,
+            0.009271167,
+            0.009528584,
+            0.010835042,
+            0.010924208,
+            0.008685083,
+            0.010849541,
+            0.010567917,
+            0.010367625,
+            0.010727
+          ],
+          "median": 0.0103781455,
+          "p95": 0.010849541,
+          "minimum": 0.008685083,
+          "maximum": 0.010924208
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7880704,
+            7946240,
+            7880704,
+            7880704,
+            7880704,
+            7897088,
+            7880704,
+            7913472,
+            7880704,
+            7880704,
+            7897088,
+            7880704,
+            7880704,
+            7880704,
+            7880704,
+            7880704,
+            7880704,
+            7880704,
+            7880704,
+            7880704
+          ],
+          "median": 7880704.0,
+          "p95": 7913472,
+          "minimum": 7880704,
+          "maximum": 7946240
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.010502375,
+            0.01057,
+            0.009720375,
+            0.009784333,
+            0.009583458,
+            0.010844792,
+            0.010381833,
+            0.010405083,
+            0.010655792,
+            0.010476708,
+            0.010933375,
+            0.0102625,
+            0.010694084,
+            0.01025825,
+            0.010076708,
+            0.010406625,
+            0.010356917,
+            0.010386333,
+            0.010352416,
+            0.009910583
+          ],
+          "median": 0.010384082999999999,
+          "p95": 0.010844792,
+          "minimum": 0.009583458,
+          "maximum": 0.010933375
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7831552,
+            7831552,
+            7815168,
+            7831552,
+            7831552,
+            7831552,
+            7815168,
+            7831552,
+            7831552,
+            7831552,
+            7897088,
+            7897088,
+            7831552,
+            7831552,
+            7897088,
+            7831552,
+            7831552,
+            7831552,
+            7831552,
+            7831552
+          ],
+          "median": 7831552.0,
+          "p95": 7897088,
+          "minimum": 7815168,
+          "maximum": 7897088
+        }
+      }
+    },
+    {
+      "round": 1,
+      "fixture": "mixed-19.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+      "outputBytes": 737,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 52.6,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 10.2,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 12.3,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 14.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 23.0,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 20.9,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 84.4,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 18.0,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 11.0,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007299083,
+            0.007650334,
+            0.007140625,
+            0.007326958,
+            0.007757,
+            0.0076215,
+            0.007575166,
+            0.007537917,
+            0.008094625,
+            0.007642875,
+            0.0071755,
+            0.007688875,
+            0.006900666,
+            0.00747925,
+            0.008044625,
+            0.007718167,
+            0.007596083,
+            0.007348958,
+            0.0069735,
+            0.0071285
+          ],
+          "median": 0.0075565415,
+          "p95": 0.008044625,
+          "minimum": 0.006900666,
+          "maximum": 0.008094625
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6750208,
+            6750208,
+            6750208,
+            6782976,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6782976,
+            6750208,
+            6782976,
+            6750208,
+            6733824,
+            6750208,
+            6750208,
+            6750208,
+            6766592,
+            6766592,
+            6750208,
+            6782976
+          ],
+          "median": 6750208.0,
+          "p95": 6782976,
+          "minimum": 6733824,
+          "maximum": 6782976
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007488791,
+            0.007274709,
+            0.007503083,
+            0.007250083,
+            0.007405166,
+            0.007083667,
+            0.006806833,
+            0.007462042,
+            0.007954208,
+            0.007902042,
+            0.007728458,
+            0.007630417,
+            0.007464667,
+            0.007455917,
+            0.007472958,
+            0.007360375,
+            0.007181458,
+            0.007992833,
+            0.00793175,
+            0.006578083
+          ],
+          "median": 0.0074633545,
+          "p95": 0.007954208,
+          "minimum": 0.006578083,
+          "maximum": 0.007992833
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6717440,
+            6684672,
+            6684672,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6684672,
+            6701056,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672
+          ],
+          "median": 6684672.0,
+          "p95": 6717440,
+          "minimum": 6684672,
+          "maximum": 6717440
+        }
+      }
+    },
+    {
+      "round": 1,
+      "fixture": "mixed-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/mixed-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/mixed-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+      "outputBytes": 524305,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 56.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 24.2,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 13.5,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 21.5,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 83.6,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.4,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 17.3,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 13.3,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.008549167,
+            0.008504,
+            0.008563334,
+            0.007370084,
+            0.008073791,
+            0.008218583,
+            0.007502792,
+            0.008048916,
+            0.008325958,
+            0.00804475,
+            0.008207333,
+            0.008519625,
+            0.008960375,
+            0.008284625,
+            0.008490125,
+            0.008281125,
+            0.008886458,
+            0.0078865,
+            0.00862525,
+            0.009098208
+          ],
+          "median": 0.008305291499999999,
+          "p95": 0.008960375,
+          "minimum": 0.007370084,
+          "maximum": 0.009098208
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7700480,
+            7684096,
+            7700480,
+            7684096,
+            7700480,
+            7700480,
+            7716864,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7684096,
+            7700480,
+            7684096,
+            7700480,
+            7684096
+          ],
+          "median": 7684096.0,
+          "p95": 7700480,
+          "minimum": 7684096,
+          "maximum": 7716864
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.008649875,
+            0.008173583,
+            0.008080084,
+            0.007991417,
+            0.007769667,
+            0.00835025,
+            0.007250416,
+            0.008320959,
+            0.008654333,
+            0.008981375,
+            0.007921,
+            0.008498375,
+            0.00897825,
+            0.00886625,
+            0.007948541,
+            0.008317583,
+            0.0087615,
+            0.008827583,
+            0.008410416,
+            0.008931708
+          ],
+          "median": 0.008380333,
+          "p95": 0.00897825,
+          "minimum": 0.007250416,
+          "maximum": 0.008981375
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7651328,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7667712,
+            7634944,
+            7667712,
+            7634944,
+            7667712,
+            7634944,
+            7634944
+          ],
+          "median": 7634944.0,
+          "p95": 7667712,
+          "minimum": 7634944,
+          "maximum": 7667712
+        }
+      }
+    },
+    {
+      "round": 1,
+      "fixture": "dct12-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+      "outputBytes": 524304,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 59.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 14.1,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 20.1,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 11.3,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 20.3,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.2,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 120.9,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 15.7,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 13.1,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.009437917,
+            0.009124917,
+            0.00964,
+            0.008903833,
+            0.009530125,
+            0.009582541,
+            0.009152333,
+            0.009436792,
+            0.009331208,
+            0.008843375,
+            0.009744,
+            0.009895667,
+            0.008926708,
+            0.009571042,
+            0.009547709,
+            0.009424375,
+            0.010688125,
+            0.00963725,
+            0.009845583,
+            0.010571417
+          ],
+          "median": 0.009538917000000001,
+          "p95": 0.010571417,
+          "minimum": 0.008843375,
+          "maximum": 0.010688125
+        },
+        "peakRSSBytes": {
+          "samples": [
+            8585216,
+            8585216,
+            8585216,
+            8585216,
+            8585216,
+            8617984,
+            8585216,
+            8683520,
+            8585216,
+            8585216,
+            8585216,
+            8683520,
+            8585216,
+            8585216,
+            8585216,
+            8585216,
+            8716288,
+            8585216,
+            8585216,
+            8585216
+          ],
+          "median": 8585216.0,
+          "p95": 8683520,
+          "minimum": 8585216,
+          "maximum": 8716288
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.009597375,
+            0.009883833,
+            0.010406709,
+            0.008710625,
+            0.00905125,
+            0.009118917,
+            0.009686792,
+            0.008920292,
+            0.011068125,
+            0.009167667,
+            0.008970792,
+            0.010579417,
+            0.009278666,
+            0.009924375,
+            0.009194,
+            0.009833292,
+            0.009038541,
+            0.009215416,
+            0.009489666,
+            0.011603208
+          ],
+          "median": 0.009384166,
+          "p95": 0.011068125,
+          "minimum": 0.008710625,
+          "maximum": 0.011603208
+        },
+        "peakRSSBytes": {
+          "samples": [
+            8503296,
+            8585216,
+            8634368,
+            8503296,
+            8503296,
+            8503296,
+            8503296,
+            8503296,
+            8503296,
+            8503296,
+            8617984,
+            8503296,
+            8503296,
+            8617984,
+            8503296,
+            8503296,
+            8503296,
+            8503296,
+            8503296,
+            8503296
+          ],
+          "median": 8503296.0,
+          "p95": 8617984,
+          "minimum": 8503296,
+          "maximum": 8634368
+        }
+      }
+    },
+    {
+      "round": 2,
+      "fixture": "flat-19.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/flat-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "9b35de84305ac5c24160f0a9ea2edb3a6afba7bd30107966ecd3cffbfd75d5bf",
+      "outputBytes": 737,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 59.7,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 870,
+          "cpuPercent": 12.7,
+          "process": "/usr/libexec/spotlightknowledged.updater"
+        },
+        {
+          "pid": 3679,
+          "cpuPercent": 10.0,
+          "process": "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"
+        },
+        {
+          "pid": 3901,
+          "cpuPercent": 15.3,
+          "process": "/Applications/ChatGPT.app/Contents/MacOS/ChatGPT"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 85.4,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 18.9,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 12.4,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 21.3,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 105.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 17.5,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 12.1,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        },
+        {
+          "pid": 23797,
+          "cpuPercent": 26.4,
+          "process": "node"
+        },
+        {
+          "pid": 23836,
+          "cpuPercent": 26.5,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+        },
+        {
+          "pid": 23867,
+          "cpuPercent": 11.2,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.00691675,
+            0.006688042,
+            0.007158791,
+            0.007207042,
+            0.006392083,
+            0.007463125,
+            0.006573833,
+            0.007205834,
+            0.006670125,
+            0.007629667,
+            0.007008458,
+            0.007702375,
+            0.007037875,
+            0.00693875,
+            0.007711334,
+            0.008233083,
+            0.007447458,
+            0.007096125,
+            0.007454125,
+            0.007032709
+          ],
+          "median": 0.007127458,
+          "p95": 0.007711334,
+          "minimum": 0.006392083,
+          "maximum": 0.008233083
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6750208,
+            6750208,
+            6750208,
+            6766592,
+            6750208,
+            6799360,
+            6766592,
+            6766592,
+            6750208,
+            6766592,
+            6750208,
+            6750208,
+            6799360,
+            6782976,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6750208
+          ],
+          "median": 6750208.0,
+          "p95": 6799360,
+          "minimum": 6750208,
+          "maximum": 6799360
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.006809917,
+            0.007306792,
+            0.006487959,
+            0.007137542,
+            0.007432709,
+            0.00696925,
+            0.00712875,
+            0.00728275,
+            0.006691083,
+            0.006810542,
+            0.006776709,
+            0.006991125,
+            0.007661458,
+            0.007315458,
+            0.007967167,
+            0.0077335,
+            0.007576666,
+            0.0070715,
+            0.006932458,
+            0.007300209
+          ],
+          "median": 0.007133146,
+          "p95": 0.0077335,
+          "minimum": 0.006487959,
+          "maximum": 0.007967167
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6668288,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6717440
+          ],
+          "median": 6684672.0,
+          "p95": 6717440,
+          "minimum": 6668288,
+          "maximum": 6717440
+        }
+      }
+    },
+    {
+      "round": 2,
+      "fixture": "flat-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/flat-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/flat-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "5d4d3df12e0586262cf146ea4729cb05083e90e1dfc0caac4cb19230ce658fc7",
+      "outputBytes": 524305,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 62.3,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 870,
+          "cpuPercent": 12.4,
+          "process": "/usr/libexec/spotlightknowledged.updater"
+        },
+        {
+          "pid": 3901,
+          "cpuPercent": 12.0,
+          "process": "/Applications/ChatGPT.app/Contents/MacOS/ChatGPT"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 44.1,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 25.4,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 12.3,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 21.5,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.4,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 86.1,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 18.1,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 14.7,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        },
+        {
+          "pid": 23884,
+          "cpuPercent": 96.9,
+          "process": "(chrome-headless-)"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.0079525,
+            0.006913625,
+            0.007702833,
+            0.007912459,
+            0.007300125,
+            0.007186916,
+            0.007092625,
+            0.00688375,
+            0.006909625,
+            0.007054708,
+            0.007666542,
+            0.007993,
+            0.007559625,
+            0.007824542,
+            0.008195,
+            0.008188792,
+            0.007273958,
+            0.007335792,
+            0.007058916,
+            0.007145208
+          ],
+          "median": 0.0073179585,
+          "p95": 0.008188792,
+          "minimum": 0.00688375,
+          "maximum": 0.008195
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7421952,
+            7405568,
+            7454720,
+            7421952,
+            7405568,
+            7421952,
+            7389184,
+            7405568,
+            7438336,
+            7421952,
+            7438336,
+            7405568,
+            7454720,
+            7454720,
+            7421952,
+            7405568,
+            7405568,
+            7405568,
+            7405568,
+            7405568
+          ],
+          "median": 7413760.0,
+          "p95": 7454720,
+          "minimum": 7389184,
+          "maximum": 7454720
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007668958,
+            0.007367,
+            0.00787575,
+            0.007449291,
+            0.007145125,
+            0.007144375,
+            0.00728625,
+            0.007230833,
+            0.007822416,
+            0.007016375,
+            0.007469875,
+            0.008059083,
+            0.007259792,
+            0.00821825,
+            0.007984958,
+            0.00857575,
+            0.007507458,
+            0.007200333,
+            0.008087292,
+            0.007783833
+          ],
+          "median": 0.0074886664999999995,
+          "p95": 0.00821825,
+          "minimum": 0.007016375,
+          "maximum": 0.00857575
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7340032,
+            7340032,
+            7323648,
+            7356416,
+            7372800,
+            7372800,
+            7421952,
+            7323648,
+            7372800,
+            7340032,
+            7340032,
+            7340032,
+            7340032,
+            7340032,
+            7340032,
+            7340032,
+            7372800,
+            7340032,
+            7340032,
+            7340032
+          ],
+          "median": 7340032.0,
+          "p95": 7372800,
+          "minimum": 7323648,
+          "maximum": 7421952
+        }
+      }
+    },
+    {
+      "round": 2,
+      "fixture": "ramp-19.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/ramp-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "1fc05090f11066d473931140964e6cc3a66ef3d50692106e8ab9f869299d18e7",
+      "outputBytes": 737,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 60.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 16.5,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 18.0,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 85.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.9,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 14.2,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 14.3,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        },
+        {
+          "pid": 24017,
+          "cpuPercent": 55.6,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/firefox-1555/firefox/Nightly.app/Contents/MacOS/firefox"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007530833,
+            0.009562833,
+            0.0066785,
+            0.007385667,
+            0.007168541,
+            0.00757025,
+            0.00735175,
+            0.007605417,
+            0.007127167,
+            0.007740458,
+            0.007609458,
+            0.006945458,
+            0.007956542,
+            0.007603584,
+            0.0078935,
+            0.007306542,
+            0.007734958,
+            0.007512958,
+            0.007390458,
+            0.006800125
+          ],
+          "median": 0.0075218955,
+          "p95": 0.007956542,
+          "minimum": 0.0066785,
+          "maximum": 0.009562833
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6750208,
+            6782976,
+            6766592,
+            6750208,
+            6766592,
+            6750208,
+            6766592,
+            6750208,
+            6750208,
+            6782976,
+            6750208,
+            6750208,
+            6766592,
+            6782976,
+            6750208,
+            6750208,
+            6750208,
+            6782976,
+            6750208,
+            6766592
+          ],
+          "median": 6750208.0,
+          "p95": 6782976,
+          "minimum": 6750208,
+          "maximum": 6782976
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007408333,
+            0.006991958,
+            0.007241125,
+            0.007203042,
+            0.007237541,
+            0.007283458,
+            0.007625459,
+            0.00816075,
+            0.007848375,
+            0.0071795,
+            0.007282709,
+            0.006870791,
+            0.0073995,
+            0.007966834,
+            0.007856667,
+            0.007405333,
+            0.007220375,
+            0.007205125,
+            0.007177958,
+            0.007397292
+          ],
+          "median": 0.0072830835,
+          "p95": 0.007966834,
+          "minimum": 0.006870791,
+          "maximum": 0.00816075
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6701056,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6684672,
+            6717440,
+            6684672,
+            6717440,
+            6684672,
+            6684672,
+            6684672
+          ],
+          "median": 6684672.0,
+          "p95": 6717440,
+          "minimum": 6684672,
+          "maximum": 6717440
+        }
+      }
+    },
+    {
+      "round": 2,
+      "fixture": "ramp-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/ramp-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/ramp-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "33403a0311d50ab059b168cfc7c3b2eaecfc7143b582ad12f139f825733d89ef",
+      "outputBytes": 524305,
+      "hostLoadBefore": [
+        {
+          "pid": 384,
+          "cpuPercent": 16.5,
+          "process": "/System/Library/CoreServices/launchservicesd"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 63.4,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 15.8,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 16.4,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 10.1,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 46.3,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 23.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 87.4,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 14.4,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 14.9,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        },
+        {
+          "pid": 24017,
+          "cpuPercent": 79.4,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/firefox-1555/firefox/Nightly.app/Contents/MacOS/firefox"
+        },
+        {
+          "pid": 24124,
+          "cpuPercent": 17.2,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/firefox-1555/firefox/Nightly.app/Contents/MacOS/plugin-container.app/Contents/MacOS/plugin-container"
+        },
+        {
+          "pid": 24172,
+          "cpuPercent": 27.9,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/firefox-1555/firefox/Nightly.app/Contents/MacOS/plugin-container.app/Contents/MacOS/plugin-container"
+        },
+        {
+          "pid": 24179,
+          "cpuPercent": 21.3,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/firefox-1555/firefox/Nightly.app/Contents/MacOS/plugin-container.app/Contents/MacOS/plugin-container"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007856459,
+            0.008507333,
+            0.008197916,
+            0.007748875,
+            0.008541959,
+            0.008769583,
+            0.009049375,
+            0.0086105,
+            0.008500042,
+            0.008681333,
+            0.008509666,
+            0.008161916,
+            0.008666292,
+            0.008838541,
+            0.009765959,
+            0.008708584,
+            0.008668166,
+            0.008486917,
+            0.009103584,
+            0.0083725
+          ],
+          "median": 0.008576229500000001,
+          "p95": 0.009103584,
+          "minimum": 0.007748875,
+          "maximum": 0.009765959
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7634944,
+            7716864,
+            7618560,
+            7618560,
+            7634944,
+            7618560,
+            7618560,
+            7634944,
+            7618560,
+            7618560,
+            7618560,
+            7618560,
+            7618560,
+            7618560,
+            7634944,
+            7634944,
+            7667712,
+            7618560,
+            7618560,
+            7684096
+          ],
+          "median": 7618560.0,
+          "p95": 7684096,
+          "minimum": 7618560,
+          "maximum": 7716864
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.008993375,
+            0.008029709,
+            0.008430542,
+            0.008792458,
+            0.008414834,
+            0.008818833,
+            0.008666333,
+            0.008303083,
+            0.008535542,
+            0.008269125,
+            0.008670208,
+            0.008167708,
+            0.008767875,
+            0.008240042,
+            0.00882875,
+            0.008828208,
+            0.008080292,
+            0.008263666,
+            0.008828625,
+            0.008569416
+          ],
+          "median": 0.008552479,
+          "p95": 0.00882875,
+          "minimum": 0.008029709,
+          "maximum": 0.008993375
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7602176,
+            7602176,
+            7569408,
+            7585792,
+            7569408,
+            7569408,
+            7569408,
+            7569408,
+            7569408,
+            7569408,
+            7569408,
+            7569408,
+            7602176,
+            7602176,
+            7634944,
+            7602176,
+            7569408,
+            7569408,
+            7569408,
+            7667712
+          ],
+          "median": 7569408.0,
+          "p95": 7634944,
+          "minimum": 7569408,
+          "maximum": 7667712
+        }
+      }
+    },
+    {
+      "round": 2,
+      "fixture": "noise-19.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/noise-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "5ecddf5e2fb8368d9304395140e53dc579a9b4a422dec194f8795ed5ae355834",
+      "outputBytes": 737,
+      "hostLoadBefore": [
+        {
+          "pid": 384,
+          "cpuPercent": 10.7,
+          "process": "/System/Library/CoreServices/launchservicesd"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 75.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 417,
+          "cpuPercent": 13.0,
+          "process": "/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 13.6,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 19.3,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 22.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.3,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 82.2,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.5,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 13.0,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 13.8,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        },
+        {
+          "pid": 24017,
+          "cpuPercent": 144.5,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/firefox-1555/firefox/Nightly.app/Contents/MacOS/firefox"
+        },
+        {
+          "pid": 24106,
+          "cpuPercent": 36.2,
+          "process": "npm view @angular/core@22 version"
+        },
+        {
+          "pid": 24172,
+          "cpuPercent": 14.8,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/firefox-1555/firefox/Nightly.app/Contents/MacOS/plugin-container.app/Contents/MacOS/plugin-container"
+        },
+        {
+          "pid": 24218,
+          "cpuPercent": 58.5,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/firefox-1555/firefox/Nightly.app/Contents/MacOS/plugin-container.app/Contents/MacOS/plugin-container"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007438958,
+            0.007868625,
+            0.007512958,
+            0.008301,
+            0.008326625,
+            0.007555,
+            0.007402083,
+            0.007539875,
+            0.007729375,
+            0.008007625,
+            0.007175083,
+            0.006919,
+            0.007400166,
+            0.008008416,
+            0.008151458,
+            0.008106167,
+            0.007905,
+            0.007934084,
+            0.007835042,
+            0.009168292
+          ],
+          "median": 0.0078518335,
+          "p95": 0.008326625,
+          "minimum": 0.006919,
+          "maximum": 0.009168292
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6766592,
+            6750208,
+            6799360,
+            6782976,
+            6750208,
+            6750208,
+            6782976,
+            6750208,
+            6766592,
+            6766592,
+            6750208,
+            6750208,
+            6766592,
+            6750208,
+            6750208,
+            6750208,
+            6782976,
+            6750208,
+            6766592,
+            6782976
+          ],
+          "median": 6758400.0,
+          "p95": 6782976,
+          "minimum": 6750208,
+          "maximum": 6799360
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007332292,
+            0.007335667,
+            0.007804875,
+            0.007989583,
+            0.007666125,
+            0.007638375,
+            0.007444375,
+            0.007081917,
+            0.008036917,
+            0.007614792,
+            0.0076435,
+            0.007704166,
+            0.007381459,
+            0.007524292,
+            0.007351041,
+            0.007708875,
+            0.007337,
+            0.007569417,
+            0.007455041,
+            0.007803917
+          ],
+          "median": 0.0075921045,
+          "p95": 0.007989583,
+          "minimum": 0.007081917,
+          "maximum": 0.008036917
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6701056,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6684672,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672
+          ],
+          "median": 6684672.0,
+          "p95": 6717440,
+          "minimum": 6684672,
+          "maximum": 6717440
+        }
+      }
+    },
+    {
+      "round": 2,
+      "fixture": "noise-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/noise-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/noise-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "2c4bd99ba1e876eff8da97a969a9394fb41648a52540b96c355804991914bab3",
+      "outputBytes": 524305,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 68.6,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 3937,
+          "cpuPercent": 11.4,
+          "process": "/Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/156.0.8078.79/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 11.7,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 22.0,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.1,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 83.0,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.2,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 14.9,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 14.5,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        },
+        {
+          "pid": 24017,
+          "cpuPercent": 91.3,
+          "process": "(firefox)"
+        },
+        {
+          "pid": 24349,
+          "cpuPercent": 44.7,
+          "process": "/Users/pushparaj/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/../../node/bin/node"
+        },
+        {
+          "pid": 24437,
+          "cpuPercent": 30.0,
+          "process": "/Users/pushparaj/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/../../node/bin/node"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.009455875,
+            0.009696792,
+            0.010189208,
+            0.009779167,
+            0.009523541,
+            0.010129375,
+            0.009706625,
+            0.010490625,
+            0.009939917,
+            0.0099965,
+            0.009813625,
+            0.010426709,
+            0.010894833,
+            0.010218959,
+            0.010186875,
+            0.010347041,
+            0.0107655,
+            0.010080583,
+            0.010424542,
+            0.01057525
+          ],
+          "median": 0.010158125,
+          "p95": 0.0107655,
+          "minimum": 0.009455875,
+          "maximum": 0.010894833
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7897088,
+            7962624,
+            7897088,
+            7880704,
+            7880704,
+            7897088,
+            7880704,
+            7880704,
+            7897088,
+            7880704,
+            7880704,
+            7962624,
+            7897088,
+            7880704,
+            7913472,
+            7880704,
+            7979008,
+            7880704,
+            7880704,
+            7897088
+          ],
+          "median": 7888896.0,
+          "p95": 7962624,
+          "minimum": 7880704,
+          "maximum": 7979008
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.010312375,
+            0.010232541,
+            0.00961125,
+            0.010220208,
+            0.009766,
+            0.009976667,
+            0.009729458,
+            0.009694583,
+            0.0102735,
+            0.009922625,
+            0.0096255,
+            0.010457416,
+            0.010128167,
+            0.0094915,
+            0.009960917,
+            0.010366333,
+            0.010208542,
+            0.0100565,
+            0.009933125,
+            0.010352667
+          ],
+          "median": 0.010016583499999999,
+          "p95": 0.010366333,
+          "minimum": 0.0094915,
+          "maximum": 0.010457416
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7831552,
+            7831552,
+            7897088,
+            7864320,
+            7831552,
+            7864320,
+            7831552,
+            7831552,
+            7815168,
+            7831552,
+            7831552,
+            7897088,
+            7831552,
+            7831552,
+            7831552,
+            7897088,
+            7831552,
+            7831552,
+            7831552,
+            7831552
+          ],
+          "median": 7831552.0,
+          "p95": 7897088,
+          "minimum": 7815168,
+          "maximum": 7897088
+        }
+      }
+    },
+    {
+      "round": 2,
+      "fixture": "mixed-19.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/mixed-19.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "72150db94fc985ebc19a99b65fa9de25196841722e6e31642bb8193ad2ad50ae",
+      "outputBytes": 737,
+      "hostLoadBefore": [
+        {
+          "pid": 408,
+          "cpuPercent": 13.5,
+          "process": "/usr/libexec/sandboxd"
+        },
+        {
+          "pid": 413,
+          "cpuPercent": 64.1,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 417,
+          "cpuPercent": 10.5,
+          "process": "/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow"
+        },
+        {
+          "pid": 870,
+          "cpuPercent": 11.1,
+          "process": "/usr/libexec/spotlightknowledged.updater"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 10.3,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 12.1,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 21.5,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.5,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 80.5,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.8,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 15.4,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 12.1,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        },
+        {
+          "pid": 24437,
+          "cpuPercent": 15.8,
+          "process": "/Users/pushparaj/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/../../node/bin/node"
+        },
+        {
+          "pid": 24484,
+          "cpuPercent": 36.2,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/webkit-2370/Playwright.app/Contents/MacOS/Playwright"
+        },
+        {
+          "pid": 24512,
+          "cpuPercent": 145.7,
+          "process": "node"
+        },
+        {
+          "pid": 24562,
+          "cpuPercent": 32.2,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/webkit-2370/com.apple.WebKit.Networking.xpc/Contents/MacOS/com.apple.WebKit.Networking.Development"
+        },
+        {
+          "pid": 24567,
+          "cpuPercent": 26.1,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/webkit-2370/com.apple.WebKit.GPU.xpc/Contents/MacOS/com.apple.WebKit.GPU.Development"
+        },
+        {
+          "pid": 24576,
+          "cpuPercent": 21.3,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/webkit-2370/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent.Development"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.008037,
+            0.007793625,
+            0.008552375,
+            0.008788375,
+            0.009204833,
+            0.00770875,
+            0.007985458,
+            0.008179042,
+            0.007722917,
+            0.007769292,
+            0.007523083,
+            0.007943416,
+            0.009074042,
+            0.007609917,
+            0.007353167,
+            0.008352083,
+            0.007257125,
+            0.0077925,
+            0.007665708,
+            0.007276333
+          ],
+          "median": 0.0077930625,
+          "p95": 0.009074042,
+          "minimum": 0.007257125,
+          "maximum": 0.009204833
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6750208,
+            6750208,
+            6750208,
+            6750208,
+            6799360,
+            6782976,
+            6750208,
+            6750208,
+            6782976,
+            6750208,
+            6750208,
+            6766592,
+            6799360,
+            6750208,
+            6750208,
+            6782976,
+            6750208,
+            6750208,
+            6766592,
+            6750208
+          ],
+          "median": 6750208.0,
+          "p95": 6799360,
+          "minimum": 6750208,
+          "maximum": 6799360
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.007817583,
+            0.0089565,
+            0.008038833,
+            0.009451083,
+            0.007424375,
+            0.007999625,
+            0.008028042,
+            0.007483916,
+            0.007758708,
+            0.007794333,
+            0.008063125,
+            0.007544708,
+            0.009877666,
+            0.007875,
+            0.008181708,
+            0.007679667,
+            0.008198583,
+            0.008531917,
+            0.007460125,
+            0.008369125
+          ],
+          "median": 0.008013833500000001,
+          "p95": 0.009451083,
+          "minimum": 0.007424375,
+          "maximum": 0.009877666
+        },
+        "peakRSSBytes": {
+          "samples": [
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6717440,
+            6717440,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6684672,
+            6701056,
+            6684672,
+            6717440,
+            6684672,
+            6717440
+          ],
+          "median": 6684672.0,
+          "p95": 6717440,
+          "minimum": 6684672,
+          "maximum": 6717440
+        }
+      }
+    },
+    {
+      "round": 2,
+      "fixture": "mixed-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/mixed-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-native-matrix-fixtures/mixed-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "cf999041906ab719513307c71dc378e081784d535ad3061614b8d4413939b361",
+      "outputBytes": 524305,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 64.5,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 870,
+          "cpuPercent": 12.3,
+          "process": "/usr/libexec/spotlightknowledged.updater"
+        },
+        {
+          "pid": 3629,
+          "cpuPercent": 28.9,
+          "process": "/Applications/Telegram.app/Contents/MacOS/Telegram"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 10.5,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 19.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 22.6,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 81.8,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 13.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 22.3,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 14.1,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        },
+        {
+          "pid": 24484,
+          "cpuPercent": 12.6,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/webkit-2370/Playwright.app/Contents/MacOS/Playwright"
+        },
+        {
+          "pid": 24562,
+          "cpuPercent": 19.1,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/webkit-2370/com.apple.WebKit.Networking.xpc/Contents/MacOS/com.apple.WebKit.Networking.Development"
+        },
+        {
+          "pid": 24567,
+          "cpuPercent": 42.1,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/webkit-2370/com.apple.WebKit.GPU.xpc/Contents/MacOS/com.apple.WebKit.GPU.Development"
+        },
+        {
+          "pid": 24576,
+          "cpuPercent": 76.6,
+          "process": "/Users/pushparaj/Library/Caches/ms-playwright/webkit-2370/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent.Development"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.009189375,
+            0.00992125,
+            0.008809792,
+            0.008603875,
+            0.008585709,
+            0.008682209,
+            0.008738959,
+            0.00812675,
+            0.0083415,
+            0.008695208,
+            0.008829584,
+            0.009323292,
+            0.008455167,
+            0.008173833,
+            0.009005834,
+            0.008602333,
+            0.008616542,
+            0.008286083,
+            0.0088045,
+            0.007736583
+          ],
+          "median": 0.0086493755,
+          "p95": 0.009323292,
+          "minimum": 0.007736583,
+          "maximum": 0.00992125
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7782400,
+            7700480,
+            7684096,
+            7700480,
+            7684096,
+            7684096,
+            7815168,
+            7684096,
+            7782400,
+            7716864,
+            7700480,
+            7684096,
+            7684096,
+            7684096,
+            7700480,
+            7733248,
+            7766016,
+            7700480,
+            7700480,
+            7684096
+          ],
+          "median": 7700480.0,
+          "p95": 7782400,
+          "minimum": 7684096,
+          "maximum": 7815168
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.008787333,
+            0.008816667,
+            0.008998583,
+            0.00886675,
+            0.009096208,
+            0.010816708,
+            0.008321167,
+            0.009118541,
+            0.008313834,
+            0.008397916,
+            0.008669167,
+            0.008418541,
+            0.008715209,
+            0.008401042,
+            0.008837167,
+            0.008039291,
+            0.008792708,
+            0.008767834,
+            0.007857625,
+            0.008315333
+          ],
+          "median": 0.0087415215,
+          "p95": 0.009118541,
+          "minimum": 0.007857625,
+          "maximum": 0.010816708
+        },
+        "peakRSSBytes": {
+          "samples": [
+            7716864,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7749632,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7716864,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944,
+            7634944
+          ],
+          "median": 7634944.0,
+          "p95": 7716864,
+          "minimum": 7634944,
+          "maximum": 7749632
+        }
+      }
+    },
+    {
+      "round": 2,
+      "fixture": "dct12-512.jpg",
+      "commands": {
+        "baseline": [
+          "/private/tmp/swiftjli-round4-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ],
+        "candidate": [
+          "/private/tmp/swiftjli-round5-cli-build/out/Products/Release/swiftjli-cli",
+          "decode",
+          "-i",
+          "/private/tmp/swiftjli-benchmark-20261102/BenchmarkResults/2026-11-02/memory/dct12-512.jpg",
+          "-o",
+          "-",
+          "--output-format",
+          "pnm"
+        ]
+      },
+      "baselineCandidateExactPNM": true,
+      "outputSHA256": "0880ea57c77b699aaf95dabf1509b1d0fd6fc3440913bc5a2aa290890743da9d",
+      "outputBytes": 524304,
+      "hostLoadBefore": [
+        {
+          "pid": 413,
+          "cpuPercent": 62.2,
+          "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+        },
+        {
+          "pid": 7835,
+          "cpuPercent": 12.8,
+          "process": "/Applications/.Svcvtt.app/Contents/MacOS/TimeChamp.Tracker.MacOS"
+        },
+        {
+          "pid": 13390,
+          "cpuPercent": 10.5,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+        },
+        {
+          "pid": 19833,
+          "cpuPercent": 19.2,
+          "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+        },
+        {
+          "pid": 20318,
+          "cpuPercent": 21.7,
+          "process": "/Users/pushparaj/.local/bin/limactl"
+        },
+        {
+          "pid": 20329,
+          "cpuPercent": 155.7,
+          "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+        },
+        {
+          "pid": 20350,
+          "cpuPercent": 12.6,
+          "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+        },
+        {
+          "pid": 22258,
+          "cpuPercent": 16.4,
+          "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+        },
+        {
+          "pid": 22934,
+          "cpuPercent": 13.3,
+          "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+        },
+        {
+          "pid": 24346,
+          "cpuPercent": 28.3,
+          "process": "/Users/pushparaj/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/../../node/bin/node"
+        },
+        {
+          "pid": 24773,
+          "cpuPercent": 61.2,
+          "process": "/Users/pushparaj/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/../../node/bin/node"
+        }
+      ],
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [
+            0.009736833,
+            0.010040292,
+            0.009698583,
+            0.009550209,
+            0.009957125,
+            0.01026925,
+            0.009931,
+            0.008557,
+            0.009714875,
+            0.009546833,
+            0.009277708,
+            0.0099235,
+            0.009456,
+            0.008959458,
+            0.009328334,
+            0.00938925,
+            0.009618,
+            0.00969975,
+            0.009322292,
+            0.010164625
+          ],
+          "median": 0.0096582915,
+          "p95": 0.010164625,
+          "minimum": 0.008557,
+          "maximum": 0.01026925
+        },
+        "peakRSSBytes": {
+          "samples": [
+            8585216,
+            8585216,
+            8585216,
+            8617984,
+            8585216,
+            8585216,
+            8683520,
+            8585216,
+            8585216,
+            8585216,
+            8683520,
+            8585216,
+            8585216,
+            8585216,
+            8699904,
+            8585216,
+            8683520,
+            8585216,
+            8585216,
+            8617984
+          ],
+          "median": 8585216.0,
+          "p95": 8683520,
+          "minimum": 8585216,
+          "maximum": 8699904
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [
+            0.008835167,
+            0.00956225,
+            0.010030792,
+            0.00891475,
+            0.009150458,
+            0.009738834,
+            0.010530667,
+            0.009850458,
+            0.008931459,
+            0.009773042,
+            0.009152375,
+            0.009264708,
+            0.009023459,
+            0.009306958,
+            0.009632041,
+            0.009525875,
+            0.009668542,
+            0.009666459,
+            0.009706708,
+            0.0095505
+          ],
+          "median": 0.009556374999999999,
+          "p95": 0.010030792,
+          "minimum": 0.008835167,
+          "maximum": 0.010530667
+        },
+        "peakRSSBytes": {
+          "samples": [
+            8536064,
+            8601600,
+            8601600,
+            8503296,
+            8503296,
+            8503296,
+            8503296,
+            8617984,
+            8503296,
+            8585216,
+            8503296,
+            8503296,
+            8536064,
+            8503296,
+            8536064,
+            8503296,
+            8617984,
+            8503296,
+            8503296,
+            8503296
+          ],
+          "median": 8503296.0,
+          "p95": 8617984,
+          "minimum": 8503296,
+          "maximum": 8617984
+        }
+      }
+    }
+  ],
+  "finishedUTC": "2026-11-03T12:44:47.121869+00:00",
+  "hostLoadAfter": [
+    {
+      "pid": 413,
+      "cpuPercent": 57.5,
+      "process": "/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer"
+    },
+    {
+      "pid": 3629,
+      "cpuPercent": 13.6,
+      "process": "/Applications/Telegram.app/Contents/MacOS/Telegram"
+    },
+    {
+      "pid": 13390,
+      "cpuPercent": 12.3,
+      "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)"
+    },
+    {
+      "pid": 19833,
+      "cpuPercent": 21.2,
+      "process": "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)"
+    },
+    {
+      "pid": 20318,
+      "cpuPercent": 22.0,
+      "process": "/Users/pushparaj/.local/bin/limactl"
+    },
+    {
+      "pid": 20329,
+      "cpuPercent": 103.1,
+      "process": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+    },
+    {
+      "pid": 20350,
+      "cpuPercent": 13.3,
+      "process": "ssh: /Users/pushparaj/.colima/_lima/colima/ssh.sock [mux]"
+    },
+    {
+      "pid": 22258,
+      "cpuPercent": 16.1,
+      "process": "/Users/pushparaj/.local/jdk/jdk-21.0.12.1+1/Contents/Home/bin/java"
+    },
+    {
+      "pid": 22934,
+      "cpuPercent": 11.8,
+      "process": "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/Resources/Python.app/Contents/MacOS/Python"
+    },
+    {
+      "pid": 24773,
+      "cpuPercent": 10.0,
+      "process": "/Users/pushparaj/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/../../node/bin/node"
+    },
+    {
+      "pid": 24851,
+      "cpuPercent": 43.6,
+      "process": "node"
+    },
+    {
+      "pid": 24936,
+      "cpuPercent": 10.8,
+      "process": "/Users/pushparaj/projects/raster-editor/node_modules/.pnpm/@esbuild+darwin-arm64@0.28.2/node_modules/@esbuild/darwin-arm64/bin/esbuild"
+    }
+  ],
+  "powerAfter": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t100%; charged; 0:00 remaining present: true\n"
+}

@@ -1,0 +1,81 @@
+
+/private/tmp/swiftjli-round5-build/out/Products/Release/SwiftJLI.o:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+0000000000064160 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF>:
+   64160:      	stp	x20, x19, [sp, #-0x20]!
+   64164:      	stp	x29, x30, [sp, #0x10]
+   64168:      	add	x29, sp, #0x10
+   6416c:      	mov	x19, x0
+   64170:      	ldr	x8, [x20, #0x38]
+   64174:      	cmp	x8, #0x7
+   64178:      	b.gt	0x64190 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x30>
+   6417c:      	mov	w0, #0x8                ; =8
+   64180:      	bl	0x64180 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x20>
+		0000000000064180:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF
+   64184:      	ldr	x8, [x20, #0x38]
+   64188:      	cmp	x8, #0x8
+   6418c:      	b.lt	0x64214 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xb4>
+   64190:      	sub	x10, x8, #0x8
+   64194:      	ldr	x9, [x20, #0x30]
+   64198:      	lsr	x10, x9, x10
+   6419c:      	and	x10, x10, #0xff
+   641a0:      	cmp	x8, #0x47
+   641a4:      	csel	x10, xzr, x10, hi
+   641a8:      	ldr	x11, [x19, #0x30]
+   641ac:      	ldr	x12, [x11, #0x10]
+   641b0:      	cmp	x10, x12
+   641b4:      	b.hs	0x64280 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x120>
+   641b8:      	add	x11, x11, x10
+   641bc:      	ldrb	w11, [x11, #0x20]
+   641c0:      	cbz	x11, 0x64214 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xb4>
+   641c4:      	ldr	x12, [x19, #0x38]
+   641c8:      	ldr	x13, [x12, #0x10]
+   641cc:      	cmp	x10, x13
+   641d0:      	b.hs	0x64284 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x124>
+   641d4:      	add	x10, x12, x10
+   641d8:      	ldrb	w10, [x10, #0x20]
+   641dc:      	tst	w10, #0xffffffef
+   641e0:      	b.ne	0x64200 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xa0>
+   641e4:      	mov	x9, #0x0                ; =0
+   641e8:      	sub	x8, x8, x11
+   641ec:      	str	x8, [x20, #0x38]
+   641f0:      	mov	w8, #-0x8000            ; =-32768
+   641f4:      	cmp	w10, #0x0
+   641f8:      	csel	w8, wzr, w8, eq
+   641fc:      	b	0x6421c <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xbc>
+   64200:      	cmp	w10, #0xf
+   64204:      	b.hi	0x64214 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xb4>
+   64208:      	add	x11, x10, x11
+   6420c:      	subs	x8, x8, x11
+   64210:      	b.hs	0x64230 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xd0>
+   64214:      	mov	w8, #0x0                ; =0
+   64218:      	mov	x9, #0x100000000        ; =4294967296
+   6421c:      	mov	w8, w8
+   64220:      	orr	x0, x9, x8
+   64224:      	ldp	x29, x30, [sp, #0x10]
+   64228:      	ldp	x20, x19, [sp], #0x20
+   6422c:      	ret
+   64230:      	str	x8, [x20, #0x38]
+   64234:      	lsr	x9, x9, x8
+   64238:      	mov	x11, #-0x1              ; =-1
+   6423c:      	lsl	x11, x11, x10
+   64240:      	cmp	x8, #0x3f
+   64244:      	csel	w8, wzr, w9, hi
+   64248:      	bic	w8, w8, w11
+   6424c:      	sub	w9, w10, #0x1
+   64250:      	mov	w11, #0x1               ; =1
+   64254:      	lsl	w9, w11, w9
+   64258:      	cmp	w9, w8
+   6425c:      	b.le	0x64278 <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0x118>
+   64260:      	mov	x9, #0x0                ; =0
+   64264:      	mov	w11, #-0x1              ; =-1
+   64268:      	lsl	w10, w11, w10
+   6426c:      	add	w8, w10, w8
+   64270:      	add	w8, w8, #0x1
+   64274:      	b	0x6421c <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xbc>
+   64278:      	mov	x9, #0x0                ; =0
+   6427c:      	b	0x6421c <_$s8SwiftJLI9BitReaderV28fastDecodeLosslessDifferenceys5Int32VSgAA12HuffmanTableVF+0xbc>
+   64280:      	brk	#0x1
+   64284:      	brk	#0x1

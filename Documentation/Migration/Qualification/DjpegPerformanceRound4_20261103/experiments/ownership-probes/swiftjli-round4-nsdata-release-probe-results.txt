@@ -1,0 +1,39 @@
+Toolchain: Apple Swift 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Command: xcrun swiftc -O -swift-version 6 -strict-concurrency=complete -target arm64-apple-macos26.0 /tmp/swiftjli-round4-nsdata-release-probe.swift -o /tmp/swiftjli-round4-nsdata-release-probe
+Compile exit: 0
+Command: /tmp/swiftjli-round4-nsdata-release-probe
+Run exit: 0
+
+ordinary bridge, no surrounding pool after one scope: 0
+ordinary bridge, no surrounding pool after 32 unique allocation scopes: 0
+init-local bridge pool, no surrounding pool after one scope: 0
+init-local bridge pool, no surrounding pool after 32 unique allocation scopes: 0
+source creation pool, ordinary bridge after one scope: 0
+source creation pool, ordinary bridge after 32 unique allocation scopes: 0
+source creation pool and init-local bridge pool after one scope: 0
+source creation pool and init-local bridge pool after 32 unique allocation scopes: 0
+entire Swift owner factory pool after one scope: 0
+entire Swift owner factory pool after 32 unique allocation scopes: 0
+no NSData property reads after one scope: 1
+no NSData property reads after 32 unique allocation scopes: 32
+pool only around NSData property reads after one scope: 1
+pool only around NSData property reads after 32 unique allocation scopes: 32
+factory pool and NSData property read pool after one scope: 1
+factory pool and NSData property read pool after 32 unique allocation scopes: 32
+pool around buffer construction, raw loads after drain after one scope: 1
+pool around buffer construction, raw loads after drain after 32 unique allocation scopes: 32
+Data-only control, source pool false releases: 32
+Data-only control, source pool true releases: 32
+control ordinary bridge, inside explicit pool: 0
+control ordinary bridge, after explicit pool drains: 32
+
+Interpretation: temporary owner autoreleases arise during NSData inner-pointer
+acquisition. Pooling construction alone does not bound them. A pool around raw
+buffer acquisition drains the temporary retain while the retained Swift owner
+keeps the pointer valid for subsequent reads. This is one macOS/Swift toolchain
+probe, not minimum-OS runtime or cross-platform qualification.
+
+Earlier isolation revision exited 133 because an untyped Data.withUnsafeBytes
+closure selected the deprecated typed-pointer overload and read Int instead of
+UInt8. The control was corrected to explicit UnsafeRawBufferPointer, then the
+final source above compiled and ran successfully; this was a probe defect.

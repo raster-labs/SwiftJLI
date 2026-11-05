@@ -1,0 +1,53 @@
+{
+  "status": "source review complete; no actionable finding",
+  "reviewer": "/root/round4_audit",
+  "createdUTC": "2026-11-03T19:45:34.331998+00:00",
+  "sourceRevision": "6e763ec2099e162bae52a40109ff74269ea9899f",
+  "parentRevision": "bbc9ebe1a1e6c5fbe3839c697e562980d2a4a737",
+  "scope": "Read-only source and existing execution-receipt review. Reviewer ran no compiler, test, sanitizer or benchmark and changed no repository file.",
+  "sourceManifestSHA256": "087d10d8b053d3a78bbd17b1e853aa0e02cf5bf259e4ce1991fe8ceea7704c3e",
+  "sourceSHA256": {
+    "Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift": "cab570d9f02ff3093f9371f10d0c78e8dc8b39ddd114a170ec75834121190727",
+    "Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift": "bfbe0ca6cc0d81ce22b642406c98162a9a928ab9751d07f51328514b54aeee77",
+    "Tests/SwiftJLITests/Native/PipelinedGreyscaleTests.swift": "e3e60aa45546d58bc6914470c1c23af377a8c8aefe808a1f6acef7a58297f9fc",
+    "Tests/SwiftJLITests/Native/BoundedDCTWorkspaceTests.swift": "50c7fdf47910d831944889442e5e0c315535412ffb45a98b511ac4c9a666c15f",
+    "Tests/SwiftJLITests/Native/ParallelGreyscaleWindowTests.swift": "a433a4f0abb9d874a7768fdfcb1c48733458683a4585b4dfbdcb7865c669d384"
+  },
+  "changedFiles": [
+    "Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift",
+    "Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift"
+  ],
+  "findings": [],
+  "proof": [
+    "Both changed constructors select ordinary [] only for zero scratch; positive-capacity initialisation is byte-identical to the parent.",
+    "FMA reconstructWindow branches before dereferencing scratch; the pipeline accepts a zero-count/nil scratch view only for its block-local plan. No output, coefficient, quantiser, borrow, publication, admission or worker-join logic changes.",
+    "The failed trace has three reports naming global _swiftEmptyArrayStorage. Writes originate in unsafeUninitializedCapacity count publication at ParallelSequentialGreyscaleDecoder.swift:17 or PipelinedGreyscaleDecoder.swift:46.",
+    "Existing parameterised pipeline tests exercise concurrent scratch-free 8/12-bit and integer/Float output paths, odd padding and worker ceilings; bounded workspace tests exercise the serial constructor. Their actual failed parent run already reproduced both constructor sites. A new test mirroring [] adds no meaningful missing case."
+  ],
+  "existingRegressionEvidence": {
+    "parentReceipt": "/private/tmp/swiftjli-round5-evidence/flat-small-recovery-guards/tsan-1/command.json",
+    "parentReceiptSHA256": "f21e23e62d8c80fb597bd120bcadd11bcbc17f81bbcaa8e2b9c751128ab5e1f2",
+    "parentExitCode": 1,
+    "parentSummary": {
+      "tests": 133,
+      "suites": 25
+    },
+    "parentWarnings": 3,
+    "repairedReceipt": "/private/tmp/swiftjli-round5-evidence/empty-scratch-fix/tsan-1/command.json",
+    "repairedReceiptSHA256": "29b8f3b00ce3101c4e3c16dee113e29258583475cc674d04de7ec90ea43a777c",
+    "repairedExitCode": 0,
+    "repairedSummary": {
+      "tests": 133,
+      "suites": 25
+    },
+    "repairedWarnings": 0,
+    "identicalFilter": true,
+    "identicalCompilerSHA256": true,
+    "identicalRecordedEnvironmentOverrides": true,
+    "noSuppressionOrFilterReduction": "Recorded commands retain --sanitize thread and identical filter; recorded environment overrides contain only DEVELOPER_DIR. Source changes add no suppression."
+  },
+  "limitations": [
+    "Existing tests and traces substantiate this narrow repair on the recorded Apple ARM64 toolchain. This review does not add cross-platform qualification or prove all races absent.",
+    "Parent owns subsequent Release, ASan, performance and overall selection decisions."
+  ]
+}

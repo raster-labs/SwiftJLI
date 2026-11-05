@@ -1,0 +1,56 @@
+{
+  "sourceRevision": "5f9e1cf50db4eee4d5439f80602f3dfe9f24b0cd",
+  "status": "completed standalone ASan/UBSan diagnostic",
+  "sourceSnapshot": "v4-composed-row-source",
+  "sourceManifestSHA256": "6917fd9808e0c4bd215a2f097a67895a44f64c7c02d1cf5ebc061ae905aee1f8",
+  "resultDirectory": "row-v4-composed-run1",
+  "compileExitCode": 0,
+  "runExitCode": 0,
+  "seed": "0xc0d0187a9b56e243",
+  "cases": 1536287,
+  "randomCases": 1048576,
+  "boundaryCases": 276423,
+  "knownCases": 201266,
+  "aliasCases": 10000,
+  "invalidArgumentCases": 22,
+  "statusCounts": [
+    254202,
+    54957,
+    7944,
+    129539,
+    0,
+    929893,
+    22,
+    159730
+  ],
+  "statusOrder": [
+    "OK",
+    "END",
+    "END_AFTER_FF",
+    "MARKER",
+    "CODE_INDEX",
+    "INVALID_CODE",
+    "INVALID_ARGUMENT",
+    "INVALID_WIDTH"
+  ],
+  "allAvailableBitsCovered": true,
+  "allNormalCategoriesCovered": true,
+  "binarySHA256": "db8cf49fb9d6e22483c6a885995f14588f60a3a8758a6bbbfe511514f9dc6157",
+  "compileLogBytes": 0,
+  "sanitizerStderrBytes": 0,
+  "earlierFailure": {
+    "snapshot": "v3-composed-row-source",
+    "resultDirectory": "row-v3-composed-run1",
+    "compileExitCode": 1,
+    "executed": false,
+    "cause": "Harness-only replacement typo trial%DC_MODELS2; corrected to trial%32 in v4. No production change."
+  },
+  "priorGeneric06Results": "row-v2-run1 retained unchanged; not combined with this result",
+  "swiftIntegrationQualification": "/private/tmp/swiftjli-round5-evidence/c-row-qualification-5f9e1cf/qualification.json",
+  "limitations": [
+    "bounded deterministic memory/UB diagnostic, not exhaustive proof",
+    "generic-row differential is related implementation, not independent external decoder",
+    "Swift public/lifetime checks are a separate required gate",
+    "no benchmark/RSS/cross-platform acceptance implied"
+  ]
+}

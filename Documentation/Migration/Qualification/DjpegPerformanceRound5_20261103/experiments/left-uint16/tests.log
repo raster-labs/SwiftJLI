@@ -1,0 +1,132 @@
+Building for production...
+[Planning deferred tasks]
+[41 / 67]
+[42 / 68] SwiftJLI
+[52 / 114]
+[55 / 114]
+[63 / 114]
+[66 / 114]
+[70 / 114]
+[73 / 114]
+[79 / 114]
+[82 / 114]
+[83 / 114]
+[86 / 114]
+[88 / 114]
+[89 / 114] SwiftJLI
+[101 / 116] swiftjli-cli-product
+[107 / 123]
+[110 / 123] swiftjli-cli-product
+[112 / 123] swiftjli-cli-product
+[113 / 123] swiftjli-cli-product
+/private/tmp/swiftjli-round5-lossless-audit/Tests/SwiftJLITests/Native/ScopedACDecoderTests.swift:66:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 64 |         // zero runs, long codes, stuffing and markers under a real AC table.
+ 65 |         let table = StandardHuffmanTables.acLuminance
+ 66 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 512)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 67 |         for first in UInt16(0)...255 {
+ 68 |             for tail: [UInt8] in [[], [0], [0xFF], [0xFF, 0], [0xFF, 0xD0], [0xFF, 0xD9],
+
+/private/tmp/swiftjli-round5-lossless-audit/Tests/SwiftJLITests/Native/SequentialGreyscaleDecoderTests.swift:37:58: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 35 |                     var reader = BitReader(data: writer.data)
+ 36 |                     var destination = [Int32](repeating: 123456, count: expected.count + 7)
+ 37 |                     let lookup = combined ? try #require(ACLookahead(table: acTable, blockCount: 512)) : nil
+    |                                                          `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: acTable, blockCount: 512)' never equals 'nil' (from macro 'require')
+ 38 |                     try destination.withUnsafeMutableBufferPointer {
+ 39 |                         try SequentialGreyscaleDecoder.decode(reader: &reader,
+
+/private/tmp/swiftjli-round5-lossless-audit/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:31:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 29 |         let scan = Self.scan(blockCount: 2050, dcOnly: dcOnly)
+ 30 |         let table = StandardHuffmanTables.acLuminance
+ 31 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 32 |         let quantisation = (0..<64).map { Float($0 * 7 % 127 + 1) }
+ 33 |         for backend in Decoder.capabilities.availableBackends {
+
+/private/tmp/swiftjli-round5-lossless-audit/Tests/SwiftJLITests/Native/StreamingCoefficientReuseTests.swift:92:46: warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 90 |         let scan = Self.scan(blockCount: 1025)
+ 91 |         let table = StandardHuffmanTables.acLuminance
+ 92 |         let lookup = combined ? try #require(ACLookahead(table: table, blockCount: 2050)) : nil
+    |                                              `- warning: '#require(_:_:)' is redundant because 'ACLookahead(table: table, blockCount: 2050)' never equals 'nil' (from macro 'require')
+ 93 |         var reader = BitReader(data: scan.bytes), calls = 0
+ 94 |         #expect(throws: JLIError.self) {
+[114 / 123] SwiftJLITests-product
+[119 / 123] SwiftJLITests-product
+[121 / 123] SwiftJLITests-product
+Build complete! (44.03 secs)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite ZeroRunLosslessTests started.
+◇ Suite "Lossless restart intervals (SOF3 + DRI/RST)" started.
+◇ Suite LosslessDifferenceTests started.
+◇ Suite LosslessLeftUInt16Tests started.
+◇ Test zeroRunsRetainReadBitsAndRestartBoundaries() started.
+◇ Suite LosslessRowStorageTests started.
+◇ Test constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+◇ Test "cjpeg lossless restart streams decode bit-exactly (8-bit, predictor 5)" started.
+◇ Test "Opt-in DRI encode round-trips bit-exactly and carries RST markers" started.
+◇ Test "Parallel restart EMIT is byte-identical to serial emit" started.
+◇ Test malformedExtentsEntropyAndDeadlineReject() started.
+◇ Test "A corrupt restart segment throws in BOTH serial and parallel decode" started.
+◇ Test invalidStorageAndInterruptedScanPreserveBoundaries() started.
+◇ Test "Lossless RGB with restart intervals round-trips bit-exactly (serial path)" started.
+◇ Suite LosslessLookaheadTests started.
+◇ Test case passing 1 argument bits → 2 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+◇ Test "cjpeg lossless restart streams decode bit-exactly (12-bit, predictor 6)" started.
+◇ Test case passing 1 argument bits → 12 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+◇ Test longCodesTruncationMarkersAndInvalidCategoriesUseFallback() started.
+◇ Test independentCjpegFixturesMatchExactSamples() started.
+◇ Test "Segment-parallel restart decode equals serial, bit-exactly" started.
+◇ Test case passing 1 argument bits → 8 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+◇ Test paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+◇ Test case passing 1 argument bits → 16 to constantAndChangingPlateausPreserveSamplesAndPadding(bits:) started.
+◇ Test narrowRowsObserveCancellationWithinBoundedSampleWork() started.
+◇ Test allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test everyMagnitudeAtEveryBitOffsetMatchesBitwiseReference() started.
+◇ Test truncatedEntropyMissingRestartsAndDeadlineStillThrow() started.
+◇ Test case passing 1 argument precision → 2 to paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+◇ Test case passing 1 argument bits → 2 to allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test lookupRejectsInvalidStorageBeforeWriting() started.
+◇ Test largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 8 to allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test everyPrefixAndBitOffsetMatchesBitwiseReference() started.
+◇ Test allocationAndLongMagnitudeDispatchAreBounded() started.
+◇ Test case passing 1 argument bits → 12 to allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test case passing 1 argument precision → 8 to paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+◇ Test case passing 1 argument bits → 16 to allPredictorsPointTransformsAndRestartEdges(bits:) started.
+◇ Test case passing 1 argument precision → 12 to paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+◇ Test case passing 1 argument precision → 16 to paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) started.
+✔ Test "cjpeg lossless restart streams decode bit-exactly (8-bit, predictor 5)" passed after 0.004 seconds.
+✔ Test independentCjpegFixturesMatchExactSamples() passed after 0.004 seconds.
+✔ Test narrowRowsObserveCancellationWithinBoundedSampleWork() passed after 0.004 seconds.
+✔ Test "cjpeg lossless restart streams decode bit-exactly (12-bit, predictor 6)" passed after 0.004 seconds.
+✔ Test "Lossless RGB with restart intervals round-trips bit-exactly (serial path)" passed after 0.004 seconds.
+◇ Test case passing 1 argument bits → 2 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 8 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 12 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+◇ Test case passing 1 argument bits → 16 to largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) started.
+✔ Test "Opt-in DRI encode round-trips bit-exactly and carries RST markers" passed after 0.007 seconds.
+✔ Test "A corrupt restart segment throws in BOTH serial and parallel decode" passed after 0.007 seconds.
+✔ Test malformedExtentsEntropyAndDeadlineReject() passed after 0.007 seconds.
+✔ Test "Parallel restart EMIT is byte-identical to serial emit" passed after 0.007 seconds.
+✔ Test invalidStorageAndInterruptedScanPreserveBoundaries() passed after 0.007 seconds.
+✔ Test truncatedEntropyMissingRestartsAndDeadlineStillThrow() passed after 0.007 seconds.
+✔ Test "Segment-parallel restart decode equals serial, bit-exactly" passed after 0.007 seconds.
+✔ Test zeroRunsRetainReadBitsAndRestartBoundaries() passed after 0.007 seconds.
+✔ Test lookupRejectsInvalidStorageBeforeWriting() passed after 0.005 seconds.
+✔ Test longCodesTruncationMarkersAndInvalidCategoriesUseFallback() passed after 0.007 seconds.
+✔ Test allocationAndLongMagnitudeDispatchAreBounded() passed after 0.005 seconds.
+✔ Suite "Lossless restart intervals (SOF3 + DRI/RST)" passed after 0.007 seconds.
+✔ Test allPredictorsPointTransformsAndRestartEdges(bits:) with 4 test cases passed after 0.008 seconds.
+✔ Suite LosslessRowStorageTests passed after 0.009 seconds.
+✔ Test constantAndChangingPlateausPreserveSamplesAndPadding(bits:) with 4 test cases passed after 0.011 seconds.
+✔ Suite ZeroRunLosslessTests passed after 0.011 seconds.
+✔ Test largeScansPreservePredictorsRestartsPointTransformsAndPadding(bits:) with 4 test cases passed after 0.025 seconds.
+✔ Test paddedOutputMatchesFullPlaneAcrossRowAndRestartEdges(precision:) with 4 test cases passed after 0.112 seconds.
+✔ Suite LosslessLeftUInt16Tests passed after 0.112 seconds.
+✔ Test everyMagnitudeAtEveryBitOffsetMatchesBitwiseReference() passed after 0.255 seconds.
+✔ Suite LosslessDifferenceTests passed after 0.256 seconds.
+✔ Test everyPrefixAndBitOffsetMatchesBitwiseReference() passed after 0.306 seconds.
+✔ Suite LosslessLookaheadTests passed after 0.308 seconds.
+✔ Test run with 22 tests in 6 suites passed after 0.308 seconds.

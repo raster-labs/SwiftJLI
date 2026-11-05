@@ -1,0 +1,30 @@
+{
+  "reviewedUTC": "2026-11-03T19:40:23.856641+00:00",
+  "sourceRevision": "bbc9ebe1a1e6c5fbe3839c697e562980d2a4a737",
+  "scope": "Read-only search for further FMA-introduced zero-capacity unsafeUninitializedCapacity constructors; no runtime.",
+  "knownAffected": [
+    "ParallelSequentialGreyscaleDecoder.swift:17",
+    "PipelinedGreyscaleDecoder.swift:46"
+  ],
+  "additionalFMAIntroducedZeroCapacityConstructorsFound": false,
+  "reasoning": [
+    "Both affected sites select scratchCount0 when plan.blockLocalIDCT istrue.",
+    "SequentialGreyscalePlan.make requires positive frame dimensions/workerLimit, yielding positive blocksPerRow/blockRows/blockCount/batchBlocks.",
+    "C/Swift sequential coefficient constructors validate positive geometry/windows before min(window,blocks)*64 allocation.",
+    "BlockLocalIDCT operates on borrowed coefficient storage and has no scratch Array constructor.",
+    "Serial GEMM and compactDC production allocations use positive admitted batch counts; tinyDC temporary allocation is gated1...16.",
+    "Scaled natural/dct buffers already choose[] before unsafe initialisation when unused.",
+    "Private reconstructGreyscaleInto derives scratch size from coefficient count; a zero count would require an invalid internal empty plane, not the public validated FMA route."
+  ],
+  "sourceSHA256": {
+    "Sources/SwiftJLI/Native/Decoder/ParallelSequentialGreyscaleDecoder.swift": "11cdb9003bb99fbe4422b44a173d622f1bac10da3e11fe7102cd0d8ecb3b0b66",
+    "Sources/SwiftJLI/Native/Decoder/PipelinedGreyscaleDecoder.swift": "2bff80c79289e3ce01f4a36f14ad3d207c3c2c3f57b98cd78db3ebd40180c9d5",
+    "Sources/SwiftJLI/Native/Decoder/SequentialGreyscalePlan.swift": "0522cc449799e2496df895010e988ddfb19bf2fd661e0dd2323f082cb62d0616",
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "ce8ee2aa3a8c8c55ef78be6e3c922163b93fdceff4792f5903af40e344a8aef7",
+    "Sources/SwiftJLI/Native/Entropy/SequentialGreyscaleDecoder.swift": "ff413fbca4507633d4a3f5ce392e7b6e2271e0b4f7347d94c34065699d5f4401",
+    "Sources/SwiftJLI/Native/Entropy/CSequentialGreyscaleDecoder.swift": "d183ecb0cbc4d7f9dddfbb3fbc946fd9dce2d6b379b4fe5e6fe058103657d2e0",
+    "Sources/SwiftJLI/Native/Entropy/DCOnlyGreyscaleDecoder.swift": "583f78fad3331c97e0d0219222eab9930dfa1fb8cb187b71d098f7fce3aa6492",
+    "Sources/SwiftJLI/Native/Platform/BlockLocalIDCT.swift": "8a882da4e793b2576b76dfaf66a77831ec9c30f0dde33badccb817f67d7ebdbe"
+  },
+  "limitation": "Source reasoning only; does not supersede the TSan blocker or qualify the forthcoming fix."
+}

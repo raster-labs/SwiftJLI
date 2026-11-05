@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/private/tmp/swiftjli-djpeg-round3/Scripts/test-cli.py", line 602, in <module>
+    if __name__=='__main__':sys.exit(main())
+                                     ~~~~^^
+  File "/private/tmp/swiftjli-djpeg-round3/Scripts/test-cli.py", line 175, in main
+    regular = run_bytes([binary, 'encode', '-i', chunk_input, *common])
+  File "/private/tmp/swiftjli-djpeg-round3/Scripts/test-cli.py", line 110, in run_bytes
+    save();assert r.returncode==expected,(argv,r.returncode,stderr_text);return r
+                  ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([PosixPath('/private/tmp/swiftjli-round3-parser-build/out/Products/Release/swiftjli-cli'), 'encode', '-i', PosixPath('/private/tmp/swiftjli-round3-release-cli/cli stage spaces hseluxi3/chunk-131073.pgm'), '--input-format', 'pgm', '-o', '-', '--output-format', 'jpeg'], 3, 'swiftjli-cli: malformedInput: Netpbm header exceeds 64 KiB or is incomplete.\n')

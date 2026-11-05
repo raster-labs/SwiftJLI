@@ -1,0 +1,42 @@
+{
+  "status": "source-frozen-unexecuted",
+  "candidateRevision": "cfae1e28a0b59d1bc8f03a38dc150d6393a8b8f9",
+  "baselineRevision": "db1f5c7a31df33a8c6cf2264ab8f894aae302052",
+  "contract": "0.10.0",
+  "worktree": "/private/tmp/swiftjli-round5-small-left-local",
+  "createdUTC": "2026-11-03T19:23:17.495672+00:00",
+  "changedFiles": {
+    "Sources/SwiftJLI/Native/Decoder/JLIDecoder.swift": "ce8ee2aa3a8c8c55ef78be6e3c922163b93fdceff4792f5903af40e344a8aef7",
+    "Tests/SwiftJLITests/Native/SmallLeftLosslessTests.swift": "33db3aa27c9e2d82e17d0d3009375bb8b39b92aebc9c5a469dc1152c93d5ef60"
+  },
+  "fallbackBodyIdenticalAfterRemovingDispatch": true,
+  "sourceClean": true,
+  "mechanism": "Before row-history allocation, validated predictor1 scans below16384samples use a scalar firstSample local in a private synchronous helper. Existing difference, sample writes, modulo65536, restart ordering andnarrow-row1024-sample/wide-row single-row polling schedule are preserved. Larger/other-predictor sources and all C code are untouched.",
+  "abandonedInitialIdea": "ZeroRun polling cannot explain flat19: ZeroRun is admitted only at>=16384samples. The actual small path already has a1024-sample polling bound. No ZeroRun or polling-policy change was made.",
+  "contractEvidence": {
+    "Documentation/COMMON_API.md:68": "API-12 requires bounded work and before-publication cancellation checks; no exact per-row API promise.",
+    "Tests/SwiftJLITests/Native/LosslessRowStorageTests.swift:7": "Existing narrow-row cancellation requires at most1024samples, retained unchanged."
+  },
+  "review": [
+    "Parent independently approved production scope/arithmetic/restart/poll/lifetime proof.",
+    "Test-author review plus main-agent review of eight new test declarations; compilation and runtime remain pending.",
+    "Independent DCT source audit passed; clarified that widths>1024 retain the existing one-row cancellation boundary."
+  ],
+  "testInventory": [
+    "same-backend full-plane comparison across8/12/16/2-bit precision, point transforms,row restarts,padded odd strides and widened8-bit storage",
+    "16383/16384sample threshold neighbours",
+    "malformed category16/15 wrap and post-prediction clamp",
+    "truncated entropy,FF-tail and marker errors with untouched prefix/suffix canaries",
+    "width1/19/2049 cancellation bounds retaining1024samples or one wide row",
+    "invalid sample width/stride/capacity/overflow rejection before writes",
+    "expired native deadline before any small-left write",
+    "async cancellation during provider seal and completed-progress callback prevents publication and destination reuse"
+  ],
+  "unexecuted": [
+    "focused Release",
+    "actual candidate emitted-code allocation/call inspection",
+    "performance matrices",
+    "combined safety and publication qualification",
+    "integration"
+  ]
+}

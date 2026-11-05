@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2024 Raster Lab. All rights reserved.
+import SwiftJLIEntropyC
 
 /// Bit-level writer for constructing JPEG entropy-coded data.
 ///
@@ -142,8 +143,15 @@ struct BitWriter {
 /// stuffing-aware byte loads are only triggered to complete a read/symbol that
 /// then consumes them below 8 remaining bits). `alignToByte` relies on this to
 /// rewind `byteOffset` over buffered whole bytes exactly.
+/// Retains the immutable NSData owner for its cached buffer view. Every load
+/// explicitly extends that owner's lifetime. No Data-scoped pointer escapes,
+/// and workers construct local readers from retained, pointer-free owners.
 struct BitReader {
-    private let data: [UInt8]
+    private let data: JPEGBytes
+    // This pointer has NSData owner lifetime, not a scoped Data borrow lifetime.
+    // Every access below uses withExtendedLifetime(data). The reader is never
+    // Sendable or captured by a worker: each worker creates its own reader.
+    private let buffer: UnsafeRawBufferPointer
     /// Current byte position in the data buffer.
     private(set) var byteOffset: Int = 0
     /// Bit accumulator (MSB-first in the low `bitsAvailable` bits).
@@ -152,19 +160,30 @@ struct BitReader {
     private var bitsAvailable: Int = 0
 
     init(data: [UInt8]) {
+        self.init(data: JPEGBytes(data))
+    }
+
+    init(data: JPEGBytes) {
         self.data = data
+        self.buffer = data.ownedBuffer
     }
 
     /// Starts reading at `offset` — used by segment-parallel lossless decode,
     /// where each restart segment's reader begins just past its RST marker.
-    init(data: [UInt8], startingAt offset: Int) {
+    init(data: JPEGBytes, startingAt offset: Int) {
         self.data = data
-        self.byteOffset = min(max(0, offset), data.count)
+        self.buffer = data.ownedBuffer
+        self.byteOffset = min(max(0, offset), buffer.count)
+    }
+
+    @inline(__always)
+    private func byte(at index: Int) -> UInt8 {
+        withExtendedLifetime(data) { buffer[index] }
     }
 
     /// Whether there is more data to read.
     var hasMore: Bool {
-        byteOffset < data.count || bitsAvailable > 0
+        byteOffset < buffer.count || bitsAvailable > 0
     }
 
     /// Reads a single bit.
@@ -185,14 +204,20 @@ struct BitReader {
     /// ownership of both). Returns `false` when the bulk path doesn't apply.
     @inline(__always)
     private mutating func bulkRefill() -> Bool {
-        guard byteOffset + 8 <= data.count else { return false }
-        let word = data.withUnsafeBufferPointer { buf in
-            UInt64(bigEndian: UnsafeRawPointer(buf.baseAddress! + byteOffset)
-                .loadUnaligned(as: UInt64.self))
+        guard byteOffset + 8 <= buffer.count else { return false }
+        let word = withExtendedLifetime(data) {
+            UInt64(bigEndian: buffer.loadUnaligned(fromByteOffset: byteOffset, as: UInt64.self))
         }
         guard !Self.hasFFByte(word) else { return false }
         let k = (64 - bitsAvailable) >> 3          // whole bytes that fit (≥ 6 here)
-        bitBuffer = (bitBuffer << (8 * k)) | (word >> (64 - 8 * k))
+        // Refill callers have 0...15 buffered bits. With an empty buffer,
+        // all eight bytes replace it; otherwise both shifts are within 1...63.
+        // Handle the 64-bit splice explicitly before using masked shifts.
+        if bitsAvailable == 0 {
+            bitBuffer = word
+        } else {
+            bitBuffer = (bitBuffer &<< (8 * k)) | (word &>> (64 - 8 * k))
+        }
         bitsAvailable += 8 * k
         byteOffset += k
         return true
@@ -237,7 +262,204 @@ struct BitReader {
         return table.lookaheadSymbol[peek]
     }
 
-    /// Best-effort buffer fill used only by ``fastDecodeSymbol(_:)``. Tries the
+    /// Consumes consecutive zero bits only for the canonical one-bit zero
+    /// category. Every consumed bit therefore represents one zero difference.
+    /// A failed table check consumes nothing; the caller keeps the normal path.
+    mutating func consumeZeroDifferences(_ table: HuffmanTable, maximum: Int) -> Int {
+        guard maximum > 0, table.lookaheadLength[0] == 1,
+              table.lookaheadSymbol[0] == 0 else { return 0 }
+        if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+        guard bitsAvailable > 0 else { return 0 }
+        // The guard bounds the shift to 0...63, including a full accumulator.
+        let aligned = bitBuffer &<< (64 - bitsAvailable)
+        let count = min(maximum, bitsAvailable, aligned.leadingZeroBitCount)
+        bitsAvailable -= count
+        return count
+    }
+
+    /// Consumes complete 00 pairs while retaining the refill schedule of two
+    /// one-bit Huffman symbols per pair. The caller proves the symbols' meaning.
+    /// Leave at least seven bits: every skipped symbol must begin with eight
+    /// buffered bits, so the ordinary symbol reader would not refill inside the
+    /// run. Short buffers and incomplete pairs retain the ordinary decoder.
+    mutating func consumeZeroCodePairs(maximum: Int) -> Int {
+        guard maximum > 0 else { return 0 }
+        if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+        guard bitsAvailable >= 9 else { return 0 }
+        let aligned = bitBuffer &<< (64 - bitsAvailable)
+        let pairs = min(maximum, (bitsAvailable - 7) / 2, aligned.leadingZeroBitCount / 2)
+        bitsAvailable -= pairs * 2
+        return pairs
+    }
+
+    /// Resolves a lossless category and its magnitude together when both are
+    /// already buffered. This avoids a separate bit-reader call per sample.
+    /// A miss consumes no bits: the ordinary symbol/value path retains all
+    /// long-code, marker, truncated-input and invalid-category handling.
+    @inline(__always)
+    mutating func fastDecodeLosslessDifference(_ table: HuffmanTable) -> Int32? {
+        if bitsAvailable < 8 { fillBuffer(upTo: 8) }
+        guard bitsAvailable >= 8 else { return nil }
+        let peek = Int((bitBuffer >> (bitsAvailable - 8)) & 0xFF)
+        let length = Int(table.lookaheadLength[peek])
+        guard length != 0 else { return nil }
+        let category = Int(table.lookaheadSymbol[peek])
+        if category == 0 || category == 16 {
+            bitsAvailable -= length
+            return category == 0 ? 0 : -32768
+        }
+        guard category < 16, bitsAvailable >= length + category else { return nil }
+        bitsAvailable -= length + category
+        let magnitude = Int32((bitBuffer >> bitsAvailable) & ((1 << category) - 1))
+        return magnitude < (1 << (category - 1)) ? magnitude - ((1 << category) - 1) : magnitude
+    }
+
+    /// A wider lookahead consumes one complete, precomputed difference. Only
+    /// the FF-free bulk path may prefetch beyond the existing eight-bit fill;
+    /// stuffing, markers and short input retain the ordinary fallback.
+    @inline(__always)
+    mutating func fastDecodeLosslessDifference(_ table: LosslessLookahead) -> Int32? {
+        if bitsAvailable < LosslessLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
+        guard bitsAvailable >= LosslessLookahead.bits else { return nil }
+        // All reader mutations keep bitsAvailable in 0...64. The guard
+        // bounds this shift to 0...51, so masking preserves the checked
+        // shift's value without its general-purpose signed-width branches.
+        let prefix = Int((bitBuffer &>> (bitsAvailable - LosslessLookahead.bits)) & UInt64(LosslessLookahead.count - 1))
+        let entry = table.entries[prefix]
+        guard entry != 0 else { return nil }
+        bitsAvailable -= Int(entry >> 16)
+        return Int32(Int16(truncatingIfNeeded: entry))
+    }
+
+    /// Resolves a complete AC run/value only when all its bits are buffered.
+    /// A wider prefetch uses only an FF-free bulk splice. Stuffed bytes, markers
+    /// and short input retain the ordinary eight-bit fill and fallback. Physical
+    /// byteOffset can advance over buffered bytes, but consumed bits and the
+    /// restart position recovered by alignToByte remain unchanged.
+    /// Run overflow must fall back before consuming magnitude bits: the existing
+    /// AC decoder stops after the Huffman symbol in that case.
+    @inline(__always)
+    mutating func fastDecodeAC(_ table: ACLookahead, remaining: Int) -> UInt32? {
+        if bitsAvailable < ACLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
+        guard bitsAvailable >= ACLookahead.bits else { return nil }
+        // Reader mutations bound the accumulator to 0...64 valid bits. After
+        // the guard this shift is 0...51, so the masked form has identical
+        // semantics without a general signed-width check per coefficient.
+        let prefix = Int((bitBuffer &>> (bitsAvailable - ACLookahead.bits)) & UInt64(ACLookahead.count - 1))
+        let entry = table.entries[prefix]
+        guard entry != 0, Int((entry >> 16) & 0xFF) <= remaining else { return nil }
+        bitsAvailable -= Int(entry >> 24)
+        return entry
+    }
+
+    /// The imported leaf synchronously borrows this reader's immutable input
+    /// owner, the scan-local tables and exactly 64 writable coefficients. All
+    /// storage is disjoint. No input/table pointer reaches a pipeline worker.
+    /// Commit cursor and partial bits before translating an entropy error.
+    mutating func decodeAC(using kernel: CACKernel, into output: UnsafeMutableBufferPointer<Int32>) throws {
+        guard output.count == 64, let destination = output.baseAddress else {
+            throw JLIError.decodingFailed("Invalid AC coefficient destination")
+        }
+        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
+                               available: UInt32(bitsAvailable), marker: 0)
+        let status = withExtendedLifetime(data) {
+            sjli_ac_decode_block(buffer.baseAddress, buffer.count,
+                &state, kernel.table, kernel.lookup, 8192, destination, output.count)
+        }
+        // The C input-count checks prove this offset remains within Int range.
+        byteOffset = state.byte_offset
+        bitBuffer = state.accumulator
+        bitsAvailable = Int(state.available)
+        switch status {
+        case SJLI_AC_OK: return
+        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
+        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
+        case SJLI_AC_MARKER:
+            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
+        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
+        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
+        default: throw JLIError.decodingFailed("Invalid C AC kernel arguments")
+        }
+    }
+
+    /// One synchronous DC+AC leaf call, with the same scoped ownership as the
+    /// AC-only bridge. `previousDC` is independent producer-local storage.
+    /// The C leaf publishes it before AC, exactly like the Swift reference;
+    /// neither DC failure nor an invalid extent may clear the coefficient slot.
+    mutating func decodeDCT(using kernel: CDCTKernel, previousDC: inout Int32,
+                            precision: Int, into output: UnsafeMutableBufferPointer<Int32>) throws {
+        guard output.count == 64, let destination = output.baseAddress,
+              precision == 8 || precision == 12 else {
+            throw JLIError.decodingFailed("Invalid C DCT kernel arguments")
+        }
+        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
+                               available: UInt32(bitsAvailable), marker: 0)
+        let status = withExtendedLifetime(data) {
+            sjli_dct_decode_block(buffer.baseAddress, buffer.count,
+                &state, kernel.dcTable, kernel.ac.table, kernel.ac.lookup, 8192,
+                &previousDC, UInt32(precision), destination, output.count)
+        }
+        byteOffset = state.byte_offset
+        bitBuffer = state.accumulator
+        bitsAvailable = Int(state.available)
+        switch status {
+        case SJLI_AC_OK: return
+        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
+        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
+        case SJLI_AC_MARKER:
+            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
+        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
+        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
+        case SJLI_AC_INVALID_WIDTH:
+            throw JLIError.decodingFailed("invalid bit-read width \(state.marker)")
+        case SJLI_AC_DC_RANGE:
+            throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
+        default: throw JLIError.decodingFailed("Invalid C DCT kernel arguments")
+        }
+    }
+
+    /// One synchronous C call per validated row. All input/table/output owners
+    /// enclose this call, and no pointer is saved or passed to another thread.
+    /// Publish reader state before translating failure so a truncated row has
+    /// the same partial output, physical prefetch and next-read behaviour as Swift.
+    mutating func decodeLeftUInt16Row(using kernel: CLosslessRowKernel,
+        sampleCount: Int, seed: Int32, into output: UnsafeMutableRawBufferPointer
+    ) throws -> (first: Int32, last: Int32) {
+        guard (1...65535).contains(sampleCount), (0...65535).contains(seed),
+              output.count >= sampleCount * 2, let destination = output.baseAddress else {
+            throw JLIError.decodingFailed("Invalid C lossless row arguments")
+        }
+        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
+                               available: UInt32(bitsAvailable), marker: 0)
+        var result = SJLILosslessRowResult()
+        let status = withExtendedLifetime(data) {
+            if kernel.usesCodeZero {
+                return sjli_lossless_left_u16_code0_row(buffer.baseAddress,
+                    buffer.count, &state, kernel.table, UInt32(seed), sampleCount,
+                    destination, output.count, &result)
+            }
+            return sjli_lossless_left_u16_row(buffer.baseAddress,
+                buffer.count, &state, kernel.table, UInt32(seed), sampleCount,
+                destination, output.count, &result)
+        }
+        byteOffset = state.byte_offset
+        bitBuffer = state.accumulator
+        bitsAvailable = Int(state.available)
+        switch status {
+        case SJLI_AC_OK: return (Int32(result.first), Int32(result.last))
+        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
+        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
+        case SJLI_AC_MARKER:
+            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
+        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
+        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
+        case SJLI_AC_INVALID_WIDTH:
+            throw JLIError.decodingFailed("invalid bit-read width \(state.marker)")
+        default: throw JLIError.decodingFailed("Invalid C lossless row arguments")
+        }
+    }
+
+    /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,
     /// but **stops without throwing** when it reaches a marker (`0xFF` not
@@ -246,11 +468,11 @@ struct BitReader {
     private mutating func fillBuffer(upTo target: Int) {
         if bitsAvailable < target, bulkRefill() { return }
         while bitsAvailable < target {
-            guard byteOffset < data.count else { return }
-            let byte = data[byteOffset]
+            guard byteOffset < buffer.count else { return }
+            let byte = self.byte(at: byteOffset)
             if byte == 0xFF {
-                guard byteOffset + 1 < data.count else { return }
-                if data[byteOffset + 1] != 0x00 { return }  // marker — leave for slow path
+                guard byteOffset + 1 < buffer.count else { return }
+                if self.byte(at: byteOffset + 1) != 0x00 { return }  // marker — leave for slow path
                 byteOffset += 2                               // consume the stuffed 0xFF 0x00
             } else {
                 byteOffset += 1
@@ -262,17 +484,17 @@ struct BitReader {
 
     /// Loads the next byte from the data, handling byte stuffing.
     private mutating func loadByte() throws {
-        guard byteOffset < data.count else {
+        guard byteOffset < buffer.count else {
             throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
         }
-        let byte = data[byteOffset]
+        let byte = self.byte(at: byteOffset)
         byteOffset += 1
 
         if byte == 0xFF {
-            guard byteOffset < data.count else {
+            guard byteOffset < buffer.count else {
                 throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
             }
-            let next = data[byteOffset]
+            let next = self.byte(at: byteOffset)
             if next == 0x00 {
                 // Byte stuffing — the 0xFF is a data byte
                 byteOffset += 1
@@ -308,20 +530,20 @@ struct BitReader {
     mutating func skipRestartMarker(expectedIndex: Int) throws {
         alignToByte()
         // Skip any 0xFF fill bytes that precede the marker.
-        while byteOffset < data.count - 1, data[byteOffset] == 0xFF,
-              data[byteOffset + 1] == 0xFF {
+        while byteOffset < buffer.count - 1, self.byte(at: byteOffset) == 0xFF,
+              self.byte(at: byteOffset + 1) == 0xFF {
             byteOffset += 1
         }
-        guard byteOffset + 1 < data.count else {
+        guard byteOffset + 1 < buffer.count else {
             throw JLIError.decodingFailed("Unexpected end of data expecting RST marker")
         }
-        guard data[byteOffset] == 0xFF else {
+        guard self.byte(at: byteOffset) == 0xFF else {
             throw JLIError.decodingFailed(
-                "Expected RST marker at offset \(byteOffset), got 0x\(String(format: "%02X", data[byteOffset]))"
+                "Expected RST marker at offset \(byteOffset), got 0x\(String(format: "%02X", self.byte(at: byteOffset)))"
             )
         }
         let expected = UInt8(0xD0 + (expectedIndex & 7))
-        let got = data[byteOffset + 1]
+        let got = self.byte(at: byteOffset + 1)
         guard got >= 0xD0 && got <= 0xD7 else {
             throw JLIError.decodingFailed(
                 "Expected RST\(expectedIndex & 7) (0xFF D\(expectedIndex & 7)), got 0xFF \(String(format: "%02X", got))"

@@ -261,80 +261,202 @@ enum SharedDCTStorage {
             for row in 0..<height {
                 try NativeOperation.check()
                 let src = base + row * plane.width, dst = bytes + row * destination.rowBytes
-                if floatOutput {
-                    for x in 0..<width {
-                        let sample = src[x]
-                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
-                        let bits = sample.bitPattern
-                        for byte in 0..<4 { dst[x * 4 + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
-                    }
-                } else if bps == 2 {
-                    for x in 0..<width {
-                        let sample = src[x]
-                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
-                        let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
-                        dst[x * 2] = UInt8(truncatingIfNeeded: value)
-                        dst[x * 2 + 1] = UInt8(value >> 8)
-                    }
-                } else {
-                    for x in 0..<width {
-                        let sample = src[x]
-                        guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
-                        dst[x] = UInt8(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
-                    }
+                try writeGreyscaleRun(src, into: dst, count: width, bytesPerSample: bps,
+                                      maximum: maximum, floatOutput: floatOutput)
+            }
+        }
+    }
+
+    /// Writes an already reconstructed batch synchronously into caller memory.
+    /// The caller validates destination geometry and keeps both scoped borrows
+    /// alive. Edge tiles write only active samples, preserving caller padding.
+    static func writeGreyscaleBlocks(_ pixels: UnsafeBufferPointer<Float>,
+                                     firstBlock: Int, blocksPerRow: Int,
+                                     width: Int, height: Int, precision: Int,
+                                     floatOutput: Bool, into destination: BorrowedSampleDestination) throws {
+        guard let base = pixels.baseAddress,
+              let bytes = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+            throw JLIError.unsupportedJPEGFeature("Invalid greyscale destination")
+        }
+        let maximum = Float((1 << precision) - 1), bps = destination.bytesPerSample
+        for index in 0..<(pixels.count / 64) {
+            // At most 4096 reconstructed samples between cancellation checks.
+            if index % 64 == 0 { try NativeOperation.check() }
+            let block = firstBlock + index
+            let x = (block % blocksPerRow) * 8, y = (block / blocksPerRow) * 8
+            guard x < width, y < height else { continue }
+            let count = min(8, width - x)
+            for row in 0..<min(8, height - y) {
+                try writeGreyscaleRun(base + index * 64 + row * 8,
+                    into: bytes + (y + row) * destination.rowBytes + x * bps,
+                    count: count, bytesPerSample: bps, maximum: maximum, floatOutput: floatOutput)
+            }
+        }
+    }
+
+    /// A DC-only block has one already shifted/clipped sample. Convert it using
+    /// the same integer rounding or Float-bit writer as a full block, then copy
+    /// the repeated byte pattern into its active rows. The 32-byte temporary is
+    /// scoped to this synchronous call; caller memory never enters other work.
+    /// The caller validates geometry just as for writeGreyscaleBlocks.
+    static func writeGreyscaleConstantBlocks(_ values: UnsafeBufferPointer<Float>,
+                                             firstBlock: Int, blocksPerRow: Int,
+                                             width: Int, height: Int, precision: Int,
+                                             floatOutput: Bool, into destination: BorrowedSampleDestination) throws {
+        let bps = destination.bytesPerSample
+        guard floatOutput ? bps == 4 : (bps == 1 && precision <= 8) || bps == 2,
+              let base = values.baseAddress,
+              let bytes = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+            throw JLIError.unsupportedJPEGFeature("Invalid greyscale destination")
+        }
+        let maximum = Float((1 << precision) - 1)
+        try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: 32) { pattern in
+            pattern.initialize(repeating: 0)
+            let tile = pattern.baseAddress!
+            for index in 0..<values.count {
+                if index % 64 == 0 { try NativeOperation.check() }
+                let block = firstBlock + index
+                let x = (block % blocksPerRow) * 8, y = (block / blocksPerRow) * 8
+                guard x < width, y < height else { continue }
+                try writeGreyscaleRun(base + index, into: tile, count: 1,
+                    bytesPerSample: bps, maximum: maximum, floatOutput: floatOutput)
+                for sample in 1..<8 { for byte in 0..<bps {
+                    tile[sample * bps + byte] = tile[byte]
+                } }
+                let payload = min(8, width - x) * bps
+                let rows = min(8, height - y)
+                let destinationRow = bytes + y * destination.rowBytes + x * bps
+                // Constant memcpy lengths permit unaligned fixed-size stores;
+                // partial edge rows retain a bounded variable-length copy.
+                switch payload {
+                case 8:
+                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, 8) }
+                case 16:
+                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, 16) }
+                case 32:
+                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, 32) }
+                default:
+                    for row in 0..<rows { memcpy(destinationRow + row * destination.rowBytes, tile, payload) }
                 }
             }
         }
     }
-    /// Joined lanes convert disjoint row ranges with at most eight rows of
-    /// scratch per lane. Accelerate converts into contiguous byte planes and
-    /// interleaves directly into the final destination, preserving row padding.
+
+    @inline(__always)
+    private static func writeGreyscaleRun(_ src: UnsafePointer<Float>, into dst: UnsafeMutablePointer<UInt8>,
+                                          count: Int, bytesPerSample: Int, maximum: Float,
+                                          floatOutput: Bool) throws {
+        if floatOutput {
+            for x in 0..<count {
+                let sample = src[x]
+                guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                let bits = sample.bitPattern
+                for byte in 0..<4 { dst[x * 4 + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+            }
+        } else if bytesPerSample == 2 {
+            for x in 0..<count {
+                let sample = src[x]
+                guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
+                dst[x * 2] = UInt8(truncatingIfNeeded: value)
+                dst[x * 2 + 1] = UInt8(value >> 8)
+            }
+        } else {
+            for x in 0..<count {
+                let sample = src[x]
+                guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                dst[x] = UInt8(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
+            }
+        }
+    }
+    /// Joined lanes convert into bounded internal byte tiles. Only the calling
+    /// thread writes the provider's borrowed destination after every lane joins.
     private static func writeRGB8(_ y: (data: [Float], width: Int, height: Int),
                                   cb: [Float], cr: [Float], width: Int, height: Int, precision: Int,
                                   into destination: BorrowedSampleDestination) throws {
         let rowsPerBatch = y.width == width ? min(8, height) : 1
         let batches = (height + rowsPerBatch - 1) / rowsPerBatch
         let lanes = width * height >= 65536 ? min(NativeOperation.workerLimit, batches) : 1
-        let batchesPerLane = (batches + lanes - 1) / lanes
+        let capacity = width * rowsPerBatch
+        let rowsPerLane = rowsPerBatch * 4
+        let tileBytes = width * rowsPerLane * 3
+        let planarStride = NativeDSP.usesAccelerate ? capacity * 3 : 1
+        var scratch = [Float](repeating: 0, count: capacity * 5 * lanes)
+        var planarBytes = [UInt8](repeating: 0, count: planarStride * lanes)
+        var tiles = [UInt8](repeating: 0, count: lanes > 1 ? tileBytes * lanes : 0)
         try y.data.withUnsafeBufferPointer { yp in
             try cb.withUnsafeBufferPointer { cp in
                 try cr.withUnsafeBufferPointer { rp in
-                    guard let yy = yp.baseAddress, let cc = cp.baseAddress, let rr = rp.baseAddress,
-                          let bytes = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return }
-                    let buffers = RGBOutputBuffers(y: yy, cb: cc, cr: rr, output: bytes)
-                    let sourceWidth = y.width, rowBytes = destination.rowBytes
-                    try NativeOperation.perform(iterations: lanes) { lane in
-                        let firstRow = lane * batchesPerLane * rowsPerBatch
-                        let endRow = min(height, firstRow + batchesPerLane * rowsPerBatch)
-                        guard firstRow < endRow else { return }
-                        try writeRGB8Rows(buffers, rows: firstRow..<endRow, rowsPerBatch: rowsPerBatch,
-                            sourceWidth: sourceWidth, width: width, rowBytes: rowBytes, precision: precision)
+                    try scratch.withUnsafeMutableBufferPointer { sp in
+                        try planarBytes.withUnsafeMutableBufferPointer { pp in
+                            try tiles.withUnsafeMutableBufferPointer { tp in
+                                guard let yy = yp.baseAddress, let cc = cp.baseAddress,
+                                      let rr = rp.baseAddress, let floats = sp.baseAddress,
+                                      let planar = pp.baseAddress,
+                                      let bytes = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return }
+                                let sourceWidth = y.width
+                                if lanes == 1 {
+                                    // This call is synchronous on the borrowing thread.
+                                    let buffers = RGBOutputBuffers(y: yy, cb: cc, cr: rr,
+                                        output: bytes, scratch: floats, planar: planar)
+                                    try writeRGB8Rows(buffers, rows: 0..<height, rowsPerBatch: rowsPerBatch,
+                                        sourceWidth: sourceWidth, width: width, rowBytes: destination.rowBytes,
+                                        outputFirstRow: 0, precision: precision)
+                                    return
+                                }
+                                guard let tileOutput = tp.baseAddress else { return }
+                                let buffers = RGBOutputBuffers(y: yy, cb: cc, cr: rr,
+                                    output: tileOutput, scratch: floats, planar: planar)
+                                let windowRows = lanes * rowsPerLane
+                                for first in stride(from: 0, to: height, by: windowRows) {
+                                    let end = min(height, first + windowRows)
+                                    try NativeOperation.perform(iterations: lanes) { lane in
+                                        let firstRow = first + lane * rowsPerLane
+                                        guard firstRow < end else { return }
+                                        let laneBuffers = RGBOutputBuffers(y: buffers.y, cb: buffers.cb, cr: buffers.cr,
+                                            output: buffers.output + lane * tileBytes,
+                                            scratch: buffers.scratch + lane * capacity * 5,
+                                            planar: buffers.planar + lane * planarStride)
+                                        try writeRGB8Rows(laneBuffers, rows: firstRow..<min(end, firstRow + rowsPerLane),
+                                            rowsPerBatch: rowsPerBatch, sourceWidth: sourceWidth, width: width,
+                                            rowBytes: width * 3, outputFirstRow: firstRow, precision: precision)
+                                    }
+                                    try NativeOperation.check()
+                                    // The provider's pointer is never captured by workers.
+                                    for row in first..<end {
+                                        try NativeOperation.check()
+                                        memcpy(bytes + row * destination.rowBytes,
+                                            tileOutput + (row - first) * width * 3, width * 3)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    /// Sources stay read-only inside the enclosing borrows. Each joined lane
-    /// owns its conversion scratch and a disjoint range of destination rows.
-    /// No pointer escapes NativeOperation.perform or the caller's storage lease.
+    /// The parallel caller supplies only independently owned scratch/output
+    /// arrays. Each joined lane receives disjoint fixed-capacity regions; input
+    /// planes remain immutable. All borrows surround perform and survive errors
+    /// until every worker joins. The serial branch may use the provider pointer,
+    /// but never sends that instance to concurrent work.
     private struct RGBOutputBuffers: @unchecked Sendable {
         let y: UnsafePointer<Float>
         let cb: UnsafePointer<Float>
         let cr: UnsafePointer<Float>
         let output: UnsafeMutablePointer<UInt8>
+        let scratch: UnsafeMutablePointer<Float>
+        let planar: UnsafeMutablePointer<UInt8>
     }
 
     private static func writeRGB8Rows(_ buffers: RGBOutputBuffers, rows: Range<Int>, rowsPerBatch: Int,
-                                     sourceWidth: Int, width: Int, rowBytes: Int, precision: Int) throws {
-        let capacity = width * min(rowsPerBatch, rows.count)
-        var scratch = [Float](repeating: 0, count: capacity * 5)
-        #if canImport(Accelerate)
-        var bytePlanes = [UInt8](repeating: 0, count: NativeDSP.usesAccelerate ? capacity * 3 : 0)
-        #endif
+                                     sourceWidth: Int, width: Int, rowBytes: Int, outputFirstRow: Int, precision: Int) throws {
+        let capacity = width * rowsPerBatch
         let yy = buffers.y, cc = buffers.cb, rr = buffers.cr, bytes = buffers.output
-        try scratch.withUnsafeMutableBufferPointer { sp in
-            guard let s = sp.baseAddress else { return }
+        let s = buffers.scratch
+        do {
             let cbS = s, crS = s + capacity, r = s + capacity * 2, g = s + capacity * 3, b = s + capacity * 4
             var negativeCentre = -Float(1 << (precision - 1))
             var rCr: Float = 1.402, gCb: Float = -0.344136, gCr: Float = -0.714136, bCb: Float = 1.772
@@ -358,8 +480,8 @@ enum SharedDCTStorage {
                     // Contiguous conversion avoids the costly stride-three
                     // vDSP stores. Interleave only this bounded batch directly
                     // into final storage, honouring the caller's row padding.
-                    try bytePlanes.withUnsafeMutableBufferPointer { planar in
-                        guard let pr = planar.baseAddress else { return }
+                    do {
+                        let pr = buffers.planar
                         let pg = pr + capacity, pb = pr + capacity * 2
                         jliDSP_vfixru8(r, 1, pr, 1, count)
                         jliDSP_vfixru8(g, 1, pg, 1, count)
@@ -370,7 +492,7 @@ enum SharedDCTStorage {
                             width: vImagePixelCount(width), rowBytes: width)
                         var blue = vImage_Buffer(data: pb, height: vImagePixelCount(rows),
                             width: vImagePixelCount(width), rowBytes: width)
-                        var output = vImage_Buffer(data: bytes + firstRow * rowBytes,
+                        var output = vImage_Buffer(data: bytes + (firstRow - outputFirstRow) * rowBytes,
                             height: vImagePixelCount(rows), width: vImagePixelCount(width),
                             rowBytes: rowBytes)
                         let status = vImageConvert_Planar8toRGB888(&red, &green, &blue, &output,
@@ -383,13 +505,13 @@ enum SharedDCTStorage {
                 }
                 #endif
                 if rowBytes == width * 3 {
-                    let out = bytes + firstRow * rowBytes
+                    let out = bytes + (firstRow - outputFirstRow) * rowBytes
                     jliDSP_vfixru8(r, 1, out, 3, count)
                     jliDSP_vfixru8(g, 1, out + 1, 3, count)
                     jliDSP_vfixru8(b, 1, out + 2, 3, count)
                 } else {
                     for row in 0..<rows {
-                        let offset = row * width, out = bytes + (firstRow + row) * rowBytes
+                        let offset = row * width, out = bytes + (firstRow - outputFirstRow + row) * rowBytes
                         jliDSP_vfixru8(r + offset, 1, out, 3, width)
                         jliDSP_vfixru8(g + offset, 1, out + 1, 3, width)
                         jliDSP_vfixru8(b + offset, 1, out + 2, 3, width)

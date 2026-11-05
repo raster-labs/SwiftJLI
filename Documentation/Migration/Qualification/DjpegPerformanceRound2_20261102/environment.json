@@ -1,0 +1,39 @@
+{
+  "os": {
+    "command": [
+      "sw_vers"
+    ],
+    "exitCode": 0,
+    "output": "ProductName:\t\tmacOS\nProductVersion:\t\t27.0.1\nBuildVersion:\t\t26A434\n"
+  },
+  "hardware": {
+    "command": [
+      "sysctl",
+      "-n",
+      "hw.model",
+      "hw.memsize",
+      "hw.physicalcpu",
+      "hw.logicalcpu",
+      "machdep.cpu.brand_string"
+    ],
+    "exitCode": 0,
+    "output": "Mac16,5\n68719476736\n16\n16\nApple M4 Max\n"
+  },
+  "power": {
+    "command": [
+      "pmset",
+      "-g",
+      "batt"
+    ],
+    "exitCode": 0,
+    "output": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=23330915)\t100%; charged; 0:00 remaining present: true\n"
+  },
+  "architecture": {
+    "command": [
+      "uname",
+      "-m"
+    ],
+    "exitCode": 0,
+    "output": "arm64\n"
+  }
+}

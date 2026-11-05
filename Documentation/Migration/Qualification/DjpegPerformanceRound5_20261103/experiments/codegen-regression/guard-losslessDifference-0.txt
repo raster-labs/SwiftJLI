@@ -1,0 +1,106 @@
+
+/private/tmp/swiftjli-round5-regression-audit/guard-object.o:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+000000000003cdc0 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ>:
+   3cdc0:      	str	x22, [sp, #-0x30]!
+   3cdc4:      	stp	x20, x19, [sp, #0x10]
+   3cdc8:      	stp	x29, x30, [sp, #0x20]
+   3cdcc:      	add	x29, sp, #0x20
+   3cdd0:      	mov	x19, x21
+   3cdd4:      	mov	x20, x1
+   3cdd8:      	mov	x22, x0
+   3cddc:      	ldr	x8, [x1, #0x38]
+   3cde0:      	cmp	x8, #0x7
+   3cde4:      	b.gt	0x3cdfc <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x3c>
+   3cde8:      	mov	w0, #0x8                ; =8
+   3cdec:      	bl	0x3cdec <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x2c>
+		000000000003cdec:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI9BitReaderV10fillBuffer33_9B6CCCA236C7246A9623077FA8DFE944LL4upToySi_tF
+   3cdf0:      	ldr	x8, [x20, #0x38]
+   3cdf4:      	cmp	x8, #0x8
+   3cdf8:      	b.lt	0x3ce78 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0xb8>
+   3cdfc:      	sub	x10, x8, #0x8
+   3ce00:      	ldr	x9, [x20, #0x30]
+   3ce04:      	lsr	x10, x9, x10
+   3ce08:      	and	x10, x10, #0xff
+   3ce0c:      	cmp	x8, #0x47
+   3ce10:      	csel	x10, xzr, x10, hi
+   3ce14:      	ldr	x11, [x22, #0x30]
+   3ce18:      	ldr	x12, [x11, #0x10]
+   3ce1c:      	cmp	x10, x12
+   3ce20:      	b.hs	0x3cf38 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x178>
+   3ce24:      	add	x11, x11, x10
+   3ce28:      	ldrb	w11, [x11, #0x20]
+   3ce2c:      	cbz	x11, 0x3ce78 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0xb8>
+   3ce30:      	ldr	x12, [x22, #0x38]
+   3ce34:      	ldr	x13, [x12, #0x10]
+   3ce38:      	cmp	x10, x13
+   3ce3c:      	b.hs	0x3cf3c <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x17c>
+   3ce40:      	add	x10, x12, x10
+   3ce44:      	ldrb	w10, [x10, #0x20]
+   3ce48:      	tst	w10, #0xffffffef
+   3ce4c:      	b.ne	0x3ce68 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0xa8>
+   3ce50:      	sub	x8, x8, x11
+   3ce54:      	str	x8, [x20, #0x38]
+   3ce58:      	mov	w8, #-0x8000            ; =-32768
+   3ce5c:      	cmp	w10, #0x0
+   3ce60:      	csel	w1, wzr, w8, eq
+   3ce64:      	b	0x3ced0 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x110>
+   3ce68:      	cmp	w10, #0xf
+   3ce6c:      	add	x11, x10, x11
+   3ce70:      	ccmp	x8, x11, #0x0, ls
+   3ce74:      	b.hs	0x3cef0 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x130>
+   3ce78:      	mov	x0, x22
+   3ce7c:      	bl	0x3ce7c <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0xbc>
+		000000000003ce7c:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI9BitReaderV16fastDecodeSymbolys5UInt8VSgAA12HuffmanTableVF
+   3ce80:      	and	w8, w0, #0xff00
+   3ce84:      	cmp	w8, #0x100
+   3ce88:      	b.ne	0x3cea4 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0xe4>
+   3ce8c:      	mov	x0, x20
+   3ce90:      	mov	x1, x22
+   3ce94:      	mov	x21, x19
+   3ce98:      	bl	0x3ce98 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0xd8>
+		000000000003ce98:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI14HuffmanDecoderO017decodeSymbolBitByG04from5tables5UInt8VAA0G6ReaderVz_AA0C5TableVtKFZTf4nnd_n
+   3ce9c:      	mov	x19, x21
+   3cea0:      	cbnz	x21, 0x3ced0 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x110>
+   3cea4:      	ands	w1, w0, #0xff
+   3cea8:      	b.eq	0x3ced0 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x110>
+   3ceac:      	cmp	w1, #0x10
+   3ceb0:      	b.ne	0x3cebc <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0xfc>
+   3ceb4:      	mov	w1, #-0x8000            ; =-32768
+   3ceb8:      	b	0x3ced0 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x110>
+   3cebc:      	mov	x0, x20
+   3cec0:      	mov	x21, x19
+   3cec4:      	bl	0x3cec4 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x104>
+		000000000003cec4:  ARM64_RELOC_BRANCH26	_$s8SwiftJLI14HuffmanDecoderO11decodeValue4from8categorys5Int32VAA9BitReaderVz_SitKFZTf4nnd_n
+   3cec8:      	mov	x19, x21
+   3cecc:      	cbz	x21, 0x3cee8 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x128>
+   3ced0:      	mov	x0, x1
+   3ced4:      	mov	x21, x19
+   3ced8:      	ldp	x29, x30, [sp, #0x20]
+   3cedc:      	ldp	x20, x19, [sp, #0x10]
+   3cee0:      	ldr	x22, [sp], #0x30
+   3cee4:      	ret
+   3cee8:      	mov	x1, x0
+   3ceec:      	b	0x3ced0 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x110>
+   3cef0:      	sub	x8, x8, x11
+   3cef4:      	str	x8, [x20, #0x38]
+   3cef8:      	lsr	x9, x9, x8
+   3cefc:      	mov	x11, #-0x1              ; =-1
+   3cf00:      	lsl	x11, x11, x10
+   3cf04:      	cmp	x8, #0x3f
+   3cf08:      	csel	w8, wzr, w9, hi
+   3cf0c:      	bic	w1, w8, w11
+   3cf10:      	sub	w8, w10, #0x1
+   3cf14:      	mov	w9, #0x1                ; =1
+   3cf18:      	lsl	w8, w9, w8
+   3cf1c:      	cmp	w8, w1
+   3cf20:      	b.le	0x3ced0 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x110>
+   3cf24:      	mov	w8, #-0x1               ; =-1
+   3cf28:      	lsl	w8, w8, w10
+   3cf2c:      	add	w8, w8, w1
+   3cf30:      	add	w1, w8, #0x1
+   3cf34:      	b	0x3ced0 <_$s8SwiftJLI10JLIDecoderV18losslessDifference33_3374B9D79BE399395322590CE2153958LLys5Int32VAA12HuffmanTableV_AA9BitReaderVztKFZ+0x110>
+   3cf38:      	brk	#0x1
+   3cf3c:      	brk	#0x1

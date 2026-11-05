@@ -1,0 +1,134 @@
+{
+  "receiptProvenance": "Exact command, environment and exit status confirmed from the executing parent agent session tool receipts; test/suite counts independently read from archived logs.",
+  "checks": [
+    {
+      "name": "release-tests",
+      "sourceTreeRevision": "82d4b25510daceeddb40d1a2395e683203d76526",
+      "sourcePinNote": "Executed working tree subsequently committed at this revision.",
+      "command": [
+        "swift",
+        "test",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-build"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "environmentOverrides": {
+        "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+      },
+      "asanOptionsOverride": null,
+      "combinedStdoutStderr": true,
+      "log": "release-tests.log",
+      "exitCode": 0,
+      "passedTests": 403,
+      "passedSuites": 63
+    },
+    {
+      "name": "asan-tests",
+      "sourceTreeRevision": "82d4b25510daceeddb40d1a2395e683203d76526",
+      "sourcePinNote": "Executed working tree subsequently committed at this revision.",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-asan",
+        "--sanitize",
+        "address"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "environmentOverrides": {
+        "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+      },
+      "asanOptionsOverride": null,
+      "combinedStdoutStderr": true,
+      "log": "asan-tests.log",
+      "exitCode": 0,
+      "passedTests": 403,
+      "passedSuites": 63
+    },
+    {
+      "name": "final-release-tests",
+      "sourceTreeRevision": "0a8acd72ddeac6fb1911457ae28b689eef0e9db1",
+      "sourcePinNote": "Executed working tree subsequently committed at this revision.",
+      "command": [
+        "swift",
+        "test",
+        "-c",
+        "release",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-build"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "environmentOverrides": {
+        "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+      },
+      "asanOptionsOverride": null,
+      "combinedStdoutStderr": true,
+      "log": "final-release-tests.log",
+      "exitCode": 0,
+      "passedTests": 403,
+      "passedSuites": 63
+    },
+    {
+      "name": "final-asan-followup",
+      "sourceTreeRevision": "0a8acd72ddeac6fb1911457ae28b689eef0e9db1",
+      "sourcePinNote": "Executed working tree subsequently committed at this revision.",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-asan",
+        "--sanitize",
+        "address",
+        "--filter",
+        "StreamingWorkspaceAdmissionTests|BoundedDCTWorkspaceTests|CompressedInputOwnershipTests|NativeExecutionTests|CancellationPublicationTests"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "environmentOverrides": {
+        "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+      },
+      "asanOptionsOverride": null,
+      "combinedStdoutStderr": true,
+      "log": "final-asan-followup.log",
+      "exitCode": 0,
+      "passedTests": 23,
+      "passedSuites": 4
+    },
+    {
+      "name": "final-tsan-followup",
+      "sourceTreeRevision": "0a8acd72ddeac6fb1911457ae28b689eef0e9db1",
+      "sourcePinNote": "Executed working tree subsequently committed at this revision.",
+      "command": [
+        "swift",
+        "test",
+        "--jobs",
+        "4",
+        "--scratch-path",
+        "/private/tmp/swiftjli-round4-tsan",
+        "--sanitize",
+        "thread",
+        "--filter",
+        "StreamingWorkspaceAdmissionTests|BoundedDCTWorkspaceTests|CompressedInputOwnershipTests|NativeExecutionTests|CancellationPublicationTests"
+      ],
+      "cwd": "/private/tmp/swiftjli-djpeg-round4",
+      "environmentOverrides": {
+        "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+      },
+      "asanOptionsOverride": null,
+      "combinedStdoutStderr": true,
+      "log": "final-tsan-followup.log",
+      "exitCode": 0,
+      "passedTests": 23,
+      "passedSuites": 4
+    }
+  ]
+}
