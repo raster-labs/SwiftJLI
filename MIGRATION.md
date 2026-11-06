@@ -4,7 +4,7 @@ The codec implementation was merged into main through [PR #19](https://github.co
 
 The three maintenance fixes below merged into main through [PR #21](https://github.com/raster-labs/SwiftJLI/pull/21) on 13 October 2026 (`e1ae85d`), and the Milestone 4 CLI payload implementation merged through [PR #23](https://github.com/raster-labs/SwiftJLI/pull/23) on 15 October 2026 (`89d5e6a`); [non-Watch qualification](Documentation/Migration/Qualification/NonWatchCompletion/README.md) and [Milestone 4 qualification](Documentation/Migration/Qualification/Milestone4/README.md) record their verification.
 
-The original source pin is JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`, supplemented by maintenance pins `981da4efb7d62e4370c5d6de706d56a729b9552e` (`v0.5.2`) and `fb1e188b4b1bad73febccf3b7c7595a78ae7a4c2` (`v0.6.0`, [parity record](Documentation/Migration/Qualification/JLISwiftOct14Parity/README.md)). SwiftJLI requires Swift tools 6.2 or later, Swift 6 language mode and Apple deployment floors of 26.0. Raise the application's floor in its separately assigned cutover. Stable version 2.0.1 is available via Swift Package Manager.
+The original source pin is JLISwift `0a4ded0b0b2e8e38127f4f302b286e74ee352474`, supplemented by maintenance pins `981da4efb7d62e4370c5d6de706d56a729b9552e` (`v0.5.2`) and `fb1e188b4b1bad73febccf3b7c7595a78ae7a4c2` (`v0.6.0`, [parity record](Documentation/Migration/Qualification/JLISwiftOct14Parity/README.md)). SwiftJLI requires Swift tools 6.2 or later, Swift 6 language mode and Apple deployment floors of 26.0. Raise the application's floor in its separately assigned cutover. Stable version 2.0.2 is available via Swift Package Manager.
 
 ## API mappings
 

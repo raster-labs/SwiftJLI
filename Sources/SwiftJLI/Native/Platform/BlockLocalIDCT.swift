@@ -6,7 +6,7 @@
 /// transposition or Float scratch allocation is needed.
 enum BlockLocalIDCT {
     static var available: Bool {
-        #if canImport(Accelerate) && arch(arm64)
+        #if canImport(Accelerate) && os(macOS) && arch(arm64)
         true
         #else
         false

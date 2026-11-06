@@ -9,7 +9,7 @@ import Glibc
 #endif
 
 private let tool = "swiftjli-cli"
-private let version = "2.0.1"
+private let version = "2.0.2"
 // PLAT-01/02 fix the Apple deployment minimum at 26.0; contract 0.5.0 reversed the
 // 0.4.0 raise to 27.0 and contract 0.9.0 confirmed 26.0. Reported in one place so the
 // help text and the JSON payload cannot drift apart from each other again.
