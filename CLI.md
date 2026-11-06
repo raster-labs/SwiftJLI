@@ -1,6 +1,6 @@
 # swiftjli-cli: JPEG and lossless JPEG command-line tool
 
-Version **1.1.0-dev.2**; Swift 6.2 minimum with Swift 6.4 qualified / Swift 6, Apple OS minimum **26.0**. The CLI targets macOS and Linux; see the [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) for evidence revisions. No external parser package or sibling codec is required.
+Version **2.0.1**; Swift 6.2 minimum with Swift 6.4 qualified / Swift 6, Apple OS minimum **26.0**. The CLI targets macOS and Linux; see the [acceptance ledger](Documentation/Migration/ACCEPTANCE.md) for evidence revisions. No external parser package or sibling codec is required.
 
 `swiftjli-cli` provides `capabilities`, `encode`, `decode`, `inspect`, `validate`, `help` and `version`:
 

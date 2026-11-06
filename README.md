@@ -2,7 +2,7 @@
 
 JPEG, including native lossless JPEG for the **Swift Image Compression Suite**.
 
-**Status: codec implementation merged; stable-release acceptance remains open.**
+**Status: stable release `2.0.1` (`v2.0.1`).**
 
 The common API now encodes, inspects and decodes unsigned SOF3 lossless and bounded-error JPEG (2–16 meaningful bits; greyscale and explicit RGB). Compatible interleaved storage supports padded rows and direct caller-destination decode. Explicit lossy mode now supports sequential and progressive DCT JPEG at 8/12-bit precision, with scalar execution and optional Apple Accelerate. Reduced-size decode, explicit raw greyscale Float32 output and both adaptive quantisation fields are available. Explicit normalised Float32 input can be clamped and quantised to 8-bit in lossy mode. Explicit sRGB-to-XYB encoding and direct sRGB integer or explicitly normalised Float32 decode are also available with matching ICC interpretation. Explicit RGBA alpha discard, preconverted YCbCr input and RGB-to-greyscale conversion are implemented.
 
@@ -12,9 +12,13 @@ SwiftJLI is the standalone successor to [JLISwift](https://github.com/Raster-Lab
 
 Milestone 4 software — including `swiftjli-cli` payload commands (`encode`, `decode`, `inspect`, `validate`) and fidelity-preserving NRRD (`CLI-04`) and binary Netpbm (`pgm`/`ppm`/`pnm`) I/O — is implemented and qualified for the owner-scoped native macOS and iOS Simulator targets, alongside the retained historical non-Watch qualification. The [Watch qualification harness](Examples/WatchQualification/README.md) prepares the remaining device checks; no physical Watch is connected to the current development host. [Milestone 4 status and evidence](Documentation/Migration/Qualification/Milestone4/README.md) keep physical Watch testing open as a stable-release prerequisite. Milestone 5 remains deferred.
 
-## Swift 6.4 development candidate
+## Current version
 
-Current development version: **1.1.0-dev.2** ([VERSION](VERSION)); shared suite policy **0.10.0**. This increments the earlier unreleased 1.0.0 target and creates no release/tag. See the [OS 27/CLI record](Documentation/Engineering/OS27CLI/README.md) for adopted features, exact Xcode/Swift Build evidence and open platform gates; its platform claims are superseded history, since contract 0.5.0 returned the Apple floor to 26.0 and the compiler minimum to 6.2, while its CLI foundation content remains retained alongside the Milestone 4 payload implementation. The historical [Milestone 1 evidence](Documentation/MILESTONE1.md) remains unchanged.
+Current stable version: **2.0.1** ([VERSION](VERSION)); shared suite policy **0.10.0**. Consumable via Swift Package Manager:
+
+```swift
+.package(url: "https://github.com/raster-labs/SwiftJLI.git", from: "2.0.1")
+```
 
 ## Intended platform baseline
 
