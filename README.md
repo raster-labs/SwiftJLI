@@ -2,7 +2,7 @@
 
 JPEG, including native lossless JPEG for the **Swift Image Compression Suite**.
 
-**Status: stable release `2.0.1` (`v2.0.1`).**
+**Status: stable release `2.0.2` (`v2.0.2`).**
 
 The common API now encodes, inspects and decodes unsigned SOF3 lossless and bounded-error JPEG (2–16 meaningful bits; greyscale and explicit RGB). Compatible interleaved storage supports padded rows and direct caller-destination decode. Explicit lossy mode now supports sequential and progressive DCT JPEG at 8/12-bit precision, with scalar execution and optional Apple Accelerate. Reduced-size decode, explicit raw greyscale Float32 output and both adaptive quantisation fields are available. Explicit normalised Float32 input can be clamped and quantised to 8-bit in lossy mode. Explicit sRGB-to-XYB encoding and direct sRGB integer or explicitly normalised Float32 decode are also available with matching ICC interpretation. Explicit RGBA alpha discard, preconverted YCbCr input and RGB-to-greyscale conversion are implemented.
 
@@ -14,10 +14,10 @@ Milestone 4 software — including `swiftjli-cli` payload commands (`encode`, `d
 
 ## Current version
 
-Current stable version: **2.0.1** ([VERSION](VERSION)); shared suite policy **0.10.0**. Consumable via Swift Package Manager:
+Current stable version: **2.0.2** ([VERSION](VERSION)); shared suite policy **0.10.0**. Consumable via Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/raster-labs/SwiftJLI.git", from: "2.0.1")
+.package(url: "https://github.com/raster-labs/SwiftJLI.git", from: "2.0.2")
 ```
 
 ## Intended platform baseline

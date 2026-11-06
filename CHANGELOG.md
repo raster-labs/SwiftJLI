@@ -1,5 +1,19 @@
 # Change log
 
+## SwiftJLI 2.0.2 — 6 November 2026
+
+Patch release `2.0.2` (`v2.0.2`) per suite policy `POL-07`, resolving Apple Simulator runtime test failures (`BlockLocalIDCTTests` and `PipelinedGreyscaleTests`) and CI job timeout headroom on `macos-26`:
+
+- **Apple Simulator IDCT bit-identity (`BlockLocalIDCT.available`)**: Scoped `BlockLocalIDCT` (`SIMD8<Float>.addingProduct` ascending FMA dot product) to `canImport(Accelerate) && os(macOS) && arch(arm64)` so iOS, tvOS, watchOS, and visionOS Simulator runtimes — whose Accelerate `vDSP_mmul(8, 8192, 8)` 1024-block GEMM accumulation kernel differs by 1 ULP from the 256-block ascending FMA loop — consistently use the canonical `AccelerateDSP.inverseDCTBatchDequantized` GEMM path across all batch sizes and worker counts.
+- **CI `macos-26` job timeout headroom**: Increased `timeout-minutes` on `macOS 26 / Xcode default Swift` in `.github/workflows/contract.yml` from `30` to `45` (matching `ios-simulator`) so the combined Debug, Release, Address Sanitizer, Thread Sanitizer, and `WatchQualification` steps complete without hitting the 30-minute boundary.
+- **Executed gates & simulator reruns**:
+  - Shared contract SHA-256 manifest: `7/7 OK` (`COMMON_CONTRACT_SHA256.txt`, contract `0.10.0`).
+  - Native macOS ARM64 Release test suite: `496` tests in `85` suites passed (`xcrun swift test -c release`).
+  - Apple Simulator runtime test reruns: Full `SwiftJLITests` suite (`496` tests) and `Examples/PredecessorComparison` passed on iOS Simulator; `BlockLocalIDCTTests`, `PipelinedGreyscaleTests`, `ParallelGreyscaleWindowTests`, `CACPublicPipelineTests`, and `StreamingWorkspaceAdmissionTests` passed across `iOS`, `tvOS`, `watchOS`, and `visionOS` Simulators (`0` failures).
+  - `Examples/WatchQualification` host harness: `6/6` tests passed in Release mode.
+  - CLI conformance test suite: `252/252` process checks passed (`python3 Scripts/test-cli.py`).
+  - Staged CLI installation & `Examples/IndependentConsumer`: Passed.
+
 ## SwiftJLI 2.0.1 — 6 November 2026
 
 First stable release of SwiftJLI (`2.0.1`, tagged `v2.0.1`), the standalone pure-Swift JPEG and lossless JPEG library and `swiftjli-cli` executable for the Swift Image Compression Suite (following tag `v2.0.0`; shared contract `0.10.0`, Apple OS `26.0` deployment floor, Swift `6.2` tools minimum / Swift `6.4` qualified in Swift `6` language mode).
