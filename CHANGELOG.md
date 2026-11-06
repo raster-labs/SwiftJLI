@@ -1,5 +1,28 @@
 # Change log
 
+## SwiftJLI 2.0.1 — 6 November 2026
+
+First stable release of SwiftJLI (`2.0.1`, tagged `v2.0.1`), the standalone pure-Swift JPEG and lossless JPEG library and `swiftjli-cli` executable for the Swift Image Compression Suite (following tag `v2.0.0`; shared contract `0.10.0`, Apple OS `26.0` deployment floor, Swift `6.2` tools minimum / Swift `6.4` qualified in Swift `6` language mode).
+
+### Release highlights and capabilities
+
+- **Native Lossless JPEG (ISO/IEC 10918-1 / ITU-T T.81 SOF3)**: Full lossless (point transform 0) and bounded-error near-lossless encoding, inspection, and decoding across 2–16-bit sample precision (greyscale and explicit RGB). Predictors 1–7 with row-level restart markers and zero-copy caller-owned `ImageDestination` decoding.
+- **Lossy Sequential and Progressive DCT JPEG (SOF0, SOF1, SOF2)**: 8-bit and 12-bit sequential and progressive DCT decoding with scalar execution and optional Apple Accelerate vDSP/vImage acceleration. Grouped/compact DC decoding, pipelined greyscale reconstruction, and block-local ARM64 FMA entropy leaves.
+- **Color Spaces and Photometric Interpretation**: Explicit sRGB-to-XYB encoding and direct sRGB integer or Float32 normalized decode with matching ICC profile generation; explicit RGBA alpha discard, YCbCr input, and RGB-to-greyscale conversion.
+- **Memory Safety & Resource Ceilings**: Strict `ResourceLimits` enforcement, zero unbounded memory allocations, explicit memory ownership, checked arithmetic on dimensions/strides, and thread-safe cancellation points.
+- **Command-Line Interface (`swiftjli-cli`)**: Full payload CLI implementing `capabilities`, `encode`, `decode`, `inspect`, and `validate` with fidelity-preserving NRRD (`CLI-04`) and binary Netpbm (PGM/PPM/PNM) I/O, atomic file publication, structured JSON telemetry, and UNIX manual (`ManPages/swiftjli-cli.1`).
+- **Independent Package Consumption**: Clean SPM dependency resolution without sibling checkout requirements or unsafe compiler flags (`.package(url: "https://github.com/raster-labs/SwiftJLI.git", from: "2.0.1")`).
+
+### Executed gates and verification evidence
+
+- **Shared contract SHA-256 manifest**: All 7 common contract documents verified byte-identical (`shasum -a 256 -c COMMON_CONTRACT_SHA256.txt`: 7/7 OK, contract 0.10.0).
+- **Native macOS Release test suite**: 496 tests in 85 suites passed with 0 failures (`xcrun swift test -c release`).
+- **CLI conformance test**: 252 process checks passed (`python3 Scripts/test-cli.py --binary .build/release/swiftjli-cli`).
+- **Staged CLI installation**: Verified with `Scripts/install-cli.sh --binary .build/release/swiftjli-cli --prefix /usr/local --destdir <stage>`.
+- **Independent consumer execution**: `Examples/IndependentConsumer` compiles and passes all checks (predictive, progressive, float, XYB, RGBA, YCbCr, and greyscale).
+- **Private vulnerability reporting**: Confirmed enabled on `raster-labs/SwiftJLI` (`gh api repos/raster-labs/SwiftJLI/private-vulnerability-reporting`).
+
+
 ## Compact and pipelined DCT decoding — 3 November 2026
 
 - Source `14f35018d241666358480da2a8527d29ab047627` extends round four with scan-local AC prefetch, compact DC-only decoding, canonical grouped DCT reconstruction and an entropy/reconstruction pipeline. Compact greyscale coefficient/reconstruction storage is 8 KiB; eligible pipelined dense greyscale uses 768 KiB. Large lossless predictor specialisation repairs the measured ramp regression. RGB reconstruction now stages internal tiles and scatters only on the caller thread, preserving provider-borrow lifetime.

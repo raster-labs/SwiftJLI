@@ -34,7 +34,7 @@ as runs against the merged revision.
 
 ## Source and destination
 
-Predecessor: [Raster-Lab/JLISwift](https://github.com/Raster-Lab/JLISwift). Target module/product: `SwiftJLI`. Target CLI: `swiftjli-cli`. Intended first stable library version: `1.1.0`.
+Predecessor: [Raster-Lab/JLISwift](https://github.com/Raster-Lab/JLISwift). Target module/product: `SwiftJLI`. Target CLI: `swiftjli-cli`. First stable library version: `2.0.1` (following tag `v2.0.0`; shared contract `0.10.0`, Apple OS `26.0` deployment floor, Swift `6.2` manifest minimum / Swift `6.4` qualified).
 
 **Milestone 2 pinned revision: `0a4ded0b0b2e8e38127f4f302b286e74ee352474`.** Selected and recorded 23 September 2026; see [the pin record](#milestone-2-pinned-predecessor-revision) below for the resolution evidence and why this revision rather than the last stable tag.
 
