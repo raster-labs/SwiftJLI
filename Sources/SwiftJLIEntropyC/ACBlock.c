@@ -103,18 +103,20 @@ static inline __attribute__((always_inline)) SJLIACStatus ac_body(const uint8_t 
     while (index < 64) {
         if (reader->available < 13 && !bulk(input, input_count, reader)) fill(input, input_count, reader);
         if (reader->available >= 13) {
-            const unsigned prefix = (unsigned)((reader->accumulator >> (reader->available - 13)) & 8191);
-            const uint32_t entry = lookup[prefix];
-            const unsigned advance = (entry >> 16) & 255;
-            if (entry != 0 && advance <= 64 - index) {
+            do {
+                const unsigned prefix = (unsigned)((reader->accumulator >> (reader->available - 13)) & 8191);
+                const uint32_t entry = lookup[prefix];
+                const unsigned advance = (entry >> 16) & 255;
+                if (entry == 0 || advance > 64 - index) goto slow_path;
                 reader->available -= entry >> 24;
-                if (advance == 0) break;
+                if (advance == 0) return status;
                 index += advance;
-                const uint32_t low = entry & 65535;
-                output[index - 1] = low < 32768 ? (int32_t)low : (int32_t)low - 65536;
-                continue;
-            }
+                output[index - 1] = (int32_t)(int16_t)(entry & 0xffff);
+                if (index >= 64) return status;
+            } while (reader->available >= 13);
+            continue;
         }
+    slow_path:;
         uint8_t value;
         status = symbol(input, input_count, reader, table, &value);
         if (status != SJLI_AC_OK || value == 0) break;
@@ -129,6 +131,39 @@ static inline __attribute__((always_inline)) SJLIACStatus ac_body(const uint8_t 
         if (category != 0 && magnitude < (UINT32_C(1) << (category - 1)))
             coefficient -= (int32_t)((UINT32_C(1) << category) - 1);
         output[index++] = coefficient;
+    }
+    return status;
+}
+
+static inline __attribute__((always_inline)) SJLIACStatus dct_block_body(
+    const uint8_t *restrict input, size_t input_count,
+    SJLIACState *restrict reader, const SJLIACHuffman *restrict dc_table,
+    const SJLIACHuffman *restrict ac_table, const uint32_t *restrict lookup,
+    int32_t *restrict previous_dc, int64_t bound, int32_t *restrict output) {
+    uint8_t category;
+    SJLIACStatus status = symbol(input, input_count, reader, dc_table, &category);
+    if (status == SJLI_AC_OK) {
+        if (category > 16) {
+            // Match Swift readBits validation after consuming the DC symbol
+            // but before consuming any magnitude or clearing coefficients.
+            reader->marker = category;
+            status = SJLI_AC_INVALID_WIDTH;
+        } else {
+            uint32_t magnitude;
+            status = read_bits(input, input_count, reader, category, &magnitude);
+            if (status == SJLI_AC_OK) {
+                int32_t difference = (int32_t)magnitude;
+                if (category != 0 && magnitude < (UINT32_C(1) << (category - 1)))
+                    difference -= (int32_t)((UINT32_C(1) << category) - 1);
+                const int64_t dc = (int64_t)*previous_dc + difference;
+                if (dc < -bound || dc > bound) status = SJLI_AC_DC_RANGE;
+                else {
+                    *previous_dc = (int32_t)dc;
+                    status = ac_body(input, input_count, reader, ac_table, lookup, output);
+                    if (status == SJLI_AC_OK) output[0] = *previous_dc;
+                }
+            }
+        }
     }
     return status;
 }
@@ -160,32 +195,34 @@ SJLIACStatus sjli_dct_decode_block(const void *restrict raw_input, size_t input_
         state->byte_offset > input_count || state->available > 64 ||
         (precision != 8 && precision != 12)) return SJLI_AC_INVALID_ARGUMENT;
     SJLIACState reader = *state;
-    uint8_t category;
-    SJLIACStatus status = symbol(input, input_count, &reader, dc_table, &category);
-    if (status == SJLI_AC_OK) {
-        if (category > 16) {
-            // Match Swift readBits validation after consuming the DC symbol
-            // but before consuming any magnitude or clearing coefficients.
-            reader.marker = category;
-            status = SJLI_AC_INVALID_WIDTH;
-        } else {
-            uint32_t magnitude;
-            status = read_bits(input, input_count, &reader, category, &magnitude);
-            if (status == SJLI_AC_OK) {
-                int32_t difference = (int32_t)magnitude;
-                if (category != 0 && magnitude < (UINT32_C(1) << (category - 1)))
-                    difference -= (int32_t)((UINT32_C(1) << category) - 1);
-                const int64_t dc = (int64_t)*previous_dc + difference;
-                const int64_t bound = INT64_C(1) << (precision + 2);
-                if (dc < -bound || dc > bound) status = SJLI_AC_DC_RANGE;
-                else {
-                    *previous_dc = (int32_t)dc;
-                    status = ac_body(input, input_count, &reader, ac_table, lookup, output);
-                    if (status == SJLI_AC_OK) output[0] = *previous_dc;
-                }
-            }
-        }
+    const int64_t bound = INT64_C(1) << (precision + 2);
+    SJLIACStatus status = dct_block_body(input, input_count, &reader, dc_table,
+                                         ac_table, lookup, previous_dc, bound, output);
+    *state = reader;
+    return status;
+}
+
+SJLIACStatus sjli_dct_decode_run(const void *restrict raw_input, size_t input_count,
+    SJLIACState *restrict state, const SJLIACHuffman *restrict dc_table,
+    const SJLIACHuffman *restrict ac_table, const uint32_t *restrict lookup,
+    size_t lookup_count, int32_t *restrict previous_dc, unsigned precision,
+    int32_t *restrict output, size_t block_count) {
+    const uint8_t *input = (const uint8_t *)raw_input;
+    if ((!input && input_count != 0) || !state || !dc_table || !ac_table || !lookup ||
+        !previous_dc || !output || block_count == 0 || block_count > 1024 ||
+        lookup_count != 8192 || dc_table->value_count > 256 || ac_table->value_count > 256 ||
+        state->byte_offset > input_count || state->available > 64 ||
+        (precision != 8 && precision != 12)) return SJLI_AC_INVALID_ARGUMENT;
+    SJLIACState reader = *state;
+    int32_t dc = *previous_dc;
+    const int64_t bound = INT64_C(1) << (precision + 2);
+    SJLIACStatus status = SJLI_AC_OK;
+    for (size_t b = 0; b < block_count; ++b) {
+        status = dct_block_body(input, input_count, &reader, dc_table, ac_table,
+                                lookup, &dc, bound, output + b * 64);
+        if (status != SJLI_AC_OK) break;
     }
+    *previous_dc = dc;
     *state = reader;
     return status;
 }

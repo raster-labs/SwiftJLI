@@ -128,8 +128,8 @@ struct JLIDecoder: Sendable {
         if let streamingPlan, let borrowedDestination {
             let scan = parsed.scans[0]
             let selector = scan.header.components.first { $0.componentSelector == components[0].id }
-            let dcTable = prepareDCTables(scan.dcTables)[selector?.dcTableId ?? 0] ?? StandardHuffmanTables.dcLuminance
-            let acTable = prepareACTables(scan.acTables)[selector?.acTableId ?? 0] ?? StandardHuffmanTables.acLuminance
+            let dcTable = resolveDCTable(scan.dcTables, id: selector?.dcTableId ?? 0)
+            let acTable = resolveACTable(scan.acTables, id: selector?.acTableId ?? 0)
             var reader = BitReader(data: scan.entropyData)
             if streamingPlan.dcOnlyTable {
                 try Self.validateGreyscaleDestination(borrowedDestination, width: frame.width,
@@ -1728,6 +1728,11 @@ struct JLIDecoder: Sendable {
         return tables
     }
 
+    private func resolveDCTable(_ parsed: [Int: HuffmanTable], id: Int) -> HuffmanTable {
+        if let table = parsed[id] { return table }
+        return id == 1 ? StandardHuffmanTables.dcChrominance : StandardHuffmanTables.dcLuminance
+    }
+
     /// Serializes a sample plane (already interleaved if multi-component) to a
     /// 32-bit **little-endian** float byte buffer for `.float32` output — the raw
     /// reconstructed sample values, with no rounding or normalization.
@@ -1752,6 +1757,11 @@ struct JLIDecoder: Sendable {
         if tables[0] == nil { tables[0] = StandardHuffmanTables.acLuminance }
         if tables[1] == nil { tables[1] = StandardHuffmanTables.acChrominance }
         return tables
+    }
+
+    private func resolveACTable(_ parsed: [Int: HuffmanTable], id: Int) -> HuffmanTable {
+        if let table = parsed[id] { return table }
+        return id == 1 ? StandardHuffmanTables.acChrominance : StandardHuffmanTables.acLuminance
     }
 
     /// Absolute upper bound on the number of samples (width × height) the decoder

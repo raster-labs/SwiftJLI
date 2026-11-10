@@ -57,6 +57,13 @@ SJLIACStatus sjli_dct_decode_block(const void *raw_input, size_t input_count,
     SJLIACState *state, const SJLIACHuffman *dc_table, const SJLIACHuffman *ac_table,
     const uint32_t *lookup, size_t lookup_count, int32_t *previous_dc,
     unsigned precision, int32_t *output, size_t output_count);
+
+// Multi-block contiguous DCT run leaf (1...1024 blocks) with identical per-block
+// cursor, DC update, coefficient zeroing and error publication semantics.
+SJLIACStatus sjli_dct_decode_run(const void *raw_input, size_t input_count,
+    SJLIACState *state, const SJLIACHuffman *dc_table, const SJLIACHuffman *ac_table,
+    const uint32_t *lookup, size_t lookup_count, int32_t *previous_dc,
+    unsigned precision, int32_t *output, size_t block_count);
 typedef struct {
     uint16_t first;
     uint16_t last;

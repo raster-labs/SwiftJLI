@@ -346,26 +346,90 @@ enum SharedDCTStorage {
     private static func writeGreyscaleRun(_ src: UnsafePointer<Float>, into dst: UnsafeMutablePointer<UInt8>,
                                           count: Int, bytesPerSample: Int, maximum: Float,
                                           floatOutput: Bool) throws {
+        let rawDst = UnsafeMutableRawPointer(dst)
+        let zero = SIMD8<Float>(repeating: 0)
+        let maxVec = SIMD8<Float>(repeating: maximum)
+        let magicBias = SIMD8<Float>(repeating: 8_388_608.0)
+        let absMask = SIMD8<UInt32>(repeating: 0x7FFF_FFFF)
+        var x = 0
         if floatOutput {
-            for x in 0..<count {
+            while x + 8 <= count {
+                let vec = UnsafeRawPointer(src + x).loadUnaligned(as: SIMD8<Float>.self)
+                let rawBits = unsafeBitCast(vec, to: SIMD8<UInt32>.self)
+                if (rawBits & absMask).max() <= 0x7F7F_FFFF {
+                    if UInt32(littleEndian: 1) == 1 {
+                        rawDst.storeBytes(of: rawBits, toByteOffset: x * 4, as: SIMD8<UInt32>.self)
+                    } else {
+                        for lane in 0..<8 {
+                            let bits = rawBits[lane]
+                            for byte in 0..<4 { dst[(x + lane) * 4 + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+                        }
+                    }
+                    x += 8
+                } else {
+                    break
+                }
+            }
+            while x < count {
                 let sample = src[x]
                 guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
                 let bits = sample.bitPattern
                 for byte in 0..<4 { dst[x * 4 + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+                x += 1
             }
         } else if bytesPerSample == 2 {
-            for x in 0..<count {
+            while x + 8 <= count {
+                let vec = UnsafeRawPointer(src + x).loadUnaligned(as: SIMD8<Float>.self)
+                let rawBits = unsafeBitCast(vec, to: SIMD8<UInt32>.self)
+                if (rawBits & absMask).max() <= 0x7F7F_FFFF {
+                    var clamped = vec.replacing(with: zero, where: vec .< zero)
+                    clamped = clamped.replacing(with: maxVec, where: clamped .> maxVec)
+                    let rounded = clamped.rounded(.toNearestOrAwayFromZero)
+                    let biasedBits = unsafeBitCast(rounded + magicBias, to: SIMD8<UInt32>.self)
+                    let words = SIMD8<UInt16>(truncatingIfNeeded: biasedBits)
+                    if UInt16(littleEndian: 1) == 1 {
+                        rawDst.storeBytes(of: words, toByteOffset: x * 2, as: SIMD8<UInt16>.self)
+                    } else {
+                        for lane in 0..<8 {
+                            let value = words[lane]
+                            dst[(x + lane) * 2] = UInt8(truncatingIfNeeded: value)
+                            dst[(x + lane) * 2 + 1] = UInt8(value >> 8)
+                        }
+                    }
+                    x += 8
+                } else {
+                    break
+                }
+            }
+            while x < count {
                 let sample = src[x]
                 guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
                 let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
                 dst[x * 2] = UInt8(truncatingIfNeeded: value)
                 dst[x * 2 + 1] = UInt8(value >> 8)
+                x += 1
             }
         } else {
-            for x in 0..<count {
+            while x + 8 <= count {
+                let vec = UnsafeRawPointer(src + x).loadUnaligned(as: SIMD8<Float>.self)
+                let rawBits = unsafeBitCast(vec, to: SIMD8<UInt32>.self)
+                if (rawBits & absMask).max() <= 0x7F7F_FFFF {
+                    var clamped = vec.replacing(with: zero, where: vec .< zero)
+                    clamped = clamped.replacing(with: maxVec, where: clamped .> maxVec)
+                    let rounded = clamped.rounded(.toNearestOrAwayFromZero)
+                    let biasedBits = unsafeBitCast(rounded + magicBias, to: SIMD8<UInt32>.self)
+                    let outBytes = SIMD8<UInt8>(truncatingIfNeeded: biasedBits)
+                    rawDst.storeBytes(of: outBytes, toByteOffset: x, as: SIMD8<UInt8>.self)
+                    x += 8
+                } else {
+                    break
+                }
+            }
+            while x < count {
                 let sample = src[x]
                 guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
                 dst[x] = UInt8(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
+                x += 1
             }
         }
     }

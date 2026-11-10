@@ -20,12 +20,29 @@ enum JPEGEntropyBoundary {
         guard start >= 0, start <= buffer.count else {
             throw CodecError(.malformedInput, "Invalid entropy scan offset.")
         }
-        guard let base = buffer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return start }
+        guard let rawBase = buffer.baseAddress else { return start }
+        let base = rawBase.assumingMemoryBound(to: UInt8.self)
+        let zero = SIMD16<UInt8>(repeating: 0)
         var position = start, checkEnd = start
         while position < buffer.count {
             if position >= checkEnd {
                 try NativeOperation.check()
                 checkEnd = position + min(4096, buffer.count - position)
+            }
+            while position + 33 <= checkEnd {
+                let v0 = rawBase.loadUnaligned(fromByteOffset: position, as: SIMD16<UInt8>.self)
+                let v1 = rawBase.loadUnaligned(fromByteOffset: position + 1, as: SIMD16<UInt8>.self)
+                let w0 = rawBase.loadUnaligned(fromByteOffset: position + 16, as: SIMD16<UInt8>.self)
+                let w1 = rawBase.loadUnaligned(fromByteOffset: position + 17, as: SIMD16<UInt8>.self)
+                let m0 = v0.replacing(with: zero, where: v1 .== zero)
+                let m1 = w0.replacing(with: zero, where: w1 .== zero)
+                let combined = m0.replacing(with: m1, where: m1 .> m0)
+                if combined.max() != 255 {
+                    position += 32
+                } else {
+                    if m0.max() != 255 { position += 16 }
+                    break
+                }
             }
             guard let match = memchr(base + position, 255, checkEnd - position) else {
                 position = checkEnd

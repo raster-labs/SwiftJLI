@@ -59,10 +59,18 @@ enum CSequentialGreyscaleDecoder {
                                 restartIndex = (restartIndex + 1) & 7
                                 previousDC = 0
                             }
-                            let block = UnsafeMutableBufferPointer(start: base + (index - first) * 64, count: 64)
-                            try reader.decodeDCT(using: kernel, previousDC: &previousDC,
-                                precision: precision, into: block)
-                            index += 1
+                            let spanEnd: Int
+                            if restartInterval > 0 {
+                                let nextRestart = index + restartInterval - (index % restartInterval)
+                                spanEnd = min(rowEnd, nextRestart)
+                            } else {
+                                spanEnd = rowEnd
+                            }
+                            let count = spanEnd - index
+                            let span = UnsafeMutableBufferPointer(start: base + (index - first) * 64, count: count * 64)
+                            try reader.decodeDCTRun(using: kernel, previousDC: &previousDC,
+                                precision: precision, blockCount: count, into: span)
+                            index = spanEnd
                         }
                     }
                     // Entropy errors throw before publication; a consumer error

@@ -108,6 +108,15 @@ public final class ImageDestination: Sendable {
         return try Self(descriptor: descriptor, storage: storage, limits: limits)
     }
 
+    internal static func allocateOverwrite(descriptor: ImageDescriptor, limits: ResourceLimits = .default) throws -> ImageDestination {
+        try descriptor.validate(limits: limits)
+        guard try checkedAdd(descriptor.requiredByteCount, descriptor.iccProfile?.count ?? 0) <= limits.maximumMemoryBytes else {
+            throw CodecError(.resourceLimitExceeded, "Destination exceeds the admission budget.")
+        }
+        let storage = try OwnedImageStorage(uninitialisedByteCount: descriptor.requiredByteCount, limits: limits)
+        return try Self(descriptor: descriptor, storage: storage, limits: limits)
+    }
+
     /// Advanced unsafe fill boundary. Initialise every sample before returning.
     /// The pointer must not escape or be used by asynchronous/concurrent work.
     /// Ordinary callers should prefer `writeUInt16`, which validates sample values.

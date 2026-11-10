@@ -418,6 +418,42 @@ struct BitReader {
         }
     }
 
+    /// Multi-block contiguous DCT run call (1...1024 blocks) with identical per-block
+    /// cursor, DC update, coefficient zeroing and error publication semantics.
+    mutating func decodeDCTRun(using kernel: CDCTKernel, previousDC: inout Int32,
+                               precision: Int, blockCount: Int,
+                               into output: UnsafeMutableBufferPointer<Int32>) throws {
+        guard (1...1024).contains(blockCount), output.count >= blockCount * 64,
+              let destination = output.baseAddress,
+              precision == 8 || precision == 12 else {
+            throw JLIError.decodingFailed("Invalid C DCT kernel arguments")
+        }
+        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
+                               available: UInt32(bitsAvailable), marker: 0)
+        let status = withExtendedLifetime(data) {
+            sjli_dct_decode_run(buffer.baseAddress, buffer.count,
+                &state, kernel.dcTable, kernel.ac.table, kernel.ac.lookup, 8192,
+                &previousDC, UInt32(precision), destination, blockCount)
+        }
+        byteOffset = state.byte_offset
+        bitBuffer = state.accumulator
+        bitsAvailable = Int(state.available)
+        switch status {
+        case SJLI_AC_OK: return
+        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
+        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
+        case SJLI_AC_MARKER:
+            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
+        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
+        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
+        case SJLI_AC_INVALID_WIDTH:
+            throw JLIError.decodingFailed("invalid bit-read width \(state.marker)")
+        case SJLI_AC_DC_RANGE:
+            throw JLIError.decodingFailed("DC coefficient exceeds sample precision")
+        default: throw JLIError.decodingFailed("Invalid C DCT kernel arguments")
+        }
+    }
+
     /// One synchronous C call per validated row. All input/table/output owners
     /// enclose this call, and no pointer is saved or passed to another thread.
     /// Publish reader state before translating failure so a truncated row has

@@ -8,7 +8,19 @@ import Synchronization
 /// batch. Admission and dispatch use the same immutable batch size.
 enum PipelinedGreyscaleDecoder {
     private final class State: Sendable {
-        struct Progress { var completed = 0; var stopped = false; var error: (any Error)? }
+        struct Progress {
+            var published = 0
+            var completed = 0
+            var workerWaiting = false
+            var producerWaiting = false
+            var stopped = false
+            var error: (any Error)?
+        }
+        let published = Atomic<Int>(0)
+        let workerParked = Atomic<Bool>(false)
+        let completed = Atomic<Int>(0)
+        let producerParked = Atomic<Bool>(false)
+        let stopped = Atomic<Bool>(false)
         let progress = Mutex(Progress())
         let ready = DispatchSemaphore(value: 0)
         let done = DispatchSemaphore(value: 0)
@@ -64,8 +76,28 @@ enum PipelinedGreyscaleDecoder {
                         do {
                             try NativeOperation.$current.withValue(context) {
                                 for batch in 0..<batches {
-                                    state.ready.wait()
-                                    if state.progress.withLock({ $0.stopped }) { return }
+                                    var spin = 0
+                                    while state.published.load(ordering: .acquiring) <= batch {
+                                        if state.stopped.load(ordering: .acquiring) { return }
+                                        if spin < 4096 {
+                                            spin &+= 1
+                                            var delay = spin
+                                            for _ in 0..<64 { delay = delay &* 1664525 &+ 1013904223 }
+                                            if delay == -1 { _ = state.published.load(ordering: .relaxed) }
+                                            continue
+                                        }
+                                        state.workerParked.store(true, ordering: .sequentiallyConsistent)
+                                        if state.stopped.load(ordering: .sequentiallyConsistent) {
+                                            state.workerParked.store(false, ordering: .releasing)
+                                            return
+                                        }
+                                        if state.published.load(ordering: .sequentiallyConsistent) > batch {
+                                            state.workerParked.store(false, ordering: .releasing)
+                                            break
+                                        }
+                                        state.ready.wait()
+                                    }
+                                    if state.stopped.load(ordering: .acquiring) { return }
                                     try NativeOperation.check()
                                     let count = min(batchBlocks, blocks - batch * batchBlocks) * 64
                                     try ParallelSequentialGreyscaleDecoder.reconstructWindow(
@@ -73,31 +105,55 @@ enum PipelinedGreyscaleDecoder {
                                         quantTable: .init(start: buffers.quantiser, count: 64),
                                         scratch: .init(start: buffers.scratch, count: scratchCount),
                                         precision: precision, bytesPerSample: bps, floatOutput: floatOutput)
-                                    state.progress.withLock { $0.completed = batch + 1 }
-                                    state.done.signal()
+                                    state.completed.store(batch + 1, ordering: .sequentiallyConsistent)
+                                    if state.producerParked.load(ordering: .sequentiallyConsistent) {
+                                        if state.producerParked.exchange(false, ordering: .acquiringAndReleasing) {
+                                            state.done.signal()
+                                        }
+                                    }
                                 }
                             }
                         } catch {
-                            state.progress.withLock { $0.error = error; $0.stopped = true }
-                            state.done.signal()
+                            state.progress.withLock { progress in
+                                progress.error = error
+                                progress.stopped = true
+                            }
+                            state.stopped.store(true, ordering: .sequentiallyConsistent)
+                            if state.producerParked.exchange(false, ordering: .acquiringAndReleasing) {
+                                state.done.signal()
+                            }
                         }
                     }
                     // Wake a worker waiting for unpublished entropy on any
                     // producer error, then join before either array borrow ends.
                     defer {
-                        state.progress.withLock { $0.stopped = true }
-                        state.ready.signal()
+                        state.stopped.store(true, ordering: .sequentiallyConsistent)
+                        if state.workerParked.exchange(false, ordering: .acquiringAndReleasing) {
+                            state.ready.signal()
+                        }
                         state.joined.wait()
                     }
                     func scatterCompleted(_ batch: Int) throws {
-                        while true {
-                            let status = state.progress.withLock { ($0.completed, $0.error) }
-                            if let error = status.1 { throw error }
-                            if status.0 > batch { break }
+                        while state.completed.load(ordering: .acquiring) <= batch {
+                            if state.stopped.load(ordering: .acquiring) {
+                                if let error = state.progress.withLock({ $0.error }) { throw error }
+                            }
+                            state.producerParked.store(true, ordering: .sequentiallyConsistent)
+                            if state.stopped.load(ordering: .sequentiallyConsistent) {
+                                state.producerParked.store(false, ordering: .releasing)
+                                if let error = state.progress.withLock({ $0.error }) { throw error }
+                            }
+                            if state.completed.load(ordering: .sequentiallyConsistent) > batch {
+                                state.producerParked.store(false, ordering: .releasing)
+                                break
+                            }
                             try NativeOperation.check()
                             // Deadline/cancellation remains observable while
                             // the bounded reconstruction unit is in flight.
                             _ = state.done.wait(timeout: .now() + .milliseconds(5))
+                        }
+                        if state.stopped.load(ordering: .acquiring) {
+                            if let error = state.progress.withLock({ $0.error }) { throw error }
                         }
                         try NativeOperation.check()
                         let count = min(batchBlocks, blocks - batch * batchBlocks) * 64
@@ -111,7 +167,9 @@ enum PipelinedGreyscaleDecoder {
                         var previousDC: Int32 = 0, restartIndex = 0
                         for batch in 0..<batches {
                             if batch >= 2 { try scatterCompleted(batch - 2) }
-                            if let error = state.progress.withLock({ $0.error }) { throw error }
+                            if state.stopped.load(ordering: .acquiring) {
+                                if let error = state.progress.withLock({ $0.error }) { throw error }
+                            }
                             let first = batch * batchBlocks, end = min(first + batchBlocks, blocks)
                             let slot = base + (batch & 1) * slotSamples
                             var index = first
@@ -124,11 +182,21 @@ enum PipelinedGreyscaleDecoder {
                                         restartIndex = (restartIndex + 1) & 7
                                         previousDC = 0
                                     }
-                                    let block = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: 64)
                                     if let kernel {
-                                        try reader.decodeDCT(using: kernel, previousDC: &previousDC,
-                                                             precision: precision, into: block)
+                                        let spanEnd: Int
+                                        if restartInterval > 0 {
+                                            let nextRestart = index + restartInterval - (index % restartInterval)
+                                            spanEnd = min(rowEnd, nextRestart)
+                                        } else {
+                                            spanEnd = rowEnd
+                                        }
+                                        let count = spanEnd - index
+                                        let span = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: count * 64)
+                                        try reader.decodeDCTRun(using: kernel, previousDC: &previousDC,
+                                                                precision: precision, blockCount: count, into: span)
+                                        index = spanEnd
                                     } else {
+                                        let block = UnsafeMutableBufferPointer(start: slot + (index - first) * 64, count: 64)
                                         let difference = try HuffmanDecoder.decodeDC(from: &reader, table: dcTable)
                                         let dc = Int64(previousDC) + Int64(difference)
                                         guard abs(dc) <= (1 << (precision + 2)) else {
@@ -141,11 +209,16 @@ enum PipelinedGreyscaleDecoder {
                                             try HuffmanDecoder.decodeAC(from: &reader, table: acTable, into: block)
                                         }
                                         block[0] = previousDC
+                                        index += 1
                                     }
-                                    index += 1
                                 }
                             }
-                            state.ready.signal()
+                            state.published.store(batch + 1, ordering: .sequentiallyConsistent)
+                            if state.workerParked.load(ordering: .sequentiallyConsistent) {
+                                if state.workerParked.exchange(false, ordering: .acquiringAndReleasing) {
+                                    state.ready.signal()
+                                }
+                            }
                         }
                     }
                     for batch in max(0, batches - 2)..<batches { try scatterCompleted(batch) }

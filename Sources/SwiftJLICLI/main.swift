@@ -1447,66 +1447,105 @@ private func writeNetpbm(
     let scratchBudget = min(limits.maximumMemoryBytes - headerData.count, max(64 * 1024, outputRowBytes))
     let rowsPerBatch = min(d.height, scratchBudget / outputRowBytes)
     let scratchBytes = try cliCheckedMultiply(rowsPerBatch, outputRowBytes, limitError: true)
-    var scratch = Data(count: scratchBytes)
     let packed = plane.sampleStride == srcBps && plane.pixelStride == components * srcBps
+    let directContiguousBytes = packed && plane.rowBytes == outputRowBytes
+        && srcBps == outBps && (srcBps == 1 || d.byteOrder == .bigEndian)
+    let contiguousLittleEndian16 = packed && plane.rowBytes == outputRowBytes
+        && srcBps == 2 && outBps == 2 && d.byteOrder == .littleEndian
+    var scratch = directContiguousBytes ? Data() : Data(count: scratchBytes)
     try writeOutputAtomically(to: path, overwrite: overwrite, context: context) { fd, isStream in
         try writeAllDescriptor(fd, data: headerData, isStream: isStream, context: context)
         // Both borrows are synchronous and remain alive until all writes finish.
-        try scratch.withUnsafeMutableBytes { (destination: UnsafeMutableRawBufferPointer) in
-            try image.storage.withUnsafeBytes { raw in
+        try image.storage.withUnsafeBytes { raw in
+            if directContiguousBytes {
+                try writeAllDescriptor(
+                    fd, bytes: UnsafeRawBufferPointer(rebasing: raw[plane.offset..<(plane.offset + payloadBytes)]),
+                    isStream: isStream, context: context
+                )
+                return
+            }
+            try scratch.withUnsafeMutableBytes { (destination: UnsafeMutableRawBufferPointer) in
                 var firstRow = 0
                 while firstRow < d.height {
                     let rowCount = min(rowsPerBatch, d.height - firstRow)
-                    for batchRow in 0..<rowCount {
+                    let batchBytes = rowCount * outputRowBytes
+                    if contiguousLittleEndian16,
+                       let srcBase = raw.baseAddress,
+                       let dstBase = destination.baseAddress {
                         try context.check()
-                        let sourceRow = plane.offset + (firstRow + batchRow) * plane.rowBytes
-                        let destinationRow = batchRow * outputRowBytes
-                        if packed && srcBps == outBps && (srcBps == 1 || d.byteOrder == .bigEndian) {
-                            // Copy only active samples; source row padding is never emitted.
-                            UnsafeMutableRawBufferPointer(rebasing: destination[destinationRow..<(destinationRow + outputRowBytes)])
-                                .copyMemory(from: UnsafeRawBufferPointer(rebasing: raw[sourceRow..<(sourceRow + outputRowBytes)]))
-                        } else if packed && srcBps == 2 && outBps == 2 && d.byteOrder == .littleEndian {
-                            // Netpbm stores wider samples most-significant byte first.
-                            // Every complete word is contained in the validated active
-                            // row; raw loads/stores also support unaligned row starts.
-                            // Exchange adjacent bytes without changing sample order.
-                            let wordBytes = outputRowBytes - outputRowBytes % MemoryLayout<UInt64>.size
-                            for offset in stride(from: 0, to: wordBytes, by: MemoryLayout<UInt64>.size) {
-                                let word = raw.loadUnaligned(fromByteOffset: sourceRow + offset, as: UInt64.self)
-                                let swapped = ((word & 0x00FF00FF00FF00FF) << 8)
-                                    | ((word >> 8) & 0x00FF00FF00FF00FF)
-                                destination.storeBytes(of: swapped, toByteOffset: destinationRow + offset, as: UInt64.self)
-                            }
-                            for offset in stride(from: wordBytes, to: outputRowBytes, by: 2) {
-                                destination[destinationRow + offset] = raw[sourceRow + offset + 1]
-                                destination[destinationRow + offset + 1] = raw[sourceRow + offset]
-                            }
-                        } else {
-                            var destinationOffset = destinationRow
-                            for x in 0..<d.width {
-                                let pixelOff = sourceRow + x * plane.pixelStride
-                                for c in 0..<components {
-                                    let sOff = pixelOff + c * plane.sampleStride
-                                    let sample: UInt16
-                                    if srcBps == 1 {
-                                        sample = UInt16(raw[sOff])
-                                    } else if d.byteOrder == .littleEndian {
-                                        sample = UInt16(raw[sOff]) | (UInt16(raw[sOff + 1]) << 8)
-                                    } else {
-                                        sample = (UInt16(raw[sOff]) << 8) | UInt16(raw[sOff + 1])
+                        let batchSource = plane.offset + firstRow * outputRowBytes
+                        guard batchSource >= 0, batchSource + batchBytes <= raw.count,
+                              batchBytes <= destination.count else {
+                            throw CodecError(.storageUnavailable, "Source storage is shorter than the declared plane.")
+                        }
+                        let srcPtr = srcBase.advanced(by: batchSource)
+                        let wordBytes = batchBytes & ~7
+                        var offset = 0
+                        while offset < wordBytes {
+                            let word = srcPtr.loadUnaligned(fromByteOffset: offset, as: UInt64.self)
+                            let swapped = ((word & 0x00FF00FF00FF00FF) << 8)
+                                | ((word >> 8) & 0x00FF00FF00FF00FF)
+                            dstBase.storeBytes(of: swapped, toByteOffset: offset, as: UInt64.self)
+                            offset += 8
+                        }
+                        while offset < batchBytes {
+                            let lo = srcPtr.load(fromByteOffset: offset, as: UInt8.self)
+                            let hi = srcPtr.load(fromByteOffset: offset + 1, as: UInt8.self)
+                            dstBase.storeBytes(of: hi, toByteOffset: offset, as: UInt8.self)
+                            dstBase.storeBytes(of: lo, toByteOffset: offset + 1, as: UInt8.self)
+                            offset += 2
+                        }
+                    } else {
+                        for batchRow in 0..<rowCount {
+                            try context.check()
+                            let sourceRow = plane.offset + (firstRow + batchRow) * plane.rowBytes
+                            let destinationRow = batchRow * outputRowBytes
+                            if packed && srcBps == outBps && (srcBps == 1 || d.byteOrder == .bigEndian) {
+                                // Copy only active samples; source row padding is never emitted.
+                                UnsafeMutableRawBufferPointer(rebasing: destination[destinationRow..<(destinationRow + outputRowBytes)])
+                                    .copyMemory(from: UnsafeRawBufferPointer(rebasing: raw[sourceRow..<(sourceRow + outputRowBytes)]))
+                            } else if packed && srcBps == 2 && outBps == 2 && d.byteOrder == .littleEndian {
+                                // Netpbm stores wider samples most-significant byte first.
+                                // Every complete word is contained in the validated active
+                                // row; raw loads/stores also support unaligned row starts.
+                                // Exchange adjacent bytes without changing sample order.
+                                let wordBytes = outputRowBytes - outputRowBytes % MemoryLayout<UInt64>.size
+                                for offset in stride(from: 0, to: wordBytes, by: MemoryLayout<UInt64>.size) {
+                                    let word = raw.loadUnaligned(fromByteOffset: sourceRow + offset, as: UInt64.self)
+                                    let swapped = ((word & 0x00FF00FF00FF00FF) << 8)
+                                        | ((word >> 8) & 0x00FF00FF00FF00FF)
+                                    destination.storeBytes(of: swapped, toByteOffset: destinationRow + offset, as: UInt64.self)
+                                }
+                                for offset in stride(from: wordBytes, to: outputRowBytes, by: 2) {
+                                    destination[destinationRow + offset] = raw[sourceRow + offset + 1]
+                                    destination[destinationRow + offset + 1] = raw[sourceRow + offset]
+                                }
+                            } else {
+                                var destinationOffset = destinationRow
+                                for x in 0..<d.width {
+                                    let pixelOff = sourceRow + x * plane.pixelStride
+                                    for c in 0..<components {
+                                        let sOff = pixelOff + c * plane.sampleStride
+                                        let sample: UInt16
+                                        if srcBps == 1 {
+                                            sample = UInt16(raw[sOff])
+                                        } else if d.byteOrder == .littleEndian {
+                                            sample = UInt16(raw[sOff]) | (UInt16(raw[sOff + 1]) << 8)
+                                        } else {
+                                            sample = (UInt16(raw[sOff]) << 8) | UInt16(raw[sOff + 1])
+                                        }
+                                        if outBps == 1 {
+                                            destination[destinationOffset] = UInt8(truncatingIfNeeded: sample)
+                                        } else {
+                                            destination[destinationOffset] = UInt8(sample >> 8)
+                                            destination[destinationOffset + 1] = UInt8(truncatingIfNeeded: sample)
+                                        }
+                                        destinationOffset += outBps
                                     }
-                                    if outBps == 1 {
-                                        destination[destinationOffset] = UInt8(truncatingIfNeeded: sample)
-                                    } else {
-                                        destination[destinationOffset] = UInt8(sample >> 8)
-                                        destination[destinationOffset + 1] = UInt8(truncatingIfNeeded: sample)
-                                    }
-                                    destinationOffset += outBps
                                 }
                             }
                         }
                     }
-                    let batchBytes = rowCount * outputRowBytes
                     try writeAllDescriptor(
                         fd, bytes: UnsafeRawBufferPointer(rebasing: destination[..<batchBytes]),
                         isStream: isStream, context: context

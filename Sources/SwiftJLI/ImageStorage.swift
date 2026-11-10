@@ -69,6 +69,19 @@ public final class OwnedImageStorage: WritableImageStorage, Sendable {
         self.state = Mutex(State(bytes: [UInt8](repeating: 0, count: byteCount)))
     }
 
+    internal init(uninitialisedByteCount byteCount: Int, limits: ResourceLimits = .default) throws {
+        try Task.checkCancellation()
+        guard byteCount > 0 else { throw CodecError(.invalidArgument, "Storage capacity must be positive.") }
+        guard byteCount <= limits.maximumDecodedBytes, byteCount <= limits.maximumMemoryBytes else {
+            throw CodecError(.resourceLimitExceeded, "Storage allocation exceeds the admission budget.")
+        }
+        self.byteCount = byteCount; self.allocationID = UUID()
+        let buffer = [UInt8](unsafeUninitializedCapacity: byteCount) { _, initializedCount in
+            initializedCount = byteCount
+        }
+        self.state = Mutex(State(bytes: buffer))
+    }
+
     public func reserveWrite() throws -> StorageWriteLease {
         try locked { state in
             guard state.phase == .available else {

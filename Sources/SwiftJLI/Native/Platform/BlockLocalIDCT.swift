@@ -35,52 +35,50 @@ enum BlockLocalIDCT {
     }
 
     @inline(__always)
-    private static func dequantise(_ coefficients: UnsafePointer<Int32>,
-                                   _ quantiser: UnsafePointer<Float>,
-                                   _ inverseZigzag: UnsafePointer<Int>, row: Int) -> SIMD8<Float> {
-        let z = inverseZigzag + row * 8
-        let values = SIMD8<Float>(Float(coefficients[z[0]]), Float(coefficients[z[1]]),
-                                  Float(coefficients[z[2]]), Float(coefficients[z[3]]),
-                                  Float(coefficients[z[4]]), Float(coefficients[z[5]]),
-                                  Float(coefficients[z[6]]), Float(coefficients[z[7]]))
-        return values * load(quantiser, row: row)
+    private static func store(_ value: SIMD8<Float>, into pointer: UnsafeMutablePointer<Float>, row: Int) {
+        UnsafeMutableRawPointer(pointer + row * 8).storeBytes(of: value, as: SIMD8<Float>.self)
+    }
+
+    @inline(__always)
+    private static func dequantise(
+        _ c: UnsafePointer<Int32>, _ quantiser: UnsafePointer<Float>, row: Int,
+        _ i0: Int, _ i1: Int, _ i2: Int, _ i3: Int,
+        _ i4: Int, _ i5: Int, _ i6: Int, _ i7: Int
+    ) -> SIMD8<Float> {
+        let raw = SIMD8<Int32>(c[i0], c[i1], c[i2], c[i3], c[i4], c[i5], c[i6], c[i7])
+        return SIMD8<Float>(raw) * load(quantiser, row: row)
     }
 
     /// Every Int32 coefficient is consumed into local values before the same
     /// 64-element region is temporarily rebound to Float. No input pointer is
-    /// read during that binding; it is restored before returning. Quantiser,
-    /// permutation and matrices are separate immutable borrows. The caller
-    /// must retain each owner and exclusively own this coefficient block.
+    /// read during that binding; it is restored before returning. Quantiser
+    /// and matrices are separate immutable borrows. The caller must retain
+    /// each owner and exclusively own this coefficient block.
+    @inline(__always)
     private static func reconstructBlock(_ coefficients: UnsafeMutablePointer<Int32>,
-                                         quantiser: UnsafePointer<Float>, inverseZigzag: UnsafePointer<Int>,
+                                         quantiser: UnsafePointer<Float>,
                                          matrix: UnsafePointer<Float>, transposed: UnsafePointer<Float>,
-                                         precision: Int) {
-        let r0 = dequantise(coefficients, quantiser, inverseZigzag, row: 0)
-        let r1 = dequantise(coefficients, quantiser, inverseZigzag, row: 1)
-        let r2 = dequantise(coefficients, quantiser, inverseZigzag, row: 2)
-        let r3 = dequantise(coefficients, quantiser, inverseZigzag, row: 3)
-        let r4 = dequantise(coefficients, quantiser, inverseZigzag, row: 4)
-        let r5 = dequantise(coefficients, quantiser, inverseZigzag, row: 5)
-        let r6 = dequantise(coefficients, quantiser, inverseZigzag, row: 6)
-        let r7 = dequantise(coefficients, quantiser, inverseZigzag, row: 7)
+                                         centre: SIMD8<Float>, maximum: SIMD8<Float>, zero: SIMD8<Float>) {
+        let r0 = dequantise(coefficients, quantiser, row: 0,  0,  1,  5,  6, 14, 15, 27, 28)
+        let r1 = dequantise(coefficients, quantiser, row: 1,  2,  4,  7, 13, 16, 26, 29, 42)
+        let r2 = dequantise(coefficients, quantiser, row: 2,  3,  8, 12, 17, 25, 30, 41, 43)
+        let r3 = dequantise(coefficients, quantiser, row: 3,  9, 11, 18, 24, 31, 40, 44, 53)
+        let r4 = dequantise(coefficients, quantiser, row: 4, 10, 19, 23, 32, 39, 45, 52, 54)
+        let r5 = dequantise(coefficients, quantiser, row: 5, 20, 22, 33, 38, 46, 51, 55, 60)
+        let r6 = dequantise(coefficients, quantiser, row: 6, 21, 34, 37, 47, 50, 56, 59, 61)
+        let r7 = dequantise(coefficients, quantiser, row: 7, 35, 36, 48, 49, 57, 58, 62, 63)
         coefficients.withMemoryRebound(to: Float.self, capacity: 64) { output in
             // All coefficients have been consumed into r0...r7 before this
             // binding starts. Retain the first pass in the same block so its
             // inputs and the second-pass matrix need not be live together.
             for row in 0..<8 {
                 let first = dot(load(transposed, row: row), r0, r1, r2, r3, r4, r5, r6, r7)
-                withUnsafeBytes(of: first) { bytes in
-                    UnsafeMutableRawBufferPointer(start: output + row * 8,
-                        count: 8 * MemoryLayout<Float>.stride).copyMemory(from: bytes)
-                }
+                store(first, into: output, row: row)
             }
             let c0 = load(matrix, row: 0), c1 = load(matrix, row: 1)
             let c2 = load(matrix, row: 2), c3 = load(matrix, row: 3)
             let c4 = load(matrix, row: 4), c5 = load(matrix, row: 5)
             let c6 = load(matrix, row: 6), c7 = load(matrix, row: 7)
-            let centre = SIMD8<Float>(repeating: Float(1 << (precision - 1)))
-            let maximum = SIMD8<Float>(repeating: Float((1 << precision) - 1))
-            let zero = SIMD8<Float>(repeating: 0)
             for row in 0..<8 {
                 // A complete row is loaded before replacing that same row;
                 // the second pass does not read any other intermediate row.
@@ -90,10 +88,7 @@ enum BlockLocalIDCT {
                 // finite-sample guard still rejects it before publication.
                 value = value.replacing(with: zero, where: value .< zero)
                 value = value.replacing(with: maximum, where: value .> maximum)
-                withUnsafeBytes(of: value) { bytes in
-                    UnsafeMutableRawBufferPointer(start: output + row * 8,
-                        count: 8 * MemoryLayout<Float>.stride).copyMemory(from: bytes)
-                }
+                store(value, into: output, row: row)
             }
         }
     }
@@ -111,18 +106,155 @@ enum BlockLocalIDCT {
               let base = coefficients.baseAddress, let qt = quantiser.baseAddress else {
             throw JLIError.decodingFailed("Invalid block-local IDCT window")
         }
-        try Quantization.inverseZigzagOrder.withUnsafeBufferPointer { indices in
-            try AccelerateDSP.dctMatrix.withUnsafeBufferPointer { matrix in
-                try AccelerateDSP.dctMatrixTransposed.withUnsafeBufferPointer { transposed in
-                    // These positive fixed-size arrays prove all three bases.
-                    for block in 0..<(coefficients.count / 64) {
+        let centre = SIMD8<Float>(repeating: Float(1 << (precision - 1)))
+        let maximum = SIMD8<Float>(repeating: Float((1 << precision) - 1))
+        let zero = SIMD8<Float>(repeating: 0)
+        try AccelerateDSP.dctMatrix.withUnsafeBufferPointer { matrix in
+            try AccelerateDSP.dctMatrixTransposed.withUnsafeBufferPointer { transposed in
+                // These positive fixed-size arrays prove both bases.
+                let mBase = matrix.baseAddress!
+                let tBase = transposed.baseAddress!
+                for block in 0..<(coefficients.count / 64) {
+                    if block & 63 == 0 { try NativeOperation.check() }
+                    reconstructBlock(base + block * 64, quantiser: qt,
+                        matrix: mBase, transposed: tBase,
+                        centre: centre, maximum: maximum, zero: zero)
+                }
+            }
+        }
+    }
+
+    @inline(__always)
+    private static func reconstructBlockAndCompactUInt16(
+        _ coefficients: UnsafeMutablePointer<Int32>,
+        rawDestination: UnsafeMutableRawPointer,
+        quantiser: UnsafePointer<Float>,
+        matrix: UnsafePointer<Float>, transposed: UnsafePointer<Float>,
+        centre: SIMD8<Float>, maximum: SIMD8<Float>, zero: SIMD8<Float>,
+        magicBias: SIMD8<Float>
+    ) {
+        let r0 = dequantise(coefficients, quantiser, row: 0,  0,  1,  5,  6, 14, 15, 27, 28)
+        let r1 = dequantise(coefficients, quantiser, row: 1,  2,  4,  7, 13, 16, 26, 29, 42)
+        let r2 = dequantise(coefficients, quantiser, row: 2,  3,  8, 12, 17, 25, 30, 41, 43)
+        let r3 = dequantise(coefficients, quantiser, row: 3,  9, 11, 18, 24, 31, 40, 44, 53)
+        let r4 = dequantise(coefficients, quantiser, row: 4, 10, 19, 23, 32, 39, 45, 52, 54)
+        let r5 = dequantise(coefficients, quantiser, row: 5, 20, 22, 33, 38, 46, 51, 55, 60)
+        let r6 = dequantise(coefficients, quantiser, row: 6, 21, 34, 37, 47, 50, 56, 59, 61)
+        let r7 = dequantise(coefficients, quantiser, row: 7, 35, 36, 48, 49, 57, 58, 62, 63)
+        coefficients.withMemoryRebound(to: Float.self, capacity: 64) { output in
+            for row in 0..<8 {
+                let first = dot(load(transposed, row: row), r0, r1, r2, r3, r4, r5, r6, r7)
+                store(first, into: output, row: row)
+            }
+            let c0 = load(matrix, row: 0), c1 = load(matrix, row: 1)
+            let c2 = load(matrix, row: 2), c3 = load(matrix, row: 3)
+            let c4 = load(matrix, row: 4), c5 = load(matrix, row: 5)
+            let c6 = load(matrix, row: 6), c7 = load(matrix, row: 7)
+            for row in 0..<8 {
+                let first = load(UnsafePointer(output), row: row)
+                var value = dot(first, c0, c1, c2, c3, c4, c5, c6, c7) + centre
+                value = value.replacing(with: zero, where: value .< zero)
+                value = value.replacing(with: maximum, where: value .> maximum)
+                let rounded = value.rounded(.toNearestOrAwayFromZero)
+                let biasedBits = unsafeBitCast(rounded + magicBias, to: SIMD8<UInt32>.self)
+                let words = SIMD8<UInt16>(truncatingIfNeeded: biasedBits)
+                rawDestination.storeBytes(of: words, toByteOffset: row * 16, as: SIMD8<UInt16>.self)
+            }
+        }
+    }
+
+    @inline(__always)
+    private static func reconstructBlockAndCompactUInt8(
+        _ coefficients: UnsafeMutablePointer<Int32>,
+        rawDestination: UnsafeMutableRawPointer,
+        quantiser: UnsafePointer<Float>,
+        matrix: UnsafePointer<Float>, transposed: UnsafePointer<Float>,
+        centre: SIMD8<Float>, maximum: SIMD8<Float>, zero: SIMD8<Float>,
+        magicBias: SIMD8<Float>
+    ) {
+        let r0 = dequantise(coefficients, quantiser, row: 0,  0,  1,  5,  6, 14, 15, 27, 28)
+        let r1 = dequantise(coefficients, quantiser, row: 1,  2,  4,  7, 13, 16, 26, 29, 42)
+        let r2 = dequantise(coefficients, quantiser, row: 2,  3,  8, 12, 17, 25, 30, 41, 43)
+        let r3 = dequantise(coefficients, quantiser, row: 3,  9, 11, 18, 24, 31, 40, 44, 53)
+        let r4 = dequantise(coefficients, quantiser, row: 4, 10, 19, 23, 32, 39, 45, 52, 54)
+        let r5 = dequantise(coefficients, quantiser, row: 5, 20, 22, 33, 38, 46, 51, 55, 60)
+        let r6 = dequantise(coefficients, quantiser, row: 6, 21, 34, 37, 47, 50, 56, 59, 61)
+        let r7 = dequantise(coefficients, quantiser, row: 7, 35, 36, 48, 49, 57, 58, 62, 63)
+        coefficients.withMemoryRebound(to: Float.self, capacity: 64) { output in
+            for row in 0..<8 {
+                let first = dot(load(transposed, row: row), r0, r1, r2, r3, r4, r5, r6, r7)
+                store(first, into: output, row: row)
+            }
+            let c0 = load(matrix, row: 0), c1 = load(matrix, row: 1)
+            let c2 = load(matrix, row: 2), c3 = load(matrix, row: 3)
+            let c4 = load(matrix, row: 4), c5 = load(matrix, row: 5)
+            let c6 = load(matrix, row: 6), c7 = load(matrix, row: 7)
+            for row in 0..<8 {
+                let first = load(UnsafePointer(output), row: row)
+                var value = dot(first, c0, c1, c2, c3, c4, c5, c6, c7) + centre
+                value = value.replacing(with: zero, where: value .< zero)
+                value = value.replacing(with: maximum, where: value .> maximum)
+                let rounded = value.rounded(.toNearestOrAwayFromZero)
+                let biasedBits = unsafeBitCast(rounded + magicBias, to: SIMD8<UInt32>.self)
+                let outBytes = SIMD8<UInt8>(truncatingIfNeeded: biasedBits)
+                rawDestination.storeBytes(of: outBytes, toByteOffset: row * 8, as: SIMD8<UInt8>.self)
+            }
+        }
+    }
+
+    static func reconstructAndCompact(
+        _ coefficients: UnsafeMutableBufferPointer<Int32>,
+        quantiser: UnsafeBufferPointer<Float>,
+        precision: Int, bytesPerSample: Int, floatOutput: Bool
+    ) throws -> Bool {
+        guard available, NativeDSP.usesAccelerate,
+              UInt16(littleEndian: 1) == 1, !floatOutput,
+              precision == 8 || precision == 12,
+              (bytesPerSample == 1 && precision <= 8) || bytesPerSample == 2,
+              !coefficients.isEmpty, coefficients.count % 64 == 0,
+              coefficients.count <= SequentialGreyscalePlan.maximumWindowBlocks * 64,
+              quantiser.count >= 64,
+              let base = coefficients.baseAddress, let qt = quantiser.baseAddress else {
+            return false
+        }
+        let absMask = SIMD8<UInt32>(repeating: 0x7FFF_FFFF)
+        for qRow in 0..<8 {
+            let qVec = load(qt, row: qRow)
+            if (unsafeBitCast(qVec, to: SIMD8<UInt32>.self) & absMask).max() > 0x5F80_0000 {
+                return false
+            }
+        }
+        let centre = SIMD8<Float>(repeating: Float(1 << (precision - 1)))
+        let maximum = SIMD8<Float>(repeating: Float((1 << precision) - 1))
+        let zero = SIMD8<Float>(repeating: 0)
+        let magicBias = SIMD8<Float>(repeating: 8_388_608.0)
+        let rawSlot = UnsafeMutableRawPointer(base)
+        let blockCount = coefficients.count / 64
+        try AccelerateDSP.dctMatrix.withUnsafeBufferPointer { matrix in
+            try AccelerateDSP.dctMatrixTransposed.withUnsafeBufferPointer { transposed in
+                let mBase = matrix.baseAddress!
+                let tBase = transposed.baseAddress!
+                if bytesPerSample == 2 {
+                    for block in 0..<blockCount {
                         if block & 63 == 0 { try NativeOperation.check() }
-                        reconstructBlock(base + block * 64, quantiser: qt,
-                            inverseZigzag: indices.baseAddress!, matrix: matrix.baseAddress!,
-                            transposed: transposed.baseAddress!, precision: precision)
+                        reconstructBlockAndCompactUInt16(
+                            base + block * 64,
+                            rawDestination: rawSlot + block * 128,
+                            quantiser: qt, matrix: mBase, transposed: tBase,
+                            centre: centre, maximum: maximum, zero: zero, magicBias: magicBias)
+                    }
+                } else {
+                    for block in 0..<blockCount {
+                        if block & 63 == 0 { try NativeOperation.check() }
+                        reconstructBlockAndCompactUInt8(
+                            base + block * 64,
+                            rawDestination: rawSlot + block * 64,
+                            quantiser: qt, matrix: mBase, transposed: tBase,
+                            centre: centre, maximum: maximum, zero: zero, magicBias: magicBias)
                     }
                 }
             }
         }
+        return true
     }
 }

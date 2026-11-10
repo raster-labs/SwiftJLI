@@ -96,4 +96,65 @@ static inline __attribute__((always_inline)) SJLIACStatus symbol(const uint8_t *
     return SJLI_AC_INVALID_CODE;
 }
 
+static inline __attribute__((always_inline)) SJLIACStatus lossless_difference(const uint8_t *input, size_t count,
+    SJLIACState *r, const SJLIACHuffman *table, int32_t *difference) {
+    if (r->available < 8) fill(input, count, r);
+    if (r->available >= 8) {
+        const unsigned prefix = (unsigned)((r->accumulator >> (r->available - 8)) & 255);
+        const unsigned length = table->lengths[prefix];
+        if (length != 0) {
+            const unsigned category = table->symbols[prefix];
+            if (category == 0 || category == 16) {
+                r->available -= length;
+                *difference = category == 0 ? 0 : -32768;
+                return SJLI_AC_OK;
+            }
+            if (category < 16) {
+                const unsigned total = length + category;
+                if (r->available >= total) {
+                    r->available -= total;
+                } else {
+                    r->available -= length;
+                    if (!bulk(input, count, r)) {
+                        uint32_t magnitude;
+                        SJLIACStatus status = read_bits(input, count, r, category, &magnitude);
+                        if (status != SJLI_AC_OK) return status;
+                        *difference = (int32_t)magnitude;
+                        if (magnitude < (UINT32_C(1) << (category - 1)))
+                            *difference -= (int32_t)((UINT32_C(1) << category) - 1);
+                        return SJLI_AC_OK;
+                    }
+                    r->available -= category;
+                }
+                const uint32_t magnitude = (uint32_t)((r->accumulator >> r->available) &
+                                                     ((UINT64_C(1) << category) - 1));
+                *difference = (int32_t)magnitude;
+                if (magnitude < (UINT32_C(1) << (category - 1)))
+                    *difference -= (int32_t)((UINT32_C(1) << category) - 1);
+                return SJLI_AC_OK;
+            }
+        }
+    }
+    uint8_t category;
+    SJLIACStatus status = symbol(input, count, r, table, &category);
+    if (status != SJLI_AC_OK) return status;
+    if (category == 0 || category == 16) {
+        *difference = category == 0 ? 0 : -32768;
+        return SJLI_AC_OK;
+    }
+    // This lossless path reads only widths1...15 here. Mirror Swift's checked
+    // readBits failure before attempting any oversized shift or refill.
+    if (category > 16) {
+        r->marker = category;
+        return SJLI_AC_INVALID_WIDTH;
+    }
+    uint32_t magnitude;
+    status = read_bits(input, count, r, category, &magnitude);
+    if (status != SJLI_AC_OK) return status;
+    *difference = (int32_t)magnitude;
+    if (magnitude < (UINT32_C(1) << (category - 1)))
+        *difference -= (int32_t)((UINT32_C(1) << category) - 1);
+    return SJLI_AC_OK;
+}
+
 #endif

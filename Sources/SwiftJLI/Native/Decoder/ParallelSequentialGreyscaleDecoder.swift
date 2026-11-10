@@ -76,6 +76,12 @@ enum ParallelSequentialGreyscaleDecoder {
             for group in 0..<groups {
                 let first = group * 1024, count = min(1024, blocks - first) * 64
                 let slot = base + first * 64
+                if try BlockLocalIDCT.reconstructAndCompact(
+                    .init(start: slot, count: count),
+                    quantiser: quantTable, precision: precision,
+                    bytesPerSample: bytesPerSample, floatOutput: floatOutput) {
+                    continue
+                }
                 try BlockLocalIDCT.reconstruct(.init(start: slot, count: count),
                     quantiser: quantTable, precision: precision)
                 try slot.withMemoryRebound(to: Float.self, capacity: count) { pixels in
@@ -134,24 +140,105 @@ enum ParallelSequentialGreyscaleDecoder {
               let base = pixels.baseAddress else {
             throw JLIError.decodingFailed("Invalid compacted sample layout")
         }
-        let bytes = UnsafeMutableRawBufferPointer(start: base,
-            count: try checkedMultiply(pixels.count, MemoryLayout<Float>.stride))
+        _ = try checkedMultiply(pixels.count, MemoryLayout<Float>.stride)
+        let rawBase = UnsafeMutableRawPointer(base)
         let maximum = Float((1 << precision) - 1)
-        for index in 0..<pixels.count {
-            if index & 4095 == 0 { try NativeOperation.check() }
-            let sample = pixels[index]
-            guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+        let zero = SIMD8<Float>(repeating: 0)
+        let maxVec = SIMD8<Float>(repeating: maximum)
+        let magicBias = SIMD8<Float>(repeating: 8_388_608.0)
+        let absMask = SIMD8<UInt32>(repeating: 0x7FFF_FFFF)
+        let total = pixels.count
+
+        for chunkStart in stride(from: 0, to: total, by: 4096) {
+            try NativeOperation.check()
+            let chunkEnd = min(total, chunkStart + 4096)
+            var index = chunkStart
             if floatOutput {
-                // All supported hosts are little-endian; retain the portable
-                // byte order if this internal helper is exercised elsewhere.
-                if UInt32(littleEndian: 1) != 1 {
-                    let bits = sample.bitPattern
-                    for byte in 0..<4 { bytes[index * 4 + byte] = UInt8(truncatingIfNeeded: bits >> (byte * 8)) }
+                while index + 8 <= chunkEnd {
+                    let vec = UnsafeRawPointer(base + index).loadUnaligned(as: SIMD8<Float>.self)
+                    let rawBits = unsafeBitCast(vec, to: SIMD8<UInt32>.self)
+                    if (rawBits & absMask).max() <= 0x7F7F_FFFF {
+                        if UInt32(littleEndian: 1) != 1 {
+                            for lane in 0..<8 {
+                                let bits = rawBits[lane]
+                                for byte in 0..<4 {
+                                    rawBase.storeBytes(of: UInt8(truncatingIfNeeded: bits >> (byte * 8)),
+                                                       toByteOffset: (index + lane) * 4 + byte, as: UInt8.self)
+                                }
+                            }
+                        }
+                        index += 8
+                    } else {
+                        break
+                    }
+                }
+                while index < chunkEnd {
+                    let sample = base[index]
+                    guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                    if UInt32(littleEndian: 1) != 1 {
+                        let bits = sample.bitPattern
+                        for byte in 0..<4 {
+                            rawBase.storeBytes(of: UInt8(truncatingIfNeeded: bits >> (byte * 8)),
+                                               toByteOffset: index * 4 + byte, as: UInt8.self)
+                        }
+                    }
+                    index += 1
+                }
+            } else if bytesPerSample == 2 {
+                while index + 8 <= chunkEnd {
+                    let vec = UnsafeRawPointer(base + index).loadUnaligned(as: SIMD8<Float>.self)
+                    let rawBits = unsafeBitCast(vec, to: SIMD8<UInt32>.self)
+                    if (rawBits & absMask).max() <= 0x7F7F_FFFF {
+                        var clamped = vec.replacing(with: zero, where: vec .< zero)
+                        clamped = clamped.replacing(with: maxVec, where: clamped .> maxVec)
+                        let rounded = clamped.rounded(.toNearestOrAwayFromZero)
+                        let biasedBits = unsafeBitCast(rounded + magicBias, to: SIMD8<UInt32>.self)
+                        let words = SIMD8<UInt16>(truncatingIfNeeded: biasedBits)
+                        if UInt16(littleEndian: 1) == 1 {
+                            rawBase.storeBytes(of: words, toByteOffset: index * 2, as: SIMD8<UInt16>.self)
+                        } else {
+                            for lane in 0..<8 {
+                                let value = words[lane]
+                                rawBase.storeBytes(of: UInt8(truncatingIfNeeded: value), toByteOffset: (index + lane) * 2, as: UInt8.self)
+                                rawBase.storeBytes(of: UInt8(value >> 8), toByteOffset: (index + lane) * 2 + 1, as: UInt8.self)
+                            }
+                        }
+                        index += 8
+                    } else {
+                        break
+                    }
+                }
+                while index < chunkEnd {
+                    let sample = base[index]
+                    guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                    let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
+                    rawBase.storeBytes(of: UInt8(truncatingIfNeeded: value), toByteOffset: index * 2, as: UInt8.self)
+                    rawBase.storeBytes(of: UInt8(value >> 8), toByteOffset: index * 2 + 1, as: UInt8.self)
+                    index += 1
                 }
             } else {
-                let value = UInt16(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
-                bytes[index * bytesPerSample] = UInt8(truncatingIfNeeded: value)
-                if bytesPerSample == 2 { bytes[index * 2 + 1] = UInt8(value >> 8) }
+                while index + 8 <= chunkEnd {
+                    let vec = UnsafeRawPointer(base + index).loadUnaligned(as: SIMD8<Float>.self)
+                    let rawBits = unsafeBitCast(vec, to: SIMD8<UInt32>.self)
+                    if (rawBits & absMask).max() <= 0x7F7F_FFFF {
+                        var clamped = vec.replacing(with: zero, where: vec .< zero)
+                        clamped = clamped.replacing(with: maxVec, where: clamped .> maxVec)
+                        let rounded = clamped.rounded(.toNearestOrAwayFromZero)
+                        let biasedBits = unsafeBitCast(rounded + magicBias, to: SIMD8<UInt32>.self)
+                        let outBytes = SIMD8<UInt8>(truncatingIfNeeded: biasedBits)
+                        rawBase.storeBytes(of: outBytes, toByteOffset: index, as: SIMD8<UInt8>.self)
+                        index += 8
+                    } else {
+                        break
+                    }
+                }
+                while index < chunkEnd {
+                    let sample = base[index]
+                    guard sample.isFinite else { throw JLIError.decodingFailed("Non-finite reconstructed sample") }
+                    let value = UInt8(max(0, min(maximum, sample)).rounded(.toNearestOrAwayFromZero))
+                    rawBase.storeBytes(of: value, toByteOffset: index, as: UInt8.self)
+                    index += 1
+                }
             }
         }
     }
@@ -186,16 +273,47 @@ enum ParallelSequentialGreyscaleDecoder {
                                       firstBlock: Int, blocksPerRow: Int, width: Int, height: Int,
                                       destination: BorrowedSampleDestination) throws {
         let source = UnsafeRawPointer(coefficients.baseAddress!), bps = destination.bytesPerSample
-        let output = destination.bytes.baseAddress!
-        for index in 0..<(coefficients.count / 64) {
+        let output = destination.bytes.baseAddress!, rowStride = destination.rowBytes
+        let blockCount = coefficients.count / 64
+        var col = firstBlock % blocksPerRow
+        var rowBlock = firstBlock / blocksPerRow
+        for index in 0..<blockCount {
             if index & 63 == 0 { try NativeOperation.check() }
-            let block = firstBlock + index, x = block % blocksPerRow * 8, y = block / blocksPerRow * 8
+            let x = col * 8, y = rowBlock * 8
+            col += 1
+            if col == blocksPerRow {
+                col = 0
+                rowBlock += 1
+            }
             guard x < width, y < height else { continue }
-            let group = index / 1024, localBlock = index % 1024
-            let tile = source + group * 1024 * 64 * MemoryLayout<Int32>.stride + localBlock * 64 * bps
-            let bytes = min(8, width - x) * bps
-            for row in 0..<min(8, height - y) {
-                memcpy(output + (y + row) * destination.rowBytes + x * bps, tile + row * 8 * bps, bytes)
+            let group = index >> 10, localBlock = index & 1023
+            let tile = source + group * (1024 * 64 * MemoryLayout<Int32>.stride) + localBlock * 64 * bps
+            let dstBase = output + y * rowStride + x * bps
+            if x + 8 <= width && y + 8 <= height {
+                switch bps {
+                case 2:
+                    for row in 0..<8 {
+                        memcpy(dstBase + row * rowStride, tile + row * 16, 16)
+                    }
+                case 1:
+                    for row in 0..<8 {
+                        memcpy(dstBase + row * rowStride, tile + row * 8, 8)
+                    }
+                case 4:
+                    for row in 0..<8 {
+                        memcpy(dstBase + row * rowStride, tile + row * 32, 32)
+                    }
+                default:
+                    let bytes = 8 * bps
+                    for row in 0..<8 {
+                        memcpy(dstBase + row * rowStride, tile + row * bytes, bytes)
+                    }
+                }
+            } else {
+                let bytes = min(8, width - x) * bps
+                for row in 0..<min(8, height - y) {
+                    memcpy(dstBase + row * rowStride, tile + row * 8 * bps, bytes)
+                }
             }
         }
     }

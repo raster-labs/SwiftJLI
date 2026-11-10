@@ -377,7 +377,7 @@ enum JPEGCodec {
                           compressed: data.count, metadata: metadataSize, limits: options.resourceLimits)
                 try options.progress?(.init(phase: .processing, completedUnits: 0, totalUnits: descriptor.height))
                 try NativeOperation.check()
-                let destination = try supplied ?? ImageDestination.allocate(descriptor: descriptor, limits: options.resourceLimits)
+                let destination = try supplied ?? ImageDestination.allocateOverwrite(descriptor: descriptor, limits: options.resourceLimits)
                 let filled = try destination.write { raw in
                     let borrowed = BorrowedSampleDestination(bytes: .init(rebasing: raw[plane.offset...]),
                         rowBytes: plane.rowBytes, bytesPerSample: descriptor.storageBits / 8)
@@ -396,12 +396,17 @@ enum JPEGCodec {
                     }
                     try NativeOperation.check()
                 }
-                let outputDescriptor = try ImageDescriptor(width: descriptor.width, height: descriptor.height,
-                    sampleType: descriptor.sampleType, storageBits: descriptor.storageBits, meaningfulBits: descriptor.meaningfulBits,
-                    byteOrder: descriptor.byteOrder, components: descriptor.components, colour: descriptor.colour,
-                    planes: descriptor.planes, iccProfile: source.iccProfile, limits: options.resourceLimits)
-                let image = try Image(descriptor: outputDescriptor, storage: filled.storage,
+                let image: Image
+                if supplied == nil && information.metadata.entries.isEmpty {
+                    image = filled
+                } else {
+                    let outputDescriptor = try ImageDescriptor(width: descriptor.width, height: descriptor.height,
+                        sampleType: descriptor.sampleType, storageBits: descriptor.storageBits, meaningfulBits: descriptor.meaningfulBits,
+                        byteOrder: descriptor.byteOrder, components: descriptor.components, colour: descriptor.colour,
+                        planes: descriptor.planes, iccProfile: source.iccProfile, limits: options.resourceLimits)
+                    image = try Image(descriptor: outputDescriptor, storage: filled.storage,
                                       metadata: information.metadata, limits: options.resourceLimits)
+                }
                 try options.progress?(.init(phase: .completed, completedUnits: descriptor.height, totalUnits: descriptor.height))
                 try NativeOperation.check()
                 return DecodedImage(image: image, report: .init(backend: backend,
