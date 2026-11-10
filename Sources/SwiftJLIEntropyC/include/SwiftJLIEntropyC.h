@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Original SwiftJLI kernel; no external codec source or runtime dependency.
 #ifndef SWIFTJLI_ENTROPY_C_H
 #define SWIFTJLI_ENTROPY_C_H

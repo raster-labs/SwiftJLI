@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 /// A one-component scan owns one coefficient plane. Borrow it once for the
 /// synchronous scan instead of repeatedly checking nested-array uniqueness for

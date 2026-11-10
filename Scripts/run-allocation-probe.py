@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Run the Linux/glibc encoder or decoder allocation experiment, including its positive control."""
 import argparse
 import hashlib

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 import SwiftJLIEntropyC
 
 /// Scan-local, non-Sendable metadata borrowed by synchronous caller-thread row

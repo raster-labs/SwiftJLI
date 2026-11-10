@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Independently decode the completed cross-codec harness outputs (development only)."""
 import argparse
 import hashlib

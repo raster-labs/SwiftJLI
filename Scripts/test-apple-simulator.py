@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Run the library suite on an installed OS 26+ simulator; never substitute a build."""
 import argparse
 import json

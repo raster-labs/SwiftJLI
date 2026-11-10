@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 //
 // Caller memory, borrowed for the duration of one synchronous codec call.
 //

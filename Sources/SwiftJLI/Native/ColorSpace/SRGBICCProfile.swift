@@ -1,6 +1,6 @@
 // Embedded profile copyright International Color Consortium; original bytes unchanged.
 // Profile licence and provenance: Documentation/Migration/Fixtures/ICC-LICENSE.txt.
-// Swift wrapper SPDX-License-Identifier: Apache-2.0
+// Swift wrapper SPDX-License-Identifier: MIT
 // Source: https://registry.color.org/rgb-registry/profiles/sRGB2014.icc
 // SHA-256: 384b832de3412066743b52a75ee906b6fb9fb8d9e09e936fc2c43223815c6e0a
 import Foundation

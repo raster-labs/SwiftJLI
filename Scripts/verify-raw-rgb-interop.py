@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Independent raw RGB DCT decoding with libjpeg-turbo, using existing 2/4-unit tolerances."""
 import argparse
 import hashlib

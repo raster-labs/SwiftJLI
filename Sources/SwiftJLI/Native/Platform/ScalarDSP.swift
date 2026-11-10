@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Scalar equivalents of the small vector/matrix operations used by the native
 // JPEG kernels. Internal buffers and dimensions are validated by their callers.
 // No Apple framework is imported on Linux.

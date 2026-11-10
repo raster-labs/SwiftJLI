@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Black-box CLI, codec payload verb, stream/format/resource/exit-status and staged manual installation regression checks."""
 import argparse, fcntl, hashlib, json, os, re, shutil, signal, struct, subprocess, sys, tempfile, time
 from pathlib import Path

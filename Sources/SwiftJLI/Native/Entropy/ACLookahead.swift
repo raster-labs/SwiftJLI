@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 /// Resolves a short AC code and its magnitude in one bounded scan-local lookup.
 /// Each entry stores consumed bits, coefficient advance and signed value. An

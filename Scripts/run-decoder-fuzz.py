@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Build and supervise deterministic public-entry fuzz campaigns on Linux ARM/x86.
 
 Each entry runs for --seconds (default one hour). A stale heartbeat, crash,

@@ -17,7 +17,7 @@ codec is changed and no shipping dependency is added.
 
 The three support sources in each target come from
 `Tests/SwiftJLITests/Support`. Only the import and visibility of
-`identityHashRecords` differ. Preserve their Apache-2.0 notices.
+`identityHashRecords` differ. Preserve their MIT and copyright notices.
 The frozen main-suite reference was generated on macOS ARM64; it is not an
 independent iOS floating-point oracle. Integer predictive hashes remain checked
 on every platform. This package supplies the live platform-specific comparison.

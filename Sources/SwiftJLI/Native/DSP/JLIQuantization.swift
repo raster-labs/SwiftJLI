@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Copyright 2024 Raster Lab. All rights reserved.
 
 /// Quantization tables, zigzag scan ordering, and quantization operations.

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 /// A block-local form of the accelerated ARM64 matrix transform. Both matrix
 /// passes retain the established ascending, fused multiply-add order. The

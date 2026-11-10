@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Original SwiftJLI implementation of the retained Swift AC reader semantics.
 #include "SwiftJLIEntropyC.h"
 #include <string.h>

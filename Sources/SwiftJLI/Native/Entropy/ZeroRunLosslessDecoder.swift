@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 /// Predictor 1 with a one-bit zero category can emit a run of equal samples
 /// from consecutive zero bits. Other differences use the ordinary entropy

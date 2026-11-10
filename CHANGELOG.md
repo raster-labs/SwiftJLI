@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased — 10 November 2026
+
+- **Licence changed to MIT (`POL-07`)**: Replaced the Apache-2.0 `LICENSE` with the MIT `LICENSE` (`Copyright (c) 2026 Raster Images Private Limited`), removed the Apache-2.0 `NOTICE` file, updated in-house `SPDX-License-Identifier` headers across `Package.swift`, `Sources/`, `Tests/`, `Scripts/` and `Examples/` (`209` files) to `MIT`, and updated `Documentation/SUITE_POLICY.md` (`POL-07`) and `Documentation/COMMON_CONTRACT_SHA256.txt`. Third-party assets (`sRGB2014.icc` / `ICC-LICENSE.txt` and `UpstreamJPEG` fixtures) and historical qualification archives retain their original licences and hashes unchanged.
+- **Documentation reconciliation**: Updated active documentation (`README.md`, `SECURITY.md`, `CONTRIBUTING.md`, `MIGRATION.md`, `IMPLEMENTATION.md`, `HISTORY.md`, `Documentation/Migration/ACCEPTANCE.md`, `Examples/PredecessorComparison/README.md` and `ManPages/swiftjli-cli.1`) to reflect MIT licensing, current stable release `2.0.2` (`v2.0.2`), and active GitHub private vulnerability reporting while preserving explicit disclosure of unexecuted physical Watch hardware testing.
+
 ## SwiftJLI 2.0.2 — 6 November 2026
 
 Patch release `2.0.2` (`v2.0.2`) per suite policy `POL-07`, resolving Apple Simulator runtime test failures (`BlockLocalIDCTTests` and `PipelinedGreyscaleTests`) and CI job timeout headroom on `macos-26`:

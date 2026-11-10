@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 import Foundation
 
 /// DCT chroma resolution. Greyscale inputs always use one full-resolution plane.
