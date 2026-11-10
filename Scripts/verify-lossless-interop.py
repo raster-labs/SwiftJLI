@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Independent SOF3 oracle: requires Swift and lossless-capable libjpeg-turbo tools."""
 import argparse
 from pathlib import Path

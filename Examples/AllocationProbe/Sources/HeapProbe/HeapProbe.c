@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Test-only glibc interposition. This is never linked into the shipping library.
 #include "HeapProbe.h"
 #include <features.h>

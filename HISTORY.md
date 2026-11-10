@@ -11,7 +11,7 @@ The owner chose four fresh repositories under Raster-Lab, with independent codec
 | Inspected source snapshot | [9f1c6eb609fe6f26498db82b13df6b305630a374](https://github.com/Raster-Lab/JLISwift/commit/9f1c6eb609fe6f26498db82b13df6b305630a374) |
 | Highest stable-shaped tag observed | [v0.5.0](https://github.com/Raster-Lab/JLISwift/tree/v0.5.0) |
 | Source-tree licence observed | Apache-2.0 |
-| Successor licence | Apache-2.0, for owner-authorised in-house material (contract 0.8.0) |
+| Successor licence | MIT, for owner-authorised in-house material (restored 10 November 2026; interim Apache-2.0 under contract 0.8.0) |
 | Inspection date | 2026-09-17 |
 
 The tag and the inspected branch snapshot are separate references; this record does not assert they resolve to the same commit. Before migrating a tagged baseline, resolve annotated tags to commits and record the exact chosen SHA. The pinned snapshot above was read for documentation preparation; it was not independently built or regression-tested in this task.
@@ -20,7 +20,7 @@ The tag and the inspected branch snapshot are separate references; this record d
 
 The coding agent must record source repository, commit, original path and successor path for each migrated subsystem, and distinguish copied/adapted in-house material from new implementation. Record retained tests, fixture licences and explicit product/feature dispositions. Keep predecessor bug history accessible through links. Do not import old tags, rewrite predecessor history or imply all historical commits have been relicensed.
 
-The owner states the implementation is in-house and has authorised Apache-2.0 relicensing (contract 0.8.0; the foundation recorded this as MIT). Preserve accurate original copyright years and ownership. Audit any third-party dependencies, tools or fixtures separately. The root licence is not authority to remove another party's notices.
+The owner states the implementation is in-house and has authorised MIT licensing (restored 10 November 2026, superseding the interim Apache-2.0 relicensing in contract 0.8.0). Preserve accurate original copyright years and ownership. Audit any third-party dependencies, tools or fixtures separately. The root licence is not authority to remove another party's notices.
 
 The originals are intended to become maintenance projects while new development moves here. No predecessor settings, README, branch, release, licence or archive flag was changed during this documentation preparation. Maintenance announcements and downstream DICOMKit/Voxelia migration are separate work.
 
@@ -186,3 +186,9 @@ The owner explicitly accepted provisional timings while unrelated host workloads
 The owner continued the djpeg optimisation task and authorised provisional timings while unrelated host work remained active. Source `14f35018d241666358480da2a8527d29ab047627` adds compact DC-only scans, canonical grouped reconstruction and a joined two-slot entropy/reconstruction pipeline, repairs large lossless ramp regressions, and ensures RGB workers use internal tiles rather than a caller’s output borrow. The predecessor source remains `b6df774a3c3ecdf4b98971f31543fdd18074ace2`; suite policy 0.10.0, public API, precision, resource ceilings and fixed quality tolerances are unchanged. All new optimisation algorithms are in-house work.
 
 The [fifth performance report](Documentation/Migration/Qualification/DjpegPerformanceRound5_20261103/README.md) separates the full compact/grouped checkpoint from subsequent pipeline qualification and rejected experiments. A nominal task-local callback carrier corrects the locally reproduced Swift 6.3 crash; canonical 1024-block reconstruction fixes platform-dependent grouping differences. Native Intel follow-up CI passes, but cancelled/queued Apple ARM jobs remain an unavailable gate. Dense small DCT, CLI startup and process-memory gaps against djpeg remain; this is ongoing optimisation, not a completed competitive target or stable release.
+
+## Stable releases `v2.0.0`–`v2.0.2` and MIT licence restoration — 6–10 November 2026
+
+On 6 November 2026, following administrator activation of GitHub private vulnerability reporting ([SECURITY.md](SECURITY.md)) and qualification of the block-local IDCT, parser admission and bounded C entropy improvements (`496` tests in `85` suites on native macOS ARM64 Release and the iOS Simulator, plus `252/252` CLI conformance checks), the owner authorised stable releases `v2.0.0`, `v2.0.1` ([RELEASE-v2.0.1.md](Documentation/RELEASE-v2.0.1.md)) and `v2.0.2` ([RELEASE-v2.0.2.md](Documentation/RELEASE-v2.0.2.md); scoping `BlockLocalIDCT.available` to `macOS && arm64` for 1-ULP simulator bit-identity across `iOS`, `tvOS`, `watchOS` and `visionOS` Simulators). Physical Watch device testing remains unexecuted and explicitly disclosed.
+
+On 10 November 2026, the owner restored the MIT licence (`Copyright (c) 2026 Raster Images Private Limited`) for this repository, its in-house source and its documentation (`POL-07` in [SUITE_POLICY.md](Documentation/SUITE_POLICY.md)), replacing the interim Apache-2.0 `LICENSE` and `NOTICE` from contract 0.8.0 and updating in-house `SPDX-License-Identifier` headers to `MIT`. Third-party fixtures, ICC profiles and archived historical evidence retain their existing terms and hashes unchanged.

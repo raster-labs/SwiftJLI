@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 import SwiftJLIEntropyC
 
 /// A non-Sendable, synchronous scan-local borrow. Only the entropy producer

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Public DCT oracle: 8/12-bit greyscale and 4:4:4 RGB, sequential/progressive."""
 import argparse
 from pathlib import Path

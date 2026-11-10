@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Independently verify all four-codec integration outputs; development tools only."""
 import argparse, hashlib, importlib.util, json, re, shutil, subprocess
 from pathlib import Path

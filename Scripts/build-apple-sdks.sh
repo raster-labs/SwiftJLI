@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 # Compile the library for the contract's Apple device/simulator architectures.
 # This is compile evidence only; it does not claim runtime/device qualification.
 set -euo pipefail

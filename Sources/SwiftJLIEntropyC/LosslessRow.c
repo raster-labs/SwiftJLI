@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Original scalar lossless row; independent of the qualified AC/DC leaf.
 #include "EntropyReader.h"
 

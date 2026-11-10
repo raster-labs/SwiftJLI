@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Original SwiftJLI one-bit category row; separate translation unit preserves
 // the generic row's own inline context for long-magnitude tables.
 #include "EntropyReader.h"

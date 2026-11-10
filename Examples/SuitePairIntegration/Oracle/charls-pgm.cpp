@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Development oracle only; link against independent CharLS, never a shipping codec.
 #include <charls/charls.h>
 #include <fstream>

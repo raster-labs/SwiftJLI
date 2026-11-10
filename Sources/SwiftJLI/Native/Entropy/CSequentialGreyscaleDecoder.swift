@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 /// An outlined C-only entropy route. Declining the route cannot allocate a
 /// coefficient slot, consume reader state, or call the consumer. The retained

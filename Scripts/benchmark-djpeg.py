@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Compare original and candidate SwiftJLI CLIs with djpeg on identical inputs.
 
 The corpus is the synthetic November 2026 benchmark corpus. Timings include

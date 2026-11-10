@@ -1,6 +1,6 @@
 # Security policy and implementation requirements
 
-Status: **Status: stable release `2.0.1` (`v2.0.1`).**
+**Status: stable release `2.0.2` (`v2.0.2`).**
 
 ## Reporting
 

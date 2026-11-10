@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Original shared reader bodies copied byte-for-byte from qualified ACBlock.c.
 // Keep the AC/DC translation unit unchanged; these scoped row leaves retain
 // the same bounded prefetch and error semantics without cross-file hot calls.

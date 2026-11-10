@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 /// Shared admission and dispatch decision for bounded sequential reconstruction.
 /// A plan exists only when the decoder will avoid its full coefficient/Float

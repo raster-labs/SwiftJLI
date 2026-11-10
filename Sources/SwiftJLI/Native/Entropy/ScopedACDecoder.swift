@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 extension HuffmanDecoder {
     /// Decodes a block directly into its scoped coefficient-plane borrow.

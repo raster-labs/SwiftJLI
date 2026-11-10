@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 /// One bounded scan-local table resolves a short Huffman code and its signed
 /// difference together. Zero entries use the ordinary checked decoder.

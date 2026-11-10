@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 /// A scan-local AC table containing only zero magnitude categories proves that
 /// every block has zero AC coefficients. Keep only its DC value; the ordinary

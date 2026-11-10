@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
 /// Conservative parser admission, not measured allocator or RSS telemetry.
 /// Entropy ranges retain the compressed owner without expanding its payload.

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Copyright 2024 Raster Lab. All rights reserved.
 
 /// Errors that can occur during JLISwift encoding or decoding operations.

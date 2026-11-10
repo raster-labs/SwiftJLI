@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Check Linux cross-codec allocation logs against deliberate-copy controls."""
 import argparse
 import json
