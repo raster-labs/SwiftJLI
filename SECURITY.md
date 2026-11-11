@@ -1,6 +1,6 @@
 # Security policy and implementation requirements
 
-**Status: stable release `2.0.2` (`v2.0.2`).**
+**Status: stable release `2.0.3` (`v2.0.3`).**
 
 ## Reporting
 
@@ -12,7 +12,7 @@ Include affected version/commit, platform, a minimal safe reproducer, expected/a
 
 | Version or branch | Security-fix policy |
 | --- | --- |
-| 2.0.x (latest: 2.0.2) | Supported for security fixes; users of earlier releases should upgrade to the latest patch. |
+| 2.0.x (latest: 2.0.3) | Supported for security fixes; users of earlier releases should upgrade to the latest patch. |
 | Current development main | Reports are investigated; corrections target main. |
 | Older development snapshots and unmaintained feature branches | No separate backports; reproduce on the current release and upgrade. |
 | JLISwift predecessor | Governed by the predecessor repository's own security and maintenance policy. |
