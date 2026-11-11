@@ -1,9 +1,18 @@
 # Change log
 
-## Unreleased — 10 November 2026
+## SwiftJLI 2.0.3 — 11 November 2026
+
+Patch release `2.0.3` (`v2.0.3`) per suite policy `POL-07`, publishing the MIT-licensed repository and reconciled documentation on preserved release branch `codex/release-2.0.3` while keeping earlier tags (`v2.0.0`, `v2.0.1` and `v2.0.2`) immutable:
 
 - **Licence changed to MIT (`POL-07`)**: Replaced the Apache-2.0 `LICENSE` with the MIT `LICENSE` (`Copyright (c) 2026 Raster Images Private Limited`), removed the Apache-2.0 `NOTICE` file, updated in-house `SPDX-License-Identifier` headers across `Package.swift`, `Sources/`, `Tests/`, `Scripts/` and `Examples/` (`209` files) to `MIT`, and updated `Documentation/SUITE_POLICY.md` (`POL-07`) and `Documentation/COMMON_CONTRACT_SHA256.txt`. Third-party assets (`sRGB2014.icc` / `ICC-LICENSE.txt` and `UpstreamJPEG` fixtures) and historical qualification archives retain their original licences and hashes unchanged.
-- **Documentation reconciliation**: Updated active documentation (`README.md`, `SECURITY.md`, `CONTRIBUTING.md`, `MIGRATION.md`, `IMPLEMENTATION.md`, `HISTORY.md`, `Documentation/Migration/ACCEPTANCE.md`, `Examples/PredecessorComparison/README.md` and `ManPages/swiftjli-cli.1`) to reflect MIT licensing, current stable release `2.0.2` (`v2.0.2`), and active GitHub private vulnerability reporting while preserving explicit disclosure of unexecuted physical Watch hardware testing.
+- **Version promotion and documentation reconciliation**: Promoted `VERSION`, `swiftjli-cli` (`Sources/SwiftJLICLI/main.swift`) and the section 1 manual (`ManPages/swiftjli-cli.1`) to `2.0.3` (`v2.0.3`), recorded release gate evidence in [Documentation/RELEASE-v2.0.3.md](Documentation/RELEASE-v2.0.3.md), and updated active documentation (`README.md`, `CLI.md`, `SECURITY.md`, `CONTRIBUTING.md`, `MIGRATION.md`, `IMPLEMENTATION.md`, `HISTORY.md`, `Documentation/Migration/ACCEPTANCE.md` and `Examples/PredecessorComparison/README.md`) to reflect MIT licensing, current stable release `2.0.3` (`v2.0.3`), and active GitHub private vulnerability reporting while preserving explicit disclosure of unexecuted physical Watch hardware testing.
+- **Executed gates on `2.0.3`**:
+  - Shared contract SHA-256 manifest: `7/7 OK` (`COMMON_CONTRACT_SHA256.txt`, contract `0.10.0`).
+  - Native macOS ARM64 Release test suite: `496` tests in `85` suites passed (`xcrun swift test -c release`).
+  - `Examples/WatchQualification` host harness: `6/6` tests passed in Release mode (`0.133s`).
+  - CLI conformance test suite: `252/252` process checks passed (`python3 Scripts/test-cli.py`).
+  - Staged CLI installation & UNIX manual: Passed (`swiftjli-cli` `2.0.3` and `swiftjli-cli.1` verified).
+  - Independent package consumer: `Examples/IndependentConsumer` passed (`Independent SwiftJLI consumer: predictive, progressive, float, XYB, RGBA, YCbCr and greyscale conversion passed.`).
 
 ## SwiftJLI 2.0.2 — 6 November 2026
 
