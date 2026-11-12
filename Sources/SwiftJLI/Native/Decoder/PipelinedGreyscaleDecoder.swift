@@ -134,9 +134,17 @@ enum PipelinedGreyscaleDecoder {
                         state.joined.wait()
                     }
                     func scatterCompleted(_ batch: Int) throws {
+                        var spin = 0
                         while state.completed.load(ordering: .acquiring) <= batch {
                             if state.stopped.load(ordering: .acquiring) {
                                 if let error = state.progress.withLock({ $0.error }) { throw error }
+                            }
+                            if spin < 4096 {
+                                spin &+= 1
+                                var delay = spin
+                                for _ in 0..<64 { delay = delay &* 1664525 &+ 1013904223 }
+                                if delay == -1 { _ = state.completed.load(ordering: .relaxed) }
+                                continue
                             }
                             state.producerParked.store(true, ordering: .sequentiallyConsistent)
                             if state.stopped.load(ordering: .sequentiallyConsistent) {

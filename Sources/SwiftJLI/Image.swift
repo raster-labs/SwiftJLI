@@ -11,7 +11,7 @@ public struct ImageMetadata: Sendable, Equatable {
     }
     @discardableResult
     func validate(limits: ResourceLimits, additionalBytes: Int = 0) throws -> Int {
-        guard requiredKeys.isSubset(of: Set(entries.keys)) else {
+        guard requiredKeys.isEmpty || requiredKeys.allSatisfy({ entries[$0] != nil }) else {
             throw CodecError(.invalidArgument, "Required metadata has no value.")
         }
         var count = additionalBytes
@@ -52,6 +52,32 @@ public struct Image: Sendable {
             }
         }
         self.descriptor = descriptor; self.storage = storage; self.metadata = metadata
+    }
+
+    internal init(validatedDescriptor descriptor: ImageDescriptor, storage: any ReadOnlyImageStorage,
+                  metadata: ImageMetadata) {
+        self.descriptor = descriptor; self.storage = storage; self.metadata = metadata
+    }
+
+    internal static func allocateAndFill(
+        validatedDescriptor descriptor: ImageDescriptor,
+        metadata: ImageMetadata,
+        _ body: (UnsafeMutableRawBufferPointer) throws -> Void
+    ) throws -> Image {
+        try Task.checkCancellation()
+        let byteCount = descriptor.requiredByteCount
+        var buffer = [UInt8](unsafeUninitializedCapacity: byteCount) { _, initializedCount in
+            initializedCount = byteCount
+        }
+        try buffer.withUnsafeMutableBytes { bytes in
+            guard bytes.count == byteCount else {
+                throw CodecError(.storageUnavailable, "Provider returned inconsistent capacity.")
+            }
+            try body(bytes)
+        }
+        try Task.checkCancellation()
+        let sealed = SealedImageStorage(bytes: buffer)
+        return Image(validatedDescriptor: descriptor, storage: sealed, metadata: metadata)
     }
 
     /// A safe sample accessor for the required greyscale profile; never reads padding.

@@ -26,10 +26,11 @@ extension JPEGCodec {
                   parsed.quantTables[c.quantTableIndex].count == 64,
                   parsed.quantTables[c.quantTableIndex].allSatisfy({ $0 > 0 }) else { throw malformed() }
         }
-        var levels = [[Int]](repeating: [Int](repeating: -1, count: 64), count: ids.count)
+        var levels = f.isProgressive ? [[Int]](repeating: [Int](repeating: -1, count: 64), count: ids.count) : []
         for scan in parsed.scans {
             let h = scan.header, selectors = h.components.map(\.componentSelector)
-            guard !selectors.isEmpty, Set(selectors).count == selectors.count,
+            guard !selectors.isEmpty,
+                  selectors.count <= 1 || Set(selectors).count == selectors.count,
                   selectors.allSatisfy({ ids.contains($0) }),
                   (0...63).contains(h.spectralStart), (h.spectralStart...63).contains(h.spectralEnd),
                   (0...13).contains(h.successiveApproxHigh), (0...13).contains(h.successiveApproxLow) else { throw malformed() }

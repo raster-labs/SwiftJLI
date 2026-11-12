@@ -27,9 +27,23 @@ public struct PlaneDescriptor: Sendable, Equatable {
                 byteCount: Int) throws {
         guard width > 0, height > 0, offset >= 0, sampleStride > 0,
               pixelStride > 0, rowBytes > 0, byteCount > 0,
-              !components.isEmpty, components.allSatisfy({ $0 >= 0 }),
-              Set(components).count == components.count else {
+              !components.isEmpty else {
             throw CodecError(.invalidArgument, "Invalid plane geometry or component mapping.")
+        }
+        if components.count == 1 {
+            guard components[0] >= 0 else {
+                throw CodecError(.invalidArgument, "Invalid plane geometry or component mapping.")
+            }
+        } else {
+            for i in 0..<components.count {
+                let c = components[i]
+                guard c >= 0 else {
+                    throw CodecError(.invalidArgument, "Invalid plane geometry or component mapping.")
+                }
+                for j in 0..<i where components[j] == c {
+                    throw CodecError(.invalidArgument, "Invalid plane geometry or component mapping.")
+                }
+            }
         }
         self.width = width; self.height = height; self.components = components
         self.offset = offset; self.sampleStride = sampleStride
@@ -94,17 +108,22 @@ public struct ImageDescriptor: Sendable, Equatable {
             throw CodecError(.invalidArgument, "Alpha component meaning is inconsistent.")
         }
         let sampleBytes = storageBits / 8
-        var mapped = Set<Int>()
-        var ranges: [Range<Int>] = []
         var required = 0
-        for plane in planes {
+        if planes.count == 1, components.count <= 64 {
+            let plane = planes[0]
             guard plane.width == width, plane.height == height else {
                 throw CodecError(.unsupportedFeature, "Subsampled planes are not implemented in this milestone.")
             }
+            var mappedMask: UInt64 = 0
             for component in plane.components {
-                guard component < components.count, mapped.insert(component).inserted else {
+                guard component < components.count else {
                     throw CodecError(.invalidArgument, "Each component must occur in exactly one plane.")
                 }
+                let bit = UInt64(1) << UInt64(component)
+                guard (mappedMask & bit) == 0 else {
+                    throw CodecError(.invalidArgument, "Each component must occur in exactly one plane.")
+                }
+                mappedMask |= bit
             }
             guard plane.offset % sampleBytes == 0, plane.sampleStride % sampleBytes == 0,
                   plane.pixelStride % sampleBytes == 0, plane.rowBytes % sampleBytes == 0,
@@ -126,15 +145,52 @@ public struct ImageDescriptor: Sendable, Equatable {
             guard plane.byteCount <= limits.maximumDecodedBytes else {
                 throw CodecError(.resourceLimitExceeded, "Decoded storage limit exceeded.")
             }
-            let range = plane.offset..<end
-            guard !ranges.contains(where: { $0.overlaps(range) }) else {
-                throw CodecError(.incompatibleImageLayout, "Writable plane ranges overlap.")
+            guard mappedMask.nonzeroBitCount == components.count else {
+                throw CodecError(.invalidArgument, "A component has no plane.")
             }
-            ranges.append(range)
-            required = max(required, plane.byteCount)
-        }
-        guard mapped.count == components.count else {
-            throw CodecError(.invalidArgument, "A component has no plane.")
+            required = plane.byteCount
+        } else {
+            var mapped = Set<Int>()
+            var ranges: [Range<Int>] = []
+            for plane in planes {
+                guard plane.width == width, plane.height == height else {
+                    throw CodecError(.unsupportedFeature, "Subsampled planes are not implemented in this milestone.")
+                }
+                for component in plane.components {
+                    guard component < components.count, mapped.insert(component).inserted else {
+                        throw CodecError(.invalidArgument, "Each component must occur in exactly one plane.")
+                    }
+                }
+                guard plane.offset % sampleBytes == 0, plane.sampleStride % sampleBytes == 0,
+                      plane.pixelStride % sampleBytes == 0, plane.rowBytes % sampleBytes == 0,
+                      plane.sampleStride >= sampleBytes else {
+                    throw CodecError(.incompatibleImageLayout, "Sample offsets and strides must be aligned.")
+                }
+                let componentEnd = try checkedAdd(checkedMultiply(plane.components.count - 1, plane.sampleStride), sampleBytes)
+                guard plane.pixelStride >= componentEnd else {
+                    throw CodecError(.incompatibleImageLayout, "Components overlap inside a pixel.")
+                }
+                let rowPayload = try checkedAdd(checkedMultiply(plane.width - 1, plane.pixelStride), componentEnd)
+                guard plane.rowBytes >= rowPayload else {
+                    throw CodecError(.incompatibleImageLayout, "Plane row stride is shorter than its sample payload.")
+                }
+                let end = try checkedAdd(plane.offset, checkedAdd(checkedMultiply(plane.height - 1, plane.rowBytes), rowPayload))
+                guard end <= plane.byteCount else {
+                    throw CodecError(.incompatibleImageLayout, "Plane sample range exceeds its declared capacity.")
+                }
+                guard plane.byteCount <= limits.maximumDecodedBytes else {
+                    throw CodecError(.resourceLimitExceeded, "Decoded storage limit exceeded.")
+                }
+                let range = plane.offset..<end
+                guard !ranges.contains(where: { $0.overlaps(range) }) else {
+                    throw CodecError(.incompatibleImageLayout, "Writable plane ranges overlap.")
+                }
+                ranges.append(range)
+                required = max(required, plane.byteCount)
+            }
+            guard mapped.count == components.count else {
+                throw CodecError(.invalidArgument, "A component has no plane.")
+            }
         }
         self.width = width; self.height = height; self.sampleType = sampleType
         self.storageBits = storageBits; self.meaningfulBits = meaningfulBits

@@ -51,8 +51,14 @@ struct HuffmanTable {
         var maxC = [Int32](repeating: -1, count: 17)
         var minC = [Int32](repeating: -1, count: 17)
         var vPtr = [Int](repeating: 0, count: 17)
-        var laLen = [UInt8](repeating: 0, count: 256)
-        var laSym = [UInt8](repeating: 0, count: 256)
+        var laLen = [UInt8](unsafeUninitializedCapacity: 256) { buf, count in
+            buf.initialize(repeating: 0)
+            count = 256
+        }
+        var laSym = [UInt8](unsafeUninitializedCapacity: 256) { buf, count in
+            buf.initialize(repeating: 0)
+            count = 256
+        }
 
         // Wider than the 16-bit codes it produces so canonical-code generation
         // can't overflow on a malformed BITS array — a complete length-16 code
@@ -60,34 +66,43 @@ struct HuffmanTable {
         // fit in 16 bits for any well-formed table.
         var code: UInt32 = 0
         var valueIndex = 0
+        let valCount = values.count
 
-        for bitLength in 1...16 {
-            let count = Int(bits[bitLength - 1])
-            if count > 0 {
-                vPtr[bitLength] = valueIndex
-                minC[bitLength] = Int32(code)
-                for _ in 0..<count where valueIndex < values.count {
-                    let symbol = values[valueIndex]
-                    if !decodingOnly {
-                        encoding[Int(symbol)] = (UInt16(truncatingIfNeeded: code), UInt8(bitLength))
-                    }
-                    // Fill every 8-bit lookahead slot whose top `bitLength` bits
-                    // equal this code. A canonical code of length ≤8 is < 256,
-                    // so `code << (8 - bitLength)` and its run stay in 0...255.
-                    if bitLength <= 8 {
-                        let shift = 8 - bitLength
-                        let start = Int(code << shift)
-                        for k in start..<(start + (1 << shift)) {
-                            laLen[k] = UInt8(bitLength)
-                            laSym[k] = symbol
+        laLen.withUnsafeMutableBufferPointer { lenBuf in
+            laSym.withUnsafeMutableBufferPointer { symBuf in
+                values.withUnsafeBufferPointer { valBuf in
+                    guard let lenBase = lenBuf.baseAddress,
+                          let symBase = symBuf.baseAddress else { return }
+                    let valBase = valBuf.baseAddress
+                    for bitLength in 1...16 {
+                        let count = Int(bits[bitLength - 1])
+                        if count > 0 {
+                            vPtr[bitLength] = valueIndex
+                            minC[bitLength] = Int32(code)
+                            for _ in 0..<count where valueIndex < valCount {
+                                let symbol = valBase![valueIndex]
+                                if !decodingOnly {
+                                    encoding[Int(symbol)] = (UInt16(truncatingIfNeeded: code), UInt8(bitLength))
+                                }
+                                // Fill every 8-bit lookahead slot whose top `bitLength` bits
+                                // equal this code. A canonical code of length ≤8 is < 256,
+                                // so `code << (8 - bitLength)` and its run stay in 0...255.
+                                if bitLength <= 8 {
+                                    let shift = 8 - bitLength
+                                    let start = Int(code << shift)
+                                    let span = 1 << shift
+                                    (lenBase + start).update(repeating: UInt8(bitLength), count: span)
+                                    (symBase + start).update(repeating: symbol, count: span)
+                                }
+                                valueIndex += 1
+                                code += 1
+                            }
+                            maxC[bitLength] = Int32(code - 1)
                         }
+                        code <<= 1
                     }
-                    valueIndex += 1
-                    code += 1
                 }
-                maxC[bitLength] = Int32(code - 1)
             }
-            code <<= 1
         }
 
         self.encodingTable = encoding

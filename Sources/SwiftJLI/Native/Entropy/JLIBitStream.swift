@@ -265,9 +265,18 @@ struct BitReader {
     /// Consumes consecutive zero bits only for the canonical one-bit zero
     /// category. Every consumed bit therefore represents one zero difference.
     /// A failed table check consumes nothing; the caller keeps the normal path.
+    @inline(__always)
     mutating func consumeZeroDifferences(_ table: HuffmanTable, maximum: Int) -> Int {
         guard maximum > 0, table.lookaheadLength[0] == 1,
               table.lookaheadSymbol[0] == 0 else { return 0 }
+        return consumeZeroBits(maximum: maximum)
+    }
+
+    /// Consumes consecutive zero bits when the caller has already verified that
+    /// the scan-local Huffman table assigns the 1-bit `0` code to category `0`.
+    @inline(__always)
+    mutating func consumeZeroBits(maximum: Int) -> Int {
+        guard maximum > 0 else { return 0 }
         if bitsAvailable < 8 { fillBuffer(upTo: 8) }
         guard bitsAvailable > 0 else { return 0 }
         // The guard bounds the shift to 0...63, including a full accumulator.
@@ -326,6 +335,17 @@ struct BitReader {
         // shift's value without its general-purpose signed-width branches.
         let prefix = Int((bitBuffer &>> (bitsAvailable - LosslessLookahead.bits)) & UInt64(LosslessLookahead.count - 1))
         let entry = table.entries[prefix]
+        guard entry != 0 else { return nil }
+        bitsAvailable -= Int(entry >> 16)
+        return Int32(Int16(truncatingIfNeeded: entry))
+    }
+
+    @inline(__always)
+    mutating func fastDecodeLosslessDifference(_ lookupBase: UnsafePointer<UInt32>) -> Int32? {
+        if bitsAvailable < LosslessLookahead.bits, !bulkRefill() { fillBuffer(upTo: 8) }
+        guard bitsAvailable >= LosslessLookahead.bits else { return nil }
+        let prefix = Int((bitBuffer &>> (bitsAvailable - LosslessLookahead.bits)) & UInt64(LosslessLookahead.count - 1))
+        let entry = lookupBase[prefix]
         guard entry != 0 else { return nil }
         bitsAvailable -= Int(entry >> 16)
         return Int32(Int16(truncatingIfNeeded: entry))
@@ -473,6 +493,11 @@ struct BitReader {
                 return sjli_lossless_left_u16_code0_row(buffer.baseAddress,
                     buffer.count, &state, kernel.table, UInt32(seed), sampleCount,
                     destination, output.count, &result)
+            }
+            if let lookup = kernel.lookup {
+                return sjli_lossless_left_u16_lookup_row(buffer.baseAddress,
+                    buffer.count, &state, kernel.table, lookup, LosslessLookahead.count,
+                    UInt32(seed), sampleCount, destination, output.count, &result)
             }
             return sjli_lossless_left_u16_row(buffer.baseAddress,
                 buffer.count, &state, kernel.table, UInt32(seed), sampleCount,

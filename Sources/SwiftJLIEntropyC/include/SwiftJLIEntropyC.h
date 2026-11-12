@@ -88,6 +88,15 @@ SJLIACStatus sjli_lossless_left_u16_row(const void *raw_input, size_t input_coun
     size_t count, void *output, size_t output_count,
     SJLILosslessRowResult *result);
 
+// Lookup-accelerated synchronous left-predictor/Pt0 row leaf using the
+// validated 8192-entry LosslessLookahead table. Uncovered prefixes and
+// short buffers near markers/EOF fall back to lossless_difference.
+SJLIACStatus sjli_lossless_left_u16_lookup_row(const void *raw_input, size_t input_count,
+    SJLIACState *state, const SJLIACHuffman *table,
+    const uint32_t *lookup, size_t lookup_count, uint32_t seed,
+    size_t count, void *output, size_t output_count,
+    SJLILosslessRowResult *result);
+
 // Optional scalar row for a canonical one-bit code0 carrying category1...7.
 // Bounds/borrows/publication match the generic row. Width, sign threshold and
 // mask are fixed once per row; leading1/short input uses the generic C row for

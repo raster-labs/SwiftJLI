@@ -5,6 +5,10 @@ import Foundation
 /// Each segment must fit its own declared extent; bytes in the next segment
 /// cannot satisfy a truncated SOF/SOS/table. Entropy is scanned, never decoded.
 enum JPEGEnvelope {
+    private static let iccID: [UInt8] = Array("ICC_PROFILE\0".utf8)
+    private static let exifID: [UInt8] = [69, 120, 105, 102, 0, 0]
+    private static let adobeID: [UInt8] = [65, 100, 111, 98, 101]
+
     /// Owns the exact immutable bytes whose segment and entropy extents passed
     /// admission. The private constructor prevents a parser from mixing ranges
     /// validated against one input with another input. The initial bridge may
@@ -54,8 +58,7 @@ enum JPEGEnvelope {
         var frameComponents = 0, scanComponents = 0
         var adobeTransform: UInt8?
         var entropyRanges: [Range<Int>] = []
-        var iccCount: Int?, iccSequences = Set<Int>(), sawExif = false
-        let iccID = Array("ICC_PROFILE\0".utf8), exifID: [UInt8] = [69,120,105,102,0,0]
+        var iccCount: Int?, iccSequences = SIMD4<UInt64>(repeating: 0), iccSequenceCount = 0, sawExif = false
         while p < b.count {
             try NativeOperation.check()
             guard b[p] == 255 else { throw malformed() }
@@ -69,7 +72,7 @@ enum JPEGEnvelope {
                 // Permit only the single zero that pads an odd-length JPEG to even.
                 let complete = p == b.count || (p % 2 == 1 && b.count - p == 1 && b[p] == 0)
                 guard sawFrame, sawScan, complete,
-                      iccCount == nil || iccSequences.count == iccCount else { throw malformed() }
+                      iccCount == nil || iccSequenceCount == iccCount else { throw malformed() }
                 if let adobeTransform, (frameMarker == 0xC3 ? adobeTransform != 0 : adobeTransform > 1) {
                     throw CodecError(.unsupportedFeature, "JPEG colour transform is unsupported for this frame.")
                 }
@@ -168,24 +171,27 @@ enum JPEGEnvelope {
                     throw CodecError(.resourceLimitExceeded, "JPEG metadata limit exceeded.")
                 }
                 if marker == 0xE1 {
-                    guard end - start >= 6, b[start..<(start + 6)].elementsEqual(exifID) else {
+                    guard end - start >= 6, b[start..<(start + 6)].elementsEqual(Self.exifID) else {
                         throw CodecError(.unsupportedFeature, "Unsupported APP1 metadata.")
                     }
                     guard !sawExif else { throw malformed() }; sawExif = true
                 } else if marker == 0xE2 {
-                    guard end - start >= 14, b[start..<(start + 12)].elementsEqual(iccID) else {
+                    guard end - start >= 14, b[start..<(start + 12)].elementsEqual(Self.iccID) else {
                         throw CodecError(.unsupportedFeature, "Unsupported APP2 metadata.")
                     }
                     let seq = Int(b[start + 12]), count = Int(b[start + 13])
+                    let seqLane = seq >> 6, seqMask = UInt64(1) << (seq & 63)
                     guard count > 0, seq > 0, seq <= count, iccCount == nil || iccCount == count,
-                          iccSequences.insert(seq).inserted else { throw malformed() }
+                          iccSequences[seqLane] & seqMask == 0 else { throw malformed() }
+                    iccSequences[seqLane] |= seqMask
+                    iccSequenceCount += 1
                     iccCount = count
                     iccBytes = try checkedAdd(iccBytes, end - start - 14)
                     guard iccBytes <= limits.maximumICCBytes else {
                         throw CodecError(.resourceLimitExceeded, "JPEG ICC limit exceeded.")
                     }
                 } else if marker == 0xEE {
-                    guard end - start == 12, b[start..<(start + 5)].elementsEqual(Array("Adobe".utf8)),
+                    guard end - start == 12, b[start..<(start + 5)].elementsEqual(Self.adobeID),
                           b[end - 1] == 1 || b[end - 1] == 0 else {
                         throw CodecError(.unsupportedFeature, "Unsupported Adobe colour transform.")
                     }

@@ -22,6 +22,7 @@ enum ZeroRunLosslessDecoder {
               destination.rowBytes >= active, required <= destination.bytes.count,
               (0...15).contains(pointTransform), segmentRows > 0,
               (0...65535).contains(half),
+              table.lookaheadLength[0] == 1, table.lookaheadSymbol[0] == 0,
               let output = destination.bytes.baseAddress else {
             throw JLIError.decodingFailed("Invalid zero-run lossless destination")
         }
@@ -34,24 +35,32 @@ enum ZeroRunLosslessDecoder {
             }
             var value = segmentY == 0 ? half : firstSample
             let row = output + y * destination.rowBytes
+            var sample16 = UInt16(clamping: Int(value) << pointTransform).littleEndian
+            var word64 = UInt64(sample16) * 0x0001_0001_0001_0001
+            var sample8 = UInt8(clamping: Int(value) << pointTransform)
             var x = 0
             while x < width {
-                let run = reader.consumeZeroDifferences(table, maximum: width - x)
+                let run = reader.consumeZeroBits(maximum: width - x)
                 if run > 0 {
                     if x == 0 { firstSample = value }
                     if bps == 1 {
-                        let sample = UInt8(clamping: Int(value) << pointTransform)
-                        (row + x).assumingMemoryBound(to: UInt8.self).update(repeating: sample, count: run)
+                        (row + x).assumingMemoryBound(to: UInt8.self).update(repeating: sample8, count: run)
                     } else {
-                        let sample = UInt16(clamping: Int(value) << pointTransform)
-                        let word = UInt64(sample.littleEndian) * 0x0001_0001_0001_0001
                         var written = 0
+                        while written + 16 <= run {
+                            let baseOffset = (x + written) * 2
+                            row.storeBytes(of: word64, toByteOffset: baseOffset, as: UInt64.self)
+                            row.storeBytes(of: word64, toByteOffset: baseOffset + 8, as: UInt64.self)
+                            row.storeBytes(of: word64, toByteOffset: baseOffset + 16, as: UInt64.self)
+                            row.storeBytes(of: word64, toByteOffset: baseOffset + 24, as: UInt64.self)
+                            written += 16
+                        }
                         while written + 4 <= run {
-                            row.storeBytes(of: word, toByteOffset: (x + written) * 2, as: UInt64.self)
+                            row.storeBytes(of: word64, toByteOffset: (x + written) * 2, as: UInt64.self)
                             written += 4
                         }
                         while written < run {
-                            row.storeBytes(of: sample.littleEndian, toByteOffset: (x + written) * 2, as: UInt16.self)
+                            row.storeBytes(of: sample16, toByteOffset: (x + written) * 2, as: UInt16.self)
                             written += 1
                         }
                     }
@@ -67,10 +76,12 @@ enum ZeroRunLosslessDecoder {
                     value = (value + difference) & 0xFFFF
                     if x == 0 { firstSample = value }
                     if bps == 1 {
-                        row.storeBytes(of: UInt8(clamping: Int(value) << pointTransform), toByteOffset: x, as: UInt8.self)
+                        sample8 = UInt8(clamping: Int(value) << pointTransform)
+                        row.storeBytes(of: sample8, toByteOffset: x, as: UInt8.self)
                     } else {
-                        row.storeBytes(of: UInt16(clamping: Int(value) << pointTransform).littleEndian,
-                            toByteOffset: x * 2, as: UInt16.self)
+                        sample16 = UInt16(clamping: Int(value) << pointTransform).littleEndian
+                        word64 = UInt64(sample16) * 0x0001_0001_0001_0001
+                        row.storeBytes(of: sample16, toByteOffset: x * 2, as: UInt16.self)
                     }
                     x += 1
                 }

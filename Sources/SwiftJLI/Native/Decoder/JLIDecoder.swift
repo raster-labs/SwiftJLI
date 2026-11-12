@@ -69,7 +69,8 @@ struct JLIDecoder: Sendable {
 
     func decodeParsed(_ parsed: ParsedJPEG, configuration: JLIDecoderConfiguration = .default,
                       borrowedDestination: BorrowedSampleDestination? = nil, normaliseXYBOutput: Bool = false,
-                      useScalarCEntropy: Bool = false) throws -> JLIImage {
+                      useScalarCEntropy: Bool = false,
+                      precomputedPlan: SequentialGreyscalePlan? = nil) throws -> JLIImage {
         let frame = parsed.frameInfo
 
         guard !parsed.scans.isEmpty else {
@@ -84,17 +85,8 @@ struct JLIDecoder: Sendable {
                                       useScalarCEntropy: useScalarCEntropy)
         }
 
-        // Step 2: Prepare quantization tables (convert from zigzag to natural order)
-        let quantTables = parsed.quantTables.map { zigzagTable -> [Int] in
-            var natural = [Int](repeating: 0, count: 64)
-            for i in 0..<64 {
-                natural[Quantization.zigzagOrder[i]] = zigzagTable[i]
-            }
-            return natural
-        }
-
         // Reject structurally-invalid frames before any size math or indexing.
-        try validateDecodable(frame, quantTableCount: quantTables.count)
+        try validateDecodable(frame, quantTableCount: parsed.quantTables.count)
 
         // Reduced-scale (thumbnail) decode. 1 = full; 2/4 = low-freq box average;
         // 8 = 1/8 (DC-only). Each output sample is the exact mean of its
@@ -104,26 +96,20 @@ struct JLIDecoder: Sendable {
             throw JLIError.unsupportedJPEGFeature("decode scale \(scale) (only 1, 2, 4, 8 supported)")
         }
 
-        // Step 3: Determine MCU structure
         let components = frame.components
         let numComponents = components.count
-        let hMaxSampling = components.map(\.horizontalSampling).max() ?? 1
-        let vMaxSampling = components.map(\.verticalSampling).max() ?? 1
-        let mcuW = hMaxSampling * 8
-        let mcuH = vMaxSampling * 8
-        let mcuCountH = (frame.width + mcuW - 1) / mcuW
-        let mcuCountV = (frame.height + mcuH - 1) / mcuH
 
         // Admission and dispatch share this decision, including the bounded
         // coefficient/scratch capacity. Unsupported paths retain full planes.
-        let streamingPlan = try SequentialGreyscalePlan.make(parsed: parsed, configuration: configuration,
-            hasDestination: borrowedDestination != nil, normaliseXYBOutput: normaliseXYBOutput,
-            workerLimit: NativeOperation.current?.maximumWorkers ?? NativeOperation.workerLimit,
-            backend: NativeOperation.current?.backend ?? (NativeDSP.usesAccelerate ? .accelerated : .scalarCPU))
-        let directGreyscale = scale == 1 && numComponents == 1 && NativeOperation.workerLimit == 1
-            && !parsed.isXYB && !parsed.isRawRGB && !normaliseXYBOutput
-            && configuration.outputColorModel == nil
-            && (configuration.outputPixelFormat == nil || configuration.outputPixelFormat == .float32)
+        let streamingPlan: SequentialGreyscalePlan?
+        if let precomputedPlan {
+            streamingPlan = precomputedPlan
+        } else {
+            streamingPlan = try SequentialGreyscalePlan.make(parsed: parsed, configuration: configuration,
+                hasDestination: borrowedDestination != nil, normaliseXYBOutput: normaliseXYBOutput,
+                workerLimit: NativeOperation.current?.maximumWorkers ?? NativeOperation.workerLimit,
+                backend: NativeOperation.current?.backend ?? (NativeDSP.usesAccelerate ? .accelerated : .scalarCPU))
+        }
         let floating = configuration.outputPixelFormat == .float32
         if let streamingPlan, let borrowedDestination {
             let scan = parsed.scans[0]
@@ -131,19 +117,30 @@ struct JLIDecoder: Sendable {
             let dcTable = resolveDCTable(scan.dcTables, id: selector?.dcTableId ?? 0)
             let acTable = resolveACTable(scan.acTables, id: selector?.acTableId ?? 0)
             var reader = BitReader(data: scan.entropyData)
+            let zigzagQuant = parsed.quantTables[components[0].quantTableIndex]
             if streamingPlan.dcOnlyTable {
                 try Self.validateGreyscaleDestination(borrowedDestination, width: frame.width,
                     height: frame.height, precision: frame.precision, floatOutput: floating)
                 try DCOnlyGreyscaleDecoder.decodeInto(reader: &reader, dcTable: dcTable, acTable: acTable,
-                    quantiser: Float(quantTables[components[0].quantTableIndex][0]), plan: streamingPlan,
+                    quantiser: Float(zigzagQuant[0]), plan: streamingPlan,
                     width: frame.width, height: frame.height, precision: frame.precision,
                     restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
             } else {
                 // Lookup admission uses the entire scan, as in the retained path.
                 let lookup = ACLookahead(table: acTable, blockCount: streamingPlan.blockCount)
+                let naturalFloatQuant = [Float](unsafeUninitializedCapacity: 64) { buffer, initializedCount in
+                    zigzagQuant.withUnsafeBufferPointer { src in
+                        Quantization.zigzagOrder.withUnsafeBufferPointer { order in
+                            for i in 0..<64 {
+                                buffer[order[i]] = Float(src[i])
+                            }
+                        }
+                    }
+                    initializedCount = 64
+                }
                 try Self.decodeSequentialGreyscaleInto(reader: &reader, dcTable: dcTable,
                     acTable: acTable, lookup: lookup,
-                    quantTable: quantTables[components[0].quantTableIndex].map { Float($0) },
+                    quantTable: naturalFloatQuant,
                     plan: streamingPlan,
                     width: frame.width, height: frame.height, precision: frame.precision,
                     restartInterval: parsed.restartInterval, floatOutput: floating, destination: borrowedDestination)
@@ -152,6 +149,27 @@ struct JLIDecoder: Sendable {
                 pixelFormat: floating ? .float32 : frame.precision > 8 ? .uint16 : .uint8,
                 colorModel: .grayscale, iccProfile: parsed.iccProfile, exif: parsed.exif)
         }
+
+        // Step 2: Prepare quantization tables (convert from zigzag to natural order)
+        let quantTables = parsed.quantTables.map { zigzagTable -> [Int] in
+            var natural = [Int](repeating: 0, count: 64)
+            for i in 0..<64 {
+                natural[Quantization.zigzagOrder[i]] = zigzagTable[i]
+            }
+            return natural
+        }
+
+        // Step 3: Determine MCU structure
+        let hMaxSampling = components.map(\.horizontalSampling).max() ?? 1
+        let vMaxSampling = components.map(\.verticalSampling).max() ?? 1
+        let mcuW = hMaxSampling * 8
+        let mcuH = vMaxSampling * 8
+        let mcuCountH = (frame.width + mcuW - 1) / mcuW
+        let mcuCountV = (frame.height + mcuH - 1) / mcuH
+        let directGreyscale = scale == 1 && numComponents == 1 && NativeOperation.workerLimit == 1
+            && !parsed.isXYB && !parsed.isRawRGB && !normaliseXYBOutput
+            && configuration.outputColorModel == nil
+            && (configuration.outputPixelFormat == nil || configuration.outputPixelFormat == .float32)
 
         // Step 4: Allocate one flat zigzag-coefficient buffer per component.
         // Block `b` of component `c` lives at `componentZigzag[c][b*64 ..< (b+1)*64]`.
@@ -742,12 +760,6 @@ struct JLIDecoder: Sendable {
         guard pt >= 0, pt < precision else {
             throw JLIError.decodingFailed("invalid lossless point transform \(pt) for precision \(precision)")
         }
-        let dcTables = prepareDCTables(scan.dcTables)
-        let tables = frame.components.map { fc -> HuffmanTable in
-            let sc = scan.header.components.first { $0.componentSelector == fc.id }
-            return dcTables[sc?.dcTableId ?? 0] ?? StandardHuffmanTables.dcLuminance
-        }
-
         var reader = BitReader(data: scan.entropyData)
         let half = Int32(1 << (precision - 1 - pt))   // predictor for the very first sample
         let count = w * h
@@ -762,48 +774,64 @@ struct JLIDecoder: Sendable {
                     "lossless restart interval \(restartInterval) not a multiple of "
                     + "samples-per-row (\(w))")
             }
+            let fc0 = frame.components[0]
+            let sc0 = scan.header.components.first { $0.componentSelector == fc0.id }
+            let table0 = resolveDCTable(scan.dcTables, id: sc0?.dcTableId ?? 0)
             // The bounded table is only useful for sufficiently large scans
             // with varied short categories. Choose the kernel once per scan.
             // Its <=32 KiB plus row history fits the existing 8-byte/sample
             // reservation at the table's >=16384-sample construction threshold.
             if predictor == 1, count >= 16384,
-               tables[0].lookaheadLength[0] == 1, tables[0].lookaheadSymbol[0] == 0 {
+               table0.lookaheadLength[0] == 1, table0.lookaheadSymbol[0] == 0 {
                 try ZeroRunLosslessDecoder.decode(
                     into: borrowed, width: w, height: h, half: half,
-                    table: tables[0], reader: &reader, pointTransform: pt,
+                    table: table0, reader: &reader, pointTransform: pt,
                     segmentRows: restartInterval > 0 ? restartInterval / w : h)
-            } else if let lookup = LosslessLookahead(table: tables[0], sampleCount: count) {
-                try Self.losslessGrayLookupInto(
-                    borrowed, width: w, height: h, predictor: predictor, half: half,
-                    table: tables[0], reader: &reader, pointTransform: pt,
-                    segmentRows: restartInterval > 0 ? restartInterval / w : h, lookup: lookup)
+            } else if let lookup = LosslessLookahead(table: table0, sampleCount: count) {
+                if predictor == 1, pt == 0, borrowed.bytesPerSample == 2, useScalarCEntropy {
+                    try Self.losslessCLeftUInt16Into(
+                        borrowed, width: w, height: h, half: half,
+                        table: table0, lookup: lookup, reader: &reader,
+                        segmentRows: restartInterval > 0 ? restartInterval / w : h)
+                } else {
+                    try Self.losslessGrayLookupInto(
+                        borrowed, width: w, height: h, predictor: predictor, half: half,
+                        table: table0, reader: &reader, pointTransform: pt,
+                        segmentRows: restartInterval > 0 ? restartInterval / w : h, lookup: lookup)
+                }
             } else if count < 16384 {
                 try Self.losslessSmallGrayInto(
                     borrowed, width: w, height: h, predictor: predictor, half: half,
-                    table: tables[0], reader: &reader, pointTransform: pt,
+                    table: table0, reader: &reader, pointTransform: pt,
                     segmentRows: restartInterval > 0 ? restartInterval / w : h)
             } else if predictor == 1, pt == 0, borrowed.bytesPerSample == 2 {
                 if useScalarCEntropy {
                     try Self.losslessCLeftUInt16Into(
                         borrowed, width: w, height: h, half: half,
-                        table: tables[0], reader: &reader,
+                        table: table0, reader: &reader,
                         segmentRows: restartInterval > 0 ? restartInterval / w : h)
                 } else {
                     try Self.losslessLeftUInt16Into(
                         borrowed, width: w, height: h, half: half,
-                        table: tables[0], reader: &reader,
+                        table: table0, reader: &reader,
                         segmentRows: restartInterval > 0 ? restartInterval / w : h)
                 }
             } else {
                 try Self.losslessGrayInto(
                     borrowed, width: w, height: h, predictor: predictor, half: half,
-                    table: tables[0], reader: &reader, pointTransform: pt,
+                    table: table0, reader: &reader, pointTransform: pt,
                     segmentRows: restartInterval > 0 ? restartInterval / w : h)
             }
             let format = configuration.outputPixelFormat ?? (borrowed.bytesPerSample == 1 ? .uint8 : .uint16)
             return try JLIImage(geometryOnlyWidth: w, height: h, pixelFormat: format,
                 colorModel: configuration.outputColorModel ?? .grayscale,
                 iccProfile: iccProfile, exif: exif)
+        }
+
+        let dcTables = prepareDCTables(scan.dcTables)
+        let tables = frame.components.map { fc -> HuffmanTable in
+            let sc = scan.header.components.first { $0.componentSelector == fc.id }
+            return dcTables[sc?.dcTableId ?? 0] ?? StandardHuffmanTables.dcLuminance
         }
 
         // One flat raw buffer holds all component planes (plane c at offset
@@ -1273,7 +1301,8 @@ struct JLIDecoder: Sendable {
     @inline(never)
     private static func losslessCLeftUInt16Into(
         _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
-        half: Int32, table: HuffmanTable, reader: inout BitReader, segmentRows: Int
+        half: Int32, table: HuffmanTable, lookup: LosslessLookahead? = nil,
+        reader: inout BitReader, segmentRows: Int
     ) throws {
         guard (1...65535).contains(w), (1...65535).contains(h), segmentRows > 0,
               destination.bytesPerSample == 2, destination.rowBytes >= w * 2 else {
@@ -1285,7 +1314,7 @@ struct JLIDecoder: Sendable {
               let output = destination.bytes.baseAddress else {
             throw JLIError.decodingFailed("lossless destination is too small")
         }
-        try CLosslessRowKernel.withBorrowed(table: table, enabled: true) { kernel in
+        try CLosslessRowKernel.withBorrowed(table: table, lookup: lookup, enabled: true) { kernel in
             guard let kernel else {
                 try losslessLeftUInt16Into(destination, width: w, height: h, half: half,
                     table: table, reader: &reader, segmentRows: segmentRows)
@@ -1477,6 +1506,30 @@ struct JLIDecoder: Sendable {
         var firstSample = half
         let rowsPerCheck = max(1, 1024 / w)
         var rowsUntilCheck = 0
+        if bps == 2 && pt == 0 {
+            for y in 0..<h {
+                if rowsUntilCheck == 0 {
+                    try NativeOperation.check()
+                    rowsUntilCheck = rowsPerCheck
+                }
+                rowsUntilCheck -= 1
+                let segmentY = y % segmentRows
+                if y > 0, segmentY == 0 {
+                    try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+                }
+                var value = segmentY == 0 ? half : firstSample
+                let rawRow = UnsafeMutableRawPointer(output + y * rowBytes)
+                value = (value + (try losslessDifference(table, &reader))) & 0xFFFF
+                firstSample = value
+                rawRow.storeBytes(of: UInt16(truncatingIfNeeded: value).littleEndian, as: UInt16.self)
+                for x in 1..<w {
+                    value = (value + (try losslessDifference(table, &reader))) & 0xFFFF
+                    rawRow.storeBytes(of: UInt16(truncatingIfNeeded: value).littleEndian,
+                                      toByteOffset: x * 2, as: UInt16.self)
+                }
+            }
+            return
+        }
         for y in 0..<h {
             if rowsUntilCheck == 0 {
                 try NativeOperation.check()
@@ -1546,31 +1599,68 @@ struct JLIDecoder: Sendable {
               let output = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
             throw JLIError.decodingFailed("lossless destination is too small")
         }
-        let history = UnsafeMutableBufferPointer<Int32>.allocate(capacity: w)
-        defer { history.deallocate() }
-        // w >= 1 has already been validated by decodeLossless.
-        guard let row = history.baseAddress else { return }
-        for y in 0..<h {
-            try NativeOperation.check()
-            let segmentY = y % segmentRows
-            if y > 0, segmentY == 0 {
-                try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
-            }
-            let outputRow = output + y * destination.rowBytes
+        try lookup.entries.withUnsafeBufferPointer { lookupBuf in
+            guard let lookupBase = lookupBuf.baseAddress else { return }
             if predictor == 1 {
                 // The left predictor only needs the preceding row's first
-                // sample. Avoid all other history loads/stores in this common
-                // scan mode, while retaining the identical entropy reader.
-                var value = segmentY == 0 ? half : row[0]
-                for x in 0..<w {
-                    let difference: Int32
-                    if let decoded = reader.fastDecodeLosslessDifference(lookup) { difference = decoded }
-                    else { difference = try losslessDifference(table, &reader) }
-                    value = (value + difference) & 0xFFFF
-                    if x == 0 { row[0] = value }
-                    writeLosslessSample(value, outputRow, x, bps, pt)
+                // sample. Avoid allocating or touching a full row of history.
+                var firstSample = half
+                if bps == 2 && pt == 0 {
+                    for y in 0..<h {
+                        try NativeOperation.check()
+                        let segmentY = y % segmentRows
+                        if y > 0, segmentY == 0 {
+                            try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+                        }
+                        let rawRow = UnsafeMutableRawPointer(output + y * destination.rowBytes)
+                        var value = segmentY == 0 ? half : firstSample
+                        let diff0: Int32
+                        if let decoded = reader.fastDecodeLosslessDifference(lookupBase) { diff0 = decoded }
+                        else { diff0 = try losslessDifference(table, &reader) }
+                        value = (value + diff0) & 0xFFFF
+                        firstSample = value
+                        rawRow.storeBytes(of: UInt16(truncatingIfNeeded: value).littleEndian, as: UInt16.self)
+                        for x in 1..<w {
+                            let difference: Int32
+                            if let decoded = reader.fastDecodeLosslessDifference(lookupBase) { difference = decoded }
+                            else { difference = try losslessDifference(table, &reader) }
+                            value = (value + difference) & 0xFFFF
+                            rawRow.storeBytes(of: UInt16(truncatingIfNeeded: value).littleEndian,
+                                              toByteOffset: x * 2, as: UInt16.self)
+                        }
+                    }
+                } else {
+                    for y in 0..<h {
+                        try NativeOperation.check()
+                        let segmentY = y % segmentRows
+                        if y > 0, segmentY == 0 {
+                            try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+                        }
+                        let outputRow = output + y * destination.rowBytes
+                        var value = segmentY == 0 ? half : firstSample
+                        for x in 0..<w {
+                            let difference: Int32
+                            if let decoded = reader.fastDecodeLosslessDifference(lookupBase) { difference = decoded }
+                            else { difference = try losslessDifference(table, &reader) }
+                            value = (value + difference) & 0xFFFF
+                            if x == 0 { firstSample = value }
+                            writeLosslessSample(value, outputRow, x, bps, pt)
+                        }
+                    }
                 }
-            } else {
+                return
+            }
+            let history = UnsafeMutableBufferPointer<Int32>.allocate(capacity: w)
+            defer { history.deallocate() }
+            // w >= 1 has already been validated by decodeLossless.
+            guard let row = history.baseAddress else { return }
+            for y in 0..<h {
+                try NativeOperation.check()
+                let segmentY = y % segmentRows
+                if y > 0, segmentY == 0 {
+                    try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+                }
+                let outputRow = output + y * destination.rowBytes
                 var left = half, aboveLeft: Int32 = 0
                 for x in 0..<w {
                     let above = segmentY == 0 ? half : row[x]
@@ -1588,7 +1678,7 @@ struct JLIDecoder: Sendable {
                         }
                     }
                     let difference: Int32
-                    if let decoded = reader.fastDecodeLosslessDifference(lookup) { difference = decoded }
+                    if let decoded = reader.fastDecodeLosslessDifference(lookupBase) { difference = decoded }
                     else { difference = try losslessDifference(table, &reader) }
                     let value = (predicted + difference) & 0xFFFF
                     row[x] = value

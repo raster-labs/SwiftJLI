@@ -118,18 +118,38 @@ static inline __attribute__((always_inline)) SJLIACStatus ac_body(const uint8_t 
         }
     slow_path:;
         uint8_t value;
+        if (reader->available < 8) fill(input, input_count, reader);
+        if (reader->available >= 8) {
+            const unsigned prefix = (unsigned)((reader->accumulator >> (reader->available - 8)) & 255);
+            const unsigned length = table->lengths[prefix];
+            if (length != 0) {
+                reader->available -= length;
+                value = table->symbols[prefix];
+                goto have_ac_symbol;
+            }
+        }
         status = symbol(input, input_count, reader, table, &value);
-        if (status != SJLI_AC_OK || value == 0) break;
+        if (status != SJLI_AC_OK) break;
+    have_ac_symbol:
+        if (value == 0) break;
         if (value == 0xf0) { index += 16; continue; }
         index += value >> 4;
         if (index >= 64) break;
         const unsigned category = value & 15;
-        uint32_t magnitude;
-        status = read_bits(input, input_count, reader, category, &magnitude);
-        if (status != SJLI_AC_OK) break;
-        int32_t coefficient = (int32_t)magnitude;
-        if (category != 0 && magnitude < (UINT32_C(1) << (category - 1)))
-            coefficient -= (int32_t)((UINT32_C(1) << category) - 1);
+        int32_t coefficient = 0;
+        if (category != 0) {
+            uint32_t magnitude;
+            if (reader->available >= category) {
+                reader->available -= category;
+                magnitude = (uint32_t)((reader->accumulator >> reader->available) & ((UINT64_C(1) << category) - 1));
+            } else {
+                status = read_bits(input, input_count, reader, category, &magnitude);
+                if (status != SJLI_AC_OK) break;
+            }
+            coefficient = (int32_t)magnitude;
+            if (magnitude < (UINT32_C(1) << (category - 1)))
+                coefficient -= (int32_t)((UINT32_C(1) << category) - 1);
+        }
         output[index++] = coefficient;
     }
     return status;
@@ -141,30 +161,45 @@ static inline __attribute__((always_inline)) SJLIACStatus dct_block_body(
     const SJLIACHuffman *restrict ac_table, const uint32_t *restrict lookup,
     int32_t *restrict previous_dc, int64_t bound, int32_t *restrict output) {
     uint8_t category;
-    SJLIACStatus status = symbol(input, input_count, reader, dc_table, &category);
-    if (status == SJLI_AC_OK) {
-        if (category > 16) {
-            // Match Swift readBits validation after consuming the DC symbol
-            // but before consuming any magnitude or clearing coefficients.
-            reader->marker = category;
-            status = SJLI_AC_INVALID_WIDTH;
-        } else {
-            uint32_t magnitude;
-            status = read_bits(input, input_count, reader, category, &magnitude);
-            if (status == SJLI_AC_OK) {
-                int32_t difference = (int32_t)magnitude;
-                if (category != 0 && magnitude < (UINT32_C(1) << (category - 1)))
-                    difference -= (int32_t)((UINT32_C(1) << category) - 1);
-                const int64_t dc = (int64_t)*previous_dc + difference;
-                if (dc < -bound || dc > bound) status = SJLI_AC_DC_RANGE;
-                else {
-                    *previous_dc = (int32_t)dc;
-                    status = ac_body(input, input_count, reader, ac_table, lookup, output);
-                    if (status == SJLI_AC_OK) output[0] = *previous_dc;
-                }
-            }
+    SJLIACStatus status = SJLI_AC_OK;
+    if (reader->available < 8) fill(input, input_count, reader);
+    if (reader->available >= 8) {
+        const unsigned prefix = (unsigned)((reader->accumulator >> (reader->available - 8)) & 255);
+        const unsigned length = dc_table->lengths[prefix];
+        if (length != 0) {
+            reader->available -= length;
+            category = dc_table->symbols[prefix];
+            goto have_dc_symbol;
         }
     }
+    status = symbol(input, input_count, reader, dc_table, &category);
+    if (status != SJLI_AC_OK) return status;
+have_dc_symbol:
+    if (category > 16) {
+        // Match Swift readBits validation after consuming the DC symbol
+        // but before consuming any magnitude or clearing coefficients.
+        reader->marker = category;
+        return SJLI_AC_INVALID_WIDTH;
+    }
+    int32_t difference = 0;
+    if (category != 0) {
+        uint32_t magnitude;
+        if (reader->available >= category) {
+            reader->available -= category;
+            magnitude = (uint32_t)((reader->accumulator >> reader->available) & ((UINT64_C(1) << category) - 1));
+        } else {
+            status = read_bits(input, input_count, reader, category, &magnitude);
+            if (status != SJLI_AC_OK) return status;
+        }
+        difference = (int32_t)magnitude;
+        if (magnitude < (UINT32_C(1) << (category - 1)))
+            difference -= (int32_t)((UINT32_C(1) << category) - 1);
+    }
+    const int64_t dc = (int64_t)*previous_dc + difference;
+    if (dc < -bound || dc > bound) return SJLI_AC_DC_RANGE;
+    *previous_dc = (int32_t)dc;
+    status = ac_body(input, input_count, reader, ac_table, lookup, output);
+    if (status == SJLI_AC_OK) output[0] = *previous_dc;
     return status;
 }
 

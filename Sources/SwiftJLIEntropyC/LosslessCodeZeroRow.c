@@ -36,6 +36,10 @@ SJLIACStatus sjli_lossless_left_u16_code0_row(const void *raw_input, size_t inpu
         (UINT32_C(1) << (2 * consumed - 1)) |
         (UINT32_C(1) << (3 * consumed - 1));
     const uint32_t all_prefix_mask = group_prefix_mask | (UINT32_C(1) << (4 * consumed - 1));
+    const unsigned pair_bits = 2 * consumed;
+    const unsigned pair_available = 8 + consumed;
+    const uint32_t pair_prefix_mask = (UINT32_C(1) << (consumed - 1)) |
+        (UINT32_C(1) << (2 * consumed - 1));
     uint8_t *bytes = (uint8_t *)output;
     SJLIACState reader = *state;
     SJLILosslessRowResult decoded = {0};
@@ -43,54 +47,74 @@ SJLIACStatus sjli_lossless_left_u16_code0_row(const void *raw_input, size_t inpu
     uint32_t value = seed;
     for (size_t index = 0; index < count; ++index) {
         if (reader.available < 8) fill(input, input_count, &reader);
-        if (reader.available >= 8 && ((reader.accumulator >> (reader.available - 1)) & 1) == 0) {
-            if (count - index >= 4 && reader.available >= group_available) {
-                // consumed is 2...8, so group_bits is 8...32, every shift
-                // below is 0...56, and all four samples are within the row.
-                uint32_t group = (uint32_t)(reader.accumulator >>
-                                            (reader.available - group_bits));
-                if ((group & group_prefix_mask) == 0) {
-                    for (;;) {
-                        const uint32_t magnitude0 = (group >> (3 * consumed)) & magnitude_mask;
-                        const uint32_t magnitude1 = (group >> (2 * consumed)) & magnitude_mask;
-                        const uint32_t magnitude2 = (group >> consumed) & magnitude_mask;
-                        const uint32_t magnitude3 = group & magnitude_mask;
-                        const uint32_t value0 = (value + magnitude0 -
-                            (magnitude0 < sign_threshold ? magnitude_mask : 0)) & 65535;
-                        const uint32_t value1 = (value0 + magnitude1 -
-                            (magnitude1 < sign_threshold ? magnitude_mask : 0)) & 65535;
-                        const uint32_t value2 = (value1 + magnitude2 -
-                            (magnitude2 < sign_threshold ? magnitude_mask : 0)) & 65535;
-                        value = (value2 + magnitude3 -
-                            (magnitude3 < sign_threshold ? magnitude_mask : 0)) & 65535;
-                        bytes[index * 2] = (uint8_t)value0;
-                        bytes[index * 2 + 1] = (uint8_t)(value0 >> 8);
-                        bytes[index * 2 + 2] = (uint8_t)value1;
-                        bytes[index * 2 + 3] = (uint8_t)(value1 >> 8);
-                        bytes[index * 2 + 4] = (uint8_t)value2;
-                        bytes[index * 2 + 5] = (uint8_t)(value2 >> 8);
-                        bytes[index * 2 + 6] = (uint8_t)value;
-                        bytes[index * 2 + 7] = (uint8_t)(value >> 8);
-                        // No refill, fallback or error is possible inside the
-                        // proved group. Publish exactly four scalar iterations.
-                        reader.available -= group_bits;
-                        if (index == 0) decoded.first = (uint16_t)value0;
-                        decoded.last = (uint16_t)value;
-                        decoded.written += 4;
-                        index += 4;
-                        if (count - index < 4 || reader.available < group_available) break;
-                        group = (uint32_t)(reader.accumulator >> (reader.available - group_bits));
-                        if ((group & all_prefix_mask) != 0) break;
-                    }
-                    index -= 1;
-                    continue;
-                }
+        if (count - index >= 4 && reader.available >= group_available) {
+            // consumed is 2...8, so group_bits is 8...32, every shift
+            // below is 0...56, and all four samples are within the row.
+            const uint32_t group = (uint32_t)(reader.accumulator >>
+                                              (reader.available - group_bits));
+            if ((group & all_prefix_mask) == 0) {
+                const uint32_t magnitude0 = (group >> (3 * consumed)) & magnitude_mask;
+                const uint32_t magnitude1 = (group >> (2 * consumed)) & magnitude_mask;
+                const uint32_t magnitude2 = (group >> consumed) & magnitude_mask;
+                const uint32_t magnitude3 = group & magnitude_mask;
+                const uint32_t diff0 = magnitude0 - (magnitude0 < sign_threshold ? magnitude_mask : 0);
+                const uint32_t diff1 = magnitude1 - (magnitude1 < sign_threshold ? magnitude_mask : 0);
+                const uint32_t diff2 = magnitude2 - (magnitude2 < sign_threshold ? magnitude_mask : 0);
+                const uint32_t diff3 = magnitude3 - (magnitude3 < sign_threshold ? magnitude_mask : 0);
+                const uint32_t diff01 = diff0 + diff1;
+                const uint32_t diff012 = diff01 + diff2;
+                const uint32_t diff0123 = diff01 + (diff2 + diff3);
+                const uint32_t value0 = value + diff0;
+                const uint32_t value1 = value + diff01;
+                const uint32_t value2 = value + diff012;
+                value = (value + diff0123) & 65535;
+                bytes[index * 2] = (uint8_t)value0;
+                bytes[index * 2 + 1] = (uint8_t)(value0 >> 8);
+                bytes[index * 2 + 2] = (uint8_t)value1;
+                bytes[index * 2 + 3] = (uint8_t)(value1 >> 8);
+                bytes[index * 2 + 4] = (uint8_t)value2;
+                bytes[index * 2 + 5] = (uint8_t)(value2 >> 8);
+                bytes[index * 2 + 6] = (uint8_t)value;
+                bytes[index * 2 + 7] = (uint8_t)(value >> 8);
+                // No refill, fallback or error is possible inside the
+                // proved group. Publish exactly four scalar iterations.
+                reader.available -= group_bits;
+                if (index == 0) decoded.first = (uint16_t)value0;
+                decoded.last = (uint16_t)value;
+                decoded.written += 4;
+                index += 3;
+                continue;
             }
+        }
+        if (count - index >= 2 && reader.available >= pair_available) {
+            const uint32_t pair = (uint32_t)(reader.accumulator >>
+                                             (reader.available - pair_bits));
+            if ((pair & pair_prefix_mask) == 0) {
+                const uint32_t magnitude0 = (pair >> consumed) & magnitude_mask;
+                const uint32_t magnitude1 = pair & magnitude_mask;
+                const uint32_t diff0 = magnitude0 - (magnitude0 < sign_threshold ? magnitude_mask : 0);
+                const uint32_t diff1 = magnitude1 - (magnitude1 < sign_threshold ? magnitude_mask : 0);
+                const uint32_t value0 = value + diff0;
+                value = (value + (diff0 + diff1)) & 65535;
+                bytes[index * 2] = (uint8_t)value0;
+                bytes[index * 2 + 1] = (uint8_t)(value0 >> 8);
+                bytes[index * 2 + 2] = (uint8_t)value;
+                bytes[index * 2 + 3] = (uint8_t)(value >> 8);
+                reader.available -= pair_bits;
+                if (index == 0) decoded.first = (uint16_t)value0;
+                decoded.last = (uint16_t)value;
+                decoded.written += 2;
+                index += 1;
+                continue;
+            }
+        }
+        if (reader.available >= 8 && ((reader.accumulator >> (reader.available - 1)) & 1) == 0) {
             reader.available -= consumed;
             const uint32_t magnitude = (uint32_t)(reader.accumulator >> reader.available) & magnitude_mask;
             // Unsigned subtraction is defined modulo2^32; the final mask is
             // exactly the retained signed difference plus modulo65536 predictor.
-            value = (value + magnitude - (magnitude < sign_threshold ? magnitude_mask : 0)) & 65535;
+            const uint32_t diff = magnitude - (magnitude < sign_threshold ? magnitude_mask : 0);
+            value = (value + diff) & 65535;
             bytes[index * 2] = (uint8_t)value;
             bytes[index * 2 + 1] = (uint8_t)(value >> 8);
         } else {

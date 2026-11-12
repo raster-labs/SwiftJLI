@@ -8,13 +8,16 @@ import SwiftJLIEntropyC
 /// The body must not let the kernel or its pointer escape or use it concurrently.
 struct CLosslessRowKernel {
     let table: UnsafePointer<SJLIACHuffman>
+    let lookup: UnsafePointer<UInt32>?
     let usesCodeZero: Bool
 
-    static func withBorrowed(table: HuffmanTable, enabled: Bool, allowCodeZero: Bool = true,
-                            _ body: (CLosslessRowKernel?) throws -> Void) rethrows {
+    static func withBorrowed(table: HuffmanTable, lookup: LosslessLookahead? = nil,
+                             enabled: Bool, allowCodeZero: Bool = true,
+                             _ body: (CLosslessRowKernel?) throws -> Void) rethrows {
         guard enabled, table.minCode.count == 17, table.maxCode.count == 17,
               table.valPtr.count == 17, table.values.count <= 256,
               table.lookaheadLength.count == 256, table.lookaheadSymbol.count == 256,
+              lookup == nil || lookup?.entries.count == LosslessLookahead.count,
               table.valPtr.allSatisfy({ $0 >= 0 && $0 <= 256 }),
               table.lookaheadLength.allSatisfy({ $0 <= 8 }) else {
             try body(nil)
@@ -50,6 +53,16 @@ struct CLosslessRowKernel {
         // table or allocation. Explicit opt-out retains the generic C oracle.
         let usesCodeZero = allowCodeZero && table.lookaheadLength[0] == 1
             && (1...7).contains(table.lookaheadSymbol[0])
-        try withUnsafePointer(to: &metadata) { try body(.init(table: $0, usesCodeZero: usesCodeZero)) }
+        if let lookup {
+            try lookup.entries.withUnsafeBufferPointer { lookupBuf in
+                try withUnsafePointer(to: &metadata) {
+                    try body(.init(table: $0, lookup: lookupBuf.baseAddress, usesCodeZero: usesCodeZero))
+                }
+            }
+        } else {
+            try withUnsafePointer(to: &metadata) {
+                try body(.init(table: $0, lookup: nil, usesCodeZero: usesCodeZero))
+            }
+        }
     }
 }

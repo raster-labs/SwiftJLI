@@ -2,12 +2,42 @@
 import Foundation
 import Synchronization
 
+private let uuidSeedHigh: UInt64 = {
+    var u = UUID().uuid
+    return withUnsafeBytes(of: &u) { $0.loadUnaligned(as: UInt64.self) }
+}()
+private let uuidCounter = Atomic<UInt64>(1)
+
+@inline(__always)
+internal func makeFastUUID() -> UUID {
+    let low = uuidCounter.wrappingAdd(1, ordering: .relaxed).newValue
+    let h = uuidSeedHigh
+    return UUID(uuid: (
+        UInt8(truncatingIfNeeded: h >> 56),
+        UInt8(truncatingIfNeeded: h >> 48),
+        UInt8(truncatingIfNeeded: h >> 40),
+        UInt8(truncatingIfNeeded: h >> 32),
+        UInt8(truncatingIfNeeded: h >> 24),
+        UInt8(truncatingIfNeeded: h >> 16),
+        UInt8(truncatingIfNeeded: (h >> 8) & 0x0F | 0x40),
+        UInt8(truncatingIfNeeded: h),
+        UInt8(truncatingIfNeeded: (low >> 56) & 0x3F | 0x80),
+        UInt8(truncatingIfNeeded: low >> 48),
+        UInt8(truncatingIfNeeded: low >> 40),
+        UInt8(truncatingIfNeeded: low >> 32),
+        UInt8(truncatingIfNeeded: low >> 24),
+        UInt8(truncatingIfNeeded: low >> 16),
+        UInt8(truncatingIfNeeded: low >> 8),
+        UInt8(truncatingIfNeeded: low)
+    ))
+}
+
 /// An opaque lease value. Providers create a fresh token for each reservation and
 /// compare it to their active token; allocation identity alone never grants access.
 /// A token is Sendable but does not permit two simultaneous mutable borrows.
 public struct StorageWriteLease: Sendable, Equatable, Hashable {
     private let nonce: UUID
-    public init() { nonce = UUID() }
+    public init() { nonce = makeFastUUID() }
 }
 
 /// Implementers must retain sealed immutable storage for the full borrow lifetime.
@@ -65,7 +95,7 @@ public final class OwnedImageStorage: WritableImageStorage, Sendable {
         guard byteCount <= limits.maximumDecodedBytes, byteCount <= limits.maximumMemoryBytes else {
             throw CodecError(.resourceLimitExceeded, "Storage allocation exceeds the admission budget.")
         }
-        self.byteCount = byteCount; self.allocationID = UUID()
+        self.byteCount = byteCount; self.allocationID = makeFastUUID()
         self.state = Mutex(State(bytes: [UInt8](repeating: 0, count: byteCount)))
     }
 
@@ -75,7 +105,7 @@ public final class OwnedImageStorage: WritableImageStorage, Sendable {
         guard byteCount <= limits.maximumDecodedBytes, byteCount <= limits.maximumMemoryBytes else {
             throw CodecError(.resourceLimitExceeded, "Storage allocation exceeds the admission budget.")
         }
-        self.byteCount = byteCount; self.allocationID = UUID()
+        self.byteCount = byteCount; self.allocationID = makeFastUUID()
         let buffer = [UInt8](unsafeUninitializedCapacity: byteCount) { _, initializedCount in
             initializedCount = byteCount
         }
@@ -140,11 +170,11 @@ public final class OwnedImageStorage: WritableImageStorage, Sendable {
     }
 }
 
-private final class SealedImageStorage: ReadOnlyImageStorage, Sendable {
+internal final class SealedImageStorage: ReadOnlyImageStorage, Sendable {
     private let bytes: [UInt8]
     let allocationID: UUID
     var byteCount: Int { bytes.count }
-    init(bytes: [UInt8], allocationID: UUID) {
+    init(bytes: [UInt8], allocationID: UUID = makeFastUUID()) {
         self.bytes = bytes; self.allocationID = allocationID
     }
     func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) throws -> R {

@@ -88,6 +88,7 @@ struct ParsedJPEG: Sendable {
 
 /// Reads and parses JPEG marker segments from a byte buffer.
 struct MarkerReader {
+    private static let emptyQuantTables = [[Int]](repeating: [Int](repeating: 0, count: 64), count: 4)
     private let data: JPEGBytes
     // Like BitReader, this synchronous non-Sendable parser retains an immutable
     // NSData owner and explicitly extends its lifetime around every cached load.
@@ -170,7 +171,7 @@ struct MarkerReader {
         try validateSOI()
 
         var frameInfo: JPEGFrameInfo?
-        var quantTables = [[Int]](repeating: [Int](repeating: 0, count: 64), count: 4)
+        var quantTables = Self.emptyQuantTables
         var huffDC = [Int: HuffmanTable]()
         var huffAC = [Int: HuffmanTable]()
         var scans: [JPEGScanData] = []
@@ -446,9 +447,23 @@ struct MarkerReader {
                 codeSpace <<= 1
             }
 
-            var values = [UInt8]()
-            for _ in 0..<totalValues {
-                values.append(try readByte())
+            var values: [UInt8]
+            if offset + totalValues <= buffer.count {
+                let start = offset
+                values = [UInt8](unsafeUninitializedCapacity: totalValues) { dst, initializedCount in
+                    withExtendedLifetime(data) {
+                        for i in 0..<totalValues {
+                            dst[i] = buffer[start + i]
+                        }
+                    }
+                    initializedCount = totalValues
+                }
+                offset += totalValues
+            } else {
+                values = [UInt8]()
+                for _ in 0..<totalValues {
+                    values.append(try readByte())
+                }
             }
 
             let table = HuffmanTable(bits: bits, values: values, decodingOnly: true)
