@@ -32,30 +32,82 @@ struct BitWriter {
         buffer = [UInt8](repeating: 0, count: max(estimatedMaxSize, 64))
     }
 
-    /// The bytes written so far. Computed — slices `buffer` down to actual length.
+    /// The bytes written so far. Computed — slices `buffer` down to actual length,
+    /// materializing any pending whole bytes still held in the 64-bit accumulator.
     var data: [UInt8] {
-        Array(buffer[0..<byteCount])
+        if nbits < 8 {
+            return Array(buffer[0..<byteCount])
+        }
+        var out = Array(buffer[0..<byteCount])
+        out.reserveCapacity(byteCount + (nbits >> 3) * 2)
+        var pending = nbits
+        while pending >= 8 {
+            pending -= 8
+            let byte = UInt8((acc &>> UInt64(pending)) & 0xFF)
+            out.append(byte)
+            if byte == 0xFF { out.append(0) }
+        }
+        return out
     }
 
-    /// Writes `count` bits from `value` (MSB-first).
-    mutating func writeBits(_ value: UInt32, count: Int) {
-        guard count > 0 else { return }
-        acc = (acc << UInt64(count)) | UInt64(value & ((1 << count) - 1))
-        nbits += count
-        if nbits < 8 { return }   // no whole byte pending — skip the buffer access
-        // Each pending whole byte can expand to two with stuffing; +2 slack for
-        // the in-loop stuffing byte.
+    @inline(__always)
+    private static func hasFFByte32(_ x: UInt32) -> Bool {
+        let y = ~x
+        return ((y &- 0x0101_0101) & ~y & 0x8080_8080) != 0
+    }
+
+    /// Drains any pending whole bytes (`nbits >= 8`) into `buffer` with stuffing,
+    /// leaving `0...7` bits in `acc`.
+    @inline(__always)
+    private mutating func drainWholeBytes() {
+        guard nbits >= 8 else { return }
         if byteCount + (nbits >> 3) * 2 + 2 > buffer.count { grow() }
         buffer.withUnsafeMutableBufferPointer { buf in
             let p = buf.baseAddress!
             var bc = byteCount
             while nbits >= 8 {
                 nbits -= 8
-                let byte = UInt8((acc >> UInt64(nbits)) & 0xFF)
+                let byte = UInt8((acc &>> UInt64(nbits)) & 0xFF)
                 p[bc] = byte; bc += 1
-                if byte == 0xFF { p[bc] = 0; bc += 1 }   // byte stuffing
+                if byte == 0xFF { p[bc] = 0; bc += 1 }
             }
             byteCount = bc
+        }
+        acc &= (UInt64(1) &<< UInt64(nbits)) &- 1
+    }
+
+    /// Writes `count` bits from `value` (MSB-first), coalescing into 32-bit
+    /// SWAR-checked flushes whenever at least 4 bytes accumulate.
+    @inline(__always)
+    mutating func writeBits(_ value: UInt32, count: Int) {
+        guard count > 0 else { return }
+        let mask = count == 32 ? UInt64(UInt32.max) : ((UInt64(1) &<< UInt64(count)) &- 1)
+        acc = (acc &<< UInt64(count)) | (UInt64(value) & mask)
+        nbits += count
+        if nbits < 32 { return }
+        if byteCount + 16 > buffer.count { grow() }
+        let shift = nbits - 32
+        let word = UInt32(truncatingIfNeeded: acc &>> UInt64(shift))
+        nbits = shift
+        acc &= (UInt64(1) &<< UInt64(shift)) &- 1
+        buffer.withUnsafeMutableBufferPointer { buf in
+            let raw = UnsafeMutableRawPointer(buf.baseAddress!)
+            if !Self.hasFFByte32(word) {
+                raw.storeBytes(of: word.bigEndian, toByteOffset: byteCount, as: UInt32.self)
+                byteCount += 4
+            } else {
+                let p = buf.baseAddress!
+                var bc = byteCount
+                let b0 = UInt8(truncatingIfNeeded: word &>> 24)
+                p[bc] = b0; bc += 1; if b0 == 0xFF { p[bc] = 0; bc += 1 }
+                let b1 = UInt8(truncatingIfNeeded: word &>> 16)
+                p[bc] = b1; bc += 1; if b1 == 0xFF { p[bc] = 0; bc += 1 }
+                let b2 = UInt8(truncatingIfNeeded: word &>> 8)
+                p[bc] = b2; bc += 1; if b2 == 0xFF { p[bc] = 0; bc += 1 }
+                let b3 = UInt8(truncatingIfNeeded: word)
+                p[bc] = b3; bc += 1; if b3 == 0xFF { p[bc] = 0; bc += 1 }
+                byteCount = bc
+            }
         }
     }
 
@@ -66,24 +118,81 @@ struct BitWriter {
     /// the number of pending bits therefore remains unchanged (0...7).
     mutating func writeUnstuffedBytes(_ bytes: UnsafeBufferPointer<UInt8>) {
         guard !bytes.isEmpty else { return }
-        let required = byteCount + bytes.count * 2
+        drainWholeBytes()
+        let required = byteCount + bytes.count * 2 + 8
         while buffer.count < required { grow() }
         var accumulator = acc
         var written = byteCount
         let pending = nbits
         buffer.withUnsafeMutableBufferPointer { output in
-            for value in bytes {
-                accumulator = (accumulator << 8) | UInt64(value)
-                let byte = UInt8(truncatingIfNeeded: accumulator >> pending)
-                output[written] = byte
-                written += 1
-                if byte == 0xFF {
-                    output[written] = 0
-                    written += 1
+            let outBase = output.baseAddress!
+            let outRaw = UnsafeMutableRawPointer(outBase)
+            let inRaw = UnsafeRawPointer(bytes.baseAddress!)
+            var idx = 0
+            let total = bytes.count
+            if pending == 0 {
+                while idx + 8 <= total {
+                    let word = UInt64(bigEndian: inRaw.loadUnaligned(fromByteOffset: idx, as: UInt64.self))
+                    if !BitReader.hasFFByte(word) {
+                        outRaw.storeBytes(of: word.bigEndian, toByteOffset: written, as: UInt64.self)
+                        written += 8
+                        idx += 8
+                    } else {
+                        for k in 0..<8 {
+                            let byte = bytes[idx + k]
+                            outBase[written] = byte
+                            written += 1
+                            if byte == 0xFF {
+                                outBase[written] = 0
+                                written += 1
+                            }
+                        }
+                        idx += 8
+                    }
+                }
+            } else {
+                let leftShift = UInt64(64 - pending)
+                let rightShift = UInt64(pending)
+                let pendingMask = (UInt64(1) &<< rightShift) &- 1
+                while idx + 8 <= total {
+                    let inWord = UInt64(bigEndian: inRaw.loadUnaligned(fromByteOffset: idx, as: UInt64.self))
+                    let outWord = (accumulator &<< leftShift) | (inWord &>> rightShift)
+                    if !BitReader.hasFFByte(outWord) {
+                        outRaw.storeBytes(of: outWord.bigEndian, toByteOffset: written, as: UInt64.self)
+                        written += 8
+                        accumulator = inWord & pendingMask
+                        idx += 8
+                    } else {
+                        for k in 0..<8 {
+                            let value = bytes[idx + k]
+                            accumulator = (accumulator &<< 8) | UInt64(value)
+                            let byte = UInt8(truncatingIfNeeded: accumulator &>> rightShift)
+                            outBase[written] = byte
+                            written += 1
+                            if byte == 0xFF {
+                                outBase[written] = 0
+                                written += 1
+                            }
+                        }
+                        accumulator &= pendingMask
+                        idx += 8
+                    }
                 }
             }
+            while idx < total {
+                let value = bytes[idx]
+                accumulator = (accumulator &<< 8) | UInt64(value)
+                let byte = UInt8(truncatingIfNeeded: accumulator &>> UInt64(pending))
+                outBase[written] = byte
+                written += 1
+                if byte == 0xFF {
+                    outBase[written] = 0
+                    written += 1
+                }
+                idx += 1
+            }
         }
-        acc = accumulator
+        acc = pending == 0 ? 0 : (accumulator & ((UInt64(1) &<< UInt64(pending)) &- 1))
         byteCount = written
     }
 
@@ -94,6 +203,7 @@ struct BitWriter {
 
     /// Flushes any remaining bits, padding with 1-bits as per JPEG spec.
     mutating func flush() {
+        drainWholeBytes()
         guard nbits > 0 else { return }   // nbits is always 0–7 here
         let pad = 8 - nbits
         let byte = UInt8(((acc << UInt64(pad)) | UInt64((1 << pad) - 1)) & 0xFF)
@@ -193,7 +303,7 @@ struct BitReader {
 
     /// True when any byte of `x` equals `0xFF` (SWAR zero-byte test on `~x`).
     @inline(__always)
-    private static func hasFFByte(_ x: UInt64) -> Bool {
+    static func hasFFByte(_ x: UInt64) -> Bool {
         let y = ~x
         return ((y &- 0x0101_0101_0101_0101) & ~y & 0x8080_8080_8080_8080) != 0
     }

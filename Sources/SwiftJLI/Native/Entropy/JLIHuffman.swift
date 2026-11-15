@@ -273,13 +273,9 @@ enum HuffmanEncoder {
     /// Returns the additional bits to encode after the Huffman category code.
     ///
     /// For positive values: the value itself. For negative: `value + (1 << category) - 1`.
+    @inline(__always)
     static func additionalBits(for value: Int32, category cat: Int) -> UInt32 {
-        if cat == 0 { return 0 }
-        if value >= 0 {
-            return UInt32(value)
-        } else {
-            return UInt32(Int(value) + (1 << cat) - 1)
-        }
+        UInt32(bitPattern: value &+ (value >> 31)) & ((1 &<< UInt32(cat)) &- 1)
     }
 
     /// Counts the Huffman symbol a DC difference would emit, without writing bits.

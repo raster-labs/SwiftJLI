@@ -825,32 +825,60 @@ struct JLIEncoder: Sendable {
     /// emit of the same bits.
     private struct RawBitChunkWriter {
         var bytes: [UInt8]
+        private var writePos = 0
         private(set) var bitCount = 0
         private var acc: UInt64 = 0
         private var nbits = 0
 
         init(capacity: Int) {
-            bytes = []
-            bytes.reserveCapacity(capacity)
+            let cap = max(capacity, 64)
+            bytes = [UInt8](unsafeUninitializedCapacity: cap) { _, initialized in
+                initialized = cap
+            }
         }
 
+        private mutating func grow() {
+            bytes.append(contentsOf: repeatElement(0, count: bytes.count))
+        }
+
+        @inline(__always)
         mutating func writeBits(_ value: UInt32, count: Int) {
             guard count > 0 else { return }
-            acc = (acc << UInt64(count)) | UInt64(value & ((1 << UInt32(count)) &- 1))
+            acc = (acc &<< UInt64(count)) | UInt64(value & ((1 &<< UInt32(count)) &- 1))
             nbits += count
             bitCount += count
-            while nbits >= 8 {
-                nbits -= 8
-                bytes.append(UInt8((acc >> UInt64(nbits)) & 0xFF))
+            if nbits < 32 { return }
+            if writePos + 8 > bytes.count { grow() }
+            let shift = nbits - 32
+            let word = UInt32(truncatingIfNeeded: acc &>> UInt64(shift))
+            nbits = shift
+            acc &= (UInt64(1) &<< UInt64(shift)) &- 1
+            bytes.withUnsafeMutableBufferPointer { buf in
+                UnsafeMutableRawPointer(buf.baseAddress!).storeBytes(
+                    of: word.bigEndian, toByteOffset: writePos, as: UInt32.self)
             }
+            writePos += 4
         }
 
         /// Packs any trailing partial bits into the HIGH bits of a final byte
         /// (matching how ``feedBits`` extracts them).
         mutating func finish() {
-            if nbits > 0 {
-                bytes.append(UInt8((acc << UInt64(8 - nbits)) & 0xFF))
-                nbits = 0
+            if writePos + 8 > bytes.count { grow() }
+            bytes.withUnsafeMutableBufferPointer { buf in
+                let p = buf.baseAddress!
+                while nbits >= 8 {
+                    nbits -= 8
+                    p[writePos] = UInt8((acc &>> UInt64(nbits)) & 0xFF)
+                    writePos += 1
+                }
+                if nbits > 0 {
+                    p[writePos] = UInt8((acc &<< UInt64(8 - nbits)) & 0xFF)
+                    writePos += 1
+                    nbits = 0
+                }
+            }
+            if writePos < bytes.count {
+                bytes.removeSubrange(writePos..<bytes.count)
             }
         }
     }
@@ -1331,6 +1359,100 @@ struct JLIEncoder: Sendable {
         var freq = [Int](repeating: 0, count: 256)
         try freq.withUnsafeMutableBufferPointer { fb in
             let f = fb.baseAddress!
+            if nc == 1 {
+                let p = planes
+                for y in rows {
+                    if (y - rows.lowerBound) % rowsPerCheck == 0 { try NativeOperation.check() }
+                    let row = y * w, prevRow = row - w
+                    let firstRow = y == 0 || (segRows > 0 && y % segRows == 0)
+                    if w > 0 {
+                        let px0 = firstRow ? half : p[prevRow]
+                        let d0 = Int32(Int16(truncatingIfNeeded: p[row] &- px0))
+                        diffs[row] = d0
+                        f[d0 == -32768 ? 16 : HuffmanEncoder.category(for: d0)] += 1
+                    }
+                    if firstRow || predictor == 1 {
+                        var x = 1
+                        let curRaw = UnsafeRawPointer(p + row)
+                        let outRaw = UnsafeMutableRawPointer(diffs + row)
+                        while x + 8 <= w {
+                            let cur = curRaw.loadUnaligned(fromByteOffset: x &* 4, as: SIMD8<Int32>.self)
+                            let prv = curRaw.loadUnaligned(fromByteOffset: (x &- 1) &* 4, as: SIMD8<Int32>.self)
+                            let dv = ((cur &- prv) &<< 16) &>> 16
+                            outRaw.storeBytes(of: dv, toByteOffset: x &* 4, as: SIMD8<Int32>.self)
+                            if dv == .zero {
+                                f[0] += 8
+                            } else {
+                                for lane in 0..<8 {
+                                    let d = dv[lane]
+                                    f[d == -32768 ? 16 : HuffmanEncoder.category(for: d)] += 1
+                                }
+                            }
+                            x += 8
+                        }
+                        while x < w {
+                            let d = Int32(Int16(truncatingIfNeeded: p[row + x] &- p[row + x - 1]))
+                            diffs[row + x] = d
+                            f[d == -32768 ? 16 : HuffmanEncoder.category(for: d)] += 1
+                            x += 1
+                        }
+                    } else {
+                        for x in 1..<w {
+                            let ra = p[row + x - 1], rb = p[prevRow + x], rc = p[prevRow + x - 1]
+                            let px: Int32
+                            switch predictor {
+                            case 2: px = rb
+                            case 3: px = rc
+                            case 4: px = ra + rb - rc
+                            case 5: px = ra + ((rb - rc) >> 1)
+                            case 6: px = rb + ((ra - rc) >> 1)
+                            default: px = (ra + rb) >> 1
+                            }
+                            let d = Int32(Int16(truncatingIfNeeded: p[row + x] &- px))
+                            diffs[row + x] = d
+                            f[d == -32768 ? 16 : HuffmanEncoder.category(for: d)] += 1
+                        }
+                    }
+                }
+                return
+            }
+            if nc == 3 && predictor == 1 && w >= 1 {
+                let p0 = planes
+                let p1 = planes + count
+                let p2 = planes + 2 * count
+                for y in rows {
+                    if (y - rows.lowerBound) % rowsPerCheck == 0 { try NativeOperation.check() }
+                    let row = y * w, prevRow = row - w
+                    let firstRow = y == 0 || (segRows > 0 && y % segRows == 0)
+                    let px0 = firstRow ? half : p0[prevRow]
+                    let px1 = firstRow ? half : p1[prevRow]
+                    let px2 = firstRow ? half : p2[prevRow]
+                    let d0 = Int32(Int16(truncatingIfNeeded: p0[row] &- px0))
+                    let d1 = Int32(Int16(truncatingIfNeeded: p1[row] &- px1))
+                    let d2 = Int32(Int16(truncatingIfNeeded: p2[row] &- px2))
+                    let rowOut = row * 3
+                    diffs[rowOut] = d0
+                    diffs[rowOut + 1] = d1
+                    diffs[rowOut + 2] = d2
+                    f[d0 == -32768 ? 16 : HuffmanEncoder.category(for: d0)] += 1
+                    f[d1 == -32768 ? 16 : HuffmanEncoder.category(for: d1)] += 1
+                    f[d2 == -32768 ? 16 : HuffmanEncoder.category(for: d2)] += 1
+                    for x in 1..<w {
+                        let idx = row + x
+                        let dd0 = Int32(Int16(truncatingIfNeeded: p0[idx] &- p0[idx - 1]))
+                        let dd1 = Int32(Int16(truncatingIfNeeded: p1[idx] &- p1[idx - 1]))
+                        let dd2 = Int32(Int16(truncatingIfNeeded: p2[idx] &- p2[idx - 1]))
+                        let outIdx = idx * 3
+                        diffs[outIdx] = dd0
+                        diffs[outIdx + 1] = dd1
+                        diffs[outIdx + 2] = dd2
+                        f[dd0 == -32768 ? 16 : HuffmanEncoder.category(for: dd0)] += 1
+                        f[dd1 == -32768 ? 16 : HuffmanEncoder.category(for: dd1)] += 1
+                        f[dd2 == -32768 ? 16 : HuffmanEncoder.category(for: dd2)] += 1
+                    }
+                }
+                return
+            }
             for y in rows {
                 if (y - rows.lowerBound) % rowsPerCheck == 0 { try NativeOperation.check() }
                 let row = y * w, prevRow = row - w
@@ -1361,8 +1483,7 @@ struct JLIEncoder: Sendable {
                         }
                         // Difference modulo 2^16, mapped to signed 16-bit (T.81);
                         // −32768 ⇒ category 16.
-                        var d = (p[row + x] - px) & 0xFFFF
-                        if d >= 32768 { d -= 65536 }
+                        let d = Int32(Int16(truncatingIfNeeded: p[row + x] &- px))
                         diffs[(row + x) * nc + c] = d
                         f[d == -32768 ? 16 : HuffmanEncoder.category(for: d)] += 1
                     }
@@ -1672,6 +1793,96 @@ extension JLIEncoder {
     }
 }
 
+private struct DeinterleavePtrs: @unchecked Sendable {
+    let src: UnsafePointer<UInt8>
+    let dst: UnsafeMutablePointer<Int32>
+}
+
+@inline(__always)
+private func jliReadInterleavedRows(
+    rows: Range<Int>, s: UnsafePointer<UInt8>, planeBase: UnsafeMutablePointer<Int32>,
+    width: Int, rowSamples: Int, componentCount nc: Int, sourceComponentCount srcCC: Int,
+    samplesPerPlane count: Int, bytesPerSample bps: Int, pointTransform pt: Int
+) throws {
+    let rowsPerCheck = max(1, 4096 / (width * nc))
+    let shiftVec = SIMD8<Int32>(repeating: Int32(pt))
+    if nc == 1 && srcCC == 1 {
+        let p = planeBase
+        let rawSrc = UnsafeRawPointer(s)
+        for y in rows {
+            if (y - rows.lowerBound) % rowsPerCheck == 0 { try NativeOperation.check() }
+            let rowBase = y &* rowSamples
+            let out = y &* width
+            let dstRaw = UnsafeMutableRawPointer(p + out)
+            var x = 0
+            if bps == 1 {
+                while x + 8 <= width {
+                    let bytes = rawSrc.loadUnaligned(fromByteOffset: rowBase &+ x, as: SIMD8<UInt8>.self)
+                    let vec = SIMD8<Int32>(truncatingIfNeeded: bytes) &>> shiftVec
+                    dstRaw.storeBytes(of: vec, toByteOffset: x &* 4, as: SIMD8<Int32>.self)
+                    x += 8
+                }
+                while x < width {
+                    p[out &+ x] = Int32(s[rowBase &+ x]) >> pt
+                    x += 1
+                }
+            } else {
+                let byteStart = rowBase &* 2
+                while x + 8 <= width {
+                    let wordsRaw = rawSrc.loadUnaligned(fromByteOffset: byteStart &+ x &* 2, as: SIMD8<UInt16>.self)
+                    #if _endian(big)
+                    let words = wordsRaw.byteSwapped
+                    #else
+                    let words = wordsRaw
+                    #endif
+                    let vec = SIMD8<Int32>(truncatingIfNeeded: words) &>> shiftVec
+                    dstRaw.storeBytes(of: vec, toByteOffset: x &* 4, as: SIMD8<Int32>.self)
+                    x += 8
+                }
+                while x < width {
+                    let o = (rowBase &+ x) &* 2
+                    p[out &+ x] = Int32(UInt16(s[o]) | (UInt16(s[o &+ 1]) << 8)) >> pt
+                    x += 1
+                }
+            }
+        }
+        return
+    }
+    if nc == 3 && srcCC == 3 && bps == 1 {
+        let p0 = planeBase
+        let p1 = planeBase + count
+        let p2 = planeBase + 2 * count
+        for y in rows {
+            if (y - rows.lowerBound) % rowsPerCheck == 0 { try NativeOperation.check() }
+            let rowBase = y &* rowSamples
+            let out = y &* width
+            for x in 0..<width {
+                let o = rowBase &+ x &* 3
+                p0[out &+ x] = Int32(s[o]) >> pt
+                p1[out &+ x] = Int32(s[o &+ 1]) >> pt
+                p2[out &+ x] = Int32(s[o &+ 2]) >> pt
+            }
+        }
+        return
+    }
+    for c in 0..<nc {
+        let p = planeBase + c * count
+        for y in rows {
+            if (y - rows.lowerBound) % rowsPerCheck == 0 { try NativeOperation.check() }
+            let rowBase = y &* rowSamples
+            let out = y &* width
+            if bps == 1 {
+                for x in 0..<width { p[out &+ x] = Int32(s[rowBase &+ x &* srcCC &+ c]) >> pt }
+            } else {
+                for x in 0..<width {
+                    let o = (rowBase &+ x &* srcCC &+ c) &* 2
+                    p[out &+ x] = Int32(UInt16(s[o]) | (UInt16(s[o &+ 1]) << 8)) >> pt
+                }
+            }
+        }
+    }
+}
+
 /// The one de-interleave path, used by both the array and borrowed branches so
 /// they cannot drift.
 @inline(__always)
@@ -1683,20 +1894,23 @@ func jliReadInterleavedPlanes(
     samplesPerPlane count: Int, bytesPerSample bps: Int, pointTransform pt: Int
 ) throws {
     guard let s = src.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return }
-    let rowsPerCheck = max(1, 4096 / (width * nc))
-    for c in 0..<nc {
-        let p = planeBase + c * count
-        for y in 0..<height {
-            if y % rowsPerCheck == 0 { try NativeOperation.check() }
-            let rowBase = y &* rowSamples
-            let out = y &* width
-            if bps == 1 {
-                for x in 0..<width { p[out &+ x] = Int32(s[rowBase &+ x &* srcCC &+ c]) >> pt }
-            } else {
-                for x in 0..<width {
-                    let o = (rowBase &+ x &* srcCC &+ c) &* 2
-                    p[out &+ x] = Int32(UInt16(s[o]) | (UInt16(s[o &+ 1]) << 8)) >> pt
-                }
+    let chunks = min(NativeOperation.workerLimit,
+                     max(1, (count * nc) / JLIEncoder.losslessParallelMinSamples))
+    if chunks <= 1 || height < chunks {
+        try jliReadInterleavedRows(
+            rows: 0..<height, s: s, planeBase: planeBase, width: width, rowSamples: rowSamples,
+            componentCount: nc, sourceComponentCount: srcCC, samplesPerPlane: count,
+            bytesPerSample: bps, pointTransform: pt)
+    } else {
+        let span = (height + chunks - 1) / chunks
+        let ptrs = DeinterleavePtrs(src: s, dst: planeBase)
+        try NativeOperation.perform(iterations: chunks) { ci in
+            let lo = ci * span, hi = min(lo + span, height)
+            if lo < hi {
+                try jliReadInterleavedRows(
+                    rows: lo..<hi, s: ptrs.src, planeBase: ptrs.dst, width: width, rowSamples: rowSamples,
+                    componentCount: nc, sourceComponentCount: srcCC, samplesPerPlane: count,
+                    bytesPerSample: bps, pointTransform: pt)
             }
         }
     }

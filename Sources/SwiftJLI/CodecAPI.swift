@@ -235,6 +235,10 @@ public struct Encoder: Sendable {
             try JPEGCodec.encode(image, configuration: configuration, options: options)
         }
     }
+
+    public func encodeSynchronously(_ image: Image, options: EncodeOptions = .init()) throws -> EncodedImage {
+        try JPEGCodec.encode(image, configuration: configuration, options: options)
+    }
 }
 
 public struct Decoder: Sendable {
@@ -254,6 +258,9 @@ public struct Decoder: Sendable {
     public func inspect(_ data: Data, options: DecodeOptions = .init()) throws -> ImageInfo {
         try JPEGCodec.inspect(data, sourceColourModel: configuration.sourceColourModel, options: options)
     }
+    public func inspectSynchronously(_ data: Data, options: DecodeOptions = .init()) throws -> ImageInfo {
+        try JPEGCodec.inspect(data, sourceColourModel: configuration.sourceColourModel, options: options)
+    }
     @concurrent public func decode(_ data: Data, options: DecodeOptions = .init()) async throws -> DecodedImage {
         try await NativeOperation.withCancellation {
             try JPEGCodec.decode(data, into: nil, configuration: configuration, options: options)
@@ -264,5 +271,12 @@ public struct Decoder: Sendable {
         try await NativeOperation.withCancellation {
             try JPEGCodec.decode(data, into: destination, configuration: configuration, options: options)
         }
+    }
+    public func decodeSynchronously(_ data: Data, options: DecodeOptions = .init()) throws -> DecodedImage {
+        try JPEGCodec.decode(data, into: nil, configuration: configuration, options: options)
+    }
+    public func decodeSynchronously(_ data: Data, into destination: ImageDestination,
+                                    options: DecodeOptions = .init()) throws -> DecodedImage {
+        try JPEGCodec.decode(data, into: destination, configuration: configuration, options: options)
     }
 }

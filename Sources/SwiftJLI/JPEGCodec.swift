@@ -187,14 +187,30 @@ enum JPEGCodec {
                 // every component, including alpha that will be discarded.
                 let fusedPrecisionCheck = isDCT && precision == 12 && d.components.count == 1
                 if !floating && d.meaningfulBits < d.storageBits && !fusedPrecisionCheck {
+                    let rowSamples = d.width * d.components.count
+                    let forbiddenMask64: UInt64 = bps == 2
+                        ? UInt64(~UInt16((1 << precision) - 1)) &* 0x0001_0001_0001_0001
+                        : UInt64(~UInt8((1 << precision) - 1)) &* 0x0101_0101_0101_0101
+                    let lanesPerWord = 8 / bps
                     for y in 0..<d.height {
                         try NativeOperation.check()
-                        for x in 0..<(d.width * d.components.count) {
-                            let offset = plane.offset + y * plane.rowBytes + x * bps
+                        let rowStart = plane.offset + y * plane.rowBytes
+                        var x = 0
+                        while x + lanesPerWord <= rowSamples {
+                            let word = UInt64(littleEndian: raw.loadUnaligned(
+                                fromByteOffset: rowStart + x * bps, as: UInt64.self))
+                            if (word & forbiddenMask64) != 0 {
+                                throw CodecError(.invalidArgument, "Sample exceeds declared meaningful precision.")
+                            }
+                            x += lanesPerWord
+                        }
+                        while x < rowSamples {
+                            let offset = rowStart + x * bps
                             let value = UInt32(raw[offset]) | (bps == 2 ? UInt32(raw[offset + 1]) << 8 : 0)
                             guard value < maxSample else {
                                 throw CodecError(.invalidArgument, "Sample exceeds declared meaningful precision.")
                             }
+                            x += 1
                         }
                     }
                 }
@@ -389,8 +405,10 @@ enum JPEGCodec {
                         // still report scalarCPU. Explicit scalar retains Swift;
                         // no flag is added to the TaskLocal or DCT capture state.
                         let useScalarCEntropy: Bool
-                        if case .automatic = options.executionPolicy { useScalarCEntropy = true }
-                        else { useScalarCEntropy = false }
+                        switch options.executionPolicy {
+                        case .automatic, .preferred(.accelerated): useScalarCEntropy = true
+                        default: useScalarCEntropy = false
+                        }
                         try JLIDecoder().decodeSharedLossless(parsed, into: borrowed,
                             useScalarCEntropy: useScalarCEntropy)
                     }

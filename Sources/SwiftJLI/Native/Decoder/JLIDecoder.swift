@@ -762,47 +762,128 @@ struct JLIDecoder: Sendable {
                     "lossless restart interval \(restartInterval) not a multiple of "
                     + "samples-per-row (\(w))")
             }
-            // The bounded table is only useful for sufficiently large scans
-            // with varied short categories. Choose the kernel once per scan.
-            // Its <=32 KiB plus row history fits the existing 8-byte/sample
-            // reservation at the table's >=16384-sample construction threshold.
-            if predictor == 1, count >= 16384,
-               tables[0].lookaheadLength[0] == 1, tables[0].lookaheadSymbol[0] == 0 {
-                try ZeroRunLosslessDecoder.decode(
-                    into: borrowed, width: w, height: h, half: half,
-                    table: tables[0], reader: &reader, pointTransform: pt,
-                    segmentRows: restartInterval > 0 ? restartInterval / w : h)
-            } else if let lookup = LosslessLookahead(table: tables[0], sampleCount: count) {
-                try Self.losslessGrayLookupInto(
-                    borrowed, width: w, height: h, predictor: predictor, half: half,
-                    table: tables[0], reader: &reader, pointTransform: pt,
-                    segmentRows: restartInterval > 0 ? restartInterval / w : h, lookup: lookup)
-            } else if count < 16384 {
-                try Self.losslessSmallGrayInto(
-                    borrowed, width: w, height: h, predictor: predictor, half: half,
-                    table: tables[0], reader: &reader, pointTransform: pt,
-                    segmentRows: restartInterval > 0 ? restartInterval / w : h)
-            } else if predictor == 1, pt == 0, borrowed.bytesPerSample == 2 {
-                if useScalarCEntropy {
-                    try Self.losslessCLeftUInt16Into(
-                        borrowed, width: w, height: h, half: half,
-                        table: tables[0], reader: &reader,
-                        segmentRows: restartInterval > 0 ? restartInterval / w : h)
-                } else {
-                    try Self.losslessLeftUInt16Into(
-                        borrowed, width: w, height: h, half: half,
-                        table: tables[0], reader: &reader,
-                        segmentRows: restartInterval > 0 ? restartInterval / w : h)
+            let segRows = restartInterval > 0 ? restartInterval / w : h
+            let numSegments = restartInterval > 0 ? (h + segRows - 1) / segRows : 1
+            let zeroRunEligible = predictor == 1 && count >= 16384
+                && tables[0].lookaheadLength[0] == 1 && tables[0].lookaheadSymbol[0] == 0
+            let lookup = zeroRunEligible ? nil : LosslessLookahead(table: tables[0], sampleCount: count)
+
+            var handledInParallel = false
+            if numSegments > 1, NativeOperation.workerLimit > 1,
+               count >= JLIDecoder.losslessSegmentParallelMinSamples {
+                let bps = borrowed.bytesPerSample
+                guard bps == 1 || bps == 2, borrowed.rowBytes >= w * bps else {
+                    throw JLIError.decodingFailed("invalid lossless destination layout")
                 }
-            } else {
-                try Self.losslessGrayInto(
-                    borrowed, width: w, height: h, predictor: predictor, half: half,
-                    table: tables[0], reader: &reader, pointTransform: pt,
-                    segmentRows: restartInterval > 0 ? restartInterval / w : h)
+                let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: borrowed.rowBytes)
+                let (needed, overflow2) = rowOffset.addingReportingOverflow(w * bps)
+                guard !overflow1, !overflow2, needed <= borrowed.bytes.count,
+                      let outBase = borrowed.bytes.baseAddress else {
+                    throw JLIError.decodingFailed("lossless destination is too small")
+                }
+                let ed = scan.entropyData
+                if let markers = try Self.scanRestartMarkers(ed, expectedCount: numSegments - 1) {
+                    let segPtr = BorrowedSegmentPtr(base: outBase)
+                    let rowBytes = borrowed.rowBytes
+                    let table = tables[0]
+                    try NativeOperation.perform(iterations: numSegments) { k in
+                        let startRow = k * segRows
+                        let rows = min(segRows, h - startRow)
+                        let segOffset = startRow * rowBytes
+                        let segLen = (rows - 1) * rowBytes + w * bps
+                        let segDest = BorrowedSampleDestination(
+                            bytes: UnsafeMutableRawBufferPointer(start: segPtr.base + segOffset, count: segLen),
+                            rowBytes: rowBytes, bytesPerSample: bps)
+                        var segReader = k == 0
+                            ? BitReader(data: ed)
+                            : BitReader(data: ed, startingAt: markers[k - 1] + 2)
+                        try Self.decodeGrayBorrowedSegment(
+                            segDest, width: w, height: rows, totalSamples: count,
+                            predictor: predictor, half: half, table: table,
+                            zeroRunEligible: zeroRunEligible, lookup: lookup,
+                            reader: &segReader, pointTransform: pt, segmentRows: rows,
+                            useScalarCEntropy: useScalarCEntropy)
+                        if k < numSegments - 1 {
+                            try Self.verifySegmentBoundary(&segReader, ed, expectedMarkerOffset: markers[k], segmentIndex: k)
+                        }
+                    }
+                    handledInParallel = true
+                }
+            }
+            if !handledInParallel {
+                try Self.decodeGrayBorrowedSegment(
+                    borrowed, width: w, height: h, totalSamples: count,
+                    predictor: predictor, half: half, table: tables[0],
+                    zeroRunEligible: zeroRunEligible, lookup: lookup,
+                    reader: &reader, pointTransform: pt, segmentRows: segRows,
+                    useScalarCEntropy: useScalarCEntropy)
             }
             let format = configuration.outputPixelFormat ?? (borrowed.bytesPerSample == 1 ? .uint8 : .uint16)
             return try JLIImage(geometryOnlyWidth: w, height: h, pixelFormat: format,
                 colorModel: configuration.outputColorModel ?? .grayscale,
+                iccProfile: iccProfile, exif: exif)
+        }
+
+        if nc == 3, let borrowed = borrowedDestination {
+            if restartInterval > 0, restartInterval % w != 0 {
+                throw JLIError.unsupportedJPEGFeature(
+                    "lossless restart interval \(restartInterval) not a multiple of "
+                    + "samples-per-row (\(w))")
+            }
+            let bps = borrowed.bytesPerSample
+            guard bps == 1 || bps == 2, borrowed.rowBytes >= w * 3 * bps else {
+                throw JLIError.decodingFailed("invalid lossless destination layout")
+            }
+            let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: borrowed.rowBytes)
+            let (needed, overflow2) = rowOffset.addingReportingOverflow(w * 3 * bps)
+            guard !overflow1, !overflow2, needed <= borrowed.bytes.count,
+                  let outBase = borrowed.bytes.baseAddress else {
+                throw JLIError.bufferSizeMismatch(
+                    expected: overflow1 || overflow2 ? Int.max : needed,
+                    actual: borrowed.bytes.count)
+            }
+            let segRows = restartInterval > 0 ? restartInterval / w : h
+            let numSegments = restartInterval > 0 ? (h + segRows - 1) / segRows : 1
+            let lookups = tables.map { LosslessLookahead(table: $0, sampleCount: count) }
+
+            var handledInParallel = false
+            if numSegments > 1, NativeOperation.workerLimit > 1,
+               count * 3 >= JLIDecoder.losslessSegmentParallelMinSamples {
+                let ed = scan.entropyData
+                if let markers = try Self.scanRestartMarkers(ed, expectedCount: numSegments - 1) {
+                    let segPtr = BorrowedSegmentPtr(base: outBase)
+                    let rowBytes = borrowed.rowBytes
+                    try NativeOperation.perform(iterations: numSegments) { k in
+                        let startRow = k * segRows
+                        let rows = min(segRows, h - startRow)
+                        let segOffset = startRow * rowBytes
+                        let segLen = (rows - 1) * rowBytes + w * 3 * bps
+                        let segDest = BorrowedSampleDestination(
+                            bytes: UnsafeMutableRawBufferPointer(start: segPtr.base + segOffset, count: segLen),
+                            rowBytes: rowBytes, bytesPerSample: bps)
+                        var segReader = k == 0
+                            ? BitReader(data: ed)
+                            : BitReader(data: ed, startingAt: markers[k - 1] + 2)
+                        try Self.losslessRGBInto(
+                            segDest, width: w, height: rows, predictor: predictor, half: half,
+                            tables: tables, lookups: lookups, reader: &segReader,
+                            pointTransform: pt, segmentRows: rows)
+                        if k < numSegments - 1 {
+                            try Self.verifySegmentBoundary(&segReader, ed, expectedMarkerOffset: markers[k], segmentIndex: k)
+                        }
+                    }
+                    handledInParallel = true
+                }
+            }
+            if !handledInParallel {
+                try Self.losslessRGBInto(
+                    borrowed, width: w, height: h, predictor: predictor, half: half,
+                    tables: tables, lookups: lookups, reader: &reader,
+                    pointTransform: pt, segmentRows: segRows)
+            }
+            let format = configuration.outputPixelFormat ?? (bps == 1 ? .uint8 : .uint16)
+            return try JLIImage(geometryOnlyWidth: w, height: h, pixelFormat: format,
+                colorModel: configuration.outputColorModel ?? .rgb,
                 iccProfile: iccProfile, exif: exif)
         }
 
@@ -857,72 +938,33 @@ struct JLIDecoder: Sendable {
             // segment concurrently — each from its own reader and into its own
             // disjoint row range. Falls back to the serial segment loop when
             // the marker layout is anything but the expected one.
-            var rstOffsets = [Int]()
             let ed = scan.entropyData
-            // Acquire one synchronous view for the scan. In particular, do not
-            // fetch NSData.bytes (and its inner-pointer lifetime machinery) for
-            // every entropy byte. Only integer marker offsets leave this scope.
-            try ed.withUnsafeBytes { bytes in
-                var si = 0
-                scanLoop: while si + 1 < bytes.count {
-                    if si % 4096 == 0 { try NativeOperation.check() }
-                    if bytes[si] != 0xFF { si += 1; continue }
-                    switch bytes[si + 1] {
-                    case 0x00: si += 2                                  // stuffed data byte
-                    case 0xFF: si += 1                                  // fill byte
-                    case 0xD0...0xD7: rstOffsets.append(si); si += 2    // restart marker
-                    default: break scanLoop                             // foreign marker — bail
-                    }
-                }
-            }
-            let parallelOK = NativeOperation.current == nil && nc == 1 && rstOffsets.count == numSegments - 1
-                && count >= JLIDecoder.losslessSegmentParallelMinSamples
-            if parallelOK {
-                let table = tables[0]
-                // Immutable snapshots for the @Sendable workers (the vars above
-                // are never mutated past this point; the lets make that a
-                // compiler-checked fact).
+            if NativeOperation.workerLimit > 1,
+               count * nc >= JLIDecoder.losslessSegmentParallelMinSamples,
+               let markers = try Self.scanRestartMarkers(ed, expectedCount: numSegments - 1) {
                 let segRowsFinal = segRows
-                let markers = rstOffsets
-                var errors = [Error?](repeating: nil, count: numSegments)
-                errors.withUnsafeMutableBufferPointer { eb in
-                    let slots = LosslessSegmentSlots(errors: eb.baseAddress!, plane: base)
-                    DispatchQueue.concurrentPerform(iterations: numSegments) { k in
-                        let startRow = k * segRowsFinal
-                        let rows = min(segRowsFinal, h - startRow)
-                        var segReader = k == 0
-                            ? BitReader(data: ed)
-                            : BitReader(data: ed, startingAt: markers[k - 1] + 2)
-                        do {
-                            try Self.losslessScanGray(
-                                slots.plane + startRow * w, width: w, height: rows,
-                                predictor: predictor, half: half, table: table,
-                                reader: &segReader)
-                            // Behavioral equivalence with the serial path on
-                            // CORRUPT input: serial's skipRestartMarker throws
-                            // unless each segment ends exactly at its marker
-                            // (modulo 0xFF fill). An under-consuming corrupt
-                            // segment would otherwise be silently accepted here
-                            // — wrong pixels returned as success on exactly the
-                            // large clinical images this path targets.
-                            if k < numSegments - 1 {
-                                segReader.alignToByte()
-                                var pos = segReader.byteOffset
-                                ed.withUnsafeBytes { bytes in
-                                    while pos < markers[k], bytes[pos] == 0xFF { pos += 1 }
-                                }
-                                guard pos == markers[k] else {
-                                    throw JLIError.decodingFailed(
-                                        "lossless restart segment \(k) ended at byte "
-                                        + "\(segReader.byteOffset), expected RST at \(markers[k])")
-                                }
-                            }
-                        } catch {
-                            slots.errors[k] = error
-                        }
+                let planeCarrier = LegacyPlanePtr(plane: base)
+                try NativeOperation.perform(iterations: numSegments) { k in
+                    let startRow = k * segRowsFinal
+                    let rows = min(segRowsFinal, h - startRow)
+                    var segReader = k == 0
+                        ? BitReader(data: ed)
+                        : BitReader(data: ed, startingAt: markers[k - 1] + 2)
+                    if nc == 1 {
+                        try Self.losslessScanGray(
+                            planeCarrier.plane + startRow * w, width: w, height: rows,
+                            predictor: predictor, half: half, table: tables[0],
+                            reader: &segReader)
+                    } else {
+                        try Self.losslessScanRGB(
+                            planeCarrier.plane + startRow * w, width: w, height: rows, count: count,
+                            predictor: predictor, half: half, tables: tables,
+                            reader: &segReader)
+                    }
+                    if k < numSegments - 1 {
+                        try Self.verifySegmentBoundary(&segReader, ed, expectedMarkerOffset: markers[k], segmentIndex: k)
                     }
                 }
-                if let e = errors.compactMap({ $0 }).first { throw e }
             } else {
                 for k in 0..<numSegments {
                     if k > 0 { try reader.skipRestartMarker(expectedIndex: (k - 1) & 7) }
@@ -1006,12 +1048,114 @@ struct JLIDecoder: Sendable {
     nonisolated(unsafe) private static var _reconstructMinBlocksPerChunk = 2048
     nonisolated(unsafe) private static var _losslessSegmentParallelMinSamples = 1 << 16
 
-    /// `@unchecked Sendable` carrier for segment-parallel lossless decode:
-    /// worker `k` writes only its segment's disjoint row range of `plane` and
-    /// its own `errors` slot.
-    private struct LosslessSegmentSlots: @unchecked Sendable {
-        let errors: UnsafeMutablePointer<Error?>
+    /// `@unchecked Sendable` carriers for segment-parallel lossless decode:
+    /// worker `k` writes only its segment's disjoint row range while
+    /// `NativeOperation.perform` synchronously joins all workers.
+    private struct BorrowedSegmentPtr: @unchecked Sendable {
+        let base: UnsafeMutableRawPointer
+    }
+    private struct LegacyPlanePtr: @unchecked Sendable {
         let plane: UnsafeMutablePointer<Int32>
+    }
+
+    private static func scanRestartMarkers(_ ed: JPEGBytes, expectedCount: Int) throws -> [Int]? {
+        guard expectedCount > 0 else { return [] }
+        var rstOffsets = [Int]()
+        rstOffsets.reserveCapacity(expectedCount)
+        var foreignMarker = false
+        try ed.withUnsafeBytes { bytes in
+            guard let rawBase = bytes.baseAddress else { return }
+            let total = bytes.count
+            var si = 0
+            var nextCheck = 0
+            scanLoop: while si + 1 < total {
+                if si >= nextCheck {
+                    try NativeOperation.check()
+                    nextCheck = si + 4096
+                }
+                while si + 8 <= total {
+                    let word = rawBase.loadUnaligned(fromByteOffset: si, as: UInt64.self)
+                    if !BitReader.hasFFByte(word) {
+                        si += 8
+                    } else {
+                        break
+                    }
+                }
+                guard si + 1 < total else { break }
+                if bytes[si] != 0xFF { si += 1; continue }
+                switch bytes[si + 1] {
+                case 0x00: si += 2
+                case 0xFF: si += 1
+                case 0xD0...0xD7:
+                    rstOffsets.append(si)
+                    si += 2
+                default:
+                    foreignMarker = true
+                    break scanLoop
+                }
+            }
+        }
+        guard !foreignMarker, rstOffsets.count == expectedCount else { return nil }
+        return rstOffsets
+    }
+
+    private static func verifySegmentBoundary(
+        _ segReader: inout BitReader, _ ed: JPEGBytes, expectedMarkerOffset: Int, segmentIndex: Int
+    ) throws {
+        segReader.alignToByte()
+        var pos = segReader.byteOffset
+        ed.withUnsafeBytes { bytes in
+            while pos < expectedMarkerOffset, pos < bytes.count, bytes[pos] == 0xFF {
+                pos += 1
+            }
+        }
+        guard pos == expectedMarkerOffset else {
+            throw JLIError.decodingFailed(
+                "lossless restart segment \(segmentIndex) ended at byte "
+                + "\(segReader.byteOffset), expected RST at \(expectedMarkerOffset)")
+        }
+    }
+
+    private static func decodeGrayBorrowedSegment(
+        _ borrowed: BorrowedSampleDestination, width w: Int, height h: Int,
+        totalSamples: Int, predictor: Int, half: Int32, table: HuffmanTable,
+        zeroRunEligible: Bool, lookup: LosslessLookahead?,
+        reader: inout BitReader, pointTransform pt: Int, segmentRows: Int,
+        useScalarCEntropy: Bool
+    ) throws {
+        if zeroRunEligible {
+            try ZeroRunLosslessDecoder.decode(
+                into: borrowed, width: w, height: h, half: half,
+                table: table, reader: &reader, pointTransform: pt,
+                segmentRows: segmentRows)
+        } else if let lookup {
+            try Self.losslessGrayLookupInto(
+                borrowed, width: w, height: h, predictor: predictor, half: half,
+                table: table, reader: &reader, pointTransform: pt,
+                segmentRows: segmentRows, lookup: lookup)
+        } else if totalSamples < 16384 {
+            try Self.losslessSmallGrayInto(
+                borrowed, width: w, height: h, predictor: predictor, half: half,
+                table: table, reader: &reader, pointTransform: pt,
+                segmentRows: segmentRows)
+        } else if predictor == 1, pt == 0, borrowed.bytesPerSample == 2 {
+            if useScalarCEntropy {
+                try Self.losslessCLeftUInt16Into(
+                    borrowed, width: w, height: h, half: half,
+                    table: table, reader: &reader,
+                    segmentRows: segmentRows)
+            } else {
+                try Self.losslessLeftUInt16Into(
+                    borrowed, width: w, height: h, half: half,
+                    table: table, reader: &reader,
+                    segmentRows: segmentRows)
+            }
+        } else {
+            try Self.losslessGrayInto(
+                borrowed, width: w, height: h, predictor: predictor, half: half,
+                table: table, reader: &reader, pointTransform: pt,
+                segmentRows: segmentRows)
+        }
     }
 
     /// `@unchecked Sendable` carrier for parallel Step-7 reconstruction: each
@@ -1630,11 +1774,7 @@ struct JLIDecoder: Sendable {
                     default: px = (ra + rb) >> 1                       // 7
                     }
                 }
-                let cat = Int(try HuffmanDecoder.decodeSymbol(from: &reader, table: table))
-                let diff: Int32
-                if cat == 0 { diff = 0 }
-                else if cat == 16 { diff = -32768 }                    // T.81 special case
-                else { diff = try HuffmanDecoder.decodeValue(from: &reader, category: cat) }
+                let diff = try losslessDifference(table, &reader)
                 p[row + x] = (px + diff) & 0xFFFF
             }
         }
@@ -1666,12 +1806,126 @@ struct JLIDecoder: Sendable {
             default: px = (ra + rb) >> 1
             }
         }
-        let cat = Int(try HuffmanDecoder.decodeSymbol(from: &reader, table: t))
-        let diff: Int32
-        if cat == 0 { diff = 0 }
-        else if cat == 16 { diff = -32768 }
-        else { diff = try HuffmanDecoder.decodeValue(from: &reader, category: cat) }
+        let diff = try losslessDifference(t, &reader)
         p[row + x] = (px + diff) & 0xFFFF
+    }
+
+    /// Synchronous borrowed-output three-component (RGB) lossless scan.
+    /// Eliminates the `12 * width * height`-byte planar intermediate and
+    /// separate interleave pass, using zero heap history for predictor 1 and a
+    /// single `3 * width`-sample history row for predictors 2...7.
+    @inline(never)
+    private static func losslessRGBInto(
+        _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
+        predictor: Int, half: Int32, tables: [HuffmanTable],
+        lookups: [LosslessLookahead?], reader: inout BitReader,
+        pointTransform pt: Int, segmentRows: Int
+    ) throws {
+        guard (1...65535).contains(w), (1...65535).contains(h), (0...15).contains(pt) else {
+            throw JLIError.decodingFailed("Invalid lossless frame or point transform")
+        }
+        let bps = destination.bytesPerSample
+        guard bps == 1 || bps == 2, destination.rowBytes >= w * 3 * bps else {
+            throw JLIError.decodingFailed("invalid lossless destination layout")
+        }
+        let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: destination.rowBytes)
+        let (needed, overflow2) = rowOffset.addingReportingOverflow(w * 3 * bps)
+        guard !overflow1, !overflow2, needed <= destination.bytes.count,
+              let output = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+            throw JLIError.decodingFailed("lossless destination is too small")
+        }
+        let t0 = tables[0], t1 = tables[1], t2 = tables[2]
+        let l0 = lookups[0], l1 = lookups[1], l2 = lookups[2]
+
+        @inline(__always)
+        func decodeDiff(_ table: HuffmanTable, _ lookup: LosslessLookahead?, _ reader: inout BitReader) throws -> Int32 {
+            if let lookup, let d = reader.fastDecodeLosslessDifference(lookup) { return d }
+            return try losslessDifference(table, &reader)
+        }
+
+        if predictor == 1 {
+            var r0 = half, g0 = half, b0 = half
+            for y in 0..<h {
+                try NativeOperation.check()
+                let segmentY = y % segmentRows
+                if y > 0, segmentY == 0 {
+                    try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+                }
+                let outputRow = output + y * destination.rowBytes
+                var vr = segmentY == 0 ? half : r0
+                var vg = segmentY == 0 ? half : g0
+                var vb = segmentY == 0 ? half : b0
+                for x in 0..<w {
+                    vr = (vr + (try decodeDiff(t0, l0, &reader))) & 0xFFFF
+                    vg = (vg + (try decodeDiff(t1, l1, &reader))) & 0xFFFF
+                    vb = (vb + (try decodeDiff(t2, l2, &reader))) & 0xFFFF
+                    if x == 0 { r0 = vr; g0 = vg; b0 = vb }
+                    let base = x &* 3
+                    writeLosslessSample(vr, outputRow, base, bps, pt)
+                    writeLosslessSample(vg, outputRow, base &+ 1, bps, pt)
+                    writeLosslessSample(vb, outputRow, base &+ 2, bps, pt)
+                }
+            }
+            return
+        }
+
+        let history = UnsafeMutableBufferPointer<Int32>.allocate(capacity: w * 3)
+        defer { history.deallocate() }
+        guard let row = history.baseAddress else { return }
+        for y in 0..<h {
+            try NativeOperation.check()
+            let segmentY = y % segmentRows
+            if y > 0, segmentY == 0 {
+                try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+            }
+            let outputRow = output + y * destination.rowBytes
+            var leftR = half, leftG = half, leftB = half
+            var aboveLeftR: Int32 = 0, aboveLeftG: Int32 = 0, aboveLeftB: Int32 = 0
+            for x in 0..<w {
+                let idx = x &* 3
+                let aboveR = segmentY == 0 ? half : row[idx]
+                let aboveG = segmentY == 0 ? half : row[idx &+ 1]
+                let aboveB = segmentY == 0 ? half : row[idx &+ 2]
+                let pr: Int32, pg: Int32, pb: Int32
+                if x == 0 {
+                    pr = aboveR; pg = aboveG; pb = aboveB
+                } else if segmentY == 0 {
+                    pr = leftR; pg = leftG; pb = leftB
+                } else {
+                    switch predictor {
+                    case 2:
+                        pr = aboveR; pg = aboveG; pb = aboveB
+                    case 3:
+                        pr = aboveLeftR; pg = aboveLeftG; pb = aboveLeftB
+                    case 4:
+                        pr = leftR + aboveR - aboveLeftR
+                        pg = leftG + aboveG - aboveLeftG
+                        pb = leftB + aboveB - aboveLeftB
+                    case 5:
+                        pr = leftR + ((aboveR - aboveLeftR) >> 1)
+                        pg = leftG + ((aboveG - aboveLeftG) >> 1)
+                        pb = leftB + ((aboveB - aboveLeftB) >> 1)
+                    case 6:
+                        pr = aboveR + ((leftR - aboveLeftR) >> 1)
+                        pg = aboveG + ((leftG - aboveLeftG) >> 1)
+                        pb = aboveB + ((leftB - aboveLeftB) >> 1)
+                    default:
+                        pr = (leftR + aboveR) >> 1
+                        pg = (leftG + aboveG) >> 1
+                        pb = (leftB + aboveB) >> 1
+                    }
+                }
+                let vr = (pr + (try decodeDiff(t0, l0, &reader))) & 0xFFFF
+                let vg = (pg + (try decodeDiff(t1, l1, &reader))) & 0xFFFF
+                let vb = (pb + (try decodeDiff(t2, l2, &reader))) & 0xFFFF
+                row[idx] = vr; row[idx &+ 1] = vg; row[idx &+ 2] = vb
+                leftR = vr; leftG = vg; leftB = vb
+                aboveLeftR = aboveR; aboveLeftG = aboveG; aboveLeftB = aboveB
+                writeLosslessSample(vr, outputRow, idx, bps, pt)
+                writeLosslessSample(vg, outputRow, idx &+ 1, bps, pt)
+                writeLosslessSample(vb, outputRow, idx &+ 2, bps, pt)
+            }
+        }
     }
 
     /// Three-component (RGB) lossless scan: components interleaved per sample
