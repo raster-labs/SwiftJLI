@@ -1,5 +1,12 @@
 # Change log
 
+## SwiftJLI 2.1.0 — 16 November 2026
+
+Feature and performance release `2.1.0` (`v2.1.0`) under MIT licensing (`POL-07`), keeping earlier tags (`v2.0.0`, `v2.0.1`, `v2.0.2` and `v2.0.3`) immutable:
+
+- **SIMD8 lossless predictor, C11 24-bit lookahead RGB SV1 row leaf, parallel `DRI` strips, and zero-hop sync APIs (`370781a`, `f7b657b`, `ea257ff`, `04d356f`)**: Added `SIMD8` lossless JPEG (`SOF3`) predictor/de-interleave paths, parallel restart-interval (`DRI`) strip coding with `RawBitChunkWriter` 32-bit shift safety, C11 24-bit lookahead lossless 3-channel RGB SV1 row decoding with byte-stuffing/restart/truncation/cursor parity tests, and zero-hop synchronous `encodeSynchronously`/`decodeSynchronously` entry points.
+- **Version promotion and release gates**: Promoted `VERSION`, `swiftjli-cli` (`Sources/SwiftJLICLI/main.swift`), and `ManPages/swiftjli-cli.1` to `2.1.0` (`v2.1.0`), verified `7/7` shared contract SHA-256 digests, Release unit tests, `WatchQualification` (`6/6`), `Scripts/test-cli.py` (`252/252`), and `Examples/IndependentConsumer`; see [Documentation/RELEASE-v2.1.0.md](Documentation/RELEASE-v2.1.0.md).
+
 ## SwiftJLI 2.0.3 — 11 November 2026
 
 Patch release `2.0.3` (`v2.0.3`) per suite policy `POL-07`, publishing the MIT-licensed repository and reconciled documentation on preserved release branch `codex/release-2.0.3` while keeping earlier tags (`v2.0.0`, `v2.0.1` and `v2.0.2`) immutable:
