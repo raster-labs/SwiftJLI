@@ -535,4 +535,145 @@ private final class CLosslessObservedStorage: WritableImageStorage {
             _ = try await decoder.decode(data, options: .init(executionPolicy: .required(.accelerated)))
         }
     }
+
+    @Test func rgbUInt8RowStuffingMarkersTruncationAndAlignedCursorMatchSwift() throws {
+        func difference(_ table: HuffmanTable, _ reader: inout BitReader) throws -> Int32 {
+            if let value = reader.fastDecodeLosslessDifference(table) { return value }
+            let category = Int(try HuffmanDecoder.decodeSymbol(from: &reader, table: table))
+            if category == 0 { return 0 }
+            if category == 16 { return -32768 }
+            return try HuffmanDecoder.decodeValue(from: &reader, category: category)
+        }
+        func emit(category: Int, magnitude: UInt32, table: HuffmanTable, writer: inout BitWriter) {
+            let code = table.encodingTable[category]
+            writer.writeBits(UInt32(code.code), count: Int(code.length))
+            if category > 0 && category < 16 { writer.writeBits(magnitude, count: category) }
+        }
+
+        let t0 = StandardHuffmanTables.dcLuminance
+        let t1 = StandardHuffmanTables.dcChrominance
+        var customLengths = [UInt8](repeating: 0, count: 16)
+        customLengths[0] = 1; customLengths[1] = 1; customLengths[8] = 1
+        let t2Valid = HuffmanTable(bits: [1, 1] + Array(repeating: 0, count: 14), values: [0, 8])
+        let t2Invalid = HuffmanTable(bits: customLengths, values: [0, 5, 19])
+
+        func swiftRGBReference(
+            _ reader: inout BitReader, tables: [HuffmanTable], count: Int,
+            seedR: Int32, seedG: Int32, seedB: Int32, into out: UnsafeMutableRawBufferPointer
+        ) throws -> (firstR: Int32, firstG: Int32, firstB: Int32) {
+            var vr = seedR, vg = seedG, vb = seedB
+            var fr: Int32 = 0, fg: Int32 = 0, fb: Int32 = 0
+            for x in 0..<count {
+                vr = (vr + (try difference(tables[0], &reader))) & 0xFFFF
+                vg = (vg + (try difference(tables[1], &reader))) & 0xFFFF
+                vb = (vb + (try difference(tables[2], &reader))) & 0xFFFF
+                if x == 0 { fr = vr; fg = vg; fb = vb }
+                out[x * 3] = UInt8(clamping: Int(vr))
+                out[x * 3 + 1] = UInt8(clamping: Int(vg))
+                out[x * 3 + 2] = UInt8(clamping: Int(vb))
+            }
+            return (fr, fg, fb)
+        }
+
+        // 1. Valid 8-bit RGB rows followed immediately by RST0..RST7 markers across bit offsets 0..<24
+        //    with heavy 0xFF 0x00 stuffing and >255 clamping.
+        try CLosslessRGBKernel.withBorrowed(tables: [t0, t1, t2Valid], enabled: true) { borrowed in
+            let kernel = try #require(borrowed)
+            for skipBits in 0..<24 {
+                var writer = BitWriter(estimatedMaxSize: 128)
+                if skipBits <= 16 {
+                    writer.writeBits(0xAAAA & ((1 << skipBits) - 1), count: skipBits)
+                } else {
+                    writer.writeBits(0xAAAA, count: 16)
+                    writer.writeBits(0x55 & ((1 << (skipBits - 16)) - 1), count: skipBits - 16)
+                }
+                // 6 pixels: mix category 0, category 8 (0xFF magnitude -> 0xFF 0x00 stuffing), negative diffs, and >255 wrap
+                let diffs: [(Int, UInt32)] = [
+                    (8, 0xFF), (8, 0xFE), (8, 0xFF),
+                    (0, 0),    (4, 0x0F), (0, 0),
+                    (7, 0x01), (8, 0xFF), (8, 0x7F),
+                    (0, 0),    (0, 0),    (8, 0xFF),
+                    (6, 0x3F), (5, 0x00), (0, 0),
+                    (2, 0x03), (3, 0x07), (8, 0xFF),
+                ]
+                for i in 0..<6 {
+                    emit(category: diffs[i * 3].0, magnitude: diffs[i * 3].1, table: t0, writer: &writer)
+                    emit(category: diffs[i * 3 + 1].0, magnitude: diffs[i * 3 + 1].1, table: t1, writer: &writer)
+                    emit(category: diffs[i * 3 + 2].0, magnitude: diffs[i * 3 + 2].1, table: t2Valid, writer: &writer)
+                }
+                let rstIdx = skipBits & 7
+                writer.emitRestartMarker(rstIdx)
+                // Trailing entropy after RSTm
+                writer.writeBits(0xCAFE, count: 16)
+                writer.flush()
+
+                var refReader = BitReader(data: writer.data)
+                var cReader = refReader
+                if skipBits <= 16 {
+                    _ = try refReader.readBits(skipBits)
+                    _ = try cReader.readBits(skipBits)
+                } else {
+                    _ = try refReader.readBits(16); _ = try refReader.readBits(skipBits - 16)
+                    _ = try cReader.readBits(16); _ = try cReader.readBits(skipBits - 16)
+                }
+
+                var expected = [UInt8](repeating: 0x5A, count: 6 * 3 + 7)
+                var actual = expected
+                let refFirst = try expected.withUnsafeMutableBytes { buf in
+                    try swiftRGBReference(&refReader, tables: [t0, t1, t2Valid], count: 6,
+                        seedR: 128, seedG: 200, seedB: 10, into: .init(rebasing: buf[1..<(1 + 18)]))
+                }
+                let cFirst = try actual.withUnsafeMutableBytes { buf in
+                    try cReader.decodeLeftRGBUInt8Row(using: kernel, sampleCount: 6,
+                        seedR: 128, seedG: 200, seedB: 10, into: .init(rebasing: buf[1..<(1 + 18)]))
+                }
+                #expect(refFirst == cFirst)
+                #expect(actual == expected)
+
+                try refReader.skipRestartMarker(expectedIndex: rstIdx)
+                try cReader.skipRestartMarker(expectedIndex: rstIdx)
+                #expect(refReader.byteOffset == cReader.byteOffset)
+                #expect(try refReader.readBits(16) == (try cReader.readBits(16)))
+            }
+        }
+
+        // 2. Truncated mid-pixel (R, G, or B) + unexpected marker + invalid category >16 parity
+        try CLosslessRGBKernel.withBorrowed(tables: [t0, t1, t2Invalid], enabled: true) { borrowed in
+            let kernel = try #require(borrowed)
+            // Stream with 2 valid pixels followed by 9-bit invalid category 19 on B channel of pixel 2
+            var badWriter = BitWriter(estimatedMaxSize: 64)
+            for _ in 0..<2 {
+                emit(category: 2, magnitude: 3, table: t0, writer: &badWriter)
+                emit(category: 2, magnitude: 1, table: t1, writer: &badWriter)
+                emit(category: 0, magnitude: 0, table: t2Invalid, writer: &badWriter)
+            }
+            emit(category: 2, magnitude: 2, table: t0, writer: &badWriter)
+            emit(category: 2, magnitude: 2, table: t1, writer: &badWriter)
+            emit(category: 19, magnitude: 0, table: t2Invalid, writer: &badWriter)
+            badWriter.flush()
+
+            let fullStream = badWriter.data
+            // Check full invalid-width stream AND every byte truncation prefix
+            for cut in 1...fullStream.count {
+                let slice = Array(fullStream.prefix(cut))
+                var refR = BitReader(data: slice)
+                var cR = refR
+                var exp = [UInt8](repeating: 0xCC, count: 4 * 3)
+                var act = exp
+                let resRef = Result {
+                    try exp.withUnsafeMutableBytes { try swiftRGBReference(&refR, tables: [t0, t1, t2Invalid], count: 4, seedR: 128, seedG: 128, seedB: 128, into: $0) }
+                }
+                let resC = Result {
+                    try act.withUnsafeMutableBytes { try cR.decodeLeftRGBUInt8Row(using: kernel, sampleCount: 4, seedR: 128, seedG: 128, seedB: 128, into: $0) }
+                }
+                switch (resRef, resC) {
+                case (.failure(let e1), .failure(let e2)):
+                    #expect(String(describing: e1) == String(describing: e2))
+                default:
+                    Issue.record("Expected matching failure on truncated/invalid RGB row (cut=\(cut))")
+                }
+                #expect(act == exp)
+            }
+        }
+    }
 }
