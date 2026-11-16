@@ -823,7 +823,7 @@ struct JLIEncoder: Sendable {
     /// raw bit sequence here; the stitch replays it through the real BitWriter
     /// (which owns stuffing), so the final stream is byte-identical to a serial
     /// emit of the same bits.
-    private struct RawBitChunkWriter {
+    internal struct RawBitChunkWriter {
         var bytes: [UInt8]
         private var writePos = 0
         private(set) var bitCount = 0
@@ -844,7 +844,8 @@ struct JLIEncoder: Sendable {
         @inline(__always)
         mutating func writeBits(_ value: UInt32, count: Int) {
             guard count > 0 else { return }
-            acc = (acc &<< UInt64(count)) | UInt64(value & ((1 &<< UInt32(count)) &- 1))
+            let mask: UInt64 = count >= 32 ? UInt64(UInt32.max) : ((UInt64(1) &<< UInt64(count)) &- 1)
+            acc = (acc &<< UInt64(count)) | (UInt64(value) & mask)
             nbits += count
             bitCount += count
             if nbits < 32 { return }
