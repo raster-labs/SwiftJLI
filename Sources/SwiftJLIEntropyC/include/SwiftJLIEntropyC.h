@@ -89,4 +89,22 @@ SJLIACStatus sjli_lossless_left_u16_code0_row(const void *raw_input, size_t inpu
     SJLIACState *state, const SJLIACHuffman *table, uint32_t seed,
     size_t count, void *output, size_t output_count,
     SJLILosslessRowResult *result);
+
+typedef struct {
+    uint16_t first_r;
+    uint16_t first_g;
+    uint16_t first_b;
+    uint16_t reserved;
+    uint32_t written;
+} SJLILosslessRGBRowResult;
+
+// Synchronous 3-component RGB left-predictor (Sv=1, Pt=0, 8-bit output) row leaf.
+// Uses FF-free 24-bit lookahead bulk refill so category 0..15 symbols with <=8-bit
+// Huffman codes decode in a single L1-resident table hit with zero heap allocations.
+SJLIACStatus sjli_lossless_left_rgb_u8_row(const void *raw_input, size_t input_count,
+    SJLIACState *state,
+    const SJLIACHuffman *table0, const SJLIACHuffman *table1, const SJLIACHuffman *table2,
+    uint32_t seed_r, uint32_t seed_g, uint32_t seed_b,
+    size_t count, void *output, size_t output_count,
+    SJLILosslessRGBRowResult *result);
 #endif

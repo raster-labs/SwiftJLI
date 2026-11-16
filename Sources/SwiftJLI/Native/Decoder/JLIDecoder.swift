@@ -844,7 +844,10 @@ struct JLIDecoder: Sendable {
             }
             let segRows = restartInterval > 0 ? restartInterval / w : h
             let numSegments = restartInterval > 0 ? (h + segRows - 1) / segRows : 1
-            let lookups = tables.map { LosslessLookahead(table: $0, sampleCount: count) }
+            let useCRGB = useScalarCEntropy && predictor == 1 && pt == 0 && bps == 1
+            let lookups: [LosslessLookahead?] = useCRGB
+                ? [nil, nil, nil]
+                : tables.map { LosslessLookahead(table: $0, sampleCount: count) }
 
             var handledInParallel = false
             if numSegments > 1, NativeOperation.workerLimit > 1,
@@ -867,7 +870,8 @@ struct JLIDecoder: Sendable {
                         try Self.losslessRGBInto(
                             segDest, width: w, height: rows, predictor: predictor, half: half,
                             tables: tables, lookups: lookups, reader: &segReader,
-                            pointTransform: pt, segmentRows: rows)
+                            pointTransform: pt, segmentRows: rows,
+                            useScalarCEntropy: useScalarCEntropy)
                         if k < numSegments - 1 {
                             try Self.verifySegmentBoundary(&segReader, ed, expectedMarkerOffset: markers[k], segmentIndex: k)
                         }
@@ -879,7 +883,8 @@ struct JLIDecoder: Sendable {
                 try Self.losslessRGBInto(
                     borrowed, width: w, height: h, predictor: predictor, half: half,
                     tables: tables, lookups: lookups, reader: &reader,
-                    pointTransform: pt, segmentRows: segRows)
+                    pointTransform: pt, segmentRows: segRows,
+                    useScalarCEntropy: useScalarCEntropy)
             }
             let format = configuration.outputPixelFormat ?? (bps == 1 ? .uint8 : .uint16)
             return try JLIImage(geometryOnlyWidth: w, height: h, pixelFormat: format,
@@ -1819,7 +1824,8 @@ struct JLIDecoder: Sendable {
         _ destination: BorrowedSampleDestination, width w: Int, height h: Int,
         predictor: Int, half: Int32, tables: [HuffmanTable],
         lookups: [LosslessLookahead?], reader: inout BitReader,
-        pointTransform pt: Int, segmentRows: Int
+        pointTransform pt: Int, segmentRows: Int,
+        useScalarCEntropy: Bool = false
     ) throws {
         guard (1...65535).contains(w), (1...65535).contains(h), (0...15).contains(pt) else {
             throw JLIError.decodingFailed("Invalid lossless frame or point transform")
@@ -1831,9 +1837,37 @@ struct JLIDecoder: Sendable {
         let (rowOffset, overflow1) = (h - 1).multipliedReportingOverflow(by: destination.rowBytes)
         let (needed, overflow2) = rowOffset.addingReportingOverflow(w * 3 * bps)
         guard !overflow1, !overflow2, needed <= destination.bytes.count,
-              let output = destination.bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+              let rawBase = destination.bytes.baseAddress else {
             throw JLIError.decodingFailed("lossless destination is too small")
         }
+        if useScalarCEntropy && predictor == 1 && pt == 0 && bps == 1 {
+            var handledByC = false
+            try CLosslessRGBKernel.withBorrowed(tables: tables, enabled: true) { kernel in
+                guard let kernel else { return }
+                handledByC = true
+                var r0 = half, g0 = half, b0 = half
+                for y in 0..<h {
+                    try NativeOperation.check()
+                    let segmentY = y % segmentRows
+                    if y > 0, segmentY == 0 {
+                        try reader.skipRestartMarker(expectedIndex: (y / segmentRows - 1) & 7)
+                    }
+                    let rowBuf = UnsafeMutableRawBufferPointer(
+                        start: rawBase + y * destination.rowBytes, count: w * 3)
+                    let decoded = try reader.decodeLeftRGBUInt8Row(
+                        using: kernel, sampleCount: w,
+                        seedR: segmentY == 0 ? half : r0,
+                        seedG: segmentY == 0 ? half : g0,
+                        seedB: segmentY == 0 ? half : b0,
+                        into: rowBuf)
+                    r0 = decoded.firstR
+                    g0 = decoded.firstG
+                    b0 = decoded.firstB
+                }
+            }
+            if handledByC { return }
+        }
+        let output = rawBase.assumingMemoryBound(to: UInt8.self)
         let t0 = tables[0], t1 = tables[1], t2 = tables[2]
         let l0 = lookups[0], l1 = lookups[1], l2 = lookups[2]
 

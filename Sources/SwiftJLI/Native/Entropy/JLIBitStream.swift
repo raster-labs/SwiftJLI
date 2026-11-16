@@ -569,6 +569,42 @@ struct BitReader {
         }
     }
 
+    mutating func decodeLeftRGBUInt8Row(using kernel: CLosslessRGBKernel,
+        sampleCount: Int, seedR: Int32, seedG: Int32, seedB: Int32,
+        into output: UnsafeMutableRawBufferPointer
+    ) throws -> (firstR: Int32, firstG: Int32, firstB: Int32) {
+        guard (1...65535).contains(sampleCount),
+              (0...65535).contains(seedR), (0...65535).contains(seedG), (0...65535).contains(seedB),
+              output.count >= sampleCount * 3, let destination = output.baseAddress else {
+            throw JLIError.decodingFailed("Invalid C lossless RGB row arguments")
+        }
+        var state = SJLIACState(byte_offset: byteOffset, accumulator: bitBuffer,
+                               available: UInt32(bitsAvailable), marker: 0)
+        var result = SJLILosslessRGBRowResult()
+        let status = withExtendedLifetime(data) {
+            sjli_lossless_left_rgb_u8_row(buffer.baseAddress, buffer.count, &state,
+                kernel.table0, kernel.table1, kernel.table2,
+                UInt32(seedR), UInt32(seedG), UInt32(seedB),
+                sampleCount, destination, output.count, &result)
+        }
+        byteOffset = state.byte_offset
+        bitBuffer = state.accumulator
+        bitsAvailable = Int(state.available)
+        switch status {
+        case SJLI_AC_OK:
+            return (Int32(result.first_r), Int32(result.first_g), Int32(result.first_b))
+        case SJLI_AC_END: throw JLIError.decodingFailed("Unexpected end of entropy-coded data")
+        case SJLI_AC_END_AFTER_FF: throw JLIError.decodingFailed("Unexpected end of data after 0xFF")
+        case SJLI_AC_MARKER:
+            throw JLIError.decodingFailed("Unexpected marker 0xFF\(String(format: "%02X", state.marker)) in entropy data")
+        case SJLI_AC_CODE_INDEX: throw JLIError.decodingFailed("Huffman code index out of range")
+        case SJLI_AC_INVALID_CODE: throw JLIError.decodingFailed("Invalid Huffman code")
+        case SJLI_AC_INVALID_WIDTH:
+            throw JLIError.decodingFailed("invalid bit-read width \(state.marker)")
+        default: throw JLIError.decodingFailed("Invalid C lossless RGB row arguments")
+        }
+    }
+
     /// Best-effort buffer fill used by the Huffman lookahead paths. Tries the
     /// bulk splice first, then loads whole bytes (resolving `0xFF 0x00` stuffing
     /// exactly as ``loadByte()`` does) until at least `target` bits are buffered,

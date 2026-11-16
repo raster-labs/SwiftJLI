@@ -53,3 +53,66 @@ struct CLosslessRowKernel {
         try withUnsafePointer(to: &metadata) { try body(.init(table: $0, usesCodeZero: usesCodeZero)) }
     }
 }
+
+struct CLosslessRGBKernel {
+    let table0: UnsafePointer<SJLIACHuffman>
+    let table1: UnsafePointer<SJLIACHuffman>
+    let table2: UnsafePointer<SJLIACHuffman>
+
+    private static func fillMetadata(_ table: HuffmanTable, into metadata: inout SJLIACHuffman) -> Bool {
+        guard table.minCode.count == 17, table.maxCode.count == 17,
+              table.valPtr.count == 17, table.values.count <= 256,
+              table.lookaheadLength.count == 256, table.lookaheadSymbol.count == 256,
+              table.valPtr.allSatisfy({ $0 >= 0 && $0 <= 256 }),
+              table.lookaheadLength.allSatisfy({ $0 <= 8 }) else {
+            return false
+        }
+        withUnsafeMutableBytes(of: &metadata.minimum) { target in
+            table.minCode.withUnsafeBytes { target.copyMemory(from: $0) }
+        }
+        withUnsafeMutableBytes(of: &metadata.maximum) { target in
+            table.maxCode.withUnsafeBytes { target.copyMemory(from: $0) }
+        }
+        withUnsafeMutableBytes(of: &metadata.value_offsets) { target in
+            for index in 0..<17 {
+                target.storeBytes(of: Int64(table.valPtr[index]),
+                    toByteOffset: index * MemoryLayout<Int64>.stride, as: Int64.self)
+            }
+        }
+        withUnsafeMutableBytes(of: &metadata.values) { target in
+            table.values.withUnsafeBytes { target.copyMemory(from: $0) }
+        }
+        withUnsafeMutableBytes(of: &metadata.lengths) { target in
+            table.lookaheadLength.withUnsafeBytes { target.copyMemory(from: $0) }
+        }
+        withUnsafeMutableBytes(of: &metadata.symbols) { target in
+            table.lookaheadSymbol.withUnsafeBytes { target.copyMemory(from: $0) }
+        }
+        metadata.value_count = UInt32(table.values.count)
+        return true
+    }
+
+    static func withBorrowed(tables: [HuffmanTable], enabled: Bool,
+                             _ body: (CLosslessRGBKernel?) throws -> Void) rethrows {
+        guard enabled, tables.count == 3 else {
+            try body(nil)
+            return
+        }
+        var m0 = SJLIACHuffman()
+        var m1 = SJLIACHuffman()
+        var m2 = SJLIACHuffman()
+        guard fillMetadata(tables[0], into: &m0),
+              fillMetadata(tables[1], into: &m1),
+              fillMetadata(tables[2], into: &m2) else {
+            try body(nil)
+            return
+        }
+        try withUnsafePointer(to: &m0) { p0 in
+            try withUnsafePointer(to: &m1) { p1 in
+                try withUnsafePointer(to: &m2) { p2 in
+                    try body(.init(table0: p0, table1: p1, table2: p2))
+                }
+            }
+        }
+    }
+}
